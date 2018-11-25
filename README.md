@@ -1,1 +1,1 @@
-# PoPS_Website
+# PoPS (Pest or Pathogen Spread) Model Django backend
