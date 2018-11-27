@@ -1,0 +1,8 @@
+### VS CODE ###
+.vscode/settings.json
+
+### Django ###
+__pycache__/
+pops_website/settings/development.py
+pops_website/settings/production.py
+pops_website/db.sqlite3
