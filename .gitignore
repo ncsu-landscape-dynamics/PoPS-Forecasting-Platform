@@ -6,3 +6,4 @@ __pycache__/
 pops_website/settings/development.py
 pops_website/settings/production.py
 pops_website/db.sqlite3
+static_files_all/

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+  <div class="jumbotron" style="background-image: url({% static 'images/spread2.jpg' %}); background-position: left center; background-size: cover; min-height: 50vh">
+    <h1 class="display-4">Welcome to PoPS</h1>
+    <p class="lead">The pest or pathogen spread model</p>
+    <p class="lead">
+      <a class="btn btn-dark btn-lg" href="#" role="button">Learn more</a>
+    </p>
+  </div>
+<!-- 
+  <header class="py-5 bg-image-fluid img-responsive" style="background-image: url({% static 'images/global-connected.jpg' %}); background-repeat: no-repeat;">
+    <img class="img-fluid img-responsive d-block mx-auto" src="http://placehold.it/200x200&text=Logo" alt="">
+  </header>
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container-fluid " style="background-image: url({% static 'images/global-connected.jpg' %}); min-height: 50vh">
+      <h1 class="display-4">Welcome to PoPS</h1>
+      <p class="lead">The pest or pathogen spread model</p>
+    </div>
+  </div>
+  <section class="layout-hero" style="background-image: url({% static 'images/global-connected.jpg' %}); min-height: 50vh;">
+    <h1>Welcome to PoPS</h1>
+    <p>The pest or pathogen spread model</p>
+
+  </section>
+  -->
+{% endblock %}
