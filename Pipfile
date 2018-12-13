@@ -13,6 +13,7 @@ dash-table = "*"
 dash-html-components = "*"
 django-autocomplete-light = "*"
 arrow = "*"
+django-crispy-forms = "*"
 
 [requires]
 python_version = "3.7"

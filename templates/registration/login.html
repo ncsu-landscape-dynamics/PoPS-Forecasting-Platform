@@ -1,20 +1,26 @@
 <!-- templates/registration/login.html -->
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
 
 <div class="container py-4">
-<!-- templates/home.html-->
 
-<h2>Login</h2>
+<h2 class="text-center">Log in</h2>
 <form method="post">
+<div class="row justify-content-center">
+      <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
   {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
+  {{ form|crispy }}
+  <div class="text-center">
+  <button class="btn btn-info" type="submit">Login</button>
+  </div>
 </form>
-<div>
-<span>Not a user? <a class="nav-item nav-link" href="{% url 'signup' %}">Create Account</a>
+<div class="text-center">
+<span>Not a user? <a class="" href="{% url 'signup' %}">Create Account</a>
 </span>
+</div>
+</div>
 </div>
 </div>
 
