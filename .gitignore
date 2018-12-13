@@ -8,4 +8,6 @@ pops_website/settings/production.py
 pops_website/db.sqlite3
 static_files_all/
 db.sqlite3
-*/migrations
+*/migrations/0*
+/db.sqlite3
+
