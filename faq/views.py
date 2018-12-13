@@ -7,3 +7,4 @@ from django.utils.translation import ugettext as _
 from django.views.generic import ListView, DetailView, TemplateView, CreateView
 from .models import Question, Topic
 from .forms import SubmitFAQForm
+

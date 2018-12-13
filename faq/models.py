@@ -37,17 +37,17 @@ class Question(models.Model):
         (HEADER,    _('Group Header')),
     )
 
-    question_text = models.TextField(verbose_name = _('question'))
+    question_text = models.CharField(verbose_name = _('question'), max_length = 150)
+    slug = models.SlugField(verbose_name = _('slug'), max_length = 150)
     answer = models.TextField(verbose_name= _('answer'))
     topic = models.ForeignKey(Topic, on_delete=models.PROTECT)
-    slug = models.SlugField(verbose_name = _('slug'), max_length = 150)
     status = models.IntegerField(verbose_name = _('status'), choices=STATUS_CHOICES, default=INACTIVE)
-    created_on = models.DateTimeField(verbose_name = _('date published'))
-    updated_on = models.DateTimeField(verbose_name = _('date updated'))
-    created_by = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_('created by'),
-        null=True, related_name="+", on_delete=models.SET_NULL)
-    updated_by = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_('updated by'),
-        null=True, related_name="+", on_delete=models.SET_NULL)
+    created_on = models.DateTimeField(verbose_name = _('date created'), default=datetime.datetime.now(), editable=False)
+    updated_on = models.DateTimeField(verbose_name = _('date updated'), default=datetime.datetime.now(), editable=False)
+    created_by = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_('created by'), editable=False,
+        null=True, related_name="+", on_delete=models.SET_NULL, default = AUTH_USER_MODEL)
+    updated_by = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_('updated by'), editable=False,
+        null=True, related_name="+", on_delete=models.SET_NULL, default = AUTH_USER_MODEL)
     helpful_yes = models.IntegerField(verbose_name = _('helpful'), default=0)
     helpful_no = models.IntegerField(verbose_name = _('not helpful'), default=0)
     sort_order = models.IntegerField(verbose_name = _('sort order'), default=0)
@@ -60,22 +60,22 @@ class Question(models.Model):
     def get_absolute_url(self):
         return reverse("faq_question_detail", [self.topic.slug, self.slug])
     
-    def save(self, *args, **kwargs):
-        self.updated_on = datetime.datetime.now()
+    # def save(self, *args, **kwargs):
+    #     self.updated_on = datetime.datetime.now()
 
-        # Create a unique slug, if needed.
-        if not self.slug:
-            suffix = 0
-            potential = base = slugify(self.text[:90])
-            while not self.slug:
-                if suffix:
-                    potential = "%s-%s" % (base, suffix)
-                if not Question.objects.filter(slug=potential).exists():
-                    self.slug = potential
-                # if conflicting slug, increment the suffix and try again.
-                suffix += 1
+    #     # Create a unique slug, if needed.
+    #     if not self.slug:
+    #         suffix = 0
+    #         potential = base = slugify(self.question_text[:90])
+    #         while not self.slug:
+    #             if suffix:
+    #                 potential = "%s-%s" % (base, suffix)
+    #             if not Question.objects.filter(slug=potential).exists():
+    #                 self.slug = potential
+    #             # if conflicting slug, increment the suffix and try again.
+    #             suffix += 1
 
-        super(Question, self).save(*arg, **kwargs)
+    #     super(Question, self).save(*arg, **kwargs)
 
     def is_header(self):
         return self.status == Question.HEADER
