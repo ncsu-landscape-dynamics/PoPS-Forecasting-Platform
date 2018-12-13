@@ -1,0 +1,21 @@
+<!-- templates/registration/login.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-4">
+<!-- templates/home.html-->
+
+<h2>Login</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Login</button>
+</form>
+<div>
+<span>Not a user? <a class="nav-item nav-link" href="{% url 'signup' %}">Create Account</a>
+</span>
+</div>
+</div>
+
+{% endblock %}
