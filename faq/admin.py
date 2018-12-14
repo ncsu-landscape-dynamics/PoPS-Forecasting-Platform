@@ -5,6 +5,9 @@ from .models import Question, Topic
 
 class TopicAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug':('name',)}
+    list_display = ('name', 'sort_order',)
+    list_editable = ['sort_order']
+
 
 class QuestionAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug':('question_text',)}

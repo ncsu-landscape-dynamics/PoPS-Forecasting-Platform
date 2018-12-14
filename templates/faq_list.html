@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-4">
+<div class="row justify-content-center">
+<div class="col-xs-12 col-md-10">
+<h2 class="text-center">Frequently Asked Questions</h2>
+
+{% regroup faqs by topic as topic_list %}
+
+<div class="accordion text-light py-4" id="accordionExample">
+{% for topic in topic_list %}
+<div class="card">
+    <div class="card-header" style="background-color:#0f7c7c;">
+        <button class="btn btn-link btn-lg text-white collapsed" type="button" data-toggle="collapse" data-target="#{{ topic.grouper.slug }}" aria-expanded="false" aria-controls="{{ topic.grouper.slug }}">
+          <span class="icon-bar"></span>
+          <h4>{{ topic.grouper }}</h4>
+        </button>
+    </div>
+    <div id="{{ topic.grouper.slug }}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+      <div class="card-body text-light" style="background-color:#262626;">
+      <ol>
+        {% for faq in topic.list %}
+          <h5><li>{{ faq.question_text }} </li></h5>
+          <p>{{ faq.answer }} </p>
+        {% endfor %}
+        </ol>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+
+</div>
+</div>
+</div>
+{% endblock %}
