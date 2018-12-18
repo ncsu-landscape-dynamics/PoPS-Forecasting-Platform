@@ -12,14 +12,17 @@
       <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
   {% csrf_token %}
   {{ form|crispy }}
-  <div class="text-center">
+  <div class="text-center py-2">
   <button class="btn btn-info btn-lg" type="submit">Log in</button>
   </div>
 </form>
-<div class="text-center py-2">
+<div class="text-center">
 <span>Not a user? <a class="" href="{% url 'signup' %}">Create Account</a>
-</span>
 </div>
+<div class="text-center">
+<span>Forgot password? <a class="" href="{% url 'password_reset' %}">Reset Password</a></span>
+</div>
+
 </div>
 </div>
 </div>

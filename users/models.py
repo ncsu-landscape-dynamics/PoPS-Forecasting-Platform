@@ -15,6 +15,9 @@ class CustomUser(AbstractUser):
     user_type = models.CharField(max_length=30,
                     choices=USER_CHOICES,
                     default="OTHER",)
+                    
+    class Meta(object):
+        unique_together = ('email',)
 
     def __str__(self):
         return self.username
