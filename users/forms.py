@@ -14,10 +14,11 @@ class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(max_length=254, required=True, help_text='A valid email address is required.')
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
+    terms_and_services = forms.BooleanField(label='I agree to the Terms and Conditions.', error_messages={'required': 'You must agree to the terms and services to create an account.'})
     class Meta(UserCreationForm):
         model = CustomUser
-        fields = ('username', 'email','first_name','last_name','organization','user_type',)
-
+        fields = ('username', 'email','first_name','last_name','organization','user_type','password1','password2','terms_and_services',)
+    
 class CustomUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = CustomUser

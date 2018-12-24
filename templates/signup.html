@@ -12,8 +12,13 @@
      
   {% csrf_token %}
   {{ form|crispy }}
-  <div class="text-center">
+    <div class="text-center">
   <button class="btn btn-info btn-lg" type="submit">Sign up for PoPS</button>
+  </div>
+<div class="py-2">
+  <p>By signing up, you agree to our 
+  <a class="" href="{% url 'terms_and_conditions' %}">Terms and Conditions</a> 
+  and that you have read our <a class="" href="{% url 'privacy_policy' %}">Privacy Policy</a>.<p>
   </div>
 </form>
 </div>
