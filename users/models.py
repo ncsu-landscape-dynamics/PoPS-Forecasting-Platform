@@ -14,6 +14,7 @@ class CustomUser(AbstractUser):
     #email_confirmed is used in the account activation method
     email_confirmed = models.BooleanField(default=False)
     USER_CHOICES = (
+        (None, "Select the option that best describes you:"),
         ("STUDENT", "Student"),
         ("GOVERNMENT", "Government Employee"),
         ("INDUSTRY", "Industry Employee"),
@@ -22,8 +23,8 @@ class CustomUser(AbstractUser):
     )
     user_type = models.CharField(max_length=30,
                     choices=USER_CHOICES,
-                    default="OTHER",)
-                    
+                    )
+    
     class Meta(object):
         #Require that email be a unique field in the database
         unique_together = ('email',)

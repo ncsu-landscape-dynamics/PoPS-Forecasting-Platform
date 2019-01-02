@@ -18,3 +18,13 @@ python manage.py migrate #create or modify database
 python manage.py runserver #launch the server  
 ```
 Launch browser to check if the website is running at: http://localhost:8000
+
+## To edit the database using the admin site
+First, create an admin user:
+```python
+cd PoPS_Project
+python manage.py createsuperuser
+```
+Follow the prompts to create the admin user.
+
+Then log in to the admin site at http://localhost:8000/admin
