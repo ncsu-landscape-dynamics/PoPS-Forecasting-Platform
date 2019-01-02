@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4f4e29994ee82283b14d37c3c0fa5f6b6bde5b35123afb12c4c68004fd7c2529"
+            "sha256": "9c8c7e9896b7efaf7e61e1149870267d46c7d411f5a99e584529942246ecd0fd"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -25,7 +25,6 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:47f9c83ef4c0c621eaef743f133f09fa8a74a9b75f037e8624f83bd1b6626cb7",
                 "sha256:993f830721089fef441cdfeb4b2c8c9df86f0c63239f06bd025a76a7daddb033"
             ],
             "version": "==2018.11.29"
@@ -46,23 +45,23 @@
         },
         "dash": {
             "hashes": [
-                "sha256:2707314d5e9ff4b9bd8ca5b8e41263ed17d5e866fcffdf3e34fda1a8bbd068de"
+                "sha256:89f415f2ddf06b57c7b9c426057ae87ef0df2f4f14b29cf2a894b96f5006694e"
             ],
             "index": "pypi",
-            "version": "==0.32.2"
+            "version": "==0.35.0"
         },
         "dash-html-components": {
             "hashes": [
-                "sha256:daf80a0b9dd244bb34e47381a9766617451301ac5aa204faa7e7f069a52d93f9"
+                "sha256:e5d6247887741bf49038eae82f716be6a8b16b7c7b0b8e4a769bb4608feb0b8b"
             ],
             "index": "pypi",
-            "version": "==0.13.2"
+            "version": "==0.13.4"
         },
         "dash-renderer": {
             "hashes": [
-                "sha256:4439670097168cb3d8fba527dce5edad2143d4ae78b6cbbcdfdcfc10226d790a"
+                "sha256:6a2e4d6410e1c4a9577a0aca27b95a1ac77024aae0c8b9c271a8f9518c697b89"
             ],
-            "version": "==0.16.0"
+            "version": "==0.16.1"
         },
         "dash-table": {
             "hashes": [
@@ -101,6 +100,13 @@
             "index": "pypi",
             "version": "==1.7.2"
         },
+        "django-matrix-field": {
+            "hashes": [
+                "sha256:17db85f536fb97bfb3e27753bd076f9e38e7b582b28ae936acc7057195a7aee4"
+            ],
+            "index": "pypi",
+            "version": "==0.2"
+        },
         "djangorestframework": {
             "hashes": [
                 "sha256:607865b0bb1598b153793892101d881466bd5a991de12bd6229abb18b1c86136",
@@ -124,7 +130,6 @@
         },
         "idna": {
             "hashes": [
-                "sha256:c357b3f628cf53ae2c4c05627ecc484553142ca23264e593d327bcde5e9c3407",
                 "sha256:ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"
             ],
             "version": "==2.8"
