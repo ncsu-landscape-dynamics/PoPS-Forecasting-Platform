@@ -10,9 +10,9 @@ from django.urls import reverse
 from users.models import CustomUser
 
 class Topic(models.Model):
-    name = models.CharField(verbose_name = _("topic name"), max_length=150)
-    sort_order = models.IntegerField(verbose_name = _("sort order"), default=0)
-    slug = models.SlugField(verbose_name = _('slug'), max_length=150)
+    name = models.CharField(verbose_name = _("topic name"), max_length = 150)
+    sort_order = models.IntegerField(verbose_name = _("sort order"), default = 0)
+    slug = models.SlugField(verbose_name = _('slug'), max_length = 150)
 
     class Meta:
         verbose_name = _("Topic")
@@ -37,18 +37,18 @@ class Question(models.Model):
 
     question_text = models.CharField(verbose_name = _('question'), max_length = 150)
     slug = models.SlugField(verbose_name = _('slug'), max_length = 150)
-    answer = models.TextField(verbose_name= _('answer'))
-    topic = models.ForeignKey(Topic, on_delete=models.PROTECT)
-    status = models.IntegerField(verbose_name = _('status'), choices=STATUS_CHOICES, default=INACTIVE)
-    created_on = models.DateTimeField(verbose_name = _('date created'), default=datetime.datetime.now(), editable=False)
-    updated_on = models.DateTimeField(verbose_name = _('date updated'), default=datetime.datetime.now(), editable=False)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('created by'), editable=False,
-        null=True, related_name="+", on_delete=models.SET_NULL)
-    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('updated by'), editable=False,
-        null=True, related_name="+", on_delete=models.SET_NULL)
-    helpful_yes = models.IntegerField(verbose_name = _('helpful'), default=0)
-    helpful_no = models.IntegerField(verbose_name = _('not helpful'), default=0)
-    sort_order = models.IntegerField(verbose_name = _('sort order'), default=0)
+    answer = models.TextField(verbose_name = _('answer'))
+    topic = models.ForeignKey(Topic, on_delete = models.PROTECT)
+    status = models.IntegerField(verbose_name = _('status'), choices = STATUS_CHOICES, default = INACTIVE)
+    created_on = models.DateTimeField(verbose_name = _('date created'), default = datetime.datetime.now(), editable = False)
+    updated_on = models.DateTimeField(verbose_name = _('date updated'), default = datetime.datetime.now(), editable = False)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name = _('created by'), editable = False,
+        null = True, related_name = "+", on_delete = models.SET_NULL)
+    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name = _('updated by'), editable = False,
+        null = True, related_name = "+", on_delete = models.SET_NULL)
+    helpful_yes = models.IntegerField(verbose_name = _('helpful'), default = 0)
+    helpful_no = models.IntegerField(verbose_name = _('not helpful'), default = 0)
+    sort_order = models.IntegerField(verbose_name = _('sort order'), default = 0)
 
     class Meta:
         verbose_name = _("Frequently asked question")
