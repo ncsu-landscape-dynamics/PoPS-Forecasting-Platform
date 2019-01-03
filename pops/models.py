@@ -58,7 +58,7 @@ class Mortality(models.Model):
 
     class Meta:
         verbose_name = _("mortality")
-        verbose_name_plural = _("mortalitys")
+        verbose_name_plural = _("mortalities")
 
     def __str__(self):
         return self.name
@@ -240,7 +240,7 @@ class Seasonality(models.Model):
 
     class Meta:
         verbose_name = _("seasonality")
-        verbose_name_plural = _("seasonalitys")
+        verbose_name_plural = _("seasonalities")
 
     def __str__(self):
         return self.name
