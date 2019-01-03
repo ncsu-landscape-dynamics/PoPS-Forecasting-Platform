@@ -8,10 +8,10 @@ from users.models import CustomUser
 
 
 # Django automatically creates a primary key for each model and we are not overwriting this default behavior in any of our models.
-class Case_study(models.Model):
+class CaseStudy(models.Model):
 
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name = _('created by'), editable = False,
-        null = True, related_name = "+", on_delete = models.SET_NULL)
+        null = True, on_delete = models.SET_NULL)
     name = models.CharField(verbose_name = _("case study name"), max_length = 100)
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     number_of_pests = models.IntegerField(verbose_name = _("number of pests"))
@@ -20,29 +20,29 @@ class Case_study(models.Model):
     start_year = models.DateField(verbose_name = _("start year"), auto_now=False, auto_now_add=False)
     end_year = models.DateField(verbose_name = _("end year"), auto_now=False, auto_now_add=False)
     infestation_data = models.FileField(verbose_name = _("infestation data"), upload_to=None, max_length=100)
-    month = 'month'
-    week = 'week'
-    day = 'day'
-    TIME_STEP_CHOICES = ((month, 'Month'), (week, 'Week'), (day, 'Day'))
+    MONTH = 'month'
+    WEEK = 'week'
+    DAY = 'day'
+    TIME_STEP_CHOICES = ((MONTH, 'Month'), (WEEK, 'Week'), (DAY, 'Day'))
     time_step = models.CharField(verbose_name = _("time step"), max_length = 50, choices = TIME_STEP_CHOICES)
 
     class Meta:
-        verbose_name = _("Case Study")
-        verbose_name_plural = _("Case Studies")
+        verbose_name = _("case study")
+        verbose_name_plural = _("case studies")
 
     def __str__(self):
         return self.name
 
 class Host(models.Model):
 
-    case_study = models.ManyToManyField(Case_study, verbose_name = _("case study"))
+    case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
     name = models.CharField(verbose_name = _("host common name"), max_length = 150)
     score = models.IntegerField(verbose_name = _("score"))
     host_data = models.FilePathField(verbose_name = _("host data"), path=None, match=None, recursive=True, max_length=100)
 
     class Meta:
-        verbose_name = _("Host")
-        verbose_name_plural = _("Hosts")
+        verbose_name = _("host")
+        verbose_name_plural = _("hosts")
 
     def __str__(self):
         return self.name
@@ -74,7 +74,7 @@ class Creation(models.Model):
     def __str__(self):
         return self.name
 
-class Pest_information(models.Model):
+class PestInformation(models.Model):
 
     common_name = models.CharField(verbose_name = _("pest common name"), max_length = 150)
     scientific_name = models.CharField(verbose_name = _("pest scientific name"), max_length = 150)
@@ -93,8 +93,8 @@ class Pest_information(models.Model):
 
 class Pest(models.Model):
 
-    case_study = models.ManyToManyField(Case_study, verbose_name = _("case study"))
-    pest_information = models.ForeignKey(Pest_information, verbose_name = _("pest information"), on_delete = models.CASCADE)
+    case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
+    pest_information = models.ForeignKey(PestInformation, verbose_name = _("pest information"), on_delete = models.CASCADE)
     staff_approved = models.BooleanField(verbose_name = _("approved by staff"))
     vector_born = models.BooleanField(verbose_name = _("vector born"), default = False)
     MODEL_CHOICES = (
@@ -137,7 +137,7 @@ class Vector(models.Model):
     def __str__(self):
         return self.name
 
-class Short_Distance(models.Model):
+class ShortDistance(models.Model):
 
     pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
     scale = models.FloatField(verbose_name = _("short distance scale"))
@@ -151,7 +151,7 @@ class Short_Distance(models.Model):
     def __str__(self):
         return self.name
 
-class Long_Distance(models.Model):
+class LongDistance(models.Model):
 
     pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
     scale = models.FloatField(verbose_name = _("long distance scale"))
@@ -164,7 +164,7 @@ class Long_Distance(models.Model):
     def __str__(self):
         return self.name
 
-class Cryptic_to_infected(models.Model):
+class CrypticToInfected(models.Model):
 
     pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
     rate = models.FloatField(verbose_name = _("cryptic to infected rate"))
@@ -177,7 +177,7 @@ class Cryptic_to_infected(models.Model):
     def __str__(self):
         return self.name
 
-class Infected_to_diseased(models.Model):
+class InfectedToDiseased(models.Model):
 
     pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
     rate = models.FloatField(verbose_name = _("infected to diseased rate"))
@@ -192,7 +192,7 @@ class Infected_to_diseased(models.Model):
 
 class Weather(models.Model):
 
-    case_study = models.ForeignKey(Case_study, verbose_name = _("case study"), on_delete = models.CASCADE)
+    case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study"), on_delete = models.CASCADE)
     wind_on = models.BooleanField(verbose_name = _("use wind"), default = False)
     seasonality_on = models.BooleanField(verbose_name = _("use seasonality"), default = False)
     lethal_temp_on = models.BooleanField(verbose_name = _("use lethal temp"), default = False)
@@ -245,7 +245,7 @@ class Seasonality(models.Model):
     def __str__(self):
         return self.name
 
-class Lethal_temperature(models.Model):
+class LethalTemperature(models.Model):
 
     weather = models.ForeignKey(Weather, verbose_name = _("weather"), on_delete = models.CASCADE)
     month = models.IntegerField(verbose_name = _("month in which lethal temperature occurs"), default = 1)
@@ -297,7 +297,7 @@ class Precipitation(models.Model):
     def __str__(self):
         return self.name
 
-class Temperature_reclass(models.Model):
+class TemperatureReclass(models.Model):
 
     temperature = models.ForeignKey(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE)
     threshold = models.FloatField(verbose_name = _("temperature threshold"))
@@ -310,7 +310,7 @@ class Temperature_reclass(models.Model):
     def __str__(self):
         return self.name
 
-class Precipitation_reclass(models.Model):
+class PrecipitationReclass(models.Model):
 
     precipitation = models.ForeignKey(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE)
     threshold = models.FloatField(verbose_name = _("precipitation threshold"))
@@ -323,7 +323,7 @@ class Precipitation_reclass(models.Model):
     def __str__(self):
         return self.name
 
-class Temperature_polynomial(models.Model):
+class TemperaturePolynomial(models.Model):
 
     temperature = models.ForeignKey(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE)
     DEGREE_CHOICES = (
@@ -348,7 +348,7 @@ class Temperature_polynomial(models.Model):
     def __str__(self):
         return self.name
 
-class Precipitation_polynomial(models.Model):
+class PrecipitationPolynomial(models.Model):
 
     precipitation = models.ForeignKey(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE)
     DEGREE_CHOICES = (
@@ -375,9 +375,9 @@ class Precipitation_polynomial(models.Model):
 
 class Session(models.Model):
 
-    case_study = models.ForeignKey(Case_study, verbose_name = _("case study"), on_delete = models.CASCADE)
+    case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study"), on_delete = models.CASCADE)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name = _('created by'), editable = False,
-        null = True, related_name = "+", on_delete = models.SET_NULL)
+        null = True, on_delete = models.SET_NULL)
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     name = models.CharField(verbose_name = _("session name"), max_length=150)
 
@@ -401,7 +401,7 @@ class Run(models.Model):
     def __str__(self):
         return self.name
 
-class Input_change(models.Model):
+class InputChange(models.Model):
 
     run = models.ForeignKey(Run, verbose_name = _("run id"), on_delete = models.CASCADE)
     name = models.CharField(verbose_name = _("parameter name"), max_length = 150)
