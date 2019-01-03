@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'faq.apps.FaqConfig',
     'crispy_forms',
+    # 'matrix_field',
+    'pops.apps.PopsConfig',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

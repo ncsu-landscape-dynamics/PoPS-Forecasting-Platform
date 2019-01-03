@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
-from matrix_field import MatrixField
+from django.utils.translation import ugettext_lazy as _
+# from matrix_field import MatrixField
 
 from users.models import CustomUser
 
@@ -191,7 +192,7 @@ class Infected_to_diseased(models.Model):
 
 class Weather(models.Model):
 
-    case_study = models.ForeignKey(Case_study, verbose_name = _("case study"))
+    case_study = models.ForeignKey(Case_study, verbose_name = _("case study"), on_delete = models.CASCADE)
     wind_on = models.BooleanField(verbose_name = _("use wind"), default = False)
     seasonality_on = models.BooleanField(verbose_name = _("use seasonality"), default = False)
     lethal_temp_on = models.BooleanField(verbose_name = _("use lethal temp"), default = False)
@@ -207,7 +208,7 @@ class Weather(models.Model):
 
 class Wind(models.Model):
 
-    weather = models.ForeignKey(Weather, verbose_name = _("weather"))
+    weather = models.ForeignKey(Weather, verbose_name = _("weather"), on_delete = models.CASCADE)
     DIRECTION_CHOICES = (
         ("NONE", "None"),
         ("N", "North"),
@@ -233,7 +234,7 @@ class Wind(models.Model):
 
 class Seasonality(models.Model):
 
-    weather = models.ForeignKey(Weather, verbose_name = _("weather"))
+    weather = models.ForeignKey(Weather, verbose_name = _("weather"), on_delete = models.CASCADE)
     first_month = models.IntegerField(verbose_name = _("first month of season"), default = 1)
     last_month = models.IntegerField(verbose_name = _("last month of season"), default = 12)
 
@@ -246,7 +247,7 @@ class Seasonality(models.Model):
 
 class Lethal_temperature(models.Model):
 
-    weather = models.ForeignKey(Weather, verbose_name = _("weather"))
+    weather = models.ForeignKey(Weather, verbose_name = _("weather"), on_delete = models.CASCADE)
     month = models.IntegerField(verbose_name = _("month in which lethal temperature occurs"), default = 1)
     value = models.FloatField(verbose_name = _("last month of season"), default = 0)
     lethal_temperature_data = models.FilePathField(verbose_name = _("lethal temperature data"), path=None, match=None, recursive=True, max_length=100)
@@ -260,7 +261,7 @@ class Lethal_temperature(models.Model):
 
 class Temperature(models.Model):
 
-    weather = models.ForeignKey(Weather, verbose_name = _("weather"))
+    weather = models.ForeignKey(Weather, verbose_name = _("weather"), on_delete = models.CASCADE)
     METHOD_CHOICES = (
         ("RECLASS", "Reclass"),
         ("POLYNOMIAL", "Polynomial"),
@@ -279,7 +280,7 @@ class Temperature(models.Model):
 
 class Precipitation(models.Model):
 
-    weather = models.ForeignKey(Weather, verbose_name = _("weather"))
+    weather = models.ForeignKey(Weather, verbose_name = _("weather"), on_delete = models.CASCADE)
     METHOD_CHOICES = (
         ("RECLASS", "Reclass"),
         ("POLYNOMIAL", "Polynomial"),
@@ -298,9 +299,9 @@ class Precipitation(models.Model):
 
 class Temperature_reclass(models.Model):
 
-    temperature = models.ForeignKey(Temperature, verbose_name = _("temperature"))
+    temperature = models.ForeignKey(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE)
     threshold = models.FloatField(verbose_name = _("temperature threshold"))
-    matrix = MatrixField(verbose_name = _("matrix"), datatype = 'float')
+    # matrix = MatrixField(verbose_name = _("matrix"), datatype = 'float')
 
     class Meta:
         verbose_name = _("temperature reclass")
@@ -311,9 +312,9 @@ class Temperature_reclass(models.Model):
 
 class Precipitation_reclass(models.Model):
 
-    precipitation = models.ForeignKey(Precipitation, verbose_name = _("precipitation"))
+    precipitation = models.ForeignKey(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE)
     threshold = models.FloatField(verbose_name = _("precipitation threshold"))
-    matrix = MatrixField(verbose_name = _("matrix"), datatype = 'float')
+    # matrix = MatrixField(verbose_name = _("matrix"), datatype = 'float')
 
     class Meta:
         verbose_name = _("precipitation reclass")
@@ -324,7 +325,7 @@ class Precipitation_reclass(models.Model):
 
 class Temperature_polynomial(models.Model):
 
-    temperature = models.ForeignKey(Temperature, verbose_name = _("temperature"))
+    temperature = models.ForeignKey(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE)
     DEGREE_CHOICES = (
         ("1", "One"),
         ("2", "Two"),
@@ -349,7 +350,7 @@ class Temperature_polynomial(models.Model):
 
 class Precipitation_polynomial(models.Model):
 
-    precipitation = models.ForeignKey(Precipitation, verbose_name = _("precipitation"))
+    precipitation = models.ForeignKey(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE)
     DEGREE_CHOICES = (
         ("1", "One"),
         ("2", "Two"),
@@ -374,7 +375,7 @@ class Precipitation_polynomial(models.Model):
 
 class Session(models.Model):
 
-    case_study = models.ForeignKey(Case_study, verbose_name = _("case study"))
+    case_study = models.ForeignKey(Case_study, verbose_name = _("case study"), on_delete = models.CASCADE)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name = _('created by'), editable = False,
         null = True, related_name = "+", on_delete = models.SET_NULL)
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
@@ -417,7 +418,7 @@ class Output(models.Model):
 
     run = models.ForeignKey(Run, verbose_name = _("run id"), on_delete = models.CASCADE)
     name = models.CharField(verbose_name = _("output variable name"), max_length = 150)
-    data = MatrixField(verbose_name = _("output data"), datatype = 'float')
+    # data = MatrixField(verbose_name = _("output data"), datatype = 'float')
 
     class Meta:
         verbose_name = _("output")
