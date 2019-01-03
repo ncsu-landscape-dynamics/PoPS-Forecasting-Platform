@@ -253,8 +253,8 @@ class LethalTemperature(models.Model):
     lethal_temperature_data = models.FilePathField(verbose_name = _("lethal temperature data"), path=None, match=None, recursive=True, max_length=100)
 
     class Meta:
-        verbose_name = _("seasonality")
-        verbose_name_plural = _("seasonalitys")
+        verbose_name = _("lethal temperature")
+        verbose_name_plural = _("lethal temperatures")
 
     def __str__(self):
         return self.name
@@ -272,8 +272,8 @@ class Temperature(models.Model):
     temperature_data = models.FilePathField(verbose_name = _("temperature data"), path=None, match=None, recursive=True, max_length=100)
 
     class Meta:
-        verbose_name = _("seasonality")
-        verbose_name_plural = _("seasonalitys")
+        verbose_name = _("temperature")
+        verbose_name_plural = _("temperatures")
 
     def __str__(self):
         return self.name
@@ -291,8 +291,8 @@ class Precipitation(models.Model):
     precipitation_data = models.FilePathField(verbose_name = _("precipitation data"), path=None, match=None, recursive=True, max_length=100)
 
     class Meta:
-        verbose_name = _("seasonality")
-        verbose_name_plural = _("seasonalitys")
+        verbose_name = _("precipitation")
+        verbose_name_plural = _("precipitations")
 
     def __str__(self):
         return self.name
