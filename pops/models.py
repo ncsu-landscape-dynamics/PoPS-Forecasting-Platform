@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+import os
 # from matrix_field import MatrixField
 
 from users.models import CustomUser
@@ -12,14 +13,15 @@ class CaseStudy(models.Model):
 
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name = _('created by'), editable = False,
         null = True, on_delete = models.SET_NULL)
-    name = models.CharField(verbose_name = _("case study name"), max_length = 100)
+    name = models.CharField(verbose_name = _("case study name"), max_length = 150)
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     number_of_pests = models.IntegerField(verbose_name = _("number of pests"))
     number_of_hosts = models.IntegerField(verbose_name = _("number of hosts"))
-    all_plants = models.FilePathField(verbose_name = _("all plants"), path=None, match=None, recursive=True, max_length=100)
+    # all_plants = models.FilePathField(verbose_name = _("all plants"), path=settings.FILE_PATH_FIELD_DIRECTORY, match=None, recursive=False, max_length=200, null = True)
     start_year = models.DateField(verbose_name = _("start year"), auto_now=False, auto_now_add=False)
     end_year = models.DateField(verbose_name = _("end year"), auto_now=False, auto_now_add=False)
-    infestation_data = models.FileField(verbose_name = _("infestation data"), upload_to=None, max_length=100)
+    # directory_name =os.path.join(settings.FILE_PATH_FIELD_DIRECTORY, CaseStudy.name)
+    infestation_data = models.FileField(verbose_name = _("infestation data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
     MONTH = 'month'
     WEEK = 'week'
     DAY = 'day'
@@ -38,7 +40,7 @@ class Host(models.Model):
     case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
     name = models.CharField(verbose_name = _("host common name"), max_length = 150)
     score = models.IntegerField(verbose_name = _("score"))
-    host_data = models.FilePathField(verbose_name = _("host data"), path=None, match=None, recursive=True, max_length=100)
+    # host_data = models.FilePathField(verbose_name = _("host data"), path=settings.FILE_PATH_FIELD_DIRECTORY, match=None, recursive=True, max_length=100)
 
     class Meta:
         verbose_name = _("host")
@@ -61,7 +63,7 @@ class Mortality(models.Model):
         verbose_name_plural = _("mortalities")
 
     def __str__(self):
-        return self.name
+        return self.rate
 
 class Creation(models.Model):
 
@@ -89,10 +91,11 @@ class PestInformation(models.Model):
         verbose_name_plural = _("pest informations")
 
     def __str__(self):
-        return self.name
+        return self.common_name
 
 class Pest(models.Model):
 
+    name = models.CharField(verbose_name = _("pest common name"), max_length = 150)
     case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
     pest_information = models.ForeignKey(PestInformation, verbose_name = _("pest information"), on_delete = models.CASCADE)
     staff_approved = models.BooleanField(verbose_name = _("approved by staff"))
@@ -135,7 +138,7 @@ class Vector(models.Model):
         verbose_name_plural = _("vectors")
 
     def __str__(self):
-        return self.name
+        return self.common_name
 
 class ShortDistance(models.Model):
 
@@ -149,7 +152,7 @@ class ShortDistance(models.Model):
         verbose_name_plural = _("short distance dispersals")
 
     def __str__(self):
-        return self.name
+        return self.scale
 
 class LongDistance(models.Model):
 
@@ -162,7 +165,7 @@ class LongDistance(models.Model):
         verbose_name_plural = _("long distance dispersals")
 
     def __str__(self):
-        return self.name
+        return self.scale
 
 class CrypticToInfected(models.Model):
 
@@ -175,7 +178,7 @@ class CrypticToInfected(models.Model):
         verbose_name_plural = _("cryptic to infecteds")
 
     def __str__(self):
-        return self.name
+        return self.rate
 
 class InfectedToDiseased(models.Model):
 
@@ -188,7 +191,7 @@ class InfectedToDiseased(models.Model):
         verbose_name_plural = _("infected to diseaseds")
 
     def __str__(self):
-        return self.name
+        return self.rate
 
 class Weather(models.Model):
 
@@ -204,7 +207,7 @@ class Weather(models.Model):
         verbose_name_plural = _("weathers")
 
     def __str__(self):
-        return self.name
+        return self.wind_on
 
 class Wind(models.Model):
 
@@ -230,7 +233,7 @@ class Wind(models.Model):
         verbose_name_plural = _("winds")
 
     def __str__(self):
-        return self.name
+        return self.wind_direction
 
 class Seasonality(models.Model):
 
@@ -243,21 +246,21 @@ class Seasonality(models.Model):
         verbose_name_plural = _("seasonalities")
 
     def __str__(self):
-        return self.name
+        return self.first_month
 
 class LethalTemperature(models.Model):
 
     weather = models.ForeignKey(Weather, verbose_name = _("weather"), on_delete = models.CASCADE)
     month = models.IntegerField(verbose_name = _("month in which lethal temperature occurs"), default = 1)
     value = models.FloatField(verbose_name = _("last month of season"), default = 0)
-    lethal_temperature_data = models.FilePathField(verbose_name = _("lethal temperature data"), path=None, match=None, recursive=True, max_length=100)
+    # lethal_temperature_data = models.FilePathField(verbose_name = _("lethal temperature data"), path=None, match=None, recursive=True, max_length=100)
 
     class Meta:
         verbose_name = _("lethal temperature")
         verbose_name_plural = _("lethal temperatures")
 
     def __str__(self):
-        return self.name
+        return self.value
 
 class Temperature(models.Model):
 
@@ -269,14 +272,14 @@ class Temperature(models.Model):
     method = models.CharField(verbose_name = _("temperature coefficient creation method"), max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "RECLASS",)
-    temperature_data = models.FilePathField(verbose_name = _("temperature data"), path=None, match=None, recursive=True, max_length=100)
+    # temperature_data = models.FilePathField(verbose_name = _("temperature data"), path=None, match=None, recursive=True, max_length=100)
 
     class Meta:
         verbose_name = _("temperature")
         verbose_name_plural = _("temperatures")
 
     def __str__(self):
-        return self.name
+        return self.method
 
 class Precipitation(models.Model):
 
@@ -288,14 +291,14 @@ class Precipitation(models.Model):
     method = models.CharField(verbose_name = _("temperature coefficient creation method"), max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "RECLASS",)
-    precipitation_data = models.FilePathField(verbose_name = _("precipitation data"), path=None, match=None, recursive=True, max_length=100)
+    # precipitation_data = models.FilePathField(verbose_name = _("precipitation data"), path=None, match=None, recursive=True, max_length=100)
 
     class Meta:
         verbose_name = _("precipitation")
         verbose_name_plural = _("precipitations")
 
     def __str__(self):
-        return self.name
+        return self.method
 
 class TemperatureReclass(models.Model):
 
@@ -308,7 +311,7 @@ class TemperatureReclass(models.Model):
         verbose_name_plural = _("temperature reclasses")
 
     def __str__(self):
-        return self.name
+        return self.threshold
 
 class PrecipitationReclass(models.Model):
 
@@ -321,7 +324,7 @@ class PrecipitationReclass(models.Model):
         verbose_name_plural = _("precipitation reclasses")
 
     def __str__(self):
-        return self.name
+        return self.threshold
 
 class TemperaturePolynomial(models.Model):
 
@@ -346,7 +349,7 @@ class TemperaturePolynomial(models.Model):
         verbose_name_plural = _("temperature polynomials")
 
     def __str__(self):
-        return self.name
+        return self.a0
 
 class PrecipitationPolynomial(models.Model):
 
@@ -371,7 +374,7 @@ class PrecipitationPolynomial(models.Model):
         verbose_name_plural = _("precipitation polynomials")
 
     def __str__(self):
-        return self.name
+        return self.a0
 
 class Session(models.Model):
 
