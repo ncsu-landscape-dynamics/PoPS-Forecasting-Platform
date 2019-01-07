@@ -21,7 +21,7 @@ class CaseStudy(models.Model):
     start_year = models.DateField(verbose_name = _("start year"), auto_now=False, auto_now_add=False)
     end_year = models.DateField(verbose_name = _("end year"), auto_now=False, auto_now_add=False)
     # directory_name =os.path.join(settings.FILE_PATH_FIELD_DIRECTORY, CaseStudy.name)
-    infestation_data = models.FileField(verbose_name = _("infestation data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
+    #infestation_data = models.FileField(verbose_name = _("infestation data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
     MONTH = 'month'
     WEEK = 'week'
     DAY = 'day'
@@ -51,7 +51,7 @@ class Host(models.Model):
 
 class Mortality(models.Model):
 
-    host = models.ForeignKey(Host, verbose_name = _("host"), on_delete = models.CASCADE)
+    host = models.OneToOneField(Host, verbose_name = _("host"), on_delete = models.CASCADE, primary_key=True)
     user_input = models.BooleanField(verbose_name = _("user inputs the mortality rate and time lag"), default = False)
     rate = models.FloatField(verbose_name = _("mortality rate"))
     rate_standard_deviation = models.FloatField(verbose_name = _("mortality rate standard deviation"))
@@ -97,8 +97,8 @@ class Pest(models.Model):
 
     name = models.CharField(verbose_name = _("pest common name"), max_length = 150)
     case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
-    pest_information = models.ForeignKey(PestInformation, verbose_name = _("pest information"), on_delete = models.CASCADE)
-    staff_approved = models.BooleanField(verbose_name = _("approved by staff"))
+    pest_information = models.ForeignKey(PestInformation, verbose_name = _("pest information"), null=True, on_delete = models.SET_NULL)
+    staff_approved = models.BooleanField(verbose_name = _("approved by staff"), default = False)
     vector_born = models.BooleanField(verbose_name = _("vector born"), default = False)
     MODEL_CHOICES = (
         ("SI", "Susceptible Infected"),
@@ -127,7 +127,7 @@ class Pest(models.Model):
 
 class Vector(models.Model):
 
-    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
+    pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True,)
     common_name = models.CharField(verbose_name = _("vector common name"), max_length = 150)
     scientific_name = models.CharField(verbose_name = _("vector scientific name"), max_length = 150)
     vector_to_host_transmission_rate = models.IntegerField(verbose_name = _("vector to host transmission rate"))
@@ -142,7 +142,7 @@ class Vector(models.Model):
 
 class ShortDistance(models.Model):
 
-    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
+    pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
     scale = models.FloatField(verbose_name = _("short distance scale"))
     scale_standard_deviation = models.FloatField(verbose_name = _("short distance scale standard deviation"))
     percent_short_distance = models.FloatField(verbose_name = _("percentage of dispersal that is short distance"), default = 1)
@@ -156,7 +156,7 @@ class ShortDistance(models.Model):
 
 class LongDistance(models.Model):
 
-    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
+    pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
     scale = models.FloatField(verbose_name = _("long distance scale"))
     scale_standard_deviation = models.FloatField(verbose_name = _("long distance scale standard deviation"))
 
@@ -169,7 +169,7 @@ class LongDistance(models.Model):
 
 class CrypticToInfected(models.Model):
 
-    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
+    pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
     rate = models.FloatField(verbose_name = _("cryptic to infected rate"))
     rate_standard_deviation = models.FloatField(verbose_name = _("cryptic to infected standard deviation"))
 
@@ -182,7 +182,7 @@ class CrypticToInfected(models.Model):
 
 class InfectedToDiseased(models.Model):
 
-    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
+    pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
     rate = models.FloatField(verbose_name = _("infected to diseased rate"))
     rate_standard_deviation = models.FloatField(verbose_name = _("infected to diseased standard deviation"))
 
@@ -195,7 +195,7 @@ class InfectedToDiseased(models.Model):
 
 class Weather(models.Model):
 
-    case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study"), on_delete = models.CASCADE)
+    case_study = models.OneToOneField(CaseStudy, verbose_name = _("case study"), on_delete = models.CASCADE, primary_key=True)
     wind_on = models.BooleanField(verbose_name = _("use wind"), default = False)
     seasonality_on = models.BooleanField(verbose_name = _("use seasonality"), default = False)
     lethal_temp_on = models.BooleanField(verbose_name = _("use lethal temp"), default = False)
@@ -211,7 +211,7 @@ class Weather(models.Model):
 
 class Wind(models.Model):
 
-    weather = models.ForeignKey(Weather, verbose_name = _("weather"), on_delete = models.CASCADE)
+    weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
     DIRECTION_CHOICES = (
         ("NONE", "None"),
         ("N", "North"),
@@ -237,7 +237,7 @@ class Wind(models.Model):
 
 class Seasonality(models.Model):
 
-    weather = models.ForeignKey(Weather, verbose_name = _("weather"), on_delete = models.CASCADE)
+    weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
     first_month = models.IntegerField(verbose_name = _("first month of season"), default = 1)
     last_month = models.IntegerField(verbose_name = _("last month of season"), default = 12)
 
@@ -250,9 +250,9 @@ class Seasonality(models.Model):
 
 class LethalTemperature(models.Model):
 
-    weather = models.ForeignKey(Weather, verbose_name = _("weather"), on_delete = models.CASCADE)
+    weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
     month = models.IntegerField(verbose_name = _("month in which lethal temperature occurs"), default = 1)
-    value = models.FloatField(verbose_name = _("last month of season"), default = 0)
+    value = models.FloatField(verbose_name = _("lethal temperature"), default = 0)
     # lethal_temperature_data = models.FilePathField(verbose_name = _("lethal temperature data"), path=None, match=None, recursive=True, max_length=100)
 
     class Meta:
@@ -264,7 +264,7 @@ class LethalTemperature(models.Model):
 
 class Temperature(models.Model):
 
-    weather = models.ForeignKey(Weather, verbose_name = _("weather"), on_delete = models.CASCADE)
+    weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
     METHOD_CHOICES = (
         ("RECLASS", "Reclass"),
         ("POLYNOMIAL", "Polynomial"),
@@ -283,7 +283,7 @@ class Temperature(models.Model):
 
 class Precipitation(models.Model):
 
-    weather = models.ForeignKey(Weather, verbose_name = _("weather"), on_delete = models.CASCADE)
+    weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
     METHOD_CHOICES = (
         ("RECLASS", "Reclass"),
         ("POLYNOMIAL", "Polynomial"),
@@ -302,7 +302,7 @@ class Precipitation(models.Model):
 
 class TemperatureReclass(models.Model):
 
-    temperature = models.ForeignKey(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE)
+    temperature = models.OneToOneField(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE, primary_key=True)
     threshold = models.FloatField(verbose_name = _("temperature threshold"))
     # matrix = MatrixField(verbose_name = _("matrix"), datatype = 'float')
 
@@ -315,7 +315,7 @@ class TemperatureReclass(models.Model):
 
 class PrecipitationReclass(models.Model):
 
-    precipitation = models.ForeignKey(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE)
+    precipitation = models.OneToOneField(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE, primary_key=True)
     threshold = models.FloatField(verbose_name = _("precipitation threshold"))
     # matrix = MatrixField(verbose_name = _("matrix"), datatype = 'float')
 
@@ -328,14 +328,14 @@ class PrecipitationReclass(models.Model):
 
 class TemperaturePolynomial(models.Model):
 
-    temperature = models.ForeignKey(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE)
+    temperature = models.OneToOneField(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE, primary_key=True)
     DEGREE_CHOICES = (
-        ("1", "One"),
-        ("2", "Two"),
-        ("3", "Three"),
+        (1, "One"),
+        (2, "Two"),
+        (3, "Three"),
     )
     degree = models.FloatField(verbose_name = _("temperature polynomial degree"), 
-                    choices = DEGREE_CHOICES, default = "1")
+                    choices = DEGREE_CHOICES)
     a0 = models.FloatField(verbose_name = _("a0"))
     a1 = models.FloatField(verbose_name = _("a1"))
     a2 = models.FloatField(verbose_name = _("a2"))
@@ -353,14 +353,14 @@ class TemperaturePolynomial(models.Model):
 
 class PrecipitationPolynomial(models.Model):
 
-    precipitation = models.ForeignKey(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE)
+    precipitation = models.OneToOneField(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE, primary_key=True)
     DEGREE_CHOICES = (
-        ("1", "One"),
-        ("2", "Two"),
-        ("3", "Three"),
+        (1, "One"),
+        (2, "Two"),
+        (3, "Three"),
     )
     degree = models.FloatField(verbose_name = _("temperature polynomial degree"), 
-                    choices = DEGREE_CHOICES, default = "1")
+                    choices = DEGREE_CHOICES)
     a0 = models.FloatField(verbose_name = _("a0"))
     a1 = models.FloatField(verbose_name = _("a1"))
     a2 = models.FloatField(verbose_name = _("a2"))

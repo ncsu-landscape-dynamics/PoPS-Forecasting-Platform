@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+
+<div class="container py-4">
+
+<h2 class="text-center">Create Case Study</h2>
+<form method="post">
+<div class="row justify-content-center">
+      <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+  {% csrf_token %}
+  <h4 class="text-center">Case study info:</h4>
+  {{ case_study_form|crispy }}
+  <h4 class="text-center">Host:</h4>
+  {{ host_form|crispy }}
+  <h4 class="text-center">Mortality:</h4>
+  {{ mortality_form|crispy }}
+  <h4 class="text-center">Pest:</h4>
+  {{ pest_form|crispy }}
+  <h4 class="text-center">Vector:</h4>
+  {{ vector_form|crispy }}
+  <h4 class="text-center">Short distance dispersal:</h4>
+  {{ short_distance_form|crispy }}
+  <h4 class="text-center">Long distance dispersal:</h4>
+  {{ long_distance_form|crispy }}
+  <h4 class="text-center">Cryptic to infected:</h4>
+  {{ cryptic_to_infected_form|crispy }}
+  <h4 class="text-center">Infected to diseased:</h4>
+  {{ infected_to_diseased_form|crispy }}
+  <h4 class="text-center">Weather:</h4>
+  {{ weather_form|crispy }}
+  <h4 class="text-center">Wind:</h4>
+  {{ wind_form|crispy }}
+  <h4 class="text-center">Seasonality:</h4>
+  {{ seasonality_form|crispy }}
+  <h4 class="text-center">Lethal temp:</h4>
+  {{ lethal_temp_form|crispy }}
+  <h4 class="text-center">Temperature:</h4>
+  {{ temperature_form|crispy }}
+  <h4 class="text-center">Precipitation:</h4>
+  {{ precipitation_form|crispy }}
+  <h4 class="text-center">Temperature reclass:</h4>
+  {{ temperature_reclass_form|crispy }}
+  <h4 class="text-center">Temperature polynomial:</h4>
+  {{ temperature_polynomial_form|crispy }}
+  <h4 class="text-center">Precipitation reclass:</h4>
+  {{ precipitation_reclass_form|crispy }}
+  <h4 class="text-center">Precipitation polynomial:</h4>
+  {{ precipitation_polynomial_form|crispy }}
+  <div class="text-center py-2">
+  <button class="btn btn-info btn-lg" type="submit">Calibrate</button>
+  </div>
+  </div>
+</div>
+
+</form>
+<div class="text-center">
+<span>Note: This process can take a few hours. We will send you an email when your case study is ready.</span>
+</div>
+
+</div>
+
+{% endblock %}
