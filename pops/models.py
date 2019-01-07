@@ -22,6 +22,7 @@ class CaseStudy(models.Model):
     end_year = models.PositiveSmallIntegerField(verbose_name = _("end year"))
     # directory_name =os.path.join(settings.FILE_PATH_FIELD_DIRECTORY, CaseStudy.name)
     #infestation_data = models.FileField(verbose_name = _("infestation data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
+    # treatment_data = models.FileField(verbose_name =  _("previous treatments data"), upload_to = settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
     MONTH = 'month'
     WEEK = 'week'
     DAY = 'day'
@@ -378,6 +379,19 @@ class PrecipitationPolynomial(models.Model):
 
     def __str__(self):
         return self.a0
+
+class Treatment(models.Model):
+
+    year = models.PositiveSmallIntegerField(verbose_name = _("treatment year"))
+    treatment_file = models.FileField(verbose_name = _("treatment raster for that year"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length = 200)
+
+    class Meta:
+        verbose_name = _("treatment")
+        verbose_name_plural = _("treatments")
+
+    # def __str__(self):
+    #     return self.name
+
 
 class Session(models.Model):
 
