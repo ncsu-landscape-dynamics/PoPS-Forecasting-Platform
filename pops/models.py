@@ -2,11 +2,10 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.postgres.fields import ArrayField
 import os
-# from matrix_field import MatrixField
 
 from users.models import CustomUser
-
 
 # Django automatically creates a primary key for each model and we are not overwriting this default behavior in any of our models.
 class CaseStudy(models.Model):
@@ -308,7 +307,12 @@ class TemperatureReclass(models.Model):
 
     temperature = models.OneToOneField(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE, primary_key=True)
     threshold = models.DecimalField(verbose_name = _("temperature threshold"), max_digits = 5, decimal_places = 2)
-    # matrix = MatrixField(verbose_name = _("matrix"), datatype = 'float')
+    # matrix = ArrayField(
+    #     ArrayField(
+    #         models.DecimalField(max_digits = 5, decimal_places = 2),
+    #         size=3,
+    #     ),
+    # )
 
     class Meta:
         verbose_name = _("temperature reclass")
@@ -321,7 +325,12 @@ class PrecipitationReclass(models.Model):
 
     precipitation = models.OneToOneField(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE, primary_key=True)
     threshold = models.DecimalField(verbose_name = _("precipitation threshold"), max_digits = 5, decimal_places = 2)
-    # matrix = MatrixField(verbose_name = _("matrix"), datatype = 'float')
+    # matrix = ArrayField(
+    #     ArrayField(
+    #         models.DecimalField(max_digits = 5, decimal_places = 2),
+    #         size=3,
+    #     ),
+    # )
 
     class Meta:
         verbose_name = _("precipitation reclass")
