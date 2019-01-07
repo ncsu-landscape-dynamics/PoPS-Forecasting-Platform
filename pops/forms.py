@@ -5,9 +5,6 @@ from .models import *
 
 class CaseStudyForm(forms.ModelForm):
 
-    start_year = forms.DateField(widget=forms.DateInput(format='%Y'),input_formats=('%Y',))
-    end_year = forms.DateField(widget=forms.DateInput(format='%Y'),input_formats=('%Y',))
-
     class Meta:
         model = CaseStudy
         fields = ['name','number_of_pests','number_of_hosts','start_year','end_year','time_step']

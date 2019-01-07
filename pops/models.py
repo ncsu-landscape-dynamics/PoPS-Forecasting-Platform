@@ -15,11 +15,11 @@ class CaseStudy(models.Model):
         null = True, on_delete = models.SET_NULL)
     name = models.CharField(verbose_name = _("case study name"), max_length = 150)
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
-    number_of_pests = models.IntegerField(verbose_name = _("number of pests"))
-    number_of_hosts = models.IntegerField(verbose_name = _("number of hosts"))
+    number_of_pests = models.PositiveSmallIntegerField(verbose_name = _("number of pests"))
+    number_of_hosts = models.PositiveSmallIntegerField(verbose_name = _("number of hosts"))
     # all_plants = models.FilePathField(verbose_name = _("all plants"), path=settings.FILE_PATH_FIELD_DIRECTORY, match=None, recursive=False, max_length=200, null = True)
-    start_year = models.DateField(verbose_name = _("start year"), auto_now=False, auto_now_add=False)
-    end_year = models.DateField(verbose_name = _("end year"), auto_now=False, auto_now_add=False)
+    start_year = models.PositiveSmallIntegerField(verbose_name = _("start year"))
+    end_year = models.PositiveSmallIntegerField(verbose_name = _("end year"))
     # directory_name =os.path.join(settings.FILE_PATH_FIELD_DIRECTORY, CaseStudy.name)
     #infestation_data = models.FileField(verbose_name = _("infestation data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
     MONTH = 'month'
@@ -39,7 +39,8 @@ class Host(models.Model):
 
     case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
     name = models.CharField(verbose_name = _("host common name"), max_length = 150)
-    score = models.IntegerField(verbose_name = _("score"))
+    score = models.PositiveSmallIntegerField(verbose_name = _("score"))
+    mortality_on = models.BooleanField(verbose_name = _("mortality on"))
     # host_data = models.FilePathField(verbose_name = _("host data"), path=settings.FILE_PATH_FIELD_DIRECTORY, match=None, recursive=True, max_length=100)
 
     class Meta:
@@ -53,10 +54,10 @@ class Mortality(models.Model):
 
     host = models.OneToOneField(Host, verbose_name = _("host"), on_delete = models.CASCADE, primary_key=True)
     user_input = models.BooleanField(verbose_name = _("user inputs the mortality rate and time lag"), default = False)
-    rate = models.FloatField(verbose_name = _("mortality rate"))
-    rate_standard_deviation = models.FloatField(verbose_name = _("mortality rate standard deviation"))
-    time_lag = models.IntegerField(verbose_name = _("mortality time lag"))
-    time_lag_standard_deviation = models.FloatField(verbose_name = _("mortality time lag standard deviation"))
+    rate = models.DecimalField(verbose_name = _("mortality rate"), max_digits = 5, decimal_places = 2)
+    rate_standard_deviation = models.DecimalField(verbose_name = _("mortality rate standard deviation"), max_digits = 5, decimal_places = 2)
+    time_lag = models.PositiveSmallIntegerField(verbose_name = _("mortality time lag"))
+    time_lag_standard_deviation = models.DecimalField(verbose_name = _("mortality time lag standard deviation"), max_digits = 5, decimal_places = 2)
 
     class Meta:
         verbose_name = _("mortality")
@@ -130,8 +131,10 @@ class Vector(models.Model):
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True,)
     common_name = models.CharField(verbose_name = _("vector common name"), max_length = 150)
     scientific_name = models.CharField(verbose_name = _("vector scientific name"), max_length = 150)
-    vector_to_host_transmission_rate = models.IntegerField(verbose_name = _("vector to host transmission rate"))
-    host_to_vector_transmission_rate = models.IntegerField(verbose_name = _("host to vector transmission rate"))
+    vector_to_host_transmission_rate = models.DecimalField(verbose_name = _("vector to host transmission rate"), max_digits = 5, decimal_places = 2)
+    vector_to_host_transmission_rate_standard_deviation = models.DecimalField(verbose_name = _("vector to host transmission rate standard deviation"), max_digits = 5, decimal_places = 2)
+    host_to_vector_transmission_rate = models.DecimalField(verbose_name = _("host to vector transmission rate"), max_digits = 5, decimal_places = 2)
+    host_to_vector_transmission_rate_standard_deviation = models.DecimalField(verbose_name = _("host to vector transmission rate standard deviation"), max_digits = 5, decimal_places = 2)
 
     class Meta:
         verbose_name = _("vector")
@@ -143,9 +146,9 @@ class Vector(models.Model):
 class ShortDistance(models.Model):
 
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
-    scale = models.FloatField(verbose_name = _("short distance scale"))
-    scale_standard_deviation = models.FloatField(verbose_name = _("short distance scale standard deviation"))
-    percent_short_distance = models.FloatField(verbose_name = _("percentage of dispersal that is short distance"), default = 1)
+    scale = models.DecimalField(verbose_name = _("short distance scale"), max_digits = 5, decimal_places = 2)
+    scale_standard_deviation = models.DecimalField(verbose_name = _("short distance scale standard deviation"), max_digits = 5, decimal_places = 1)
+    percent_short_distance = models.DecimalField(verbose_name = _("percentage of dispersal that is short distance"), default = 1, max_digits = 5, decimal_places = 2)
 
     class Meta:
         verbose_name = _("short distance dispersal")
@@ -157,8 +160,8 @@ class ShortDistance(models.Model):
 class LongDistance(models.Model):
 
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
-    scale = models.FloatField(verbose_name = _("long distance scale"))
-    scale_standard_deviation = models.FloatField(verbose_name = _("long distance scale standard deviation"))
+    scale = models.DecimalField(verbose_name = _("long distance scale"), max_digits = 5, decimal_places = 1)
+    scale_standard_deviation = models.DecimalField(verbose_name = _("long distance scale standard deviation"), max_digits = 5, decimal_places = 2)
 
     class Meta:
         verbose_name = _("long distance dispersal")
@@ -170,8 +173,8 @@ class LongDistance(models.Model):
 class CrypticToInfected(models.Model):
 
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
-    rate = models.FloatField(verbose_name = _("cryptic to infected rate"))
-    rate_standard_deviation = models.FloatField(verbose_name = _("cryptic to infected standard deviation"))
+    rate = models.DecimalField(verbose_name = _("cryptic to infected rate"), max_digits = 5, decimal_places = 2)
+    rate_standard_deviation = models.DecimalField(verbose_name = _("cryptic to infected standard deviation"), max_digits = 5, decimal_places = 2)
 
     class Meta:
         verbose_name = _("cryptic to infected")
@@ -183,8 +186,8 @@ class CrypticToInfected(models.Model):
 class InfectedToDiseased(models.Model):
 
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
-    rate = models.FloatField(verbose_name = _("infected to diseased rate"))
-    rate_standard_deviation = models.FloatField(verbose_name = _("infected to diseased standard deviation"))
+    rate = models.DecimalField(verbose_name = _("infected to diseased rate"), max_digits = 5, decimal_places = 2)
+    rate_standard_deviation = models.DecimalField(verbose_name = _("infected to diseased standard deviation"), max_digits = 5, decimal_places = 2)
 
     class Meta:
         verbose_name = _("infected to diseased")
@@ -226,7 +229,7 @@ class Wind(models.Model):
     wind_direction = models.CharField(verbose_name = _("wind direction"), max_length = 30,
                     choices = DIRECTION_CHOICES,
                     default = "NONE",)
-    kappa = models.IntegerField(verbose_name = _("wind strenth (kappa)"), default = 0)
+    kappa = models.PositiveSmallIntegerField(verbose_name = _("wind strenth (kappa)"), default = 0)
 
     class Meta:
         verbose_name = _("wind")
@@ -238,8 +241,8 @@ class Wind(models.Model):
 class Seasonality(models.Model):
 
     weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
-    first_month = models.IntegerField(verbose_name = _("first month of season"), default = 1)
-    last_month = models.IntegerField(verbose_name = _("last month of season"), default = 12)
+    first_month = models.PositiveSmallIntegerField(verbose_name = _("first month of season"), default = 1)
+    last_month = models.PositiveSmallIntegerField(verbose_name = _("last month of season"), default = 12)
 
     class Meta:
         verbose_name = _("seasonality")
@@ -251,8 +254,8 @@ class Seasonality(models.Model):
 class LethalTemperature(models.Model):
 
     weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
-    month = models.IntegerField(verbose_name = _("month in which lethal temperature occurs"), default = 1)
-    value = models.FloatField(verbose_name = _("lethal temperature"), default = 0)
+    month = models.PositiveSmallIntegerField(verbose_name = _("month in which lethal temperature occurs"), default = 1)
+    value = models.DecimalField(verbose_name = _("lethal temperature"), default = 0, max_digits = 5, decimal_places = 2)
     # lethal_temperature_data = models.FilePathField(verbose_name = _("lethal temperature data"), path=None, match=None, recursive=True, max_length=100)
 
     class Meta:
@@ -303,7 +306,7 @@ class Precipitation(models.Model):
 class TemperatureReclass(models.Model):
 
     temperature = models.OneToOneField(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE, primary_key=True)
-    threshold = models.FloatField(verbose_name = _("temperature threshold"))
+    threshold = models.DecimalField(verbose_name = _("temperature threshold"), max_digits = 5, decimal_places = 2)
     # matrix = MatrixField(verbose_name = _("matrix"), datatype = 'float')
 
     class Meta:
@@ -316,7 +319,7 @@ class TemperatureReclass(models.Model):
 class PrecipitationReclass(models.Model):
 
     precipitation = models.OneToOneField(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE, primary_key=True)
-    threshold = models.FloatField(verbose_name = _("precipitation threshold"))
+    threshold = models.DecimalField(verbose_name = _("precipitation threshold"), max_digits = 5, decimal_places = 2)
     # matrix = MatrixField(verbose_name = _("matrix"), datatype = 'float')
 
     class Meta:
@@ -334,15 +337,15 @@ class TemperaturePolynomial(models.Model):
         (2, "Two"),
         (3, "Three"),
     )
-    degree = models.FloatField(verbose_name = _("temperature polynomial degree"), 
+    degree = models.PositiveSmallIntegerField(verbose_name = _("temperature polynomial degree"), 
                     choices = DEGREE_CHOICES)
-    a0 = models.FloatField(verbose_name = _("a0"))
-    a1 = models.FloatField(verbose_name = _("a1"))
-    a2 = models.FloatField(verbose_name = _("a2"))
-    a3 = models.FloatField(verbose_name = _("a3"))
-    x1 = models.FloatField(verbose_name = _("x1"))
-    x2 = models.FloatField(verbose_name = _("x2"))
-    x3 = models.FloatField(verbose_name = _("x3"))
+    a0 = models.DecimalField(verbose_name = _("a0"), max_digits = 10, decimal_places = 8)
+    a1 = models.DecimalField(verbose_name = _("a1"), max_digits = 10, decimal_places = 8)
+    a2 = models.DecimalField(verbose_name = _("a2"), max_digits = 10, decimal_places = 8)
+    a3 = models.DecimalField(verbose_name = _("a3"), max_digits = 10, decimal_places = 8)
+    x1 = models.DecimalField(verbose_name = _("x1"), max_digits = 5, decimal_places = 2)
+    x2 = models.DecimalField(verbose_name = _("x2"), max_digits = 5, decimal_places = 2)
+    x3 = models.DecimalField(verbose_name = _("x3"), max_digits = 5, decimal_places = 2)
 
     class Meta:
         verbose_name = _("temperature polynomial")
@@ -359,15 +362,15 @@ class PrecipitationPolynomial(models.Model):
         (2, "Two"),
         (3, "Three"),
     )
-    degree = models.FloatField(verbose_name = _("temperature polynomial degree"), 
+    degree = models.PositiveSmallIntegerField(verbose_name = _("temperature polynomial degree"), 
                     choices = DEGREE_CHOICES)
-    a0 = models.FloatField(verbose_name = _("a0"))
-    a1 = models.FloatField(verbose_name = _("a1"))
-    a2 = models.FloatField(verbose_name = _("a2"))
-    a3 = models.FloatField(verbose_name = _("a3"))
-    x1 = models.FloatField(verbose_name = _("x1"))
-    x2 = models.FloatField(verbose_name = _("x2"))
-    x3 = models.FloatField(verbose_name = _("x3"))
+    a0 = models.DecimalField(verbose_name = _("a0"), max_digits = 10, decimal_places = 8)
+    a1 = models.DecimalField(verbose_name = _("a1"), max_digits = 10, decimal_places = 8)
+    a2 = models.DecimalField(verbose_name = _("a2"), max_digits = 10, decimal_places = 8)
+    a3 = models.DecimalField(verbose_name = _("a3"), max_digits = 10, decimal_places = 8)
+    x1 = models.DecimalField(verbose_name = _("x1"), max_digits = 5, decimal_places = 2)
+    x2 = models.DecimalField(verbose_name = _("x2"), max_digits = 5, decimal_places = 2)
+    x3 = models.DecimalField(verbose_name = _("x3"), max_digits = 5, decimal_places = 2)
 
     class Meta:
         verbose_name = _("precipitation polynomial")
@@ -395,7 +398,7 @@ class Run(models.Model):
 
     session = models.ForeignKey(Session, verbose_name = _("session id"), on_delete = models.CASCADE)
     name = models.CharField(verbose_name = _("run name"), max_length = 150)
-    random_seed = models.IntegerField(verbose_name = _("random seed"), default = None, null = True)
+    random_seed = models.PositiveIntegerField(verbose_name = _("random seed"), default = None, null = True)
 
     class Meta:
         verbose_name = _("run")
@@ -408,7 +411,7 @@ class InputChange(models.Model):
 
     run = models.ForeignKey(Run, verbose_name = _("run id"), on_delete = models.CASCADE)
     name = models.CharField(verbose_name = _("parameter name"), max_length = 150)
-    value = models.FloatField(verbose_name = _("parameter value"))
+    value = models.DecimalField(verbose_name = _("parameter value"), max_digits = 5, decimal_places = 2)
 
     class Meta:
         verbose_name = _("input change")
