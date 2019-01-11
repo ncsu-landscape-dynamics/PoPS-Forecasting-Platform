@@ -65,6 +65,10 @@
                 <td> {{ host.score }}</td>
             </tr>
             <tr>
+                <th scope="row">Mortality?</th>
+                <td> {{ host.mortality_on }}</td>
+            </tr>
+            <tr>
                 <th scope="row">Mortality PK</th>
                 <td> {{ host.mortality.pk }}</td>
             </tr>
@@ -200,10 +204,6 @@
                 <td> {{ case_study.weather.wind_on }}</td>
             </tr>
             <tr>
-                <th scope="row">Wind on?</th>
-                <td> {{ case_study.weather.wind_on }}</td>
-            </tr>
-            <tr>
                 <th scope="row">Seasonality on?</th>
                 <td> {{ case_study.weather.seasonality_on }}</td>
             </tr>
@@ -281,7 +281,7 @@
             </tr>
             <tr>
                 <th scope="row">Precipitation polynomial x0,x1,x2</th>
-                <td> {{ case_study.weather.precipitation.precipitationpolynomial.x1 }}, {{ case_study.weather.precipitation.precipitationpolynomial.x2 }}, {{ case_study.weather.temperature.temperaturepolynomial.x3 }}</td>
+                <td> {{ case_study.weather.precipitation.precipitationpolynomial.x1 }}, {{ case_study.weather.precipitation.precipitationpolynomial.x2 }}, {{ case_study.weather.precipitation.precipitationpolynomial.x3 }}</td>
             </tr>
         </tbody>
     </table>

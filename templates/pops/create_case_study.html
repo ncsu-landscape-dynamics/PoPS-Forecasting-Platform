@@ -6,9 +6,16 @@
 <div class="container py-4">
 
 <h2 class="text-center">Create Case Study</h2>
+
 <form method="post">
 <div class="row justify-content-center">
       <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+      {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+          <strong>Please correct the errors below!</strong>
+        </div>
+      {% endif %}
+
   {% csrf_token %}
   <h4 class="text-center">Case study info:</h4>
   {{ case_study_form|crispy }}
@@ -20,14 +27,6 @@
   {{ pest_form|crispy }}
   <h4 class="text-center">Vector:</h4>
   {{ vector_form|crispy }}
-  <h4 class="text-center">Short distance dispersal:</h4>
-  {{ short_distance_form|crispy }}
-  <h4 class="text-center">Long distance dispersal:</h4>
-  {{ long_distance_form|crispy }}
-  <h4 class="text-center">Cryptic to infected:</h4>
-  {{ cryptic_to_infected_form|crispy }}
-  <h4 class="text-center">Infected to diseased:</h4>
-  {{ infected_to_diseased_form|crispy }}
   <h4 class="text-center">Weather:</h4>
   {{ weather_form|crispy }}
   <h4 class="text-center">Wind:</h4>
@@ -61,4 +60,14 @@
 
 </div>
 
+<script>
+function validate() {
+  var remember = document.getElementById("id_host-mortality_on");
+  if (remember.checked) {
+    alert("checked");
+  } else {
+    alert("You didn't check it! Let me check it for you.");
+  }
+}
+</script>
 {% endblock %}

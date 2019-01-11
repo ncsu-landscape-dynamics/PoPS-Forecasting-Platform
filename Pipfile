@@ -14,7 +14,6 @@ dash-html-components = "*"
 django-autocomplete-light = "*"
 arrow = "*"
 django-crispy-forms = "*"
-django-matrix-field = "*"
 
 [requires]
 python_version = "3.7"
