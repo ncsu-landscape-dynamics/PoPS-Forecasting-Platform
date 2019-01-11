@@ -15,6 +15,7 @@ django-autocomplete-light = "*"
 arrow = "*"
 django-crispy-forms = "*"
 django-storages = "*"
+psycopg2 = "*"
 
 [requires]
 python_version = "3.7"
