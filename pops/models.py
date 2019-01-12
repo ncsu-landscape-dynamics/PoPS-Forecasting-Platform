@@ -319,7 +319,7 @@ class Precipitation(models.Model):
         ("RECLASS", "Reclass"),
         ("POLYNOMIAL", "Polynomial"),
     )
-    method = models.CharField(verbose_name = _("temperature coefficient creation method"), max_length = 30,
+    method = models.CharField(verbose_name = _("precipitation coefficient creation method"), max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "RECLASS", blank = False)
     # precipitation_data = models.FilePathField(verbose_name = _("precipitation data"), path=None, match=None, recursive=True, max_length=100)

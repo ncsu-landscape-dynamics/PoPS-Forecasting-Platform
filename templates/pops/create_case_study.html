@@ -7,67 +7,396 @@
 
 <h2 class="text-center">Create Case Study</h2>
 
-<form method="post">
+<form method="post" class="form-horizontal">
 <div class="row justify-content-center">
-      <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+      <div class="col-md-10 col-lg-8 col-xl-6">
       {% if error_message %}
         <div class="alert alert-danger" role="alert">
           <strong>Please correct the errors below!</strong>
         </div>
       {% endif %}
-
   {% csrf_token %}
-  <h4 class="text-center">Case study info:</h4>
-  {{ case_study_form|crispy }}
-  <h4 class="text-center">Host:</h4>
-  {{ host_form|crispy }}
-  <h4 class="text-center">Mortality:</h4>
-  {{ mortality_form|crispy }}
-  <h4 class="text-center">Pest:</h4>
-  {{ pest_form|crispy }}
-  <h4 class="text-center">Vector:</h4>
-  {{ vector_form|crispy }}
-  <h4 class="text-center">Weather:</h4>
-  {{ weather_form|crispy }}
-  <h4 class="text-center">Wind:</h4>
-  {{ wind_form|crispy }}
-  <h4 class="text-center">Seasonality:</h4>
-  {{ seasonality_form|crispy }}
-  <h4 class="text-center">Lethal temp:</h4>
-  {{ lethal_temp_form|crispy }}
-  <h4 class="text-center">Temperature:</h4>
-  {{ temperature_form|crispy }}
-  <h4 class="text-center">Precipitation:</h4>
-  {{ precipitation_form|crispy }}
-  <h4 class="text-center">Temperature reclass:</h4>
-  {{ temperature_reclass_form|crispy }}
-  <h4 class="text-center">Temperature polynomial:</h4>
-  {{ temperature_polynomial_form|crispy }}
-  <h4 class="text-center">Precipitation reclass:</h4>
-  {{ precipitation_reclass_form|crispy }}
-  <h4 class="text-center">Precipitation polynomial:</h4>
-  {{ precipitation_polynomial_form|crispy }}
+  {% crispy case_study_form %}
+  {% crispy pest_form %}
+  <div id="vector_form_visibility">
+  {% crispy vector_form %}
+  </div>
+  
+<script>
+if ($("#id_pest-vector_born").is(':checked')){
+    $("#vector_form_visibility").show();}
+else {$("#vector_form_visibility").hide();}
+$(document).ready(function () {
+    var ckbox = $('#id_pest-vector_born');
+    $('input').on('click',function () {
+        if (ckbox.is(':checked')) {$("#vector_form_visibility").show(4000);} 
+        else {$("#vector_form_visibility").hide(4000);}
+    });
+});
+</script>
+
+  {% crispy host_form %}
+<div id="mortality_form_user_visibility">
+  {{ mortality_form.user_input|as_crispy_field }}
+  </div>
+
+<script>
+if ($("#id_host-mortality_on").is(':checked')){
+    $("#mortality_form_user_visibility").show();}
+else {$("#mortality_form_user_visibility").hide();}
+$(document).ready(function () {
+    var ckbox = $('#id_host-mortality_on');
+    $('input').on('click',function () {
+        if (ckbox.is(':checked')) {$("#mortality_form_user_visibility").show(4000);} 
+        else {$("#mortality_form_user_visibility").hide(4000);}
+    });
+});
+</script>
+
+<div id="mortality_form_visibility">
+  {% crispy mortality_form %}
+</div>
+
+<script>
+if ($("#id_mortality-user_input").is(':checked')){
+    $("#mortality_form_visibility").show();}
+else {$("#mortality_form_visibility").hide();}
+$(document).ready(function () {
+    var ckbox = $('#id_mortality-user_input');
+    $('input').on('click',function () {
+        if (ckbox.is(':checked')) {$("#mortality_form_visibility").show(4000);} 
+        else {$("#mortality_form_visibility").hide(4000);}
+    });
+});
+</script>
+
+<legend>Weather</legend>
+  {{ weather_form.wind_on|as_crispy_field }}
+  <div id="wind_form_visibility">
+  {% crispy wind_form %}
+  </div>
+<script>
+if ($("#id_weather-wind_on").is(':checked')){
+    $("#wind_form_visibility").show();}
+else {$("#wind_form_visibility").hide();}
+$(document).ready(function () {
+    var ckbox = $('#id_weather-wind_on');
+    $('input').on('click',function () {
+        if (ckbox.is(':checked')) {$("#wind_form_visibility").show(4000);} 
+        else {$("#wind_form_visibility").hide(4000);}
+    });
+});
+</script>
+
+  {{ weather_form.seasonality_on|as_crispy_field }}
+  <div id="seasonality_form_visibility">
+  {% crispy seasonality_form %}
+</div>
+<script>
+if ($("#id_weather-seasonality_on").is(':checked')){
+    $("#seasonality_form_visibility").show();}
+else {$("#seasonality_form_visibility").hide();}
+
+$(document).ready(function () {
+    var ckbox = $('#id_weather-seasonality_on');
+    $('input').on('click',function () {
+        if (ckbox.is(':checked')) {$("#seasonality_form_visibility").show(4000);} 
+        else {$("#seasonality_form_visibility").hide(4000);}
+    });
+});
+</script>
+
+  {{ weather_form.lethal_temp_on|as_crispy_field }}
+<div id="lethal_form_visibility">
+  {% crispy lethal_temp_form %}
+
+{% for error in lethal_temp_form.value.errors %}
+            <div class="" style="color:red">
+                <strong>{{ error }}</strong>
+            </div>
+{% endfor %}
+</div>
+<script>
+if ($("#id_weather-lethal_temp_on").is(':checked')){
+    $("#lethal_form_visibility").show();}
+else {$("#lethal_form_visibility").hide();}
+
+$(document).ready(function () {
+    var ckbox = $('#id_weather-lethal_temp_on');
+    $('input').on('click',function () {
+        if (ckbox.is(':checked')) {$("#lethal_form_visibility").show(4000);} 
+        else {$("#lethal_form_visibility").hide(4000);}
+    });
+});
+</script>
+
+<div>
+<label class="switch">
+  <input type="checkbox" checked>
+  <span class="slider round"></span>
+  <span class="absolute-no">NO</span>
+</label>
+</div>
+
+  {{ weather_form.temp_on|as_crispy_field }}
+  <div id="temp_form_visibility">
+  {% crispy temperature_form %}
+  <div id="temp_reclass_visibility">
+  {% crispy temperature_reclass_form %}
+{% for error in temperature_reclass_form.threshold.errors %}
+            <div class="" style="color:red">
+                <strong>{{ error }}</strong>
+            </div>
+{% endfor %}
+</div>
+<div id="temp_polynomial_visibility">
+  {% crispy temperature_polynomial_form %}
+<div id="temp_degree_1" class=" input-group no-gutters" > 
+  <div class="col-2 " > 
+{{ temperature_polynomial_form.a0|as_crispy_field}}
+  </div>
+  <div class="col-auto px-1 text-center" > 
+  <h3> + </h3>
+  </div>
+  <div class="col-2" > 
+{{ temperature_polynomial_form.a1|as_crispy_field}}
+  </div>
+  <div class="col-auto px-1 text-right" > 
+  <h3> ( T+ </h3>
+  </div>
+  <div class="col-2" > 
+{{ temperature_polynomial_form.x1|as_crispy_field}}
+  </div>
+    <div class="col-auto px-1 text-left" > 
+  <h3> )</h3>
+  </div>
+</div>
+
+<div id="temp_degree_2" class="input-group no-gutters" > 
+  <div class="col-auto offset-2 px-1 text-center" > 
+  <h3> + </h3>
+  </div>
+  <div class="col-2" > 
+{{ temperature_polynomial_form.a2|as_crispy_field}}
+  </div>
+  <div class="col-auto px-1 text-right" > 
+  <h3> ( T+ </h3>
+  </div>
+  <div class="col-2" > 
+{{ temperature_polynomial_form.x2|as_crispy_field}}
+  </div>
+    <div class="col-auto px-1 text-left" > 
+  <h3> )<sup>2</sup></h3>
+  </div>
+</div>
+
+<div id="temp_degree_3" class="input-group no-gutters" > 
+  <div class="col-auto offset-2 px-1 text-center" > 
+  <h3> + </h3>
+  </div>
+  <div class="col-2" > 
+{{ temperature_polynomial_form.a3|as_crispy_field}}
+  </div>
+  <div class="col-auto px-1 text-right" > 
+  <h3> ( T+ </h3>
+  </div>
+  <div class="col-2" > 
+{{ temperature_polynomial_form.x3|as_crispy_field}}
+  </div>
+    <div class="col-auto px-1 text-left" > 
+  <h3> )<sup>3</sup></h3>
+  </div>
+</div>
+</div>
+</div>
+
+<script>
+if ($("#id_weather-temp_on").is(':checked')){
+    $("#temp_form_visibility").show();}
+else {$("#temp_form_visibility").hide();}
+$(document).ready(function () {
+    var ckbox = $('#id_weather-temp_on');
+    $('input').on('click',function () {
+        if (ckbox.is(':checked')) {$("#temp_form_visibility").show(4000);} 
+        else {$("#temp_form_visibility").hide(4000);}
+    });
+});
+</script>
+<script>
+if ($("#id_id_temp-method_1").is(':checked')){
+    $("#temp_polynomial_visibility").hide();}
+else {$("#temp_reclass_visibility").hide();}
+$(document).ready(function () {
+    var ckbox1 = $('#id_id_temp-method_1');
+    var ckbox2 = $('#id_id_temp-method_2');
+    $('input').on('click',function () {
+        if (ckbox1.is(':checked')) {$("#temp_reclass_visibility").show(4000);} 
+        else {$("#temp_reclass_visibility").hide(4000);}
+
+        if (ckbox2.is(':checked')) {$("#temp_polynomial_visibility").show(4000);} 
+        else {$("#temp_polynomial_visibility").hide(4000);}
+
+    });
+});
+</script>
+
+<script>
+if ($("#id_id_temp_polynomial-degree_1").is(':checked')){
+    $("#temp_degree_2").hide(); $("#temp_degree_3").hide();}
+if ($("#id_id_temp_polynomial-degree_2").is(':checked')){
+    $("#temp_degree_3").hide();}
+$(document).ready(function () {
+    $('input').on('click',function () {
+      if ($("#id_id_temp_polynomial-degree_1").is(':checked')){
+        $("#temp_degree_2").hide(4000); $("#temp_degree_3").hide(4000);}
+      if ($("#id_id_temp_polynomial-degree_2").is(':checked')){
+        $("#temp_degree_2").show(4000); $("#temp_degree_3").hide(4000);}
+      if ($("#id_id_temp_polynomial-degree_3").is(':checked')){
+        $("#temp_degree_2").show(4000); $("#temp_degree_3").show(4000);}
+
+    });
+});
+</script>
+
+
+{{ weather_form.precipitation_on|as_crispy_field }}
+
+<div id="precip_form_visibility">
+{% crispy precipitation_form %}
+<div id="precip_reclass_visibility">
+  {% crispy precipitation_reclass_form %}
+{% for error in precipitation_reclass_form.threshold.errors %}
+            <div class="py-0" style="color:red">
+                <strong>{{ error }}</strong>
+            </div>
+{% endfor %}
+</div>
+<div id="precip_polynomial_visibility">
+  {% crispy precipitation_polynomial_form %}
+<div id="precip_degree_1" class=" input-group no-gutters" > 
+  <div class="col-2 " > 
+{{ precipitation_polynomial_form.a0|as_crispy_field}}
+  </div>
+  <div class="col-auto px-1 text-center" > 
+  <h3> + </h3>
+  </div>
+  <div class="col-2" > 
+{{ precipitation_polynomial_form.a1|as_crispy_field}}
+  </div>
+  <div class="col-auto px-1 text-right" > 
+  <h3> ( P+ </h3>
+  </div>
+  <div class="col-2" > 
+{{ precipitation_polynomial_form.x1|as_crispy_field}}
+  </div>
+    <div class="col-auto px-1 text-left" > 
+  <h3> )</h3>
+  </div>
+</div>
+
+<div id="precip_degree_2" class="input-group no-gutters" > 
+  <div class="col-auto offset-2 px-1 text-center" > 
+  <h3> + </h3>
+  </div>
+  <div class="col-2" > 
+{{ precipitation_polynomial_form.a2|as_crispy_field}}
+  </div>
+  <div class="col-auto px-1 text-right" > 
+  <h3> ( P+ </h3>
+  </div>
+  <div class="col-2" > 
+{{ precipitation_polynomial_form.x2|as_crispy_field}}
+  </div>
+    <div class="col-auto px-1 text-left" > 
+  <h3> )<sup>2</sup></h3>
+  </div>
+</div>
+
+<div id="precip_degree_3" class="input-group no-gutters" > 
+  <div class="col-auto offset-2 px-1 text-center" > 
+  <h3> + </h3>
+  </div>
+  <div class="col-2" > 
+{{ precipitation_polynomial_form.a3|as_crispy_field}}
+  </div>
+  <div class="col-auto px-1 text-right" > 
+  <h3> ( P+ </h3>
+  </div>
+  <div class="col-2" > 
+{{ precipitation_polynomial_form.x3|as_crispy_field}}
+  </div>
+    <div class="col-auto px-1 text-left" > 
+  <h3> )<sup>3</sup></h3>
+  </div>
+</div>
+</div>
+</div>
+
+<script>
+if ($("#id_weather-precipitation_on").is(':checked')){
+    $("#precip_form_visibility").show();}
+else {$("#precip_form_visibility").hide();}
+$(document).ready(function () {
+    var ckbox = $('#id_weather-precipitation_on');
+    $('input').on('click',function () {
+        if (ckbox.is(':checked')) {$("#precip_form_visibility").show(4000);} 
+        else {$("#precip_form_visibility").hide(4000);}
+    });
+});
+</script>
+<script>
+if ($("#id_id_precip-method_1").is(':checked')){
+    $("#precip_polynomial_visibility").hide();}
+else {$("#precip_reclass_visibility").hide();}
+$(document).ready(function () {
+    var ckbox1 = $('#id_id_precip-method_1');
+    var ckbox2 = $('#id_id_precip-method_2');
+    $('input').on('click',function () {
+        if (ckbox1.is(':checked')) {$("#precip_reclass_visibility").show(4000);} 
+        else {$("#precip_reclass_visibility").hide(4000);}
+
+        if (ckbox2.is(':checked')) {$("#precip_polynomial_visibility").show(4000);} 
+        else {$("#precip_polynomial_visibility").hide(4000);}
+
+    });
+});
+</script>
+
+<script>
+if ($("#id_id_precip_polynomial-degree_1").is(':checked')){
+    $("#precip_degree_2").hide(); $("#precip_degree_3").hide();}
+if ($("#id_id_precip_polynomial-degree_2").is(':checked')){
+    $("#precip_degree_3").hide();}
+$(document).ready(function () {
+    $('input').on('click',function () {
+      if ($("#id_id_precip_polynomial-degree_1").is(':checked')){
+        $("#precip_degree_2").hide(4000); $("#precip_degree_3").hide(4000);}
+      if ($("#id_id_precip_polynomial-degree_2").is(':checked')){
+        $("#precip_degree_2").show(4000); $("#precip_degree_3").hide(4000);}
+      if ($("#id_id_precip_polynomial-degree_3").is(':checked')){
+        $("#precip_degree_2").show(4000); $("#precip_degree_3").show(4000);}
+
+    });
+});
+</script>
+
+
+
+
+
+
   <div class="text-center py-2">
   <button class="btn btn-info btn-lg" type="submit">Calibrate</button>
   </div>
+  <div class="text-center">
+<span>Note: This process can take a few hours. We will send you an email when your case study is ready.</span>
+</div>
+
   </div>
 </div>
 
 </form>
-<div class="text-center">
-<span>Note: This process can take a few hours. We will send you an email when your case study is ready.</span>
-</div>
 
 </div>
 
-<script>
-function validate() {
-  var remember = document.getElementById("id_host-mortality_on");
-  if (remember.checked) {
-    alert("checked");
-  } else {
-    alert("You didn't check it! Let me check it for you.");
-  }
-}
-</script>
 {% endblock %}

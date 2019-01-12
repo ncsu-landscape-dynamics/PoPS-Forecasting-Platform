@@ -2,6 +2,11 @@
 from django import forms
 from .models import *
 
+from crispy_forms.bootstrap import Field, InlineRadios, TabHolder, Tab, PrependedText, AppendedText
+from crispy_forms.helper import FormHelper
+
+from crispy_forms.layout import Submit, Layout, Div, Fieldset, Row
+
 def fields_required_conditionally(self, fields):
     """Used for conditionally marking fields as required."""
     for field in fields:
@@ -14,6 +19,50 @@ class CaseStudyForm(forms.ModelForm):
     class Meta:
         model = CaseStudy
         fields = ['name','number_of_pests','number_of_hosts','start_year','end_year','time_step']
+
+    def __init__(self, *args, **kwargs):
+        super(CaseStudyForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = ''
+        self.helper.field_class = ''
+        self.helper.layout = Layout(
+            Fieldset(
+                'Case Study details',
+                Row(
+                    Div(
+                        Field('name', wrapper_class=""),
+                            css_class='col-sm-12'
+                        ),
+                ),
+                Row(
+                    Div(
+                        Field('start_year', wrapper_class=""),
+                            css_class='col-sm-4'
+                        ),
+                    Div(
+                        Field('end_year', wrapper_class=""),
+                            css_class='col-sm-4'
+                        ),
+                    Div(
+                        Field('time_step', wrapper_class=""),
+                            css_class='col-sm-4'
+                        )
+                ),
+
+                Row(
+                    Div(
+                        Field('number_of_pests', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                    Div(
+                        Field('number_of_hosts', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                ),
+            )
+        )
 
     def clean(self):
         self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step'])
@@ -29,6 +78,31 @@ class HostForm(forms.ModelForm):
     def clean(self):
         self.fields_required(['name','score'])
         return self.cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(HostForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = ''
+        self.helper.field_class = ''
+        self.helper.layout = Layout(
+            Fieldset(
+                'Host details',
+                Row(
+                    Div(
+                        Field('name', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                    Div(
+                        Field('score', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                ),
+                'mortality_on'
+
+            )
+        )
 
 class MortalityForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -46,6 +120,26 @@ class MortalityForm(forms.ModelForm):
 
         return self.cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super(MortalityForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = ''
+        self.helper.field_class = ''
+        self.helper.layout = Layout(
+                Row(
+                    Div(
+                        Field('rate', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                    Div(
+                        Field('time_lag', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                ),
+
+        )
 
 class PestForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -58,6 +152,38 @@ class PestForm(forms.ModelForm):
         self.fields_required(['name','model_type','dispersal_type'])
         return self.cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super(PestForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = ''
+        self.helper.field_class = ''
+        self.helper.layout = Layout(
+            Fieldset(
+                'Pest details',
+                Row(
+                    Div(
+                        Field('name', wrapper_class=""),
+                            css_class='col-sm-12'
+                        ),
+                ),
+                Row(
+                    Div(
+                        Field('model_type', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                    Div(
+                        Field('dispersal_type', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                ),
+                'vector_born'
+
+            )
+        )
+
+
 class VectorForm(forms.ModelForm):
     fields_required = fields_required_conditionally
     
@@ -69,6 +195,27 @@ class VectorForm(forms.ModelForm):
         self.fields_required(['common_name','scientific_name'])
         return self.cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super(VectorForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = ''
+        self.helper.field_class = ''
+        self.helper.layout = Layout(
+                Row(
+                    Div(
+                        Field('common_name', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                    Div(
+                        Field('scientific_name', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                ),
+
+            
+        )
 
 class ShortDistanceForm(forms.ModelForm):
 
@@ -113,6 +260,27 @@ class WindForm(forms.ModelForm):
         self.fields_required(['wind_direction','kappa'])
         return self.cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super(WindForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = ''
+        self.helper.field_class = ''
+        self.helper.layout = Layout(
+                Row(
+                    Div(
+                        Field('wind_direction', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                    Div(
+                        Field('kappa', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                ),
+
+        )
+
 class SeasonalityForm(forms.ModelForm):
     fields_required = fields_required_conditionally
 
@@ -123,6 +291,27 @@ class SeasonalityForm(forms.ModelForm):
     def clean(self):
         self.fields_required(['first_month','last_month'])
         return self.cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(SeasonalityForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = ''
+        self.helper.field_class = ''
+        self.helper.layout = Layout(
+                Row(
+                    Div(
+                        Field('first_month', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                    Div(
+                        Field('last_month', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                ),
+
+        )
 
 class LethalTemperatureForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -135,6 +324,27 @@ class LethalTemperatureForm(forms.ModelForm):
         self.fields_required(['month','value'])
         return self.cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super(LethalTemperatureForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = ''
+        self.helper.field_class = ''
+        self.helper.layout = Layout(
+                Row(
+                    Div(
+                        Field('month', wrapper_class=""),
+                            css_class='col-sm-8'
+                        ),
+                    Div(
+                        Field(AppendedText('value', '&#176;C'), wrapper_class=""),
+                            css_class='col-sm-4'
+                        ),
+                ),
+
+        )
+
 class TemperatureForm(forms.ModelForm):
     fields_required = fields_required_conditionally
 
@@ -145,6 +355,17 @@ class TemperatureForm(forms.ModelForm):
     def clean(self):
         self.fields_required(['method'])
         return self.cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(TemperatureForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = ''
+        self.helper.field_class = ''
+        self.helper.layout = Layout(
+                            InlineRadios('method')        
+                            )
 
 class PrecipitationForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -157,6 +378,17 @@ class PrecipitationForm(forms.ModelForm):
         self.fields_required(['method'])
         return self.cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super(PrecipitationForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = ''
+        self.helper.field_class = ''
+        self.helper.layout = Layout(
+                            InlineRadios('method')        
+                            )
+
 class TemperatureReclassForm(forms.ModelForm):
     fields_required = fields_required_conditionally
 
@@ -168,6 +400,22 @@ class TemperatureReclassForm(forms.ModelForm):
         self.fields_required(['threshold'])
         return self.cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super(TemperatureReclassForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = ''
+        self.helper.field_class = ''
+        self.helper.layout = Layout(
+                Row(
+                    Div(
+                        Field(AppendedText('threshold', '&#176;C'), wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                
+                )
+        )
 
 class PrecipitationReclassForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -180,13 +428,42 @@ class PrecipitationReclassForm(forms.ModelForm):
         self.fields_required(['threshold'])
         return self.cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super(PrecipitationReclassForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = ''
+        self.helper.field_class = ''
+        self.helper.layout = Layout(
+                Row(
+                    Div(
+                        Field(AppendedText('threshold', 'mm'), wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                
+                )
+        )
+
 class TemperaturePolynomialForm(forms.ModelForm):
     fields_required = fields_required_conditionally
 
     class Meta:
         model = TemperaturePolynomial
         fields = ['degree','a0','a1','a2','a3','x1','x2','x3']
-    
+
+    def __init__(self, *args, **kwargs):
+        super(TemperaturePolynomialForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.form_show_labels = False
+        #self.helper.label_class = 'col-4 control-label'
+        #self.helper.field_class = 'col-8'
+        self.helper.layout = Layout(
+                            InlineRadios('degree')        
+                            )
+
     def clean(self):
         degree = self.cleaned_data.get('degree')
         self.fields_required(['degree'])
@@ -204,6 +481,18 @@ class PrecipitationPolynomialForm(forms.ModelForm):
     class Meta:
         model = PrecipitationPolynomial
         fields = ['degree','a0','a1','a2','a3','x1','x2','x3']
+   
+    def __init__(self, *args, **kwargs):
+        super(PrecipitationPolynomialForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.form_show_labels = False
+        #self.helper.label_class = 'col-4 control-label'
+        #self.helper.field_class = 'col-8'
+        self.helper.layout = Layout(
+                            InlineRadios('degree'),        
+                            )
 
     def clean(self):
         degree = self.cleaned_data.get('degree')

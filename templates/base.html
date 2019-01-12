@@ -11,6 +11,10 @@
   <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}">
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <script src="{% static 'js/jquery.slim.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
   <title>PoPS</title>
 </head>
 
@@ -49,9 +53,6 @@
     {% endblock %}
 
 
-<script src="{% static 'js/jquery.slim.min.js' %}"></script>
-<script src="{% static 'js/popper.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
 
     <script>
     $("#menu-toggle").click(function(e) {
@@ -59,5 +60,7 @@
         $("#wrapper").toggleClass("toggled");
     });
     </script>
+
+    
 </body>
 </html>
