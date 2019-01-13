@@ -99,7 +99,6 @@ class HostForm(forms.ModelForm):
                             css_class='col-sm-6'
                         ),
                 ),
-                'mortality_on'
 
             )
         )
@@ -178,7 +177,6 @@ class PestForm(forms.ModelForm):
                             css_class='col-sm-6'
                         ),
                 ),
-                'vector_born'
 
             )
         )
@@ -248,6 +246,11 @@ class WeatherForm(forms.ModelForm):
         model = Weather
         fields = ['wind_on', 'seasonality_on','lethal_temp_on','temp_on','precipitation_on']
 
+    def __init__(self, *args, **kwargs):
+        super(WeatherForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
 
 class WindForm(forms.ModelForm):
     fields_required = fields_required_conditionally

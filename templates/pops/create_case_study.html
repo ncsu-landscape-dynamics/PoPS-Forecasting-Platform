@@ -10,14 +10,38 @@
 <form method="post" class="form-horizontal">
 <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-6">
+
+<div class="alert alert-warning">
+Welcome to the create case study page!
+</div>
+
+
       {% if error_message %}
-        <div class="alert alert-danger" role="alert">
+        <div class="alert alert-danger text-center" role="alert">
           <strong>Please correct the errors below!</strong>
         </div>
       {% endif %}
   {% csrf_token %}
+
+  <div class="border border-light p-2 my-1">
   {% crispy case_study_form %}
+  </div>
+
+<div class="border border-light p-2 my-1">
   {% crispy pest_form %}
+
+  <div class="row no-gutters row-eq-height">
+<div class="col-auto">
+<label class="switch">
+  {{ pest_form.vector_born }}
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="col-auto px-2">
+<p style="font-size:1.2em">  {{ pest_form.vector_born.label }} </p>
+</div>
+</div>
+
   <div id="vector_form_visibility">
   {% crispy vector_form %}
   </div>
@@ -34,11 +58,37 @@ $(document).ready(function () {
     });
 });
 </script>
+</div>
+
+
+<div class="border border-light p-2 my-1">
 
   {% crispy host_form %}
-<div id="mortality_form_user_visibility">
-  {{ mortality_form.user_input|as_crispy_field }}
-  </div>
+
+<div class="row no-gutters row-eq-height">
+<div class="col-auto">
+<label class="switch">
+  {{ host_form.mortality_on }}
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="col-auto px-2">
+ <p style="font-size:1.2em"> {{ host_form.mortality_on.label }} </p>
+</div>
+</div>
+
+<div id="mortality_form_user_visibility" class="row no-gutters row-eq-height">
+<div class="col-auto">
+<label class="switch">
+  {{ mortality_form.user_input }}
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="col-auto px-2">
+ <p style="font-size:1.2em"> {{ mortality_form.user_input.label }} </p>
+</div>
+</div>
+
 
 <script>
 if ($("#id_host-mortality_on").is(':checked')){
@@ -69,9 +119,25 @@ $(document).ready(function () {
     });
 });
 </script>
+</div>
 
-<legend>Weather</legend>
-  {{ weather_form.wind_on|as_crispy_field }}
+<div class="border border-light p-2 my-1">
+<div class="py-2">
+<legend>Weather details</legend>
+</div>
+
+<div class="row no-gutters row-eq-height">
+<div class="col-auto">
+<label class="switch">
+  {{ weather_form.wind_on }}
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="col-auto px-2">
+<p style="font-size:1.2em">  {{ weather_form.wind_on.label }} </p>
+</div>
+</div>
+
   <div id="wind_form_visibility">
   {% crispy wind_form %}
   </div>
@@ -88,7 +154,18 @@ $(document).ready(function () {
 });
 </script>
 
-  {{ weather_form.seasonality_on|as_crispy_field }}
+<div class="row no-gutters">
+<div class="col-auto">
+<label class="switch">
+  {{ weather_form.seasonality_on }}
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="col-auto align-middle px-2">
+ <p style="font-size:1.2em"> {{ weather_form.seasonality_on.label }} </p>
+  </div>
+</div>
+
   <div id="seasonality_form_visibility">
   {% crispy seasonality_form %}
 </div>
@@ -106,7 +183,18 @@ $(document).ready(function () {
 });
 </script>
 
-  {{ weather_form.lethal_temp_on|as_crispy_field }}
+<div class="weather on_off row no-gutters">
+<div class="col-auto">
+<label class="switch">
+  {{ weather_form.lethal_temp_on }}
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="col-auto px-2">
+  <p style="font-size:1.2em">{{ weather_form.lethal_temp_on.label }}</p>
+</div>
+</div>
+
 <div id="lethal_form_visibility">
   {% crispy lethal_temp_form %}
 
@@ -130,7 +218,18 @@ $(document).ready(function () {
 });
 </script>
 
-  {{ weather_form.temp_on|as_crispy_field }}
+<div class="weather on_off row no-gutters">
+<div class="col-auto">
+<label class="switch">
+  {{ weather_form.temp_on }}
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="col-auto px-2">
+ <p style="font-size:1.2em"> {{ weather_form.temp_on.label }} </p>
+</div>
+</div>
+
   <div id="temp_form_visibility">
   {% crispy temperature_form %}
   <div id="temp_reclass_visibility">
@@ -251,7 +350,17 @@ $(document).ready(function () {
 </script>
 
 
-{{ weather_form.precipitation_on|as_crispy_field }}
+<div class="weather on_off row no-gutters">
+<div class="col-auto">
+<label class="switch">
+  {{ weather_form.precipitation_on }}
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="col-auto px-2">
+ <p style="font-size:1.2em"> {{ weather_form.precipitation_on.label }} </p>
+</div>
+</div>
 
 <div id="precip_form_visibility">
 {% crispy precipitation_form %}
@@ -373,7 +482,7 @@ $(document).ready(function () {
 </script>
 
 
-
+</div>
 
 
 
