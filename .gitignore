@@ -11,3 +11,5 @@ db.sqlite3
 */migrations/0*
 /db.sqlite3
 
+cloud_sql_proxy.exe
+pops-project-b461537ece08.json

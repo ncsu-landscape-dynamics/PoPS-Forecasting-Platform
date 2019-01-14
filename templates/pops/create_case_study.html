@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+{% endblock %}
+
+
 {% block content %}
 
 <div class="container py-4">
@@ -153,6 +159,7 @@ $(document).ready(function () {
     });
 });
 </script>
+
 
 <div class="row no-gutters">
 <div class="col-auto">
