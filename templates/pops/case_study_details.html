@@ -256,8 +256,14 @@
                 <td> {{ case_study.weather.temperature.temperaturereclass.threshold }}</td>
             </tr>
             <tr>
-                <th scope="row">Precipitation reclass threshold</th>
-                <td> {{ case_study.weather.precipitation.precipitationreclass.threshold }}</td>
+                <th scope="row">Precipitation reclass </th>
+                <td> 
+                {% for row in case_study.weather.precipitation.precipitationreclass_set.all %}
+                {{ row.min_value}}, {{row.max_value}}, {{row.reclass}}
+                {% endfor %}
+
+                {{ case_study.weather.precipitation.precipitationreclass.threshold }}
+                </td>
             </tr>
             <tr>
                 <th scope="row">Temperature polynomial degree</th>

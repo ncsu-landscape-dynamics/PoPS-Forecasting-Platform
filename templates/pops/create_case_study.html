@@ -373,11 +373,7 @@ $(document).ready(function () {
 {% crispy precipitation_form %}
 <div id="precip_reclass_visibility">
   {% crispy precipitation_reclass_form %}
-{% for error in precipitation_reclass_form.threshold.errors %}
-            <div class="py-0" style="color:red">
-                <strong>{{ error }}</strong>
-            </div>
-{% endfor %}
+
 </div>
 <div id="precip_polynomial_visibility">
   {% crispy precipitation_polynomial_form %}

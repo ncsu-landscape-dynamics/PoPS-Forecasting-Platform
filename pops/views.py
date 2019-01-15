@@ -43,6 +43,18 @@ def create_case_study(request):
         host_form = HostForm(request.POST, prefix="host")
         pest_form = PestForm(request.POST, prefix="pest")
         weather_form = WeatherForm(request.POST, prefix="weather")
+        mortality_form = MortalityForm(request.POST, prefix="mortality")
+        vector_form = VectorForm(request.POST, prefix="vector")
+        wind_form = WindForm(request.POST, prefix="wind")
+        seasonality_form = SeasonalityForm(request.POST, prefix="seasonality")
+        lethal_temp_form = LethalTemperatureForm(request.POST, prefix="lethal_temp")
+        temperature_form = TemperatureForm(request.POST, prefix="temp")
+        precipitation_form = PrecipitationForm(request.POST, prefix="precip")
+        temperature_reclass_form = TemperatureReclassForm(request.POST, prefix="temp_reclass")
+        precipitation_reclass_form = PrecipitationReclassForm(request.POST, prefix="precip_reclass")
+        temperature_polynomial_form = TemperaturePolynomialForm(request.POST, prefix="temp_polynomial")
+        precipitation_polynomial_form = PrecipitationPolynomialForm(request.POST, prefix="precip_polynomial")
+
 
         if case_study_form.is_valid() and host_form.is_valid() and pest_form.is_valid() and weather_form.is_valid():
             new_case_study = case_study_form.save(commit=False)
@@ -143,6 +155,7 @@ def create_case_study(request):
                         else:
                             success = False
                             print("Precip reclass form is INVALID")
+
                     if new_precipitation.method == "POLYNOMIAL":
                         precipitation_polynomial_form = PrecipitationPolynomialForm(request.POST, prefix="precip_polynomial")
                         if precipitation_polynomial_form.is_valid():
@@ -188,7 +201,26 @@ def create_case_study(request):
             custom_error.append("Please correct the errors below:")
     else:
         print("Not a POST")
-    return render(request, 'pops/create_case_study.html',{'case_study_form': case_study_form, 'host_form': host_form, 'mortality_form': mortality_form, 'pest_form': pest_form, 'vector_form': vector_form, 'weather_form': weather_form, 'wind_form': wind_form, 'seasonality_form': seasonality_form, 'lethal_temp_form': lethal_temp_form, 'temperature_form': temperature_form, 'precipitation_form': precipitation_form, 'temperature_reclass_form': temperature_reclass_form, 'precipitation_reclass_form': precipitation_reclass_form, 'temperature_polynomial_form': temperature_polynomial_form, 'precipitation_polynomial_form': precipitation_polynomial_form, 'error_message': custom_error})# 'short_distance_form': short_distance_form, 'long_distance_form': long_distance_form, 'cryptic_to_infected_form': cryptic_to_infected_form, 'infected_to_diseased_form': infected_to_diseased_form, 'weather_form': weather_form, 'wind_form': wind_form, 'seasonality_form': seasonality_form, 'lethal_temp_form': lethal_temp_form, 'temperature_form': temperature_form, 'precipitation_form': precipitation_form, 'temperature_reclass_form': temperature_reclass_form, 'precipitation_reclass_form': precipitation_reclass_form, 'temperature_polynomial_form': temperature_polynomial_form, 'precipitation_polynomial_form': precipitation_polynomial_form})
+
+    context = {
+        'case_study_form': case_study_form,
+        'host_form': host_form,
+        'mortality_form': mortality_form,
+        'pest_form': pest_form,
+        'vector_form': vector_form,
+        'weather_form': weather_form,
+        'wind_form': wind_form,
+        'seasonality_form': seasonality_form,
+        'lethal_temp_form': lethal_temp_form,
+        'temperature_form': temperature_form,
+        'precipitation_form': precipitation_form,
+        'temperature_reclass_form': temperature_reclass_form,
+        'precipitation_reclass_form': precipitation_reclass_form,
+        'temperature_polynomial_form': temperature_polynomial_form,
+        'precipitation_polynomial_form': precipitation_polynomial_form,
+        'error_message': custom_error,
+        }
+    return render(request, 'pops/create_case_study.html', context)
 
 
 def case_study_submitted(request):

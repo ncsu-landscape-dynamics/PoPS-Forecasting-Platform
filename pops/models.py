@@ -13,13 +13,13 @@ class CaseStudy(models.Model):
 
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name = _('created by'), editable = False,
         null = True, on_delete = models.SET_NULL)
-    name = models.CharField(verbose_name = _("case study name"), max_length = 150, blank=True)
+    name = models.CharField(verbose_name = _("case study name"), max_length = 150, blank=True, help_text="Give your case study a descriptive name.")
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     number_of_pests = models.PositiveSmallIntegerField(verbose_name = _("number of pests"), blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
     number_of_hosts = models.PositiveSmallIntegerField(verbose_name = _("number of hosts"), blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
     # all_plants = models.FilePathField(verbose_name = _("all plants"), path=settings.FILE_PATH_FIELD_DIRECTORY, match=None, recursive=False, max_length=200, null = True)
-    start_year = models.PositiveSmallIntegerField(verbose_name = _("start year"), blank=True, default = 2012, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
-    end_year = models.PositiveSmallIntegerField(verbose_name = _("end year"), blank=True, default = 2016, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
+    start_year = models.PositiveSmallIntegerField(verbose_name = _("start year"), help_text="The first year of the simulation.", blank=True, default = 2012, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
+    end_year = models.PositiveSmallIntegerField(verbose_name = _("end year"), help_text="The last year of the simulation.", blank=True, default = 2016, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
     # directory_name =os.path.join(settings.FILE_PATH_FIELD_DIRECTORY, CaseStudy.name)
     #infestation_data = models.FileField(verbose_name = _("infestation data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
     # treatment_data = models.FileField(verbose_name =  _("previous treatments data"), upload_to = settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
@@ -27,7 +27,7 @@ class CaseStudy(models.Model):
     WEEK = 'week'
     DAY = 'day'
     TIME_STEP_CHOICES = ((MONTH, 'Month'), (WEEK, 'Week'), (DAY, 'Day'))
-    time_step = models.CharField(verbose_name = _("time step"), max_length = 50, choices = TIME_STEP_CHOICES, blank=True)
+    time_step = models.CharField(verbose_name = _("time step"), help_text="Time step to run the simulation. Shorter time steps (i.e. day) takes more time than shorter time steps (i.e. month).", default = "Month", max_length = 50, choices = TIME_STEP_CHOICES)
 
     class Meta:
         verbose_name = _("case study")
@@ -230,7 +230,7 @@ class Wind(models.Model):
     wind_direction = models.CharField(verbose_name = _("wind direction"), max_length = 30,
                     choices = DIRECTION_CHOICES,
                     default = "NONE", blank = False)
-    kappa = models.PositiveSmallIntegerField(verbose_name = _("wind strenth (kappa)"), default = 0, blank = True, validators = [MinValueValidator(0), MaxValueValidator(12)])
+    kappa = models.PositiveSmallIntegerField(verbose_name = _("wind strenth (kappa)"), default = 1, blank = True, validators = [MinValueValidator(0), MaxValueValidator(12)])
 
     class Meta:
         verbose_name = _("wind")
@@ -283,7 +283,7 @@ class LethalTemperature(models.Model):
 
     weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
     month = models.PositiveSmallIntegerField(verbose_name = _("month in which lethal temperature occurs"), choices = MONTH, default = 1, blank=False)
-    value = models.DecimalField(verbose_name = _("lethal temperature"), default = 0, max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(50)])
+    value = models.DecimalField(verbose_name = _("lethal temperature"), max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(50)])
     # lethal_temperature_data = models.FilePathField(verbose_name = _("lethal temperature data"), path=None, match=None, recursive=True, max_length=100)
 
     class Meta:
@@ -351,21 +351,18 @@ class TemperatureReclass(models.Model):
 
 class PrecipitationReclass(models.Model):
 
-    precipitation = models.OneToOneField(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE, primary_key=True)
-    threshold = models.DecimalField(verbose_name = _("precipitation threshold"), max_digits = 5, decimal_places = 2, blank = True, validators = [MinValueValidator(0), MaxValueValidator(500)])
-    matrix = ArrayField(
-        ArrayField(
-            models.DecimalField(max_digits = 4, decimal_places = 2),
-            size=3,
-        ),
-    )
+    precipitation = models.ForeignKey(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE)
+    min_value = models.DecimalField(verbose_name = _("min"), max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-1), MaxValueValidator(100)])
+    max_value = models.DecimalField(verbose_name = _("max"), max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
+    reclass = models.DecimalField(verbose_name = _("reclass"), max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
 
     class Meta:
         verbose_name = _("precipitation reclass")
         verbose_name_plural = _("precipitation reclasses")
 
     def __str__(self):
-        return self.threshold
+        return self.reclass
+
 
 class TemperaturePolynomial(models.Model):
 

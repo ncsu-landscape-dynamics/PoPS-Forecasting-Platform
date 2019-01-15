@@ -10,7 +10,8 @@ from crispy_forms.layout import Submit, Layout, Div, Fieldset, Row
 def fields_required_conditionally(self, fields):
     """Used for conditionally marking fields as required."""
     for field in fields:
-        if not self.cleaned_data.get(field, ''):
+        value = self.cleaned_data.get(field, '')
+        if not value and value != 0:
             msg = forms.ValidationError("This field is required.")
             self.add_error(field, msg)
 
@@ -22,6 +23,12 @@ class CaseStudyForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CaseStudyForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
+
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.disable_csrf = True
@@ -425,10 +432,9 @@ class PrecipitationReclassForm(forms.ModelForm):
 
     class Meta:
         model = PrecipitationReclass
-        fields = ['threshold']
+        fields = ['min_value','max_value','reclass']
     
     def clean(self):
-        self.fields_required(['threshold'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -441,12 +447,20 @@ class PrecipitationReclassForm(forms.ModelForm):
         self.helper.layout = Layout(
                 Row(
                     Div(
-                        Field(AppendedText('threshold', 'mm'), wrapper_class=""),
-                            css_class='col-sm-6'
+                        Field('min_value'),
+                            css_class='col-sm-3'
                         ),
-                
+                    Div(
+                        Field('max_value'),
+                            css_class='col-sm-3'
+                        ),
+                    Div(
+                        Field('reclass'),
+                            css_class='col-sm-3'
+                        ),
                 )
         )
+
 
 class TemperaturePolynomialForm(forms.ModelForm):
     fields_required = fields_required_conditionally
