@@ -5,7 +5,7 @@ from .models import *
 from crispy_forms.bootstrap import Field, InlineRadios, TabHolder, Tab, PrependedText, AppendedText
 from crispy_forms.helper import FormHelper
 
-from crispy_forms.layout import Submit, Layout, Div, Fieldset, Row
+from crispy_forms.layout import Submit, Layout, Div, Fieldset, Row, HTML
 
 def fields_required_conditionally(self, fields):
     """Used for conditionally marking fields as required."""
@@ -35,8 +35,6 @@ class CaseStudyForm(forms.ModelForm):
         self.helper.label_class = ''
         self.helper.field_class = ''
         self.helper.layout = Layout(
-            Fieldset(
-                'Case Study details',
                 Row(
                     Div(
                         Field('name', wrapper_class=""),
@@ -68,7 +66,7 @@ class CaseStudyForm(forms.ModelForm):
                             css_class='col-sm-6'
                         ),
                 ),
-            )
+            
         )
 
     def clean(self):
@@ -88,14 +86,17 @@ class HostForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(HostForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.disable_csrf = True
         self.helper.label_class = ''
         self.helper.field_class = ''
         self.helper.layout = Layout(
-            Fieldset(
-                'Host details',
                 Row(
                     Div(
                         Field('name', wrapper_class=""),
@@ -107,7 +108,6 @@ class HostForm(forms.ModelForm):
                         ),
                 ),
 
-            )
         )
 
 class MortalityForm(forms.ModelForm):
@@ -166,8 +166,6 @@ class PestForm(forms.ModelForm):
         self.helper.label_class = ''
         self.helper.field_class = ''
         self.helper.layout = Layout(
-            Fieldset(
-                'Pest details',
                 Row(
                     Div(
                         Field('name', wrapper_class=""),
@@ -184,8 +182,6 @@ class PestForm(forms.ModelForm):
                             css_class='col-sm-6'
                         ),
                 ),
-
-            )
         )
 
 
@@ -344,11 +340,12 @@ class LethalTemperatureForm(forms.ModelForm):
         self.helper.layout = Layout(
                 Row(
                     Div(
-                        Field('month', wrapper_class=""),
+                        Field('month'),
                             css_class='col-sm-8'
                         ),
                     Div(
-                        Field(AppendedText('value', '&#176;C'), wrapper_class=""),
+                        Field(AppendedText('value', '&#176;C')),
+                        HTML("{% for error in lethal_temp_form.value.errors %}<div class='py-0' style='color:red; font-size:0.8em'><strong>{{ error }}</strong></div>{% endfor %}"),
                             css_class='col-sm-4'
                         ),
                 ),

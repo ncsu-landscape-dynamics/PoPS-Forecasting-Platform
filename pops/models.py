@@ -27,7 +27,11 @@ class CaseStudy(models.Model):
     WEEK = 'week'
     DAY = 'day'
     TIME_STEP_CHOICES = ((MONTH, 'Month'), (WEEK, 'Week'), (DAY, 'Day'))
-    time_step = models.CharField(verbose_name = _("time step"), help_text="Time step to run the simulation. Shorter time steps (i.e. day) takes more time than shorter time steps (i.e. month).", default = "Month", max_length = 50, choices = TIME_STEP_CHOICES)
+    time_step = models.CharField(verbose_name = _("time step"), default = "Month", max_length = 50, choices = TIME_STEP_CHOICES, help_text='Select a timestep for your simulation:\n'
+                                               'Month:\n'
+                                               'Week:\n'
+                                               'Day:\n'
+                                               )
 
     class Meta:
         verbose_name = _("case study")
@@ -230,7 +234,22 @@ class Wind(models.Model):
     wind_direction = models.CharField(verbose_name = _("wind direction"), max_length = 30,
                     choices = DIRECTION_CHOICES,
                     default = "NONE", blank = False)
-    kappa = models.PositiveSmallIntegerField(verbose_name = _("wind strenth (kappa)"), default = 1, blank = True, validators = [MinValueValidator(0), MaxValueValidator(12)])
+    KAPPA_CHOICES = (
+            (1, "1"),
+            (2, "2"),
+            (3, "3"),
+            (4, "4"),
+            (5, "5"),
+            (6, "6"),
+            (7, "7"),
+            (8, "8"),
+            (9, "9"),
+            (10, "10"),
+            (11, "11"),
+            (12, "12"),
+        )
+
+    kappa = models.PositiveSmallIntegerField(verbose_name = _("wind strenth (kappa)"), choices = KAPPA_CHOICES, default = 1, blank = False, validators = [MinValueValidator(1), MaxValueValidator(12)])
 
     class Meta:
         verbose_name = _("wind")
@@ -352,7 +371,7 @@ class TemperatureReclass(models.Model):
 class PrecipitationReclass(models.Model):
 
     precipitation = models.ForeignKey(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE)
-    min_value = models.DecimalField(verbose_name = _("min"), max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-1), MaxValueValidator(100)])
+    min_value = models.DecimalField(verbose_name = _("min"), max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
     max_value = models.DecimalField(verbose_name = _("max"), max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
     reclass = models.DecimalField(verbose_name = _("reclass"), max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
 

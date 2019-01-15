@@ -18,7 +18,10 @@
       <div class="col-md-10 col-lg-8 col-xl-6">
 
 <div class="alert alert-warning">
-Welcome to the create case study page!
+<p>
+<strong>Welcome to the create case study page!</strong> Please be sure to read the
+<a class="" href="{% url 'case_study_help' %}">instruction page</a> before getting started.
+</p>
 </div>
 
 
@@ -30,10 +33,16 @@ Welcome to the create case study page!
   {% csrf_token %}
 
   <div class="border border-light p-2 my-1">
+  <div class="">
+<legend>Case study details</legend>
+</div>
   {% crispy case_study_form %}
   </div>
 
 <div class="border border-light p-2 my-1">
+<div class="">
+<legend>Pest details</legend>
+</div>
   {% crispy pest_form %}
 
   <div class="row no-gutters row-eq-height">
@@ -68,7 +77,9 @@ $(document).ready(function () {
 
 
 <div class="border border-light p-2 my-1">
-
+  <div class="">
+<legend>Host details</legend>
+</div>
   {% crispy host_form %}
 
 <div class="row no-gutters row-eq-height">
@@ -205,11 +216,6 @@ $(document).ready(function () {
 <div id="lethal_form_visibility">
   {% crispy lethal_temp_form %}
 
-{% for error in lethal_temp_form.value.errors %}
-            <div class="" style="color:red">
-                <strong>{{ error }}</strong>
-            </div>
-{% endfor %}
 </div>
 <script>
 if ($("#id_weather-lethal_temp_on").is(':checked')){
