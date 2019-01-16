@@ -47,7 +47,7 @@
 
   <div class="row no-gutters row-eq-height">
 <div class="col-auto">
-<label class="switch">
+<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ pest_form.vector_born.help_text }}" data-container="body">
   {{ pest_form.vector_born }}
   <span class="slider round"></span>
 </label>
@@ -84,7 +84,7 @@ $(document).ready(function () {
 
 <div class="row no-gutters row-eq-height">
 <div class="col-auto">
-<label class="switch">
+<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ host_form.mortality_on.help_text }}" data-container="body">
   {{ host_form.mortality_on }}
   <span class="slider round"></span>
 </label>
@@ -96,7 +96,7 @@ $(document).ready(function () {
 
 <div id="mortality_form_user_visibility" class="row no-gutters row-eq-height">
 <div class="col-auto">
-<label class="switch">
+<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ mortality_form.user_input.help_text }}" data-container="body">
   {{ mortality_form.user_input }}
   <span class="slider round"></span>
 </label>
@@ -145,7 +145,7 @@ $(document).ready(function () {
 
 <div class="row no-gutters row-eq-height">
 <div class="col-auto">
-<label class="switch">
+<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.wind_on.help_text }}" data-container="body">
   {{ weather_form.wind_on }}
   <span class="slider round"></span>
 </label>
@@ -174,7 +174,7 @@ $(document).ready(function () {
 
 <div class="row no-gutters">
 <div class="col-auto">
-<label class="switch">
+<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.seasonality_on.help_text }}" data-container="body">
   {{ weather_form.seasonality_on }}
   <span class="slider round"></span>
 </label>
@@ -203,7 +203,7 @@ $(document).ready(function () {
 
 <div class="weather on_off row no-gutters">
 <div class="col-auto">
-<label class="switch">
+<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.lethal_temp_on.help_text }}" data-container="body">
   {{ weather_form.lethal_temp_on }}
   <span class="slider round"></span>
 </label>
@@ -233,7 +233,7 @@ $(document).ready(function () {
 
 <div class="weather on_off row no-gutters">
 <div class="col-auto">
-<label class="switch">
+<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.temp_on.help_text }}" data-container="body">
   {{ weather_form.temp_on }}
   <span class="slider round"></span>
 </label>
@@ -365,7 +365,7 @@ $(document).ready(function () {
 
 <div class="weather on_off row no-gutters">
 <div class="col-auto">
-<label class="switch">
+<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.precipitation_on.help_text }}" data-container="body">
   {{ weather_form.precipitation_on }}
   <span class="slider round"></span>
 </label>
@@ -509,4 +509,10 @@ $(document).ready(function () {
 
 </div>
 
+
+<script>
+$(document).ready(function() {
+    $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+});
+</script>
 {% endblock %}
