@@ -17,12 +17,13 @@ class CaseStudy(models.Model):
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     number_of_pests = models.PositiveSmallIntegerField(verbose_name = _("number of pests"), help_text="How many pests are in your model system?", blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
     number_of_hosts = models.PositiveSmallIntegerField(verbose_name = _("number of hosts"), help_text="How many hosts are in your model system?", blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
-    # all_plants = models.FilePathField(verbose_name = _("all plants"), path=settings.FILE_PATH_FIELD_DIRECTORY, match=None, recursive=False, max_length=200, null = True)
-    start_year = models.PositiveSmallIntegerField(verbose_name = _("start year"), help_text="The first year of the simulation.", blank=True, default = 2012, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
-    end_year = models.PositiveSmallIntegerField(verbose_name = _("end year"), help_text="The last year of the simulation.", blank=True, default = 2016, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
-    # directory_name =os.path.join(settings.FILE_PATH_FIELD_DIRECTORY, CaseStudy.name)
-    #infestation_data = models.FileField(verbose_name = _("infestation data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
-    # treatment_data = models.FileField(verbose_name =  _("previous treatments data"), upload_to = settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
+    all_plants = models.FileField(verbose_name = _("all plants"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
+    start_year = models.PositiveSmallIntegerField(verbose_name = _("start year"), help_text="The first year that you have pest occurence data for calibration.", blank=True, default = 2012, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
+    end_year = models.PositiveSmallIntegerField(verbose_name = _("end year"), help_text="The last year that you have pest occurence data for calibration.", blank=True, default = 2018, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
+    future_years = models.PositiveSmallIntegerField(verbose_name = _("end year"), help_text="How many years into the future do you want to simulate?", blank=True, default = 2023, validators = [MinValueValidator(2018), MaxValueValidator(2200)])
+    infestation_data = models.FileField(verbose_name = _("infestation data"), help_text="Upload your initial infestation/infection data as a raster file (1 file with a layer for each year). At least 3 years are needed for calibration and validation ", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
+    use_treatment = models.BooleanField(verbose_name = _("use treatments"), help_text="Has management occurred during the time of initial infection/infestation?", default = False)
+    treatment_data = models.FileField(verbose_name =  _("previous treatments data"), help_text="Upload the raster file for management actions. 1 file with a layer for each year.", upload_to = settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null=True, blank=True)
     MONTH = 'month'
     WEEK = 'week'
     DAY = 'day'
@@ -42,7 +43,7 @@ class Host(models.Model):
     name = models.CharField(verbose_name = _("host common name"), help_text="What is the host's common name?", max_length = 150, blank=True)
     score = models.DecimalField(verbose_name = _("score"), help_text="Host score is a value between 0 and 1. 0 has no effect while 1 has maximum effect.", blank=True, max_digits = 5, decimal_places = 2, default = 1, validators = [MinValueValidator(0), MaxValueValidator(1)])
     mortality_on = models.BooleanField(verbose_name = _("mortality"), help_text="Does the host experience mortality as a result of the pest/pathogen?", blank=True)
-    # host_data = models.FilePathField(verbose_name = _("host data"), path=settings.FILE_PATH_FIELD_DIRECTORY, match=None, recursive=True, max_length=100)
+    host_data = models.FileField(verbose_name = _("host data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
 
     class Meta:
         verbose_name = _("host")
@@ -54,10 +55,10 @@ class Host(models.Model):
 class Mortality(models.Model):
 
     host = models.OneToOneField(Host, verbose_name = _("host"), on_delete = models.CASCADE, primary_key=True)
-    user_input = models.BooleanField(verbose_name = _("user inputs the mortality rate and time lag?"), help_text="Sample help text.", default = False, blank=True)
-    rate = models.DecimalField(verbose_name = _("mortality rate"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null=True, default = 0, validators = [MinValueValidator(0), MaxValueValidator(1)])
+    user_input = models.BooleanField(verbose_name = _("user input"), help_text="Do you want to input the mortality rate and time lag based on your own data/observations? If not these values will be estimated by the model.", default = False, blank=True)
+    rate = models.DecimalField(verbose_name = _("mortality rate"), help_text="What percentage of hosts experience mortality each year from the pest or pathogen?", max_digits = 3, decimal_places = 2, blank=True, null=True, default = 0, validators = [MinValueValidator(0), MaxValueValidator(1)])
     rate_standard_deviation = models.DecimalField(verbose_name = _("mortality rate standard deviation"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null=True)
-    time_lag = models.PositiveSmallIntegerField(verbose_name = _("mortality time lag"), help_text="Sample help text.", blank=True, null=True, default = 2, validators = [MinValueValidator(1), MaxValueValidator(10)])
+    time_lag = models.PositiveSmallIntegerField(verbose_name = _("mortality time lag"), help_text="How long after initial infection/infestation (in years) before mortality occurs on average?", blank=True, null=True, default = 2, validators = [MinValueValidator(1), MaxValueValidator(10)])
     time_lag_standard_deviation = models.DecimalField(verbose_name = _("mortality time lag standard deviation"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, null=True)
 
     class Meta:
@@ -87,6 +88,7 @@ class PestInformation(models.Model):
     management_activity = models.TextField(verbose_name = _("management activities to control the pest"), help_text="Sample help text.", )
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     date_updated = models.DateTimeField(verbose_name = _("date updated"), auto_now = True, auto_now_add = False)
+    staff_approved = models.BooleanField(verbose_name = _("approved by staff"), help_text="Sample help text.", default = False)
 
     class Meta:
         verbose_name = _("pest information")
@@ -97,17 +99,16 @@ class PestInformation(models.Model):
 
 class Pest(models.Model):
 
-    name = models.CharField(verbose_name = _("pest common name"), help_text="Sample help text.", max_length = 150, blank=True)
+    name = models.CharField(verbose_name = _("pest common name"), help_text="What is the common name of the pest/pathogen?", max_length = 150, blank=True)
     case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
     pest_information = models.ForeignKey(PestInformation, verbose_name = _("pest information"), help_text="Sample help text.", null=True, on_delete = models.SET_NULL)
-    staff_approved = models.BooleanField(verbose_name = _("approved by staff"), help_text="Sample help text.", default = False)
-    vector_born = models.BooleanField(verbose_name = _("vector born"), help_text="Sample help text.", default = False)
+    vector_born = models.BooleanField(verbose_name = _("vector born"), help_text="Is the disease spread by a vector (e.g. an insect)?", default = False)
     MODEL_CHOICES = (
         ("SI", "Susceptible Infected"),
         ("SID", "Susceptible Infected Diseased"),
         ("SEID", "Susceptible Exposed Infected Diseased"),
     )
-    model_type = models.CharField(verbose_name = _("model type"), help_text="Sample help text.", max_length = 20,
+    model_type = models.CharField(verbose_name = _("model type"), help_text="What type of model do you want to use?", max_length = 20,
                     choices = MODEL_CHOICES,
                     default = "SI", blank=True)
     DISPERSAL_CHOICES = (
@@ -116,7 +117,7 @@ class Pest(models.Model):
         ("EXPONENTIAL", "Exponential"),
         ("DOUBLE SCALE EXPONENTIAL", "Double Scale Exponential")
     )
-    dispersal_type = models.CharField(verbose_name = _("dispersal type"), help_text="Sample help text.", max_length = 70,
+    dispersal_type = models.CharField(verbose_name = _("dispersal type"), help_text="", max_length = 70,
                     choices = DISPERSAL_CHOICES,
                     default = "CAUCHY", blank=True)
 
@@ -130,8 +131,8 @@ class Pest(models.Model):
 class Vector(models.Model):
 
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
-    common_name = models.CharField(verbose_name = _("vector common name"), help_text="Sample help text.", max_length = 150, blank=True)
-    scientific_name = models.CharField(verbose_name = _("vector scientific name"), help_text="Sample help text.", max_length = 150, blank=True)
+    common_name = models.CharField(verbose_name = _("vector common name"), help_text="What is the common name of the vector?", max_length = 150, blank=True)
+    scientific_name = models.CharField(verbose_name = _("vector scientific name"), help_text="What is the scientific name of the vector?", max_length = 150, blank=True)
     vector_to_host_transmission_rate = models.DecimalField(verbose_name = _("vector to host transmission rate"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null = True)
     vector_to_host_transmission_rate_standard_deviation = models.DecimalField(verbose_name = _("vector to host transmission rate standard deviation"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null=True)
     host_to_vector_transmission_rate = models.DecimalField(verbose_name = _("host to vector transmission rate"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null = True)
@@ -200,11 +201,11 @@ class InfectedToDiseased(models.Model):
 class Weather(models.Model):
 
     case_study = models.OneToOneField(CaseStudy, verbose_name = _("case study"), on_delete = models.CASCADE, primary_key=True)
-    wind_on = models.BooleanField(verbose_name = _("use wind"), help_text="Sample help text.", default = False)
-    seasonality_on = models.BooleanField(verbose_name = _("use seasonality"), help_text="Sample help text.", default = False)
-    lethal_temp_on = models.BooleanField(verbose_name = _("use lethal temp"), help_text="Sample help text.", default = False)
-    temp_on = models.BooleanField(verbose_name = _("use temp"), help_text="Sample help text.", default = False)
-    precipitation_on = models.BooleanField(verbose_name = _("use precipitation"), help_text="Sample help text.", default = False)
+    wind_on = models.BooleanField(verbose_name = _("use wind"), help_text="Does wind strongly affect the spread of your pest/pathogen and do you have a predominate wind direction and strength?", default = False)
+    seasonality_on = models.BooleanField(verbose_name = _("use seasonality"), help_text="Does your pest/pathogen not spread during part of the year?", default = False)
+    lethal_temp_on = models.BooleanField(verbose_name = _("use lethal temp"), help_text="Does your pest/pathogen experience mortality due to extreme temperature conditions?", default = False)
+    temp_on = models.BooleanField(verbose_name = _("use temp"), help_text="Does temperature affect the reproduction and survival of your pest/pathogen?", default = False)
+    precipitation_on = models.BooleanField(verbose_name = _("use precipitation"), help_text="Does precipitation affect the reproduction and survival of your pest/pathogen?", default = False)
 
     class Meta:
         verbose_name = _("weather")
@@ -227,7 +228,7 @@ class Wind(models.Model):
         ("W", "West"),
         ("NW", "Northwest"),
     )
-    wind_direction = models.CharField(verbose_name = _("wind direction"), help_text="Sample help text.", 
+    wind_direction = models.CharField(verbose_name = _("wind direction"), help_text="What is the predominate wind direction in your study area?", 
                     max_length = 30,
                     choices = DIRECTION_CHOICES,
                     default = "NONE", blank = False)
@@ -246,7 +247,7 @@ class Wind(models.Model):
             (12, "12"),
         )
 
-    kappa = models.PositiveSmallIntegerField(verbose_name = _("wind strenth (kappa)"), help_text="Sample help text.", choices = KAPPA_CHOICES, default = 1, blank = False, validators = [MinValueValidator(1), MaxValueValidator(12)])
+    kappa = models.PositiveSmallIntegerField(verbose_name = _("wind strenth (kappa)"), help_text="What is the average wind strength in your study area? 0 is no effect and 12 is very strong directional movement", choices = KAPPA_CHOICES, default = 1, blank = False, validators = [MinValueValidator(1), MaxValueValidator(12)])
 
     class Meta:
         verbose_name = _("wind")
@@ -271,8 +272,8 @@ class Seasonality(models.Model):
             (12, "December"),
         )
     weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
-    first_month = models.PositiveSmallIntegerField(verbose_name = _("first month of season"), help_text="Sample help text.", choices = MONTH, default = 1, blank=False, validators = [MinValueValidator(1), MaxValueValidator(12)])
-    last_month = models.PositiveSmallIntegerField(verbose_name = _("last month of season"), help_text="Sample help text.", choices = MONTH, default = 12, blank=False, validators = [MinValueValidator(1), MaxValueValidator(12)])
+    first_month = models.PositiveSmallIntegerField(verbose_name = _("first month of season"), help_text="What is the first month your pest/pathogen spreads during the year?", choices = MONTH, default = 1, blank=False, validators = [MinValueValidator(1), MaxValueValidator(12)])
+    last_month = models.PositiveSmallIntegerField(verbose_name = _("last month of season"), help_text="What is the last month your pest/pathogen spreads during the year?", choices = MONTH, default = 12, blank=False, validators = [MinValueValidator(1), MaxValueValidator(12)])
 
     class Meta:
         verbose_name = _("seasonality")
@@ -298,9 +299,9 @@ class LethalTemperature(models.Model):
         )
 
     weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
-    month = models.PositiveSmallIntegerField(verbose_name = _("month in which lethal temperature occurs"), help_text="Sample help text.", choices = MONTH, default = 1, blank=False)
-    value = models.DecimalField(verbose_name = _("lethal temperature"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(50)])
-    # lethal_temperature_data = models.FilePathField(verbose_name = _("lethal temperature data"), path=None, match=None, recursive=True, max_length=100)
+    month = models.PositiveSmallIntegerField(verbose_name = _("month in which lethal temperature occurs"), help_text="What month does your lethal temperature occur?", choices = MONTH, default = 1, blank=False)
+    value = models.DecimalField(verbose_name = _("lethal temperature"), help_text="What is the lethal temperature at which pest/pathogen mortality occurs?", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(50)])
+    lethal_temperature_data = models.FileField(verbose_name = _("lethal temperature data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
 
     class Meta:
         verbose_name = _("lethal temperature")
@@ -316,10 +317,10 @@ class Temperature(models.Model):
         ("RECLASS", "Reclass"),
         ("POLYNOMIAL", "Polynomial"),
     )
-    method = models.CharField(verbose_name = _("temperature coefficient creation method"), help_text="Sample help text.", max_length = 30,
+    method = models.CharField(verbose_name = _("temperature coefficient creation method"), help_text="Choose a method to transform temperature into a coefficient used by the model. Temperature values are transformed into a value between 0 and 1.", max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "RECLASS", blank = False)
-    # temperature_data = models.FilePathField(verbose_name = _("temperature data"), path=None, match=None, recursive=True, max_length=100)
+    temperature_data = models.FileField(verbose_name = _("temperature data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
 
     class Meta:
         verbose_name = _("temperature")
@@ -335,10 +336,10 @@ class Precipitation(models.Model):
         ("RECLASS", "Reclass"),
         ("POLYNOMIAL", "Polynomial"),
     )
-    method = models.CharField(verbose_name = _("precipitation coefficient creation method"), help_text="Sample help text.", max_length = 30,
+    method = models.CharField(verbose_name = _("precipitation coefficient creation method"), help_text="Choose a method to transform precipitation into a coefficient used by the model. Precipitation values are transformed into a value between 0 and 1.", max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "RECLASS", blank = False)
-    # precipitation_data = models.FilePathField(verbose_name = _("precipitation data"), path=None, match=None, recursive=True, max_length=100)
+    precipitation_data = models.FileField(verbose_name = _("precipitation data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
 
     class Meta:
         verbose_name = _("precipitation")
@@ -350,9 +351,9 @@ class Precipitation(models.Model):
 class TemperatureReclass(models.Model):
 
     temperature = models.ForeignKey(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE)
-    min_value = models.DecimalField(verbose_name = _("min"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(100)])
-    max_value = models.DecimalField(verbose_name = _("max"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(100)])
-    reclass = models.DecimalField(verbose_name = _("reclass"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
+    min_value = models.DecimalField(verbose_name = _("min"), help_text="Minimum value to reclass from.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(100)])
+    max_value = models.DecimalField(verbose_name = _("max"), help_text="Maximum value to reclass from.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(100)])
+    reclass = models.DecimalField(verbose_name = _("reclass"), help_text="Value to reclass to between 0 and 1.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
 
     class Meta:
         verbose_name = _("temperature reclass")
@@ -364,9 +365,9 @@ class TemperatureReclass(models.Model):
 class PrecipitationReclass(models.Model):
 
     precipitation = models.ForeignKey(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE)
-    min_value = models.DecimalField(verbose_name = _("min"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
-    max_value = models.DecimalField(verbose_name = _("max"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
-    reclass = models.DecimalField(verbose_name = _("reclass"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
+    min_value = models.DecimalField(verbose_name = _("min"), help_text="Minimum value to reclass from.", max_digits = 6, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
+    max_value = models.DecimalField(verbose_name = _("max"), help_text="Maximum value to reclass from.", max_digits = 6, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
+    reclass = models.DecimalField(verbose_name = _("reclass"), help_text="Value to reclass to between 0 and 1.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
 
     class Meta:
         verbose_name = _("precipitation reclass")
@@ -384,15 +385,15 @@ class TemperaturePolynomial(models.Model):
         (2, "Two"),
         (3, "Three"),
     )
-    degree = models.PositiveSmallIntegerField(verbose_name = _("polynomial degree"), help_text="Sample help text.", 
+    degree = models.PositiveSmallIntegerField(verbose_name = _("polynomial degree"), help_text="Select the degree of your polynomial function.", 
                     choices = DEGREE_CHOICES, default = 1, blank = False)
-    a0 = models.DecimalField(verbose_name = _("a0"), help_text="Sample help text.", max_digits = 8, decimal_places = 5, blank = True, null = True)
-    a1 = models.DecimalField(verbose_name = _("a1"), help_text="Sample help text.", max_digits = 8, decimal_places = 5, blank = True, null = True)
-    a2 = models.DecimalField(verbose_name = _("a2"), help_text="Sample help text.", max_digits = 8, decimal_places = 5, blank = True, null = True)
-    a3 = models.DecimalField(verbose_name = _("a3"), help_text="Sample help text.", max_digits = 8, decimal_places = 5, blank = True, null = True)
-    x1 = models.DecimalField(verbose_name = _("x1"), help_text="Sample help text.", max_digits = 5, decimal_places = 2, blank = True, null = True)
-    x2 = models.DecimalField(verbose_name = _("x2"), help_text="Sample help text.", max_digits = 5, decimal_places = 2, blank = True, null = True)
-    x3 = models.DecimalField(verbose_name = _("x3"), help_text="Sample help text.", max_digits = 5, decimal_places = 2, blank = True, null = True)
+    a0 = models.DecimalField(verbose_name = _("a0"), help_text="value of a0 in your polynomial transformation.", max_digits = 8, decimal_places = 5, blank = True, null = True)
+    a1 = models.DecimalField(verbose_name = _("a1"), help_text="value of a1 in your polynomial transformation.", max_digits = 8, decimal_places = 5, blank = True, null = True)
+    a2 = models.DecimalField(verbose_name = _("a2"), help_text="value of a2 in your polynomial transformation.", max_digits = 8, decimal_places = 5, blank = True, null = True)
+    a3 = models.DecimalField(verbose_name = _("a3"), help_text="value of a3 in your polynomial transformation.", max_digits = 8, decimal_places = 5, blank = True, null = True)
+    x1 = models.DecimalField(verbose_name = _("x1"), help_text="value of x1 in your polynomial transformation.", max_digits = 5, decimal_places = 2, blank = True, null = True)
+    x2 = models.DecimalField(verbose_name = _("x2"), help_text="value of x2 in your polynomial transformation.", max_digits = 5, decimal_places = 2, blank = True, null = True)
+    x3 = models.DecimalField(verbose_name = _("x3"), help_text="value of x3 in your polynomial transformation.", max_digits = 5, decimal_places = 2, blank = True, null = True)
 
     class Meta:
         verbose_name = _("temperature polynomial")
@@ -409,15 +410,15 @@ class PrecipitationPolynomial(models.Model):
         (2, "Two"),
         (3, "Three"),
     )
-    degree = models.PositiveSmallIntegerField(verbose_name = _("polynomial degree"), help_text="Sample help text.", 
+    degree = models.PositiveSmallIntegerField(verbose_name = _("polynomial degree"), help_text="Select the degree of your polynomial function.", 
                     choices = DEGREE_CHOICES, default = 1, blank = False)
-    a0 = models.DecimalField(verbose_name = _("a0"), help_text="Sample help text.", max_digits = 8, decimal_places = 5, blank = True, null = True)
-    a1 = models.DecimalField(verbose_name = _("a1"), help_text="Sample help text.", max_digits = 8, decimal_places = 5, blank = True, null = True)
-    a2 = models.DecimalField(verbose_name = _("a2"), help_text="Sample help text.", max_digits = 8, decimal_places = 5, blank = True, null = True)
-    a3 = models.DecimalField(verbose_name = _("a3"), help_text="Sample help text.", max_digits = 8, decimal_places = 5, blank = True, null = True)
-    x1 = models.DecimalField(verbose_name = _("x1"), help_text="Sample help text.", max_digits = 5, decimal_places = 2, blank = True, null = True)
-    x2 = models.DecimalField(verbose_name = _("x2"), help_text="Sample help text.", max_digits = 5, decimal_places = 2, blank = True, null = True)
-    x3 = models.DecimalField(verbose_name = _("x3"), help_text="Sample help text.", max_digits = 5, decimal_places = 2, blank = True, null = True)
+    a0 = models.DecimalField(verbose_name = _("a0"), help_text="value of a0 in your polynomial transformation.", max_digits = 8, decimal_places = 5, blank = True, null = True)
+    a1 = models.DecimalField(verbose_name = _("a1"), help_text="value of a1 in your polynomial transformation.", max_digits = 8, decimal_places = 5, blank = True, null = True)
+    a2 = models.DecimalField(verbose_name = _("a2"), help_text="value of a2 in your polynomial transformation.", max_digits = 8, decimal_places = 5, blank = True, null = True)
+    a3 = models.DecimalField(verbose_name = _("a3"), help_text="value of a3 in your polynomial transformation.", max_digits = 8, decimal_places = 5, blank = True, null = True)
+    x1 = models.DecimalField(verbose_name = _("x1"), help_text="value of x1 in your polynomial transformation.", max_digits = 5, decimal_places = 2, blank = True, null = True)
+    x2 = models.DecimalField(verbose_name = _("x2"), help_text="value of x2 in your polynomial transformation.", max_digits = 5, decimal_places = 2, blank = True, null = True)
+    x3 = models.DecimalField(verbose_name = _("x3"), help_text="value of x3 in your polynomial transformation.", max_digits = 5, decimal_places = 2, blank = True, null = True)
 
     class Meta:
         verbose_name = _("precipitation polynomial")
@@ -429,7 +430,7 @@ class PrecipitationPolynomial(models.Model):
 class Treatment(models.Model):
 
     year = models.PositiveSmallIntegerField(verbose_name = _("treatment year"), validators = [MinValueValidator(1900), MaxValueValidator(2200)])
-    #treatment_file = models.FileField(verbose_name = _("treatment raster for that year"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length = 200)
+    treatment_file = models.FileField(verbose_name = _("treatment raster for that year"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length = 200)
 
     class Meta:
         verbose_name = _("treatment")
