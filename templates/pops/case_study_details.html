@@ -253,16 +253,40 @@
             </tr>
             <tr>
                 <th scope="row">Temperature reclass threshold</th>
-                <td> {{ case_study.weather.temperature.temperaturereclass.threshold }}</td>
+                <td> 
+                <table>
+                <thead>
+                <th>min</th>
+                <th>max</th>
+                <th>reclass</th>
+                </thead>
+                <tbody>
+                {% for row in case_study.weather.temperature.temperaturereclass_set.all %}
+                <tr>
+                <td>{{ row.min_value}}</td><td> {{row.max_value}}</td><td> {{row.reclass}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+                </td>
             </tr>
             <tr>
-                <th scope="row">Precipitation reclass </th>
+                <th scope="row">Precipitation reclass threshold</th>
                 <td> 
+                <table>
+                <thead>
+                <th>min</th>
+                <th>max</th>
+                <th>reclass</th>
+                </thead>
+                <tbody>
                 {% for row in case_study.weather.precipitation.precipitationreclass_set.all %}
-                {{ row.min_value}}, {{row.max_value}}, {{row.reclass}}
+                <tr>
+                <td>{{ row.min_value}}</td><td> {{row.max_value}}</td><td> {{row.reclass}}</td>
+                </tr>
                 {% endfor %}
-
-                {{ case_study.weather.precipitation.precipitationreclass.threshold }}
+                </tbody>
+                </table>
                 </td>
             </tr>
             <tr>

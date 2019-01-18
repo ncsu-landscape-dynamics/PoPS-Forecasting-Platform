@@ -78,3 +78,7 @@ div#make_me_red * {
 
   /*--------- END --------*/
   
+  .delete-row {
+    float:right;
+    display:block;
+  }

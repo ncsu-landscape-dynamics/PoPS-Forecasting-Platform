@@ -27,9 +27,10 @@ def create_case_study(request):
     temperature_form = TemperatureForm(prefix="temp")
     precipitation_form = PrecipitationForm(prefix="precip")
     temperature_reclass_form = TemperatureReclassForm(prefix="temp_reclass")
-    precipitation_reclass_form = PrecipitationReclassForm(prefix="precip_reclass")
     temperature_polynomial_form = TemperaturePolynomialForm(prefix="temp_polynomial")
     precipitation_polynomial_form = PrecipitationPolynomialForm(prefix="precip_polynomial")
+    precipitation_reclass_formset = PrecipitationReclassFormSet(queryset=PrecipitationReclass.objects.none(), prefix="precip_reclass")
+    temperature_reclass_formset = TemperatureReclassFormSet(queryset=TemperatureReclass.objects.none(), prefix="temp_reclass")
 
     if request.method == "POST":
         
@@ -50,11 +51,11 @@ def create_case_study(request):
         lethal_temp_form = LethalTemperatureForm(request.POST, prefix="lethal_temp")
         temperature_form = TemperatureForm(request.POST, prefix="temp")
         precipitation_form = PrecipitationForm(request.POST, prefix="precip")
-        temperature_reclass_form = TemperatureReclassForm(request.POST, prefix="temp_reclass")
-        precipitation_reclass_form = PrecipitationReclassForm(request.POST, prefix="precip_reclass")
+        #temperature_reclass_form = TemperatureReclassForm(request.POST, prefix="temp_reclass")
         temperature_polynomial_form = TemperaturePolynomialForm(request.POST, prefix="temp_polynomial")
         precipitation_polynomial_form = PrecipitationPolynomialForm(request.POST, prefix="precip_polynomial")
-
+        precipitation_reclass_formset = PrecipitationReclassFormSet(request.POST, prefix="precip_reclass")
+        temperature_reclass_formset = TemperatureReclassFormSet(request.POST, prefix="temp_reclass")
 
         if case_study_form.is_valid() and host_form.is_valid() and pest_form.is_valid() and weather_form.is_valid():
             new_case_study = case_study_form.save(commit=False)
@@ -119,14 +120,18 @@ def create_case_study(request):
                     new_temperature = temperature_form.save(commit=False)
                     weather_success_models.append(new_temperature)
                     if new_temperature.method == "RECLASS":
-                        temperature_reclass_form = TemperatureReclassForm(request.POST, prefix="temp_reclass")
-                        if temperature_reclass_form.is_valid():
-                            print("Temp Reclass form is valid")
-                            new_temperature_reclass = temperature_reclass_form.save(commit=False)
-                            temperature_success_models.append(new_temperature_reclass)
+                        if temperature_reclass_formset.is_valid():
+                            print("temp Reclass formset is valid")
+                            instances = temperature_reclass_formset.save(commit=False)
+                            for instance in instances:
+                                temperature_success_models.append(instance)
+                                # instance.precipitation = new_precipitation
+                                # instance.save()
+                                print("instance stuff happened")
+                                print(instance.min_value)
                         else:
                             success = False
-                            print("Temp reclass form is INVALID")
+                            print("Temp reclass formset form is INVALID")
                     if new_temperature.method == "POLYNOMIAL":
                         temperature_polynomial_form = TemperaturePolynomialForm(request.POST, prefix="temp_polynomial")
                         if temperature_polynomial_form.is_valid():
@@ -147,14 +152,19 @@ def create_case_study(request):
                     new_precipitation = precipitation_form.save(commit=False)
                     weather_success_models.append(new_precipitation)
                     if new_precipitation.method == "RECLASS":
-                        precipitation_reclass_form = PrecipitationReclassForm(request.POST, prefix="precip_reclass")
-                        if precipitation_reclass_form.is_valid():
-                            print("Precip Reclass form is valid")
-                            new_precipitation_reclass = precipitation_reclass_form.save(commit=False)
-                            precipitation_success_models.append(new_precipitation_reclass)
+                        if precipitation_reclass_formset.is_valid():
+                            print("Precip Reclass formset is valid")
+                            print(precipitation_reclass_formset)
+                            instances = precipitation_reclass_formset.save(commit=False)
+                            for instance in instances:
+                                precipitation_success_models.append(instance)
+                                # instance.precipitation = new_precipitation
+                                # instance.save()
+                                print("instance stuff happened")
+                                print(instance.min_value)
                         else:
                             success = False
-                            print("Precip reclass form is INVALID")
+                            print("Precip reclass formset form is INVALID")
 
                     if new_precipitation.method == "POLYNOMIAL":
                         precipitation_polynomial_form = PrecipitationPolynomialForm(request.POST, prefix="precip_polynomial")
@@ -195,6 +205,28 @@ def create_case_study(request):
             for model in precipitation_success_models:
                 model.precipitation = new_precipitation
                 model.save()
+            # if precipitation_reclass_formset.is_valid():
+            #     print("Precip Reclass formset is valid")
+            #     print(precipitation_reclass_formset)
+            #     instances = precipitation_reclass_formset.save(commit=False)
+            #     for instance in instances:
+            #         instance.precipitation = new_precipitation
+            #         instance.save()
+            #         print("instance stuff happened")
+            #         print(instance.min_value)
+
+                    # min_value = form.cleaned_data.get('min_value')
+                    # print(min_value)
+                    # max_value = form.cleaned_data.get('max_value')
+                    # print(max_value)
+                    # reclass = form.cleaned_data.get('reclass')
+                    # print(reclass)
+                    # if min_value and max_value and reclass:
+                    #     new_precip_reclass.append(PrecipitationReclass(precipitation = new_precipitation, min_value=min_value, max_value=max_value, reclass=reclass))
+                    # print("Precip Reclass form appended to success models")
+                    # print(new_precip_reclass)
+                    # PrecipitationReclass.objects.bulk_create(new_precip_reclass)
+
             return redirect('case_study_details', pk=new_case_study.pk)
         else:
             print("Something went wrong.")
@@ -215,9 +247,10 @@ def create_case_study(request):
         'temperature_form': temperature_form,
         'precipitation_form': precipitation_form,
         'temperature_reclass_form': temperature_reclass_form,
-        'precipitation_reclass_form': precipitation_reclass_form,
         'temperature_polynomial_form': temperature_polynomial_form,
         'precipitation_polynomial_form': precipitation_polynomial_form,
+        'precipitation_reclass_formset': precipitation_reclass_formset,
+        'temperature_reclass_formset': temperature_reclass_formset,
         'error_message': custom_error,
         }
     return render(request, 'pops/create_case_study.html', context)

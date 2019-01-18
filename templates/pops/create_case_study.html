@@ -4,6 +4,7 @@
 
 {% block page_styles %}
 <link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+
 {% endblock %}
 
 
@@ -243,17 +244,35 @@ $(document).ready(function () {
 </div>
 </div>
 
-  <div id="temp_form_visibility">
+  <div id="temp_form_visibility" class="pb-4">
   {% crispy temperature_form %}
-  <div id="temp_reclass_visibility">
-  {% crispy temperature_reclass_form %}
-{% for error in temperature_reclass_form.threshold.errors %}
-            <div class="" style="color:red">
-                <strong>{{ error }}</strong>
-            </div>
+
+<div class="px-3" id="temp_reclass_visibility">
+{{ temperature_reclass_formset.management_form }}
+
+<div class="row">
+<div class="col-3 px-1 pl-2"><strong>Min</strong></div>
+<div class="col-3 px-1"><strong>Max</strong></div>
+<div class="col-3 px-1"><strong>Reclass</strong></div>
+</div>
+
+{% for form in temperature_reclass_formset %}
+
+<div id="temp_reclass_formset" class="row">
+<div class="col-3 px-1 pl-2">
+{{ form.min_value|as_crispy_field }}
+</div>
+<div class="col-3 px-1">
+{{ form.max_value|as_crispy_field }}
+</div>
+<div class="col-3 px-1">
+{{ form.reclass|as_crispy_field }}
+</div>
+</div>
 {% endfor %}
 </div>
-<div id="temp_polynomial_visibility">
+
+<div id="temp_polynomial_visibility" class="py-2">
   {% crispy temperature_polynomial_form %}
 <div id="temp_degree_1" class=" input-group no-gutters" > 
   <div class="col-2 " > 
@@ -377,10 +396,52 @@ $(document).ready(function () {
 
 <div id="precip_form_visibility">
 {% crispy precipitation_form %}
-<div id="precip_reclass_visibility">
-  {% crispy precipitation_reclass_form %}
 
+<div class="px-3" id="precip_reclass_visibility">
+{{ precipitation_reclass_formset.management_form }}
+
+{% comment %} <table id="precip_reclass_formset" class="" border="0" cellpadding="2" cellspacing="1">
+<thead>
+    <tr>
+      <th style="" scope="col">min</th>
+      <th style="" scope="col">max</th>
+      <th style="" scope="col">reclass</th>
+    </tr>
+  </thead>
+
+        <tbody>
+ {% endcomment %}     
+<div class="row">
+<div class="col-3 px-1 pl-2"><strong>Min</strong></div>
+<div class="col-3 px-1"><strong>Max</strong></div>
+<div class="col-3 px-1"><strong>Reclass</strong></div>
 </div>
+
+{% for form in precipitation_reclass_formset %}
+
+<div id="precip_reclass_formset" class="row">
+<div class="col-3 px-1 pl-2">
+{{ form.min_value|as_crispy_field }}
+</div>
+<div class="col-3 px-1">
+{{ form.max_value|as_crispy_field }}
+</div>
+<div class="col-3 px-1">
+{{ form.reclass|as_crispy_field }}
+</div>
+</div>
+
+{% comment %} <tr>
+               <td>{{ form.min_value }}</td>
+               <td>{{ form.max_value }}</td>
+               <td>{{ form.reclass }}</td>
+            </tr> {% endcomment %}
+
+{% endfor %}
+{% comment %} </tbody>
+</table> {% endcomment %}
+</div>
+
 <div id="precip_polynomial_visibility">
   {% crispy precipitation_polynomial_form %}
 <div id="precip_degree_1" class=" input-group no-gutters" > 
@@ -494,7 +555,6 @@ $(document).ready(function () {
 </div>
 
 
-
   <div class="text-center py-2">
   <button class="btn btn-info btn-lg" type="submit">Calibrate</button>
   </div>
@@ -515,4 +575,31 @@ $(document).ready(function() {
     $("body").tooltip({ selector: '[data-toggle=tooltip]' });
 });
 </script>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script>
+    $('div#temp_reclass_formset').formset({
+        prefix: '{{ temperature_reclass_formset.prefix }}',
+        addText: 'Add Row',
+        deleteText: 'remove',
+        addCssClass: 'btn btn-info',
+        deleteCssClass: 'text-light'
+    });
+</script>
+
+<script>
+    $('div#precip_reclass_formset').formset({
+        prefix: '{{ precipitation_reclass_formset.prefix }}',
+        addText: 'Add Row',
+        deleteText: 'remove',
+        addCssClass: 'btn btn-info',
+        deleteCssClass: 'text-light'
+    });
+</script>
+
+
 {% endblock %}

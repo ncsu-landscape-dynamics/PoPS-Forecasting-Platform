@@ -1,10 +1,10 @@
 # pops/forms.py
 from django import forms
+
 from .models import *
 
 from crispy_forms.bootstrap import Field, InlineRadios, TabHolder, Tab, PrependedText, AppendedText
 from crispy_forms.helper import FormHelper
-
 from crispy_forms.layout import Submit, Layout, Div, Fieldset, Row, HTML
 
 def fields_required_conditionally(self, fields):
@@ -461,10 +461,10 @@ class TemperatureReclassForm(forms.ModelForm):
 
     class Meta:
         model = TemperatureReclass
-        fields = ['threshold']
+        fields = ['min_value','max_value','reclass']
     
     def clean(self):
-        self.fields_required(['threshold'])
+        self.fields_required(['min_value','max_value','reclass'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -479,17 +479,28 @@ class TemperatureReclassForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.disable_csrf = True
+        self.helper.form_show_labels = False
         self.helper.label_class = ''
         self.helper.field_class = ''
         self.helper.layout = Layout(
                 Row(
                     Div(
-                        Field(AppendedText('threshold', '&#176;C'), wrapper_class=""),
-                            css_class='col-sm-6'
+                        Field('min_value', style=""),
+                            css_class='col-3'
                         ),
-                
+                    Div(
+                        Field('max_value', style=""),
+                            css_class='col-3'
+                        ),
+                    Div(
+                        Field('reclass', style=""),
+                            css_class='col-3'
+                        ),
+                    #HTML('<div class="col-1 pb-3 px-1 input-group-append"><button class="btn btn-info add-form-row" style="font-size: 1em; max-height:2.5em;">+</button></div>'),
                 )
         )
+
+TemperatureReclassFormSet = forms.modelformset_factory(TemperatureReclass, form=TemperatureReclassForm, extra=1)
 
 class PrecipitationReclassForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -499,6 +510,7 @@ class PrecipitationReclassForm(forms.ModelForm):
         fields = ['min_value','max_value','reclass']
     
     def clean(self):
+        self.fields_required(['min_value','max_value','reclass'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -513,25 +525,28 @@ class PrecipitationReclassForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.disable_csrf = True
+        self.helper.form_show_labels = False
         self.helper.label_class = ''
         self.helper.field_class = ''
         self.helper.layout = Layout(
                 Row(
                     Div(
-                        Field('min_value'),
-                            css_class='col-sm-3'
+                        Field('min_value', style=""),
+                            css_class='col-3'
                         ),
                     Div(
-                        Field('max_value'),
-                            css_class='col-sm-3'
+                        Field('max_value', style=""),
+                            css_class='col-3'
                         ),
                     Div(
-                        Field('reclass'),
-                            css_class='col-sm-3'
+                        Field('reclass', style=""),
+                            css_class='col-3'
                         ),
+                    #HTML('<div class="col-1 pb-3 px-1 input-group-append"><button class="btn btn-info add-form-row" style="font-size: 1em; max-height:2.5em;">+</button></div>'),
                 )
         )
 
+PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, extra=1)
 
 class TemperaturePolynomialForm(forms.ModelForm):
     fields_required = fields_required_conditionally

@@ -349,21 +349,17 @@ class Precipitation(models.Model):
 
 class TemperatureReclass(models.Model):
 
-    temperature = models.OneToOneField(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE, primary_key=True)
-    threshold = models.DecimalField(verbose_name = _("temperature threshold"), max_digits = 5, decimal_places = 2, blank = True, validators = [MinValueValidator(-50), MaxValueValidator(50)])
-    # matrix = ArrayField(
-    #     ArrayField(
-    #         models.DecimalField(max_digits = 4, decimal_places = 2),
-    #         size=3,
-    #     ),
-    # )
+    temperature = models.ForeignKey(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE)
+    min_value = models.DecimalField(verbose_name = _("min"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(100)])
+    max_value = models.DecimalField(verbose_name = _("max"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(100)])
+    reclass = models.DecimalField(verbose_name = _("reclass"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
 
     class Meta:
         verbose_name = _("temperature reclass")
         verbose_name_plural = _("temperature reclasses")
 
     def __str__(self):
-        return self.threshold
+        return self.reclass
 
 class PrecipitationReclass(models.Model):
 
