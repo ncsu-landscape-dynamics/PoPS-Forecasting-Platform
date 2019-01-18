@@ -14,7 +14,7 @@
 
 <h2 class="text-center">Create Case Study</h2>
 
-<form method="post" class="form-horizontal">
+<form method="post" enctype="multipart/form-data" class="form-horizontal">
 <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-6">
 
@@ -38,13 +38,80 @@
 <legend>Case study details</legend>
 </div>
   {% crispy case_study_form %}
+
+{{ case_study_form.all_plants|as_crispy_field }}
+{% for error in case_study_form.all_plants.errors %}
+            <div class=" text-danger pt-0" style="font-size:0.8em">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+
+{{ case_study_form.infestation_data|as_crispy_field }}
+{% for error in case_study_form.infestation_data.errors %}
+            <div class=" text-danger pt-0" style="font-size:0.8em">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+
+<div class="row no-gutters pt-3">
+<div class="col-auto">
+<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ case_study_form.use_treatment.help_text }}" data-container="body">
+  {{ case_study_form.use_treatment }}
+  <span class="slider round"></span>
+</label>
+</div>
+<div class="col-auto align-middle px-2">
+ <p style="font-size:1.2em"> {{ case_study_form.use_treatment.label }} </p>
   </div>
+</div>
+
+<div id="treatment_form_visibility">
+{{ case_study_form.treatment_data|as_crispy_field }}
+</div>
+{% for error in case_study_form.treatment_data.errors %}
+            <div class=" text-danger pt-0" style="font-size:0.8em">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+
+<script>
+if ($("#id_cs-use_treatment").is(':checked')){
+    $("#treatment_form_visibility").show();}
+else {$("#treatment_form_visibility").hide();}
+$(document).ready(function () {
+    var ckbox = $('#id_cs-use_treatment');
+    $('input').on('click',function () {
+        if (ckbox.is(':checked')) {$("#treatment_form_visibility").show(4000);} 
+        else {$("#treatment_form_visibility").hide(4000);}
+    });
+});
+</script>
+
+</div>
+
 
 <div class="border border-light p-2 my-1">
 <div class="">
 <legend>Pest details</legend>
 </div>
   {% crispy pest_form %}
+
+<script>
+
+if ($("#id_pest-pest_information option:selected").text() == 'Other')
+  {$("#div_id_pest-name").show();}
+else {$("#div_id_pest-name").hide();}
+
+$(document).ready(function () {
+    $('select').on('click',function () {
+      if ($("#id_pest-pest_information option:selected").text() == 'Other')
+        {$("#div_id_pest-name").show();}
+      else {$("#div_id_pest-name").hide();}
+    });
+});
+</script>
+
+
 
   <div class="row no-gutters row-eq-height">
 <div class="col-auto">

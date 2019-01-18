@@ -17,11 +17,11 @@ class CaseStudy(models.Model):
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     number_of_pests = models.PositiveSmallIntegerField(verbose_name = _("number of pests"), help_text="How many pests are in your model system?", blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
     number_of_hosts = models.PositiveSmallIntegerField(verbose_name = _("number of hosts"), help_text="How many hosts are in your model system?", blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
-    all_plants = models.FileField(verbose_name = _("all plants"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
-    start_year = models.PositiveSmallIntegerField(verbose_name = _("start year"), help_text="The first year that you have pest occurence data for calibration.", blank=True, default = 2012, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
-    end_year = models.PositiveSmallIntegerField(verbose_name = _("end year"), help_text="The last year that you have pest occurence data for calibration.", blank=True, default = 2018, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
-    future_years = models.PositiveSmallIntegerField(verbose_name = _("end year"), help_text="How many years into the future do you want to simulate?", blank=True, default = 2023, validators = [MinValueValidator(2018), MaxValueValidator(2200)])
-    infestation_data = models.FileField(verbose_name = _("infestation data"), help_text="Upload your initial infestation/infection data as a raster file (1 file with a layer for each year). At least 3 years are needed for calibration and validation ", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
+    all_plants = models.FileField(verbose_name = _("all plants"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True, blank=True)
+    start_year = models.PositiveSmallIntegerField(verbose_name = _("first data year"), help_text="The first year that you have pest occurence data for calibration.", blank=True, default = 2012, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
+    end_year = models.PositiveSmallIntegerField(verbose_name = _("final data year"), help_text="The last year that you have pest occurence data for calibration.", blank=True, default = 2018, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
+    future_years = models.PositiveSmallIntegerField(verbose_name = _("final model year"), help_text="How many years into the future do you want to simulate?", blank=True, default = 2023, validators = [MinValueValidator(2018), MaxValueValidator(2200)])
+    infestation_data = models.FileField(verbose_name = _("infestation data"), help_text="Upload your initial infestation/infection data as a raster file (1 file with a layer for each year). At least 3 years are needed for calibration and validation ", blank=True, upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
     use_treatment = models.BooleanField(verbose_name = _("use treatments"), help_text="Has management occurred during the time of initial infection/infestation?", default = False)
     treatment_data = models.FileField(verbose_name =  _("previous treatments data"), help_text="Upload the raster file for management actions. 1 file with a layer for each year.", upload_to = settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null=True, blank=True)
     MONTH = 'month'
@@ -101,7 +101,7 @@ class Pest(models.Model):
 
     name = models.CharField(verbose_name = _("pest common name"), help_text="What is the common name of the pest/pathogen?", max_length = 150, blank=True)
     case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
-    pest_information = models.ForeignKey(PestInformation, verbose_name = _("pest information"), help_text="Sample help text.", null=True, on_delete = models.SET_NULL)
+    pest_information = models.ForeignKey(PestInformation, verbose_name = _("pest"), help_text="Sample help text.", null=True, blank=True, on_delete = models.SET_NULL)
     vector_born = models.BooleanField(verbose_name = _("vector born"), help_text="Is the disease spread by a vector (e.g. an insect)?", default = False)
     MODEL_CHOICES = (
         ("SI", "Susceptible Infected"),

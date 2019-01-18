@@ -19,7 +19,8 @@ class CaseStudyForm(forms.ModelForm):
     fields_required = fields_required_conditionally
     class Meta:
         model = CaseStudy
-        fields = ['name','number_of_pests','number_of_hosts','start_year','end_year','time_step']
+        fields = ['name','number_of_pests','number_of_hosts','start_year','end_year','future_years',
+                'time_step','all_plants','infestation_data','use_treatment','treatment_data']
 
     def __init__(self, *args, **kwargs):
         super(CaseStudyForm, self).__init__(*args, **kwargs)
@@ -53,26 +54,36 @@ class CaseStudyForm(forms.ModelForm):
                             css_class='col-sm-4'
                         ),
                     Div(
-                        Field('time_step', wrapper_class=""),
+                        Field('future_years', wrapper_class=""),
                             css_class='col-sm-4'
-                        )
+                        ),
                 ),
 
                 Row(
                     Div(
                         Field('number_of_pests', wrapper_class=""),
-                            css_class='col-sm-6'
+                            css_class='col-sm-4'
                         ),
                     Div(
                         Field('number_of_hosts', wrapper_class=""),
-                            css_class='col-sm-6'
+                            css_class='col-sm-4'
                         ),
+                    Div(
+                        Field('time_step', wrapper_class=""),
+                            css_class='col-sm-4'
+                        )
                 ),
-            
         )
 
     def clean(self):
-        self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step'])
+        self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years','all_plants','infestation_data'])
+        use_treatment = self.cleaned_data.get('use_treatment')
+
+        if use_treatment:
+            self.fields_required(['treatment_data'])
+        else:
+            self.cleaned_data['treatment_data'] = ''
+
         return self.cleaned_data
 
 class HostForm(forms.ModelForm):
@@ -163,10 +174,16 @@ class PestForm(forms.ModelForm):
 
     class Meta:
         model = Pest
-        fields = ['name','model_type','dispersal_type','vector_born']
+        fields = ['pest_information','name','model_type','dispersal_type','vector_born']
 
     def clean(self):
-        self.fields_required(['name','model_type','dispersal_type'])
+        self.fields_required(['pest_information','model_type','dispersal_type'])
+        pest_information = self.cleaned_data.get('pest_information')
+        if pest_information.common_name == "Other":
+            self.fields_required(['name'])
+        else:
+            self.cleaned_data['name'] = ''
+
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -184,6 +201,12 @@ class PestForm(forms.ModelForm):
         self.helper.label_class = ''
         self.helper.field_class = ''
         self.helper.layout = Layout(
+                Row(
+                    Div(
+                        Field('pest_information', wrapper_class=""),
+                            css_class='col-sm-12'
+                        ),
+                ),
                 Row(
                     Div(
                         Field('name', wrapper_class=""),

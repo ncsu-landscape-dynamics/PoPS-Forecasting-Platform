@@ -40,7 +40,7 @@ def create_case_study(request):
         temperature_success_models = []
         precipitation_success_models = []
 
-        case_study_form = CaseStudyForm(request.POST, prefix="cs")
+        case_study_form = CaseStudyForm(request.POST, request.FILES, prefix="cs")
         host_form = HostForm(request.POST, prefix="host")
         pest_form = PestForm(request.POST, prefix="pest")
         weather_form = WeatherForm(request.POST, prefix="weather")
