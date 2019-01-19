@@ -43,7 +43,7 @@ class Host(models.Model):
     name = models.CharField(verbose_name = _("host common name"), help_text="What is the host's common name?", max_length = 150, blank=True)
     score = models.DecimalField(verbose_name = _("score"), help_text="Host score is a value between 0 and 1. 0 has no effect while 1 has maximum effect.", blank=True, max_digits = 5, decimal_places = 2, default = 1, validators = [MinValueValidator(0), MaxValueValidator(1)])
     mortality_on = models.BooleanField(verbose_name = _("mortality"), help_text="Does the host experience mortality as a result of the pest/pathogen?", blank=True)
-    host_data = models.FileField(verbose_name = _("host data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
+    host_data = models.FileField(verbose_name = _("host data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, blank=True)
 
     class Meta:
         verbose_name = _("host")
@@ -99,7 +99,7 @@ class PestInformation(models.Model):
 
 class Pest(models.Model):
 
-    name = models.CharField(verbose_name = _("pest common name"), help_text="What is the common name of the pest/pathogen?", max_length = 150, blank=True)
+    name = models.CharField(verbose_name = _("pest common name"), help_text="What is the common name of the pest/pathogen?", max_length = 150, blank=True, null=True)
     case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
     pest_information = models.ForeignKey(PestInformation, verbose_name = _("pest"), help_text="Sample help text.", null=True, blank=True, on_delete = models.SET_NULL)
     vector_born = models.BooleanField(verbose_name = _("vector born"), help_text="Is the disease spread by a vector (e.g. an insect)?", default = False)

@@ -150,7 +150,14 @@ $(document).ready(function () {
 </div>
   {% crispy host_form %}
 
-<div class="row no-gutters row-eq-height">
+{{ host_form.host_data|as_crispy_field }}
+{% for error in host_form.host_data.errors %}
+            <div class=" text-danger pt-0" style="font-size:0.8em">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+
+<div class="row no-gutters pt-3">
 <div class="col-auto">
 <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ host_form.mortality_on.help_text }}" data-container="body">
   {{ host_form.mortality_on }}

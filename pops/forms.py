@@ -91,10 +91,10 @@ class HostForm(forms.ModelForm):
 
     class Meta:
         model = Host
-        fields = ['name','score','mortality_on']
+        fields = ['name','score','host_data','mortality_on']
 
     def clean(self):
-        self.fields_required(['name','score'])
+        self.fields_required(['name','score','host_data'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -179,10 +179,11 @@ class PestForm(forms.ModelForm):
     def clean(self):
         self.fields_required(['pest_information','model_type','dispersal_type'])
         pest_information = self.cleaned_data.get('pest_information')
-        if pest_information.common_name == "Other":
-            self.fields_required(['name'])
-        else:
-            self.cleaned_data['name'] = ''
+        if pest_information:
+            if pest_information.common_name == "Other":
+                self.fields_required(['name'])
+            else:
+                self.cleaned_data['name'] = ''
 
         return self.cleaned_data
 

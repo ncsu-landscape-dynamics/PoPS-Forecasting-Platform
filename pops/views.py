@@ -41,7 +41,7 @@ def create_case_study(request):
         precipitation_success_models = []
 
         case_study_form = CaseStudyForm(request.POST, request.FILES, prefix="cs")
-        host_form = HostForm(request.POST, prefix="host")
+        host_form = HostForm(request.POST, request.FILES, prefix="host")
         pest_form = PestForm(request.POST, prefix="pest")
         weather_form = WeatherForm(request.POST, prefix="weather")
         mortality_form = MortalityForm(request.POST, prefix="mortality")
@@ -51,7 +51,6 @@ def create_case_study(request):
         lethal_temp_form = LethalTemperatureForm(request.POST, prefix="lethal_temp")
         temperature_form = TemperatureForm(request.POST, prefix="temp")
         precipitation_form = PrecipitationForm(request.POST, prefix="precip")
-        #temperature_reclass_form = TemperatureReclassForm(request.POST, prefix="temp_reclass")
         temperature_polynomial_form = TemperaturePolynomialForm(request.POST, prefix="temp_polynomial")
         precipitation_polynomial_form = PrecipitationPolynomialForm(request.POST, prefix="precip_polynomial")
         precipitation_reclass_formset = PrecipitationReclassFormSet(request.POST, prefix="precip_reclass")
