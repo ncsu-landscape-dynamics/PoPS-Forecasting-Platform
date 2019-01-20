@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/case_study_instructions.css' %}">
+
 {% endblock %}
 
 
@@ -9,16 +11,404 @@
 
 <div class="container py-4">
 
-    <h2 class="text-center">Case Study Instructions</h2>
+    <h2 id="top-of-page" class="text-center">Case Study Instructions</h2>
     <div class="row justify-content-center">
         <div class="col-md-12 col-lg-10 col-xl-8">
+            <div class="table-of-contents">
+                <ul>
+                    <li><a class="toc-link" href="#case-study-details">Case study details</a>
+                        <ul>
+                            <li><a class="toc-link" href="#case-study-name">Case study name</a></li>
+                            <li><a class="toc-link" href="#first-data-year">Initial calibration year</a></li>
+                            <li><a class="toc-link" href="#final-data-year">Final calibration year</a></li>
+                            <li><a class="toc-link" href="#final-model-year">Final model year</a></li>
+                            <li><a class="toc-link" href="#time-step">Time step</a></li>
+                            <li><a class="toc-link" href="#number-pests">Number of pests</a></li>
+                            <li><a class="toc-link" href="#number-hosts">Number of hosts</a></li>
+                            <li><a class="toc-link" href="#all-plants">All plants</a></li>
+                            <li><a class="toc-link" href="#infestation-data">Infestation data</a></li>
+                            <li><a class="toc-link" href="#use-treatments">Use treatments</a></li>
+                            <li><a class="toc-link" href="#previous-treatments">Previous treatments data</a></li>
+                        </ul>
+                    </li>
+                    <li><a class="toc-link" href="#pest-details">Pest details</a>
+                        <ul>
+                            <li><a class="toc-link" href="#case-study-name">Case study name</a></li>
+                            <li><a class="toc-link" href="#first-data-year">Initial calibration year</a></li>
+                            <li><a class="toc-link" href="#final-data-year">Final calibration year</a></li>
+                            <li><a class="toc-link" href="#final-model-year">Final model year</a></li>
+                        </ul>
+                    </li>
+                    <li>Host details
+                        <ul>
+
+                        </ul>
+                    </li>
+                    <li>Weather details
+                        <ul>
+
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+
             <section>
-                <h3>Case study details</h3>
-                <div class="px-2">
-                <h4>Case study name</h4>
-                <p class="px-2">Information about case study name</p>
+                <!--Div title-->
+                <h2 id="case-study-details" class="section-heading-title d-inline">
+                    Case study details
+                </h2>
+
+                <!--Close Div title-->
+
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="case-study-name" class="col-auto field-name card-title d-inline">Case study name</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>, <strong>field_type:</strong>
+                            string, <strong>maximum_length</strong>: 150 characters</div>
+                        <div class="field-description card-text">Case study name is a required field that provides the
+                            user
+                            an opportunity to give the case study a descriptive name.
+                            The case study name will appear in a list of available case studies
+                            for you to choose from to start a session.</div>
+                        <div class="example"><em>Example:</em> Spotted Lanternfly, Pennsylvania, 2014-2022
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="first-data-year" class="col-auto field-name card-title d-inline">Initial
+                                calibration year</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1900, <strong>maximum_value</strong>:
+                            2200</div>
+                        <div class="field-description card-text">The first year that you have
+                            pest occurence data for calibration. This should
+                            correspond to the first year in the all plants data file
+                            AND host data file.</div>
+                        <div class="example"><em>Example:</em> 2008
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="final-data-year" class="col-auto field-name card-title d-inline">Final calibration
+                                year</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1900, <strong>maximum_value</strong>:
+                            2200</div>
+                        <div class="field-description card-text">The last year that you have
+                            pest occurence data for calibration. This should
+                            correspond to the last year in the all plants data file
+                            AND host data file.</div>
+                        <div class="example"><em>Example:</em> 2016
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="final-model-year" class="col-auto field-name card-title d-inline">Final model year</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1900, <strong>maximum_value</strong>:
+                            2200</div>
+                        <div class="field-description card-text">
+                            This will be the final year of a model run when using this
+                            case study. For example, if your final model year is 2024, then
+                            the model will run from the final calibration year to 2024.</div>
+                        <div class="example"><em>Example:</em> 2016
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="time-step" class="col-auto field-name card-title d-inline">Time step</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>, <strong>field_type:</strong>
+                            choice, <strong>options</strong>: Month, Week, Year</div>
+                        <div class="field-description card-text">
+                            The time step is the frequency with which the PoPS model is solved. The options
+                            for time step are: Month, Week, Day. In general, a day time step will be more
+                            accurate than a month time step, however a month time step will run much faster
+                            than a day time step because the model is solving fewer iterations. <br>
+                            <strong>We recommend
+                                you choose the largest time step possible for your case study, based on the biology
+                                of your system.</strong> For example, if ...
+                        </div>
+                        <div class="example"><em>Example:</em> Month
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="number-pests" class="col-auto field-name card-title d-inline">Number of pests</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1</div>
+                        <div class="field-description card-text">
+                            Number of pests (or pathogens) you will model in your system. <br>
+                            <em>In the current version of PoPS, number of
+                                pests is limited to 1. Future versions will include multiple
+                                pests.</em></div>
+                    </div>
+                    <div class="example"><em>Example:</em> 1
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="number-hosts" class="col-auto field-name card-title d-inline">Number of hosts</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1</div>
+                        <div class="field-description card-text">
+                            Number of host organisms you will model in your system. <br>
+                            <em>In the current version of PoPS, number of
+                                hosts is limited to 1. Future versions will include multiple
+                                hosts.</em></div>
+                    </div>
+                    <div class="example"><em>Example:</em> 1
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="all-plants" class="col-auto field-name card-title d-inline">All plants</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: file field, <strong>format</strong>: raster stack</div>
+                        <div class="field-description card-text">
+                        All plants is a raster stack (single file) of all plant data in your study area (1 layer for each year).
+                        <em>At least 3 layers (3 years) are required for calibration and validation. </em>                            
+                            </div>
+                    </div>
+                    <div class="example"><em>Example:</em> my_plant_data.tiff
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="infestation-data" class="col-auto field-name card-title d-inline">Infestation data</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: file field, <strong>format</strong>: raster stack</div>
+                        <div class="field-description card-text">
+                        Infestation data is a raster stack (single file) of the  initial infestation/infection data in your study area (1 layer for each year).
+                        <em>At least 3 layers (3 years) are required for calibration and validation. </em>  
+                            </div>
+                    </div>
+                    <div class="example"><em>Example:</em> initial_infestation.tiff
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="use-treatments" class="col-auto field-name card-title d-inline">Use treatments</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: boolean (on/off)</div>
+                        <div class="field-description card-text">
+                            Do you have existing management data to include for calibration/validation?
+                            <em>Note: This field is for <strong>prior</strong> management/treatments. Only turn this
+                            field on if you have a raster file for management actions to include in the
+                            calibration and validation of the case study. You will still be able to
+                            use management during PoPS model runs if this is turned off.</em>
+                            </div>
+                    </div>
+                    <div class="example"><em>Example:</em> 1
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="previous-treatments" class="col-auto field-name card-title d-inline">Previous treatments data</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required if "Use treatments" is On*</em></strong>,
+                            <strong>field_type</strong>: file field, <strong>format</strong>: raster stack</div>
+                        <div class="field-description card-text">
+                        Previous treatments data is a raster stack (single file) of the initial management data in your study area (1 layer for each year).
+                        <em>At least 3 layers (3 years) are required for calibration and validation. </em>  
+                            </div>
+                    </div>
+                    <div class="example"><em>Example:</em> previous_treatments.tiff
+                    </div>
+                </div>
+
+            </section>
+
+            <section>
+                <!--Div title-->
+                <h2 id="pest-details" class="section-heading-title d-inline">
+                    Pest details
+                </h2>
+
+                <!--Close Div title-->
+
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="case-study-name" class="col-auto field-name card-title d-inline">Case study name</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>, <strong>field_type:</strong>
+                            string, <strong>maximum_length</strong>: 150 characters</div>
+                        <div class="field-description card-text">Case study name is a required field that provides the
+                            user
+                            an opportunity to give the case study a descriptive name.
+                            The case study name will appear in a list of available case studies
+                            for you to choose from to start a session.</div>
+                        <div class="example"><em>Example:</em> Spotted Lanternfly, Pennsylvania, 2014-2022
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="first-data-year" class="col-auto field-name card-title d-inline">Initial
+                                calibration year</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1900, <strong>maximum_value</strong>:
+                            2200</div>
+                        <div class="field-description card-text">The first year that you have
+                            pest occurence data for calibration. This should
+                            correspond to the first year in the all plants data file
+                            AND host data file.</div>
+                        <div class="example"><em>Example:</em> 2008
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="final-data-year" class="col-auto field-name card-title d-inline">Final calibration
+                                year</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1900, <strong>maximum_value</strong>:
+                            2200</div>
+                        <div class="field-description card-text">The last year that you have
+                            pest occurence data for calibration. This should
+                            correspond to the last year in the all plants data file
+                            AND host data file.</div>
+                        <div class="example"><em>Example:</em> 2016
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="final-model-year" class="col-auto field-name card-title d-inline">Final model year</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1900, <strong>maximum_value</strong>:
+                            2200</div>
+                        <div class="field-description card-text">
+                            This will be the final year of a model run when using this
+                            case study. For example, if your final model year is 2024, then
+                            the model will run from the final calibration year to 2024.</div>
+                        <div class="example"><em>Example:</em> 2016
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="time-step" class="col-auto field-name card-title d-inline">Time step</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>, <strong>field_type:</strong>
+                            choice, <strong>options</strong>: Month, Week, Year</div>
+                        <div class="field-description card-text">
+                            The time step is the frequency with which the PoPS model is solved. The options
+                            for time step are: Month, Week, Day. In general, a day time step will be more
+                            accurate than a month time step, however a month time step will run much faster
+                            than a day time step because the model is solving fewer iterations. <br>
+                            <strong>We recommend
+                                you choose the largest time step possible for your case study, based on the biology
+                                of your system.</strong> For example, if ...
+                        </div>
+                        <div class="example"><em>Example:</em> Month
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="number-pests" class="col-auto field-name card-title d-inline">Number of pests</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1</div>
+                        <div class="field-description card-text">
+                            Number of pests (or pathogens) you will model in your system. <br>
+                            <em>In the current version of PoPS, number of
+                                pests is limited to 1. Future versions will include multiple
+                                pests.</em></div>
+                    </div>
+                    <div class="example"><em>Example:</em> 1
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <h3 id="number-hosts" class="col-auto field-name card-title d-inline">Number of hosts</h3>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1</div>
+                        <div class="field-description card-text">
+                            Number of host organisms you will model in your system. <br>
+                            <em>In the current version of PoPS, number of
+                                hosts is limited to 1. Future versions will include multiple
+                                hosts.</em></div>
+                    </div>
+                    <div class="example"><em>Example:</em> 1
+                    </div>
                 </div>
             </section>
+
         </div> <!-- Close main col -->
     </div> <!-- Close main row -->
 </div> <!-- Close main container -->

@@ -47,31 +47,32 @@ class CaseStudyForm(forms.ModelForm):
                 Row(
                     Div(
                         Field('start_year', wrapper_class=""),
-                            css_class='col-sm-4'
+                            css_class='col-sm-6'
                         ),
                     Div(
                         Field('end_year', wrapper_class=""),
-                            css_class='col-sm-4'
-                        ),
-                    Div(
-                        Field('future_years', wrapper_class=""),
-                            css_class='col-sm-4'
+                            css_class='col-sm-6'
                         ),
                 ),
-
                 Row(
                     Div(
-                        Field('number_of_pests', wrapper_class=""),
-                            css_class='col-sm-4'
-                        ),
-                    Div(
-                        Field('number_of_hosts', wrapper_class=""),
-                            css_class='col-sm-4'
+                        Field('future_years', wrapper_class=""),
+                            css_class='col-sm-6'
                         ),
                     Div(
                         Field('time_step', wrapper_class=""),
-                            css_class='col-sm-4'
+                            css_class='col-sm-6'
                         )
+                ),
+                Row(
+                    Div(
+                        Field('number_of_pests', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
+                    Div(
+                        Field('number_of_hosts', wrapper_class=""),
+                            css_class='col-sm-6'
+                        ),
                 ),
         )
 
@@ -85,6 +86,7 @@ class CaseStudyForm(forms.ModelForm):
             self.cleaned_data['treatment_data'] = ''
 
         return self.cleaned_data
+
 
 class HostForm(forms.ModelForm):
     fields_required = fields_required_conditionally
