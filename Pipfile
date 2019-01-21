@@ -18,6 +18,7 @@ django-storages = "*"
 psycopg2 = "*"
 google-auth = "*"
 google-cloud-storage = "*"
+wheel = "*"
 
 [requires]
 python_version = "3.7"
