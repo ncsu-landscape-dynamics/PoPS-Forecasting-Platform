@@ -19,6 +19,7 @@ psycopg2 = "*"
 google-auth = "*"
 google-cloud-storage = "*"
 wheel = "*"
+plotly = "*"
 
 [requires]
 python_version = "3.7"
