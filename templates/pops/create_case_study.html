@@ -12,70 +12,71 @@
 
 <div class="container py-4">
 
-<h2 class="text-center">Create Case Study</h2>
+  <h2 class="text-center">Create Case Study</h2>
 
-<form method="post" enctype="multipart/form-data" class="form-horizontal">
-<div class="row justify-content-center">
+  <form method="post" enctype="multipart/form-data" class="form-horizontal">
+    <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-6">
 
-<div class="alert alert-warning">
-<p>
-<strong>Welcome to the create case study page!</strong> Please be sure to read the
-<a class="" href="{% url 'case_study_help' %}">instruction page</a> before getting started.
-</p>
-</div>
+        <div class="alert alert-warning">
+          <p>
+            <strong>Welcome to the create case study page!</strong> Please be sure to read the
+            <a class="" href="{% url 'case_study_help' %}">instruction page</a> before getting started.
+          </p>
+        </div>
 
 
-      {% if error_message %}
+        {% if error_message %}
         <div class="alert alert-danger text-center" role="alert">
           <strong>Please correct the errors below!</strong>
         </div>
-      {% endif %}
-  {% csrf_token %}
+        {% endif %}
+        {% csrf_token %}
 
-  <div class="border border-light p-2 my-1">
-  <div class="">
-<legend>Case study details</legend>
-</div>
-  {% crispy case_study_form %}
+        <div class="border border-light p-2 my-1">
+          <div class="">
+            <legend>Case study details</legend>
+          </div>
+          {% crispy case_study_form %}
 
-{{ case_study_form.all_plants|as_crispy_field }}
-{% for error in case_study_form.all_plants.errors %}
-            <div class=" text-danger pt-0" style="font-size:0.8em">
-                <strong>{{ error|escape }}</strong>
+          {{ case_study_form.all_plants|as_crispy_field }}
+          {% for error in case_study_form.all_plants.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+
+          {{ case_study_form.infestation_data|as_crispy_field }}
+          {% for error in case_study_form.infestation_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+
+          <div class="row no-gutters pt-3">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ case_study_form.use_treatment.help_text }}"
+                data-container="body">
+                {{ case_study_form.use_treatment }}
+                <span class="slider round"></span>
+              </label>
             </div>
-        {% endfor %}
-
-{{ case_study_form.infestation_data|as_crispy_field }}
-{% for error in case_study_form.infestation_data.errors %}
-            <div class=" text-danger pt-0" style="font-size:0.8em">
-                <strong>{{ error|escape }}</strong>
+            <div class="col-auto align-middle px-2">
+              <p style="font-size:1.2em"> {{ case_study_form.use_treatment.label }} </p>
             </div>
-        {% endfor %}
+          </div>
 
-<div class="row no-gutters pt-3">
-<div class="col-auto">
-<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ case_study_form.use_treatment.help_text }}" data-container="body">
-  {{ case_study_form.use_treatment }}
-  <span class="slider round"></span>
-</label>
-</div>
-<div class="col-auto align-middle px-2">
- <p style="font-size:1.2em"> {{ case_study_form.use_treatment.label }} </p>
-  </div>
-</div>
+          <div id="treatment_form_visibility">
+            {{ case_study_form.treatment_data|as_crispy_field }}
+          </div>
+          {% for error in case_study_form.treatment_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
 
-<div id="treatment_form_visibility">
-{{ case_study_form.treatment_data|as_crispy_field }}
-</div>
-{% for error in case_study_form.treatment_data.errors %}
-            <div class=" text-danger pt-0" style="font-size:0.8em">
-                <strong>{{ error|escape }}</strong>
-            </div>
-        {% endfor %}
-
-<script>
-if ($("#id_cs-use_treatment").is(':checked')){
+          <script>
+            if ($("#id_cs-use_treatment").is(':checked')){
     $("#treatment_form_visibility").show();}
 else {$("#treatment_form_visibility").hide();}
 $(document).ready(function () {
@@ -87,18 +88,18 @@ $(document).ready(function () {
 });
 </script>
 
-</div>
+        </div>
 
 
-<div class="border border-light p-2 my-1">
-<div class="">
-<legend>Pest details</legend>
-</div>
-  {% crispy pest_form %}
+        <div class="border border-light p-2 my-1">
+          <div class="">
+            <legend>Pest details</legend>
+          </div>
+          {% crispy pest_form %}
 
-<script>
+          <script>
 
-if ($("#id_pest-pest_information option:selected").text() == 'Other')
+            if ($("#id_pest-pest_information option:selected").text() == 'Other')
   {$("#div_id_pest-name").show();}
 else {$("#div_id_pest-name").hide();}
 
@@ -113,24 +114,25 @@ $(document).ready(function () {
 
 
 
-  <div class="row no-gutters row-eq-height">
-<div class="col-auto">
-<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ pest_form.vector_born.help_text }}" data-container="body">
-  {{ pest_form.vector_born }}
-  <span class="slider round"></span>
-</label>
-</div>
-<div class="col-auto px-2">
-<p style="font-size:1.2em">  {{ pest_form.vector_born.label }} </p>
-</div>
-</div>
+          <div class="row no-gutters row-eq-height">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ pest_form.vector_born.help_text }}"
+                data-container="body">
+                {{ pest_form.vector_born }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em"> {{ pest_form.vector_born.label }} </p>
+            </div>
+          </div>
 
-  <div id="vector_form_visibility">
-  {% crispy vector_form %}
-  </div>
-  
-<script>
-if ($("#id_pest-vector_born").is(':checked')){
+          <div id="vector_form_visibility">
+            {% crispy vector_form %}
+          </div>
+
+          <script>
+            if ($("#id_pest-vector_born").is(':checked')){
     $("#vector_form_visibility").show();}
 else {$("#vector_form_visibility").hide();}
 $(document).ready(function () {
@@ -141,49 +143,51 @@ $(document).ready(function () {
     });
 });
 </script>
-</div>
+        </div>
 
 
-<div class="border border-light p-2 my-1">
-  <div class="">
-<legend>Host details</legend>
-</div>
-  {% crispy host_form %}
+        <div class="border border-light p-2 my-1">
+          <div class="">
+            <legend>Host details</legend>
+          </div>
+          {% crispy host_form %}
 
-{{ host_form.host_data|as_crispy_field }}
-{% for error in host_form.host_data.errors %}
-            <div class=" text-danger pt-0" style="font-size:0.8em">
-                <strong>{{ error|escape }}</strong>
+          {{ host_form.host_data|as_crispy_field }}
+          {% for error in host_form.host_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+
+          <div class="row no-gutters pt-3">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ host_form.mortality_on.help_text }}"
+                data-container="body">
+                {{ host_form.mortality_on }}
+                <span class="slider round"></span>
+              </label>
             </div>
-        {% endfor %}
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em"> {{ host_form.mortality_on.label }} </p>
+            </div>
+          </div>
 
-<div class="row no-gutters pt-3">
-<div class="col-auto">
-<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ host_form.mortality_on.help_text }}" data-container="body">
-  {{ host_form.mortality_on }}
-  <span class="slider round"></span>
-</label>
-</div>
-<div class="col-auto px-2">
- <p style="font-size:1.2em"> {{ host_form.mortality_on.label }} </p>
-</div>
-</div>
-
-<div id="mortality_form_user_visibility" class="row no-gutters row-eq-height">
-<div class="col-auto">
-<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ mortality_form.user_input.help_text }}" data-container="body">
-  {{ mortality_form.user_input }}
-  <span class="slider round"></span>
-</label>
-</div>
-<div class="col-auto px-2">
- <p style="font-size:1.2em"> {{ mortality_form.user_input.label }} </p>
-</div>
-</div>
+          <div id="mortality_form_user_visibility" class="row no-gutters row-eq-height">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ mortality_form.user_input.help_text }}"
+                data-container="body">
+                {{ mortality_form.user_input }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em"> {{ mortality_form.user_input.label }} </p>
+            </div>
+          </div>
 
 
-<script>
-if ($("#id_host-mortality_on").is(':checked')){
+          <script>
+            if ($("#id_host-mortality_on").is(':checked')){
     $("#mortality_form_user_visibility").show();}
 else {$("#mortality_form_user_visibility").hide();}
 $(document).ready(function () {
@@ -195,12 +199,12 @@ $(document).ready(function () {
 });
 </script>
 
-<div id="mortality_form_visibility">
-  {% crispy mortality_form %}
-</div>
+          <div id="mortality_form_visibility">
+            {% crispy mortality_form %}
+          </div>
 
-<script>
-if ($("#id_mortality-user_input").is(':checked')){
+          <script>
+            if ($("#id_mortality-user_input").is(':checked')){
     $("#mortality_form_visibility").show();}
 else {$("#mortality_form_visibility").hide();}
 $(document).ready(function () {
@@ -211,30 +215,31 @@ $(document).ready(function () {
     });
 });
 </script>
-</div>
+        </div>
 
-<div class="border border-light p-2 my-1">
-<div class="py-2">
-<legend>Weather details</legend>
-</div>
+        <div class="border border-light p-2 my-1">
+          <div class="py-2">
+            <legend>Weather details</legend>
+          </div>
 
-<div class="row no-gutters row-eq-height">
-<div class="col-auto">
-<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.wind_on.help_text }}" data-container="body">
-  {{ weather_form.wind_on }}
-  <span class="slider round"></span>
-</label>
-</div>
-<div class="col-auto px-2">
-<p style="font-size:1.2em">  {{ weather_form.wind_on.label }} </p>
-</div>
-</div>
+          <div class="row no-gutters row-eq-height">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.wind_on.help_text }}"
+                data-container="body">
+                {{ weather_form.wind_on }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em"> {{ weather_form.wind_on.label }} </p>
+            </div>
+          </div>
 
-  <div id="wind_form_visibility">
-  {% crispy wind_form %}
-  </div>
-<script>
-if ($("#id_weather-wind_on").is(':checked')){
+          <div id="wind_form_visibility">
+            {% crispy wind_form %}
+          </div>
+          <script>
+            if ($("#id_weather-wind_on").is(':checked')){
     $("#wind_form_visibility").show();}
 else {$("#wind_form_visibility").hide();}
 $(document).ready(function () {
@@ -247,23 +252,24 @@ $(document).ready(function () {
 </script>
 
 
-<div class="row no-gutters">
-<div class="col-auto">
-<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.seasonality_on.help_text }}" data-container="body">
-  {{ weather_form.seasonality_on }}
-  <span class="slider round"></span>
-</label>
-</div>
-<div class="col-auto align-middle px-2">
- <p style="font-size:1.2em"> {{ weather_form.seasonality_on.label }} </p>
-  </div>
-</div>
+          <div class="row no-gutters">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.seasonality_on.help_text }}"
+                data-container="body">
+                {{ weather_form.seasonality_on }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto align-middle px-2">
+              <p style="font-size:1.2em"> {{ weather_form.seasonality_on.label }} </p>
+            </div>
+          </div>
 
-  <div id="seasonality_form_visibility">
-  {% crispy seasonality_form %}
-</div>
-<script>
-if ($("#id_weather-seasonality_on").is(':checked')){
+          <div id="seasonality_form_visibility">
+            {% crispy seasonality_form %}
+          </div>
+          <script>
+            if ($("#id_weather-seasonality_on").is(':checked')){
     $("#seasonality_form_visibility").show();}
 else {$("#seasonality_form_visibility").hide();}
 
@@ -276,24 +282,25 @@ $(document).ready(function () {
 });
 </script>
 
-<div class="weather on_off row no-gutters">
-<div class="col-auto">
-<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.lethal_temp_on.help_text }}" data-container="body">
-  {{ weather_form.lethal_temp_on }}
-  <span class="slider round"></span>
-</label>
-</div>
-<div class="col-auto px-2">
-  <p style="font-size:1.2em">{{ weather_form.lethal_temp_on.label }}</p>
-</div>
-</div>
+          <div class="weather on_off row no-gutters">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.lethal_temp_on.help_text }}"
+                data-container="body">
+                {{ weather_form.lethal_temp_on }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em">{{ weather_form.lethal_temp_on.label }}</p>
+            </div>
+          </div>
 
-<div id="lethal_form_visibility">
-  {% crispy lethal_temp_form %}
+          <div id="lethal_form_visibility">
+            {% crispy lethal_temp_form %}
 
-</div>
-<script>
-if ($("#id_weather-lethal_temp_on").is(':checked')){
+          </div>
+          <script>
+            if ($("#id_weather-lethal_temp_on").is(':checked')){
     $("#lethal_form_visibility").show();}
 else {$("#lethal_form_visibility").hide();}
 
@@ -306,109 +313,112 @@ $(document).ready(function () {
 });
 </script>
 
-<div class="weather on_off row no-gutters">
-<div class="col-auto">
-<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.temp_on.help_text }}" data-container="body">
-  {{ weather_form.temp_on }}
-  <span class="slider round"></span>
-</label>
-</div>
-<div class="col-auto px-2">
- <p style="font-size:1.2em"> {{ weather_form.temp_on.label }} </p>
-</div>
-</div>
+          <div class="weather on_off row no-gutters">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.temp_on.help_text }}"
+                data-container="body">
+                {{ weather_form.temp_on }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em"> {{ weather_form.temp_on.label }} </p>
+            </div>
+          </div>
 
-  <div id="temp_form_visibility" class="pb-4">
-  {% crispy temperature_form %}
+          <div id="temp_form_visibility" class="pb-4">
+            {% crispy temperature_form %}
 
-<div class="px-3" id="temp_reclass_visibility">
-{{ temperature_reclass_formset.management_form }}
+            <div class="px-3" id="temp_reclass_visibility">
+              {{ temperature_reclass_formset.management_form }}
 
-<div class="row">
-<div class="col-3 px-1 pl-2"><strong>Min</strong></div>
-<div class="col-3 px-1"><strong>Max</strong></div>
-<div class="col-3 px-1"><strong>Reclass</strong></div>
-</div>
+              <div class="row">
+                <div class="col-3 px-1 pl-2"><strong>Min temp</strong></div>
+                <div class="col-3 px-1"><strong>Max temp</strong></div>
+                <div class="col-3 px-1"><strong>Coefficient</strong></div>
+              </div>
 
-{% for form in temperature_reclass_formset %}
+              {% for form in temperature_reclass_formset %}
 
-<div id="temp_reclass_formset" class="row">
-<div class="col-3 px-1 pl-2">
-{{ form.min_value|as_crispy_field }}
-</div>
-<div class="col-3 px-1">
-{{ form.max_value|as_crispy_field }}
-</div>
-<div class="col-3 px-1">
-{{ form.reclass|as_crispy_field }}
-</div>
-</div>
-{% endfor %}
-</div>
+              <div id="temp_reclass_formset" class="row">
+                <div class="col-3 px-1 pl-2">
+                  {{ form.min_value|as_crispy_field }}
+                </div>
+                <div class="col-3 px-1">
+                  {{ form.max_value|as_crispy_field }}
+                </div>
+                <div class="col-3 px-1">
+                  {{ form.reclass|as_crispy_field }}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
 
-<div id="temp_polynomial_visibility" class="py-2">
-  {% crispy temperature_polynomial_form %}
-<div id="temp_degree_1" class=" input-group no-gutters" > 
-  <div class="col-2 " > 
-{{ temperature_polynomial_form.a0|as_crispy_field}}
-  </div>
-  <div class="col-auto px-1 text-center" > 
-  <h3> + </h3>
-  </div>
-  <div class="col-2" > 
-{{ temperature_polynomial_form.a1|as_crispy_field}}
-  </div>
-  <div class="col-auto px-1 text-right" > 
-  <h3> ( T+ </h3>
-  </div>
-  <div class="col-2" > 
-{{ temperature_polynomial_form.x1|as_crispy_field}}
-  </div>
-    <div class="col-auto px-1 text-left" > 
-  <h3> )</h3>
-  </div>
-</div>
+            <div id="temp_polynomial_visibility" class="py-2">
+              {% crispy temperature_polynomial_form %}
+                  <h4>Temperature Coefficient = </h4>
 
-<div id="temp_degree_2" class="input-group no-gutters" > 
-  <div class="col-auto offset-2 px-1 text-center" > 
-  <h3> + </h3>
-  </div>
-  <div class="col-2" > 
-{{ temperature_polynomial_form.a2|as_crispy_field}}
-  </div>
-  <div class="col-auto px-1 text-right" > 
-  <h3> ( T+ </h3>
-  </div>
-  <div class="col-2" > 
-{{ temperature_polynomial_form.x2|as_crispy_field}}
-  </div>
-    <div class="col-auto px-1 text-left" > 
-  <h3> )<sup>2</sup></h3>
-  </div>
-</div>
+              <div id="temp_degree_1" class=" input-group no-gutters">
+                <div class="col-2 ">
+                  {{ temperature_polynomial_form.a0|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-center">
+                  <h3> + </h3>
+                </div>
+                <div class="col-2">
+                  {{ temperature_polynomial_form.a1|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-right">
+                  <h3> ( T+ </h3>
+                </div>
+                <div class="col-2">
+                  {{ temperature_polynomial_form.x1|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-left">
+                  <h3> )</h3>
+                </div>
+              </div>
 
-<div id="temp_degree_3" class="input-group no-gutters" > 
-  <div class="col-auto offset-2 px-1 text-center" > 
-  <h3> + </h3>
-  </div>
-  <div class="col-2" > 
-{{ temperature_polynomial_form.a3|as_crispy_field}}
-  </div>
-  <div class="col-auto px-1 text-right" > 
-  <h3> ( T+ </h3>
-  </div>
-  <div class="col-2" > 
-{{ temperature_polynomial_form.x3|as_crispy_field}}
-  </div>
-    <div class="col-auto px-1 text-left" > 
-  <h3> )<sup>3</sup></h3>
-  </div>
-</div>
-</div>
-</div>
+              <div id="temp_degree_2" class="input-group no-gutters">
+                <div class="col-auto offset-2 px-1 text-center">
+                  <h3> + </h3>
+                </div>
+                <div class="col-2">
+                  {{ temperature_polynomial_form.a2|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-right">
+                  <h3> ( T+ </h3>
+                </div>
+                <div class="col-2">
+                  {{ temperature_polynomial_form.x2|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-left">
+                  <h3> )<sup>2</sup></h3>
+                </div>
+              </div>
 
-<script>
-if ($("#id_weather-temp_on").is(':checked')){
+              <div id="temp_degree_3" class="input-group no-gutters">
+                <div class="col-auto offset-2 px-1 text-center">
+                  <h3> + </h3>
+                </div>
+                <div class="col-2">
+                  {{ temperature_polynomial_form.a3|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-right">
+                  <h3> ( T+ </h3>
+                </div>
+                <div class="col-2">
+                  {{ temperature_polynomial_form.x3|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-left">
+                  <h3> )<sup>3</sup></h3>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <script>
+            if ($("#id_weather-temp_on").is(':checked')){
     $("#temp_form_visibility").show();}
 else {$("#temp_form_visibility").hide();}
 $(document).ready(function () {
@@ -419,8 +429,8 @@ $(document).ready(function () {
     });
 });
 </script>
-<script>
-if ($("#id_id_temp-method_1").is(':checked')){
+          <script>
+            if ($("#id_id_temp-method_1").is(':checked')){
     $("#temp_polynomial_visibility").hide();}
 else {$("#temp_reclass_visibility").hide();}
 $(document).ready(function () {
@@ -437,8 +447,8 @@ $(document).ready(function () {
 });
 </script>
 
-<script>
-if ($("#id_id_temp_polynomial-degree_1").is(':checked')){
+          <script>
+            if ($("#id_id_temp_polynomial-degree_1").is(':checked')){
     $("#temp_degree_2").hide(); $("#temp_degree_3").hide();}
 if ($("#id_id_temp_polynomial-degree_2").is(':checked')){
     $("#temp_degree_3").hide();}
@@ -456,129 +466,130 @@ $(document).ready(function () {
 </script>
 
 
-<div class="weather on_off row no-gutters">
-<div class="col-auto">
-<label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.precipitation_on.help_text }}" data-container="body">
-  {{ weather_form.precipitation_on }}
-  <span class="slider round"></span>
-</label>
-</div>
-<div class="col-auto px-2">
- <p style="font-size:1.2em"> {{ weather_form.precipitation_on.label }} </p>
-</div>
-</div>
+          <div class="weather on_off row no-gutters">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.precipitation_on.help_text }}"
+                data-container="body">
+                {{ weather_form.precipitation_on }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em"> {{ weather_form.precipitation_on.label }} </p>
+            </div>
+          </div>
 
-<div id="precip_form_visibility">
-{% crispy precipitation_form %}
+          <div id="precip_form_visibility">
+            {% crispy precipitation_form %}
 
-<div class="px-3" id="precip_reclass_visibility">
-{{ precipitation_reclass_formset.management_form }}
+            <div class="px-3" id="precip_reclass_visibility">
+              {{ precipitation_reclass_formset.management_form }}
 
-{% comment %} <table id="precip_reclass_formset" class="" border="0" cellpadding="2" cellspacing="1">
-<thead>
-    <tr>
-      <th style="" scope="col">min</th>
-      <th style="" scope="col">max</th>
-      <th style="" scope="col">reclass</th>
-    </tr>
-  </thead>
+              {% comment %} <table id="precip_reclass_formset" class="" border="0" cellpadding="2" cellspacing="1">
+                <thead>
+                  <tr>
+                    <th style="" scope="col">min</th>
+                    <th style="" scope="col">max</th>
+                    <th style="" scope="col">reclass</th>
+                  </tr>
+                </thead>
 
-        <tbody>
- {% endcomment %}     
-<div class="row">
-<div class="col-3 px-1 pl-2"><strong>Min</strong></div>
-<div class="col-3 px-1"><strong>Max</strong></div>
-<div class="col-3 px-1"><strong>Reclass</strong></div>
-</div>
+                <tbody>
+                  {% endcomment %}
+                  <div class="row">
+                    <div class="col-3 px-1 pl-2"><strong>Min</strong></div>
+                    <div class="col-3 px-1"><strong>Max</strong></div>
+                    <div class="col-3 px-1"><strong>Reclass</strong></div>
+                  </div>
 
-{% for form in precipitation_reclass_formset %}
+                  {% for form in precipitation_reclass_formset %}
 
-<div id="precip_reclass_formset" class="row">
-<div class="col-3 px-1 pl-2">
-{{ form.min_value|as_crispy_field }}
-</div>
-<div class="col-3 px-1">
-{{ form.max_value|as_crispy_field }}
-</div>
-<div class="col-3 px-1">
-{{ form.reclass|as_crispy_field }}
-</div>
-</div>
+                  <div id="precip_reclass_formset" class="row">
+                    <div class="col-3 px-1 pl-2">
+                      {{ form.min_value|as_crispy_field }}
+                    </div>
+                    <div class="col-3 px-1">
+                      {{ form.max_value|as_crispy_field }}
+                    </div>
+                    <div class="col-3 px-1">
+                      {{ form.reclass|as_crispy_field }}
+                    </div>
+                  </div>
 
-{% comment %} <tr>
-               <td>{{ form.min_value }}</td>
-               <td>{{ form.max_value }}</td>
-               <td>{{ form.reclass }}</td>
-            </tr> {% endcomment %}
+                  {% comment %} <tr>
+                    <td>{{ form.min_value }}</td>
+                    <td>{{ form.max_value }}</td>
+                    <td>{{ form.reclass }}</td>
+                  </tr> {% endcomment %}
 
-{% endfor %}
-{% comment %} </tbody>
-</table> {% endcomment %}
-</div>
+                  {% endfor %}
+                  {% comment %} </tbody>
+              </table> {% endcomment %}
+            </div>
 
-<div id="precip_polynomial_visibility">
-  {% crispy precipitation_polynomial_form %}
-<div id="precip_degree_1" class=" input-group no-gutters" > 
-  <div class="col-2 " > 
-{{ precipitation_polynomial_form.a0|as_crispy_field}}
-  </div>
-  <div class="col-auto px-1 text-center" > 
-  <h3> + </h3>
-  </div>
-  <div class="col-2" > 
-{{ precipitation_polynomial_form.a1|as_crispy_field}}
-  </div>
-  <div class="col-auto px-1 text-right" > 
-  <h3> ( P+ </h3>
-  </div>
-  <div class="col-2" > 
-{{ precipitation_polynomial_form.x1|as_crispy_field}}
-  </div>
-    <div class="col-auto px-1 text-left" > 
-  <h3> )</h3>
-  </div>
-</div>
+            <div id="precip_polynomial_visibility">
+              {% crispy precipitation_polynomial_form %}
+              <div id="precip_degree_1" class=" input-group no-gutters">
+                <div class="col-2 ">
+                  {{ precipitation_polynomial_form.a0|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-center">
+                  <h3> + </h3>
+                </div>
+                <div class="col-2">
+                  {{ precipitation_polynomial_form.a1|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-right">
+                  <h3> ( P+ </h3>
+                </div>
+                <div class="col-2">
+                  {{ precipitation_polynomial_form.x1|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-left">
+                  <h3> )</h3>
+                </div>
+              </div>
 
-<div id="precip_degree_2" class="input-group no-gutters" > 
-  <div class="col-auto offset-2 px-1 text-center" > 
-  <h3> + </h3>
-  </div>
-  <div class="col-2" > 
-{{ precipitation_polynomial_form.a2|as_crispy_field}}
-  </div>
-  <div class="col-auto px-1 text-right" > 
-  <h3> ( P+ </h3>
-  </div>
-  <div class="col-2" > 
-{{ precipitation_polynomial_form.x2|as_crispy_field}}
-  </div>
-    <div class="col-auto px-1 text-left" > 
-  <h3> )<sup>2</sup></h3>
-  </div>
-</div>
+              <div id="precip_degree_2" class="input-group no-gutters">
+                <div class="col-auto offset-2 px-1 text-center">
+                  <h3> + </h3>
+                </div>
+                <div class="col-2">
+                  {{ precipitation_polynomial_form.a2|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-right">
+                  <h3> ( P+ </h3>
+                </div>
+                <div class="col-2">
+                  {{ precipitation_polynomial_form.x2|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-left">
+                  <h3> )<sup>2</sup></h3>
+                </div>
+              </div>
 
-<div id="precip_degree_3" class="input-group no-gutters" > 
-  <div class="col-auto offset-2 px-1 text-center" > 
-  <h3> + </h3>
-  </div>
-  <div class="col-2" > 
-{{ precipitation_polynomial_form.a3|as_crispy_field}}
-  </div>
-  <div class="col-auto px-1 text-right" > 
-  <h3> ( P+ </h3>
-  </div>
-  <div class="col-2" > 
-{{ precipitation_polynomial_form.x3|as_crispy_field}}
-  </div>
-    <div class="col-auto px-1 text-left" > 
-  <h3> )<sup>3</sup></h3>
-  </div>
-</div>
-</div>
-</div>
+              <div id="precip_degree_3" class="input-group no-gutters">
+                <div class="col-auto offset-2 px-1 text-center">
+                  <h3> + </h3>
+                </div>
+                <div class="col-2">
+                  {{ precipitation_polynomial_form.a3|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-right">
+                  <h3> ( P+ </h3>
+                </div>
+                <div class="col-2">
+                  {{ precipitation_polynomial_form.x3|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-left">
+                  <h3> )<sup>3</sup></h3>
+                </div>
+              </div>
+            </div>
+          </div>
 
-<script>
-if ($("#id_weather-precipitation_on").is(':checked')){
+          <script>
+            if ($("#id_weather-precipitation_on").is(':checked')){
     $("#precip_form_visibility").show();}
 else {$("#precip_form_visibility").hide();}
 $(document).ready(function () {
@@ -589,8 +600,8 @@ $(document).ready(function () {
     });
 });
 </script>
-<script>
-if ($("#id_id_precip-method_1").is(':checked')){
+          <script>
+            if ($("#id_id_precip-method_1").is(':checked')){
     $("#precip_polynomial_visibility").hide();}
 else {$("#precip_reclass_visibility").hide();}
 $(document).ready(function () {
@@ -607,8 +618,8 @@ $(document).ready(function () {
 });
 </script>
 
-<script>
-if ($("#id_id_precip_polynomial-degree_1").is(':checked')){
+          <script>
+            if ($("#id_id_precip_polynomial-degree_1").is(':checked')){
     $("#precip_degree_2").hide(); $("#precip_degree_3").hide();}
 if ($("#id_id_precip_polynomial-degree_2").is(':checked')){
     $("#precip_degree_3").hide();}
@@ -626,28 +637,30 @@ $(document).ready(function () {
 </script>
 
 
-</div>
+        </div>
 
 
-  <div class="text-center py-2">
-  <button class="btn btn-info btn-lg" type="submit">Calibrate</button>
-  </div>
-  <div class="text-center">
-<span>Note: This process can take a few hours. We will send you an email when your case study is ready.</span>
-</div>
+        <div class="text-center py-2">
+          <button class="btn btn-info btn-lg" type="submit">Calibrate</button>
+        </div>
+        <div class="text-center">
+          <span>Note: This process can take a few hours. We will send you an email when your case study is ready.</span>
+        </div>
 
-  </div>
-</div>
+      </div>
+    </div>
 
-</form>
+  </form>
 
 </div>
 
 
 <script>
-$(document).ready(function() {
-    $("body").tooltip({ selector: '[data-toggle=tooltip]' });
-});
+  $(document).ready(function () {
+    $("body").tooltip({
+      selector: '[data-toggle=tooltip]'
+    });
+  });
 </script>
 
 
@@ -656,23 +669,23 @@ $(document).ready(function() {
 {% block scripts %}
 <script src="{% static 'js/jquery.formset.js' %}"></script>
 <script>
-    $('div#temp_reclass_formset').formset({
-        prefix: '{{ temperature_reclass_formset.prefix }}',
-        addText: 'Add Row',
-        deleteText: 'remove',
-        addCssClass: 'btn btn-info',
-        deleteCssClass: 'text-light'
-    });
+  $('div#temp_reclass_formset').formset({
+    prefix: '{{ temperature_reclass_formset.prefix }}',
+    addText: 'Add Row',
+    deleteText: 'remove',
+    addCssClass: 'btn btn-info',
+    deleteCssClass: 'text-light'
+  });
 </script>
 
 <script>
-    $('div#precip_reclass_formset').formset({
-        prefix: '{{ precipitation_reclass_formset.prefix }}',
-        addText: 'Add Row',
-        deleteText: 'remove',
-        addCssClass: 'btn btn-info',
-        deleteCssClass: 'text-light'
-    });
+  $('div#precip_reclass_formset').formset({
+    prefix: '{{ precipitation_reclass_formset.prefix }}',
+    addText: 'Add Row',
+    deleteText: 'remove',
+    addCssClass: 'btn btn-info',
+    deleteCssClass: 'text-light'
+  });
 </script>
 
 
