@@ -39,12 +39,6 @@
           </div>
           {% crispy case_study_form %}
 
-          {{ case_study_form.all_plants|as_crispy_field }}
-          {% for error in case_study_form.all_plants.errors %}
-          <div class=" text-danger pt-0" style="font-size:0.8em">
-            <strong>{{ error|escape }}</strong>
-          </div>
-          {% endfor %}
 
           {{ case_study_form.infestation_data|as_crispy_field }}
           {% for error in case_study_form.infestation_data.errors %}
@@ -159,6 +153,13 @@ $(document).ready(function () {
           </div>
           {% endfor %}
 
+          {{ host_form.all_plants|as_crispy_field }}
+          {% for error in host_form.all_plants.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+
           <div class="row no-gutters pt-3">
             <div class="col-auto">
               <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ host_form.mortality_on.help_text }}"
@@ -183,7 +184,15 @@ $(document).ready(function () {
             <div class="col-auto px-2">
               <p style="font-size:1.2em"> {{ mortality_form.user_input.label }} </p>
             </div>
+
           </div>
+          
+          {{ mortality_form.mortality_data|as_crispy_field }}
+          {% for error in mortality_form.mortality_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
 
 
           <script>

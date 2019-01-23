@@ -20,7 +20,7 @@ class CaseStudyForm(forms.ModelForm):
     class Meta:
         model = CaseStudy
         fields = ['name','number_of_pests','number_of_hosts','start_year','end_year','future_years',
-                'time_step','all_plants','infestation_data','use_treatment','treatment_data']
+                'time_step','infestation_data','use_treatment','treatment_data']
 
     def __init__(self, *args, **kwargs):
         super(CaseStudyForm, self).__init__(*args, **kwargs)
@@ -77,7 +77,7 @@ class CaseStudyForm(forms.ModelForm):
         )
 
     def clean(self):
-        self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years','all_plants','infestation_data'])
+        self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years','infestation_data'])
         use_treatment = self.cleaned_data.get('use_treatment')
 
         if use_treatment:
@@ -93,10 +93,10 @@ class HostForm(forms.ModelForm):
 
     class Meta:
         model = Host
-        fields = ['name','score','host_data','mortality_on']
+        fields = ['name','score','host_data','all_plants','mortality_on']
 
     def clean(self):
-        self.fields_required(['name','score','host_data'])
+        self.fields_required(['name','score','host_data','all_plants'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -131,13 +131,13 @@ class MortalityForm(forms.ModelForm):
     fields_required = fields_required_conditionally
     class Meta:
         model = Mortality
-        fields = ['user_input','rate','time_lag']
+        fields = ['user_input','mortality_data','rate','time_lag']
     
     def clean(self):
         user_input = self.cleaned_data.get('user_input')
 
         if user_input:
-            self.fields_required(['rate','time_lag'])
+            self.fields_required(['rate','time_lag','mortality_data'])
         else:
             self.cleaned_data['rate','time_lag'] = ''
 

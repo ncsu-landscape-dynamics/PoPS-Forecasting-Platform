@@ -44,7 +44,7 @@ def create_case_study(request):
         host_form = HostForm(request.POST, request.FILES, prefix="host")
         pest_form = PestForm(request.POST, prefix="pest")
         weather_form = WeatherForm(request.POST, prefix="weather")
-        mortality_form = MortalityForm(request.POST, prefix="mortality")
+        mortality_form = MortalityForm(request.POST, request.FILES, prefix="mortality")
         vector_form = VectorForm(request.POST, prefix="vector")
         wind_form = WindForm(request.POST, prefix="wind")
         seasonality_form = SeasonalityForm(request.POST, prefix="seasonality")
@@ -63,7 +63,7 @@ def create_case_study(request):
             new_weather = weather_form.save(commit=False)
             success = True
             if new_host.mortality_on == True:
-                mortality_form = MortalityForm(request.POST, prefix="mortality")
+                mortality_form = MortalityForm(request.POST, request.FILES, prefix="mortality")
                 if mortality_form.is_valid():
                     print("Mortality form is valid")
                     new_mortality = mortality_form.save(commit=False)
@@ -258,15 +258,80 @@ def create_case_study(request):
 def case_study_submitted(request):
     return render(request, 'pops/case_study_submitted.html',)
 
+import plotly.offline as opy
+import plotly.graph_objs as go
+
 def case_study_details(request, pk):
     case_study = get_object_or_404(CaseStudy, pk=pk)
+    reclass_line=[]
+    
+    # for row in case_study.weather.temperature.temperaturereclass_set.all():
+    #     reclass_line.append(go.Scatter(x=[row.min_value, row.max_value], y=[row.reclass, row.reclass],
+    #         marker = dict(
+    #             size = 10,
+    #             color = 'black',
+    #             line = dict(
+    #                 width = 2,
+    #                 color = 'cyan'
+    #             )
+    #         ),
+    #         line = dict(
+    #                 width = 2,
+    #                 color = 'cyan'
+    #         )
+    #     ))
+    #     reclass_line.append(go.Scatter(x=[row.min_value], y=[row.reclass],        
+    #         marker = dict(
+    #             size = 10,
+    #             color = 'cyan',
+    #             line = dict(
+    #                 width = 2,
+    #                 color = 'cyan'
+    #             )
+    #         ),
+    #     ))
 
-    class CaseStudyAllForm(ModelForm):
-        class Meta:
-            model = CaseStudy
-            fields = '__all__'
+    # graph=opy.plot({
+    #     "data": reclass_line,
+    #     "layout": go.Layout(showlegend= False, 
+    #         xaxis=dict(range=[-50, 50],showgrid=False, tickfont=dict(color='white'),title='Temp',titlefont=dict(color='white')), 
+    #         yaxis=dict(range=[0, 1], showgrid=False, tickfont=dict(color='white'),title='Reclass',titlefont=dict(color='white')), 
+    #         width=300, height=200, 
+    #         paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+    #         margin=go.layout.Margin(
+    #     l=50,
+    #     r=10,
+    #     b=40,
+    #     t=20,
+    #     pad=4
+    # ),
+ 
+    #         ),
+        
+    #     }, auto_open=False, output_type='div', config={"displayModeBar": False}
+    # )
+    return render(request, 'pops/case_study_details.html', {'case_study': case_study})#,'graph':graph})
 
-    data = CaseStudyAllForm(instance=case_study)
-    return render(request, 'pops/case_study_details.html', {'case_study': case_study, 'data': data})
+def plotly_test(request):
+    return render(request, 'pops/plotly_test.html',)
 
+import plotly.offline as opy
+import plotly.graph_objs as go
+
+class Graph(TemplateView):
+    template_name = 'pops/plotly_test.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(Graph, self).get_context_data(**kwargs)
+
+
+        div=opy.plot({
+            "data": [go.Scatter(x=[1, 2, 3, 4], y=[4, 3, 2, 1])],
+            "layout": go.Layout(title="hello world")
+        }, auto_open=False, output_type='div')
+
+
+        context['graph'] = div
+
+        return context
 

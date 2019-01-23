@@ -17,7 +17,6 @@ class CaseStudy(models.Model):
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     number_of_pests = models.PositiveSmallIntegerField(verbose_name = _("number of pests"), help_text="How many pests are in your model system?", blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
     number_of_hosts = models.PositiveSmallIntegerField(verbose_name = _("number of hosts"), help_text="How many hosts are in your model system?", blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
-    all_plants = models.FileField(verbose_name = _("all plant data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True, blank=True)
     start_year = models.PositiveSmallIntegerField(verbose_name = _("first calibration year"), help_text="The first year that you have pest occurence data for calibration.", blank=True, default = 2012, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
     end_year = models.PositiveSmallIntegerField(verbose_name = _("final calibration year"), help_text="The last year that you have pest occurence data for calibration.", blank=True, default = 2018, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
     future_years = models.PositiveSmallIntegerField(verbose_name = _("final model year"), help_text="How many years into the future do you want to simulate?", blank=True, default = 2023, validators = [MinValueValidator(2018), MaxValueValidator(2200)])
@@ -44,6 +43,7 @@ class Host(models.Model):
     score = models.DecimalField(verbose_name = _("score"), help_text="Host score is a value between 0 and 1. 0 has no effect while 1 has maximum effect.", blank=True, max_digits = 5, decimal_places = 2, default = 1, validators = [MinValueValidator(0), MaxValueValidator(1)])
     mortality_on = models.BooleanField(verbose_name = _("mortality"), help_text="Does the host experience mortality as a result of the pest/pathogen?", blank=True)
     host_data = models.FileField(verbose_name = _("host data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, blank=True)
+    all_plants = models.FileField(verbose_name = _("all plant data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True, blank=True)
 
     class Meta:
         verbose_name = _("host")
@@ -56,6 +56,7 @@ class Mortality(models.Model):
 
     host = models.OneToOneField(Host, verbose_name = _("host"), on_delete = models.CASCADE, primary_key=True)
     user_input = models.BooleanField(verbose_name = _("user input"), help_text="Do you want to input the mortality rate and time lag based on your own data/observations? If not these values will be estimated by the model.", default = False, blank=True)
+    mortality_data = models.FileField(verbose_name = _("mortality data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True, blank=True)
     rate = models.DecimalField(verbose_name = _("mortality rate (fraction)"), help_text="What percentage of hosts experience mortality each year from the pest or pathogen?", max_digits = 3, decimal_places = 2, blank=True, null=True, default = 0, validators = [MinValueValidator(0), MaxValueValidator(1)])
     rate_standard_deviation = models.DecimalField(verbose_name = _("mortality rate standard deviation"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null=True)
     time_lag = models.PositiveSmallIntegerField(verbose_name = _("mortality time lag (years)"), help_text="How long after initial infection/infestation (in years) before mortality occurs on average?", blank=True, null=True, default = 2, validators = [MinValueValidator(1), MaxValueValidator(10)])
