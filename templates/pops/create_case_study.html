@@ -173,57 +173,55 @@ $(document).ready(function () {
             </div>
           </div>
 
-          <div id="mortality_form_user_visibility" class="row no-gutters row-eq-height">
-            <div class="col-auto">
-              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ mortality_form.user_input.help_text }}"
-                data-container="body">
-                {{ mortality_form.user_input }}
-                <span class="slider round"></span>
-              </label>
+          <div id="mortality_form_user_visibility">
+            {{ mortality_form.method|as_crispy_field }}
+
+            <div id="mortality_file_form_visibility">
+              {{ mortality_form.mortality_data|as_crispy_field }}
+              {% for error in mortality_form.mortality_data.errors %}
+              <div class=" text-danger pt-0" style="font-size:0.8em">
+                <strong>{{ error|escape }}</strong>
+              </div>
+              {% endfor %}
             </div>
-            <div class="col-auto px-2">
-              <p style="font-size:1.2em"> {{ mortality_form.user_input.label }} </p>
+            <div id="mortality_user_input_form_visibility">
+              {% crispy mortality_form %}
             </div>
-
           </div>
-          
-          {{ mortality_form.mortality_data|as_crispy_field }}
-          {% for error in mortality_form.mortality_data.errors %}
-          <div class=" text-danger pt-0" style="font-size:0.8em">
-            <strong>{{ error|escape }}</strong>
-          </div>
-          {% endfor %}
 
-
+<!--Mortality on/off-->
           <script>
             if ($("#id_host-mortality_on").is(':checked')){
-    $("#mortality_form_user_visibility").show();}
-else {$("#mortality_form_user_visibility").hide();}
-$(document).ready(function () {
-    var ckbox = $('#id_host-mortality_on');
-    $('input').on('click',function () {
-        if (ckbox.is(':checked')) {$("#mortality_form_user_visibility").show(4000);} 
-        else {$("#mortality_form_user_visibility").hide(4000);}
-    });
-});
-</script>
+              $("#mortality_form_user_visibility").show();}
+            else {$("#mortality_form_user_visibility").hide();}
+            $(document).ready(function () {
+                var ckbox = $('#id_host-mortality_on');
+                $('input').on('click',function () {
+                    if (ckbox.is(':checked')) {$("#mortality_form_user_visibility").show(4000);} 
+                    else {$("#mortality_form_user_visibility").hide(4000);}
+                });
+            });
+          </script>
 
-          <div id="mortality_form_visibility">
-            {% crispy mortality_form %}
-          </div>
-
+<!--User input type for mortality-->
           <script>
-            if ($("#id_mortality-user_input").is(':checked')){
-    $("#mortality_form_visibility").show();}
-else {$("#mortality_form_visibility").hide();}
-$(document).ready(function () {
-    var ckbox = $('#id_mortality-user_input');
-    $('input').on('click',function () {
-        if (ckbox.is(':checked')) {$("#mortality_form_visibility").show(4000);} 
-        else {$("#mortality_form_visibility").hide(4000);}
-    });
-});
-</script>
+            if ($("#id_id_mortality-method_0_1").is(':checked')){
+                $("#mortality_user_input_form_visibility").hide();
+                $("#mortality_file_form_visibility").show();}
+            if ($("#id_id_mortality-method_0_2").is(':checked')){
+                $("#mortality_file_form_visibility").hide();
+                $("#mortality_user_input_form_visibility").show();}
+            $(document).ready(function () {
+                $('input').on('click',function () {
+                        if ($("#id_id_mortality-method_0_1").is(':checked')){
+                            $("#mortality_user_input_form_visibility").hide();
+                            $("#mortality_file_form_visibility").show();}
+                        if ($("#id_id_mortality-method_0_2").is(':checked')){
+                            $("#mortality_file_form_visibility").hide();
+                            $("#mortality_user_input_form_visibility").show();}
+                });
+            });
+          </script>
         </div>
 
         <div class="border border-light p-2 my-1">
@@ -365,7 +363,7 @@ $(document).ready(function () {
 
             <div id="temp_polynomial_visibility" class="py-2">
               {% crispy temperature_polynomial_form %}
-                  <h4>Temperature Coefficient = </h4>
+              <h4>Temperature Coefficient = </h4>
 
               <div id="temp_degree_1" class=" input-group no-gutters">
                 <div class="col-2 ">

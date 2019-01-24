@@ -131,15 +131,18 @@ class MortalityForm(forms.ModelForm):
     fields_required = fields_required_conditionally
     class Meta:
         model = Mortality
-        fields = ['user_input','mortality_data','rate','time_lag']
+        fields = ['method','mortality_data','rate','time_lag']
+        widgets = {'method': forms.RadioSelect,}
     
     def clean(self):
-        user_input = self.cleaned_data.get('user_input')
-
-        if user_input:
-            self.fields_required(['rate','time_lag','mortality_data'])
-        else:
-            self.cleaned_data['rate','time_lag'] = ''
+        self.fields_required(['method'])
+        method = self.cleaned_data.get('method')
+        if method:
+            if method == "USER":
+                print('method true')
+                self.fields_required(['rate','time_lag'])
+            else:
+                self.fields_required(['mortality_data'])
 
         return self.cleaned_data
 
