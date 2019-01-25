@@ -13,8 +13,23 @@ from .forms import *
 
 #@login_required
 def create_case_study(request):
-    custom_error = []
+    '''
+    Overview of case study creation form:
 
+    If request is GET, create an empty instance of all forms, add to context dict, pass to
+    the template.
+
+    If request is POST, create instance of forms with request.POST (and request.FILES, if needed) 
+    data. Check validity of required forms and save (with commit=False). Check for conditionally
+    required forms, then check the validity of conditionally required forms and save (with commit=
+    False). IF all required forms (including conditionally required forms) pass validation, 
+    save forms AND set foreign keys, then redirect the user to a page detailing the case study. 
+    IF any required form fails validation, pass the request.POST data (which now includes error 
+    fields) back to the form template so that the user can correct any mistakes.
+    '''
+    custom_error = []
+    
+    #Initialize all of the forms
     case_study_form = CaseStudyForm(prefix="cs")
     host_form = HostForm(prefix="host")
     mortality_form = MortalityForm(prefix="mortality")
@@ -31,15 +46,29 @@ def create_case_study(request):
     precipitation_polynomial_form = PrecipitationPolynomialForm(prefix="precip_polynomial")
     precipitation_reclass_formset = PrecipitationReclassFormSet(queryset=PrecipitationReclass.objects.none(), prefix="precip_reclass")
     temperature_reclass_formset = TemperatureReclassFormSet(queryset=TemperatureReclass.objects.none(), prefix="temp_reclass")
-
+    #If the user has submitted the form
     if request.method == "POST":
-        
+        '''
+        Create empty arrays to track models that need to be saved after all models pass validation.
+        They are assigned to an array based on the Foreign Key that needs to be addded (e.g. mortality
+        has a foreign key to host, so it would be added to host_success_models).
+        '''
         host_success_models = []
         pest_success_models = []
         weather_success_models = []
         temperature_success_models = []
         precipitation_success_models = []
+        '''
+        Create instances of the forms populated with the request data 
+        (i.e. the data entered by the user).
+        
+        Note: Doing this checks for errors and adds the errors to the form. This way
+        if there are any errors in the forms, ALL errors get passed back to the user
+        if any of the forms fail in the series of IF statements below.
 
+        Note: Any form that contains a file field needs to be passed request.FILES
+        in addition to request.POST.
+        '''
         case_study_form = CaseStudyForm(request.POST, request.FILES, prefix="cs")
         host_form = HostForm(request.POST, request.FILES, prefix="host")
         pest_form = PestForm(request.POST, prefix="pest")
@@ -55,13 +84,34 @@ def create_case_study(request):
         precipitation_polynomial_form = PrecipitationPolynomialForm(request.POST, prefix="precip_polynomial")
         precipitation_reclass_formset = PrecipitationReclassFormSet(request.POST, prefix="precip_reclass")
         temperature_reclass_formset = TemperatureReclassFormSet(request.POST, prefix="temp_reclass")
+        '''
+        In the model schema: host, pest, and weather have foreign keys (or M2M) to case study. These
+        forms are all required. All other forms are conditionally required based on selections in the
+        main forms. Therefore, we want to check if the main 4 are valid, and get their data to see
+        what other forms are required. We do this by saving an instance of the form, however, we
+        set commit=False because we do NOT want to save it to the database YET. We only want to save
+        the forms to the database if ALL forms are valid. After we check the validity of all the other
+        forms, we can then save all the forms.
 
+        Based on the data in the forms, we determine what other forms are required and check
+        the validity of those forms (i.e. if host.mortality_on == True, then we need to check
+        the validity of the Mortality form and save it (with commit=False) if it is
+        valid. Otherwise we ignore it).
+
+        Running .is_valid() cleans and validates the data using Django's default cleaning and 
+        validation methods based on the field type. It also does any custom cleaning or validation
+        in the clean method in forms.py. 
+
+        We track whether any forms failed validation by setting success=False for any failed validation.
+        '''
         if case_study_form.is_valid() and host_form.is_valid() and pest_form.is_valid() and weather_form.is_valid():
             new_case_study = case_study_form.save(commit=False)
             new_host = host_form.save(commit=False)
             new_pest = pest_form.save(commit=False)
             new_weather = weather_form.save(commit=False)
+
             success = True
+
             if new_host.mortality_on == True:
                 mortality_form = MortalityForm(request.POST, request.FILES, prefix="mortality")
                 if mortality_form.is_valid():
@@ -70,6 +120,7 @@ def create_case_study(request):
                     host_success_models.append(new_mortality)
                 else:
                     success = False
+                    custom_error.append("Error in mortality.")
                     print("Mortality form is INVALID")
 
             if new_pest.vector_born == True:
@@ -124,8 +175,6 @@ def create_case_study(request):
                             instances = temperature_reclass_formset.save(commit=False)
                             for instance in instances:
                                 temperature_success_models.append(instance)
-                                # instance.precipitation = new_precipitation
-                                # instance.save()
                                 print("instance stuff happened")
                                 print(instance.min_value)
                         else:
@@ -157,14 +206,11 @@ def create_case_study(request):
                             instances = precipitation_reclass_formset.save(commit=False)
                             for instance in instances:
                                 precipitation_success_models.append(instance)
-                                # instance.precipitation = new_precipitation
-                                # instance.save()
                                 print("instance stuff happened")
                                 print(instance.min_value)
                         else:
                             success = False
                             print("Precip reclass formset form is INVALID")
-
                     if new_precipitation.method == "POLYNOMIAL":
                         precipitation_polynomial_form = PrecipitationPolynomialForm(request.POST, prefix="precip_polynomial")
                         if precipitation_polynomial_form.is_valid():
@@ -179,6 +225,15 @@ def create_case_study(request):
                     print("Precipitation form is INVALID")
         else:
             success = False
+
+        '''
+        If all forms pass validation (i.e. success=True), then we can save all of the forms to the
+        database.
+
+        We also need to set the Foreign Key assignments. Host, Pest and Weather receive the
+        Case Study FK. All other forms receive a FK based on host, pest, weather, temp or precip.
+        These foreign keys are assigned in a loop and each model is saved to the Database.
+        '''    
         if success:
             print("Success!")
             print(success)
@@ -204,35 +259,18 @@ def create_case_study(request):
             for model in precipitation_success_models:
                 model.precipitation = new_precipitation
                 model.save()
-            # if precipitation_reclass_formset.is_valid():
-            #     print("Precip Reclass formset is valid")
-            #     print(precipitation_reclass_formset)
-            #     instances = precipitation_reclass_formset.save(commit=False)
-            #     for instance in instances:
-            #         instance.precipitation = new_precipitation
-            #         instance.save()
-            #         print("instance stuff happened")
-            #         print(instance.min_value)
-
-                    # min_value = form.cleaned_data.get('min_value')
-                    # print(min_value)
-                    # max_value = form.cleaned_data.get('max_value')
-                    # print(max_value)
-                    # reclass = form.cleaned_data.get('reclass')
-                    # print(reclass)
-                    # if min_value and max_value and reclass:
-                    #     new_precip_reclass.append(PrecipitationReclass(precipitation = new_precipitation, min_value=min_value, max_value=max_value, reclass=reclass))
-                    # print("Precip Reclass form appended to success models")
-                    # print(new_precip_reclass)
-                    # PrecipitationReclass.objects.bulk_create(new_precip_reclass)
-
+            #If successful, send the user to a page showing all of the case study details.
             return redirect('case_study_details', pk=new_case_study.pk)
         else:
+            '''
+            If any of the forms failed, create an error message and send the user
+            back to the forms page with the errors.
+            '''
             print("Something went wrong.")
             custom_error.append("Please correct the errors below:")
     else:
         print("Not a POST")
-
+    #Context is a dictionary of data to pass to the template
     context = {
         'case_study_form': case_study_form,
         'host_form': host_form,

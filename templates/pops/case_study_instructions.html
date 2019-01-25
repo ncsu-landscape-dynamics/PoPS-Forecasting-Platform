@@ -25,7 +25,6 @@
                             <li><a class="toc-link" href="#time-step">Time step</a></li>
                             <li><a class="toc-link" href="#number-pests">Number of pests</a></li>
                             <li><a class="toc-link" href="#number-hosts">Number of hosts</a></li>
-                            <li><a class="toc-link" href="#all-plants">All plant data</a></li>
                             <li><a class="toc-link" href="#infestation-data">Infestation data</a></li>
                             <li><a class="toc-link" href="#use-treatments">Prior treatments</a>
                                 <ul>
@@ -53,11 +52,16 @@
                             <li><a class="toc-link" href="#host-common-name">Host common name</a></li>
                             <li><a class="toc-link" href="#host-score">Score</a></li>
                             <li><a class="toc-link" href="#host-data">Host data</a></li>
+                            <li><a class="toc-link" href="#all-plants">All plant data</a></li>
                             <li><a class="toc-link" href="#mortality-on">Mortality</a>
                                 <ul>
-                                    <li><a class="toc-link" href="#user-input">User input</a></li>
-                                    <li><a class="toc-link" href="#mortality-rate">Mortality rate</a></li>
-                                    <li><a class="toc-link" href="#mortality-time-lag">Mortality time lag</a></li>
+                                    <li><a class="toc-link" href="#mortality-method">Mortality method</a>
+                                        <ul>
+                                            <li><a class="toc-link" href="#mortality-data">Mortality data</a></li>
+                                            <li><a class="toc-link" href="#mortality-rate">Mortality rate</a></li>
+                                            <li><a class="toc-link" href="#mortality-time-lag">Mortality time lag</a></li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>
@@ -210,13 +214,14 @@
                         <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>, <strong>field_type:</strong>
                             choice, <strong>options</strong>: Month, Week, Day</div>
                         <div class="field-description card-text">
-                            The time step is the frequency with which the PoPS model runs during a simulation year. The options
+                            The time step is the frequency with which the PoPS model runs during a simulation year. The
+                            options
                             for time step are: Month, Week, Day. A month time step will run much faster
                             than a day time step because the model is running fewer iterations. <br>
                             <strong>We recommend
                                 you choose the largest time step that is biologically relevant to
                                 your system.</strong> For example, if your insect has multiple generations in a year
-                                then set the timestep to close to length of the generation.
+                            then set the timestep to close to length of the generation.
                         </div>
                         <div class="example"><em>Example:</em> Month
                         </div>
@@ -259,25 +264,6 @@
                                 hosts is limited to 1. Future versions will include multiple
                                 hosts.</em></div>
                         <div class="example"><em>Example:</em> 1
-                        </div>
-                    </div>
-                </div>
-
-                <div class="field-container card">
-                    <div class="card-body">
-                        <div class="row justify-content-between">
-                            <div class="col-auto d-inline ">
-                                <h3 id="all-plants" class="field-name card-title">All plant data</h3>
-                            </div>
-                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
-                        </div>
-                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
-                            <strong>field_type</strong>: file field, <strong>format</strong>: raster stack</div>
-                        <div class="field-description card-text">
-                            All plant data is a raster file of all plant data in your study area assuming this is available. 
-                            Another viable option is a raster with all values set to the maximum value found in your host data.
-                        </div>
-                        <div class="example"><em>Example:</em> my_plant_data.tif
                         </div>
                     </div>
                 </div>
@@ -368,7 +354,8 @@
                         <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>, <strong>field_type:</strong>
                             choice</div>
                         <div class="field-description card-text">
-                            Select the pest/pathogen for your case study from the list of pests/pathogens that have been used in PoPS.
+                            Select the pest/pathogen for your case study from the list of pests/pathogens that have
+                            been used in PoPS.
                             If your pest/pathogen does not appear in the list, select "Other" and provide the
                             pest/pathogen common name in the <a class="toc-link" href="#pest-common-name">Pest common
                                 name</a> field.
@@ -440,7 +427,8 @@
                                 <li>Exponential</li>
                                 <li>Double Scale Exponential</li>
                             </ol>
-                            Both double scale variants are meant to be used as a proxy for very long human mediated dispersal.
+                            Both double scale variants are meant to be used as a proxy for very long human mediated
+                            dispersal.
                         </div>
                     </div>
                 </div>
@@ -546,7 +534,8 @@
                             <strong>field_type</strong>: decimal, <strong>minimum_value</strong>: 0.0, <strong>maximum_value</strong>:
                             1.0</div>
                         <div class="field-description card-text">Host score is a value between 0.0
-                            and 1.0 that serves as an insects preference for the host or the hosts ability to produce incolum and become infected.</div>
+                            and 1.0 that serves as an insects preference for the host or the hosts ability to produce
+                            incolum and become infected.</div>
                         <div class="example"><em>Example:</em> 0.87
                         </div>
                     </div>
@@ -563,9 +552,31 @@
                         <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
                             <strong>field_type</strong>: file field, <strong>format</strong>: raster stack</div>
                         <div class="field-description card-text">
-                            Host data is a raster file of the number of individuals or groups of individuals per cell in your study area.
+                            Host data is a raster file of the number of individuals or groups of individuals per cell
+                            in your study area.
                         </div>
                         <div class="example"><em>Example:</em> my_host_data.tif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="all-plants" class="field-name card-title">All plant data</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: file field, <strong>format</strong>: raster stack</div>
+                        <div class="field-description card-text">
+                            All plant data is a raster file of all plant data in your study area assuming this is
+                            available.
+                            Another viable option is a raster with all values set to the maximum value found in your
+                            host data.
+                        </div>
+                        <div class="example"><em>Example:</em> my_plant_data.tif
                         </div>
                     </div>
                 </div>
@@ -592,62 +603,103 @@
                         <div class="card-body">
                             <div class="row justify-content-between">
                                 <div class="col-auto d-inline ">
-                                    <h3 id="user-input" class="field-name card-title">User input</h3>
+                                    <h3 id="mortality-method" class="field-name card-title">Mortality rate method</h3>
                                 </div>
                                 <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
                             </div>
                             <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
                                 if <a class="toc-link" href="#mortality-on">Mortality</a> is <strong>On</strong>,
-                                <strong>field_type:</strong> boolean (on/off)</div>
+                                <strong>field_type:</strong> choice</div>
                             <div class="field-description card-text">
-                                Do you wish to provide the mortality rate and time lag for the host?
-                                If the field is
-                                left <strong>Off</strong>, then the PoPS model will calibrate a mortality rate and
-                                time lag.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="sub-field">
-                    <div class="field-container card">
-                        <div class="card-body">
-                            <div class="row justify-content-between">
-                                <div class="col-auto d-inline ">
-                                    <h3 id="mortality-rate" class="field-name card-title">Mortality rate</h3>
-                                </div>
-                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
-                            </div>
-                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
-                                if <a class="toc-link" href="#user-input">User input</a> is <strong>On</strong>,
-                                <strong>field_type</strong>: decimal, <strong>minimum_value</strong>: 0.0, <strong>maximum_value</strong>:
-                                1.0</div>
-                            <div class="field-description card-text">What fraction of hosts
-                                experience mortality each year from the pest or pathogen? For example,
-                                if 32% of hosts experience mortality, then the mortality rate is 0.32.</div>
-                            <div class="example"><em>Example:</em> 0.32
+                                PoPS needs a mortality rate and time lag in order to include mortality
+                                in the simulations. There are two options:
+                                <ol>
+                                    <li><strong>PoPS estimates mortality rate and time lag from user data:</strong>
+                                        In
+                                        this option, the user must supply mortality data in a raster
+                                        file in the Mortality data field.</li>
+                                    <li><strong>User provides mortality rate and time lag.</strong>
+                                        With this option,
+                                        the user directly provides the Mortality rate and Time lag.</li>
+                                </ol>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="sub-field">
-                    <div class="field-container card">
-                        <div class="card-body">
-                            <div class="row justify-content-between">
-                                <div class="col-auto d-inline ">
-                                    <h3 id="mortality-time-lag" class="field-name card-title">Mortality time lag</h3>
+                    <div class="sub-field">
+                        <div class="field-container card">
+                            <div class="card-body">
+                                <div class="row justify-content-between">
+                                    <div class="col-auto d-inline ">
+                                        <h3 id="mortality-data" class="field-name card-title">Mortality data</h3>
+                                    </div>
+                                    <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
                                 </div>
-                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                                <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                    if <a class="toc-link" href="#mortality-method">Mortality rate method</a> is
+                                    <strong>PoPS estimates mortality rate and time lag from user data</strong>,
+                                    <strong>field_type</strong>: decimal, <strong>minimum_value</strong>: 0.0,
+                                    <strong>maximum_value</strong>: 1.0</div>
+                                <div class="field-description card-text">
+                                    Mortality data is a raster stack (single file) of the mortality data
+                                    in your study area (1 layer for each year).
+                                    <em>At least 3 layers (3 years) are required for calibration and validation. </em>
+                                </div>
+                                <div class="example"><em>Example:</em> my_host_mortality.tiff
+                                </div>
                             </div>
-                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
-                                if <a class="toc-link" href="#user-input">User input</a> is <strong>On</strong>,
-                                <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 0, <strong>maximum_value</strong>:
-                                10</div>
-                            <div class="field-description card-text">How long after initial
-                                infection/infestation (in years) before mortality occurs on average? For example,
-                                if mortality typically occurs 2 years after infection, then the mortality time lag is
-                                2.</div>
-                            <div class="example"><em>Example:</em> 2
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-field">
+                    <div class="sub-field">
+                        <div class="field-container card">
+                            <div class="card-body">
+                                <div class="row justify-content-between">
+                                    <div class="col-auto d-inline ">
+                                        <h3 id="mortality-rate" class="field-name card-title">Mortality rate</h3>
+                                    </div>
+                                    <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                                </div>
+                                <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                    if <a class="toc-link" href="#mortality-method">Mortality rate method</a> is
+                                    <strong>User provides
+                                        mortality rate and time lag</strong>,
+                                    <strong>field_type</strong>: decimal, <strong>minimum_value</strong>: 0.0, <strong>maximum_value</strong>:
+                                    1.0</div>
+                                <div class="field-description card-text">What fraction of hosts
+                                    experience mortality each year from the pest or pathogen? For example,
+                                    if 32% of hosts experience mortality, then the mortality rate is 0.32.</div>
+                                <div class="example"><em>Example:</em> 0.32
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-field">
+                    <div class="sub-field">
+                        <div class="field-container card">
+                            <div class="card-body">
+                                <div class="row justify-content-between">
+                                    <div class="col-auto d-inline ">
+                                        <h3 id="mortality-time-lag" class="field-name card-title">Mortality time lag</h3>
+                                    </div>
+                                    <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                                </div>
+                                <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                    if <a class="toc-link" href="#mortality-method">Mortality rate method</a> is
+                                    <strong>User provides
+                                        mortality rate and time lag</strong>,
+                                    <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 0, <strong>maximum_value</strong>:
+                                    10</div>
+                                <div class="field-description card-text">How long after initial
+                                    infection/infestation (in years) before mortality occurs on average? For example,
+                                    if mortality typically occurs 2 years after infection, then the mortality time lag
+                                    is
+                                    2.</div>
+                                <div class="example"><em>Example:</em> 2
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -716,7 +768,7 @@
                                 if <a class="toc-link" href="#wind">Wind</a> is <strong>On</strong>,, <strong>field_type:</strong>
                                 integer, <strong>min_value:</strong> 1, <strong>max_value:</strong> 12
                                 <div class="field-description card-text">
-                                    Select the wind strength (kappa) for your study area. "1" corresponds to a 
+                                    Select the wind strength (kappa) for your study area. "1" corresponds to a
                                     weak wind. "12" corresponds to a strong wind.
                                 </div>
                                 <div class="example"><em>Example:</em> 4
@@ -738,7 +790,8 @@
                         <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
                             <strong>field_type</strong>: boolean (on/off)</div>
                         <div class="field-description card-text">
-                            Does your pest/pathogen only spread during specific periods of the year? This could be due to 
+                            Does your pest/pathogen only spread during specific periods of the year? This could be due
+                            to
                             diapause in insects or poor conditions for inoculum production in a pathogen.
                         </div>
                     </div>
@@ -889,24 +942,29 @@
                                 choice
                                 <div class="field-description card-text">
                                     <p>If temperature affects the reproduction and survival of the pest/pathogen,
-                                    then the PoPS model needs to include the effect of temperature in its calculations.</p>
+                                        then the PoPS model needs to include the effect of temperature in its
+                                        calculations.</p>
                                     <p>PoPS does this by using a "temperature coefficient" to modify reproductive
-                                    and survival rates. Temperature values (in degrees Celsius) are transformed into a 
-                                    coefficient value between 0 and 1. A
-                                    coefficient of "0.0" corresponds to no reproduction and survival. A coefficient of
-                                    "1.0" corresponds to optimal reproduction and survival (i.e. ideal conditions
-                                    for pest/pathogen spread).</p>
-                                    <p>For example, at extremely low temperatures and extremely high temperatures, we expect
-                                    the coefficient to be close to 0.0 for most pests/pathogens. At the pest's 
-                                    ideal temperature, we expect the coefficient to be close to 1.0 </p>
+                                        and survival rates. Temperature values (in degrees Celsius) are transformed
+                                        into a
+                                        coefficient value between 0 and 1. A
+                                        coefficient of "0.0" corresponds to no reproduction and survival. A coefficient
+                                        of
+                                        "1.0" corresponds to optimal reproduction and survival (i.e. ideal conditions
+                                        for pest/pathogen spread).</p>
+                                    <p>For example, at extremely low temperatures and extremely high temperatures, we
+                                        expect
+                                        the coefficient to be close to 0.0 for most pests/pathogens. At the pest's
+                                        ideal temperature, we expect the coefficient to be close to 1.0 </p>
 
-                                    <p>There are two methods to transform raw temperature into a temperature coefficient 
-                                    used by the PoPS model:<p>
-                                    <ol>
-                                            <li><a class="toc-link" href="#temp-reclass">Reclass</a></li>
-                                            <li><a class="toc-link" href="#temp-polynomial">Polynomial</a></li>                                            
-                                    </ol>
-                                    <p>The method used is up to the user. Both methods are described below:</p>
+                                    <p>There are two methods to transform raw temperature into a temperature
+                                        coefficient
+                                        used by the PoPS model:<p>
+                                            <ol>
+                                                <li><a class="toc-link" href="#temp-reclass">Reclass</a></li>
+                                                <li><a class="toc-link" href="#temp-polynomial">Polynomial</a></li>
+                                            </ol>
+                                            <p>The method used is up to the user. Both methods are described below:</p>
                                 </div>
                             </div>
                         </div>
@@ -936,7 +994,8 @@
                                                 reclassification range.</li>
                                             <li><strong>Max temp</strong>: Maximum temperature (in Celsius) for this
                                                 reclassification range.</li>
-                                            <li><strong>Coefficient</strong>: Temperature coefficient for the temperature
+                                            <li><strong>Coefficient</strong>: Temperature coefficient for the
+                                                temperature
                                                 range indicated by Min temp and Max temp.
                                                 Must be a value between 0 and 1. A
                                                 coefficient of "0.0" corresponds to no reproduction and survival. A
@@ -1017,14 +1076,18 @@
                                         <strong>field_type</strong>: decimal
                                         <div class="field-description card-text">
                                             <p>If Polynomial is selected as the Temperature
-                                            coefficient creation method, then the user must provide the 
-                                            coefficients and constants for a polynomial equation to reclassify temperature
-                                            as a coefficient between 0 and 1. A
-                                                coefficient of "0.0" corresponds to no reproduction and survival. A coefficient of
+                                                coefficient creation method, then the user must provide the
+                                                coefficients and constants for a polynomial equation to reclassify
+                                                temperature
+                                                as a coefficient between 0 and 1. A
+                                                coefficient of "0.0" corresponds to no reproduction and survival. A
+                                                coefficient of
                                                 "1.0" corresponds to optimal reproduction and survival (i.e. ideal
                                                 conditions for pest/pathogen spread). </p>
-                                            <p>The user should select the degree of the polynomial from the options (One, Two or Three).
-                                            The number of coefficients and constants depend on the degree of the polynomial.</p>
+                                            <p>The user should select the degree of the polynomial from the options
+                                                (One, Two or Three).
+                                                The number of coefficients and constants depend on the degree of the
+                                                polynomial.</p>
                                             <p><strong>Polynomial degree options and their corresponding equations:</strong></p>
                                             <ul>
                                                 <li>
@@ -1037,10 +1100,13 @@
                                                     x<sub>3</sub>)<sup>3</li>
                                                 </li>
                                             </ul>
-                                            <p>Where "T" is temperature (in degrees Celsius). a<sub>n</sub> and x<sub>n</sub> 
-                                            must be provided by the user. The resulting polynomial should convert temperature (T)
-                                            to a temperature coefficient ranging between 0 and 1. Any values less than 0.0 will
-                                            be reclassed to 0.0. Any value greater than 1.0 will be reclassed to 1.0.<p>
+                                            <p>Where "T" is temperature (in degrees Celsius). a<sub>n</sub> and x<sub>n</sub>
+                                                must be provided by the user. The resulting polynomial should convert
+                                                temperature (T)
+                                                to a temperature coefficient ranging between 0 and 1. Any values less
+                                                than 0.0 will
+                                                be reclassed to 0.0. Any value greater than 1.0 will be reclassed to
+                                                1.0.<p>
                                         </div>
                                         <div class="example"><em>Example:</em><br>
                                             To use a polynomial of the form:
@@ -1050,9 +1116,9 @@
                                             <br>
                                             <div class="row justify-content-center" style="color:white;">
                                                 <div class="col">
-                                                <h4>Temperature Coefficient = </h4>
+                                                    <h4>Temperature Coefficient = </h4>
                                                 </div>
-                                                </div>
+                                            </div>
                                             <div class="row justify-content-center" style="color:white;">
                                                 <div class="col">
                                                     <div id="temp_degree_1" class=" input-group no-gutters">
