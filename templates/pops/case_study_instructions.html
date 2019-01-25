@@ -155,8 +155,7 @@
                             2200</div>
                         <div class="field-description card-text">The first year that you have
                             pest occurence data for calibration. This should
-                            correspond to the first year in the all plants data file
-                            AND host data file.</div>
+                            correspond to the first year in the infestation data file.</div>
                         <div class="example"><em>Example:</em> 2008
                         </div>
                     </div>
@@ -176,8 +175,7 @@
                             2200</div>
                         <div class="field-description card-text">The last year that you have
                             pest occurence data for calibration. This should
-                            correspond to the last year in the all plants data file
-                            AND host data file.</div>
+                            correspond to the last year in the infestation data file.</div>
                         <div class="example"><em>Example:</em> 2016
                         </div>
                     </div>
@@ -221,7 +219,7 @@
                             <strong>We recommend
                                 you choose the largest time step that is biologically relevant to
                                 your system.</strong> For example, if your insect has multiple generations in a year
-                            then set the timestep to close to length of the generation.
+                            then set the timestep close to the length of the generation.
                         </div>
                         <div class="example"><em>Example:</em> Month
                         </div>
@@ -559,10 +557,10 @@
                             <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
                         </div>
                         <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
-                            <strong>field_type</strong>: file field, <strong>format</strong>: raster stack</div>
+                            <strong>field_type</strong>: file field, <strong>format</strong>: raster stack (.tif)</div>
                         <div class="field-description card-text">
-                            Host data is a raster file of the number of individuals or groups of individuals per cell
-                            in your study area.
+                            Host data is a raster file of the number of individual hosts or groups of hosts per cell
+                            in the study area.
                         </div>
                         <div class="example"><em>Example:</em> my_host_data.tif
                         </div>
@@ -578,11 +576,12 @@
                             <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
                         </div>
                         <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
-                            <strong>field_type</strong>: file field, <strong>format</strong>: raster stack</div>
+                            <strong>field_type</strong>: file field, <strong>format</strong>: .tif </div>
                         <div class="field-description card-text">
-                            All plant data is a raster file of all plant data in your study area assuming this is
-                            available.
-                            Another viable option is a raster with all values set to the maximum value found in your
+                            All plant data is a raster file of the study area, where each cell contains
+                            the number of plants (all species), assuming this is
+                            available.   
+                            Another option is a raster with all values set to the maximum value found in the
                             host data.
                         </div>
                         <div class="example"><em>Example:</em> my_plant_data.tif
@@ -601,8 +600,10 @@
                         <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
                             <strong>field_type</strong>: boolean (on/off)</div>
                         <div class="field-description card-text">
-                            Does the host experience mortality as a result of the pest/pathogen?
-                            If so, fill out the following fields.
+                            Does the host experience mortality as a result of the pest/pathogen? To 
+                            include mortality in the PoPS, model the user must provide either (1)
+                            mortality data for the study area or (2) estimates of the mortality rate
+                            and time lag.
                         </div>
                     </div>
                 </div>
@@ -1013,7 +1014,8 @@
                                                 conditions
                                                 for pest/pathogen spread). </li>
                                         </ul>
-                                        The user may add as many rows as is necessary to the Reclass matrix.
+                                        The user must provide at least 2 reclass rows, however, the user may add 
+                                        as many rows as is necessary to the Reclass matrix. 
                                         The user is responsible for providing temperature coefficients for the full
                                         range
                                         of temperatures experienced by the pest/pathogen. Any temperatures not covered

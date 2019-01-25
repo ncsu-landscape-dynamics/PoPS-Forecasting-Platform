@@ -277,13 +277,13 @@
                 <th>reclass</th>
                 </thead>
                 <tbody>
-                {% comment %}
+                {% if case_study.weather.temperature.temperaturereclass_set.all %}
                 {% for row in case_study.weather.temperature.temperaturereclass_set.all %}
                 <tr>
                 <td>{{ row.min_value}}</td><td> {{row.max_value}}</td><td> {{row.reclass}}</td>
                 </tr>
                 {% endfor %}
-                {% endcomment %}
+                {% endif %}
                 </tbody>
                 </table>
                 </td>
@@ -298,11 +298,13 @@
                 <th>reclass</th>
                 </thead>
                 <tbody>
+                {% if case_study.weather.precipitation.precipitationreclass_set.all %}
                 {% for row in case_study.weather.precipitation.precipitationreclass_set.all %}
                 <tr>
                 <td>{{ row.min_value}}</td><td> {{row.max_value}}</td><td> {{row.reclass}}</td>
                 </tr>
                 {% endfor %}
+                {% endif %}
                 </tbody>
                 </table>
                 </td>
