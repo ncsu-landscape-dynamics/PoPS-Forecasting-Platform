@@ -40,10 +40,10 @@ class Host(models.Model):
 
     case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
     name = models.CharField(verbose_name = _("host common name"), help_text="What is the host's common name?", max_length = 150, blank=True)
-    score = models.DecimalField(verbose_name = _("score"), help_text="Host score is a value between 0 and 1. 0 has no effect while 1 has maximum effect.", blank=True, max_digits = 5, decimal_places = 2, default = 1, validators = [MinValueValidator(0), MaxValueValidator(1)])
+    score = models.DecimalField(verbose_name = _("score"), help_text="Host score is a value between 0 and 1. 0 has no effect while 1 has maximum effect. This is for generalist pests with differing host preferences and pathogens with differing host competencies.", blank=True, max_digits = 5, decimal_places = 2, default = 1, validators = [MinValueValidator(0), MaxValueValidator(1)])
     mortality_on = models.BooleanField(verbose_name = _("mortality"), help_text="Does the host experience mortality as a result of the pest/pathogen?", blank=True)
-    host_data = models.FileField(verbose_name = _("host data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, blank=True)
-    all_plants = models.FileField(verbose_name = _("all plant data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True, blank=True)
+    host_data = models.FileField(verbose_name = _("host data"), help_text="Upload your host data as a raster file.", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, blank=True)
+    all_plants = models.FileField(verbose_name = _("all plant data"), help_text="Upload your total plants data as a raster file. This could be all the plants in a cell or all cells could have the value of the maximum number of hosts foound in any cell in your study area.",upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True, blank=True)
 
     class Meta:
         verbose_name = _("host")
@@ -62,7 +62,7 @@ class Mortality(models.Model):
     method = models.CharField(verbose_name = _("mortality rate method"), help_text="Choose a method to determine mortality rate and time lag.", max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "DATA_FILE", blank = False)    
-    mortality_data = models.FileField(verbose_name = _("mortality data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True, blank=True)
+    mortality_data = models.FileField(verbose_name = _("mortality data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, help_text="A single raster file with number of trees that experienced mortality (each year is a layer)", null = True, blank=True)
     rate = models.DecimalField(verbose_name = _("mortality rate (fraction)"), help_text="What percentage of hosts experience mortality each year from the pest or pathogen?", max_digits = 3, decimal_places = 2, blank=True, null=True, default = 0, validators = [MinValueValidator(0), MaxValueValidator(1)])
     rate_standard_deviation = models.DecimalField(verbose_name = _("mortality rate standard deviation"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null=True)
     time_lag = models.PositiveSmallIntegerField(verbose_name = _("mortality time lag (years)"), help_text="How long after initial infection/infestation (in years) before mortality occurs on average?", blank=True, null=True, default = 2, validators = [MinValueValidator(1), MaxValueValidator(10)])
@@ -308,7 +308,7 @@ class LethalTemperature(models.Model):
     weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
     month = models.PositiveSmallIntegerField(verbose_name = _("month in which lethal temperature occurs"), help_text="What month does your lethal temperature occur?", choices = MONTH, default = 1, blank=False)
     value = models.DecimalField(verbose_name = _("lethal temperature"), help_text="What is the lethal temperature at which pest/pathogen mortality occurs?", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(50)])
-    lethal_temperature_data = models.FileField(verbose_name = _("lethal temperature data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
+    lethal_temperature_data = models.FileField(verbose_name = _("lethal temperature data"), help_text="Upload your letah temperature data as a raster file (1 file with a layer for each year).", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
 
     class Meta:
         verbose_name = _("lethal temperature")
@@ -327,7 +327,7 @@ class Temperature(models.Model):
     method = models.CharField(verbose_name = _("temperature coefficient creation method"), help_text="Choose a method to transform temperature into a coefficient used by the model. Temperature values are transformed into a value between 0 and 1.", max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "RECLASS", blank = False)
-    temperature_data = models.FileField(verbose_name = _("temperature data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
+    temperature_data = models.FileField(verbose_name = _("temperature data"), help_text="Upload your temperature data as a raster file (1 file with a layer for each timestep).", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
 
     class Meta:
         verbose_name = _("temperature")
@@ -346,7 +346,7 @@ class Precipitation(models.Model):
     method = models.CharField(verbose_name = _("precipitation coefficient creation method"), help_text="Choose a method to transform precipitation into a coefficient used by the model. Precipitation values are transformed into a value between 0 and 1.", max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "RECLASS", blank = False)
-    precipitation_data = models.FileField(verbose_name = _("precipitation data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
+    precipitation_data = models.FileField(verbose_name = _("precipitation data"), help_text="Upload your precipitation data as a raster file (1 file with a layer for each timestep).", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
 
     class Meta:
         verbose_name = _("precipitation")
