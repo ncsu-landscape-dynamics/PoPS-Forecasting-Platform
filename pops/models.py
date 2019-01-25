@@ -19,7 +19,7 @@ class CaseStudy(models.Model):
     number_of_hosts = models.PositiveSmallIntegerField(verbose_name = _("number of hosts"), help_text="How many hosts are in your model system?", blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
     start_year = models.PositiveSmallIntegerField(verbose_name = _("first calibration year"), help_text="The first year that you have pest occurence data for calibration.", blank=True, default = 2012, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
     end_year = models.PositiveSmallIntegerField(verbose_name = _("final calibration year"), help_text="The last year that you have pest occurence data for calibration.", blank=True, default = 2018, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
-    future_years = models.PositiveSmallIntegerField(verbose_name = _("final model year"), help_text="How many years into the future do you want to simulate?", blank=True, default = 2023, validators = [MinValueValidator(2018), MaxValueValidator(2200)])
+    future_years = models.PositiveSmallIntegerField(verbose_name = _("final model year"), help_text="The last year that you want to run the PoPS model (this is in the future).", blank=True, default = 2023, validators = [MinValueValidator(2018), MaxValueValidator(2200)])
     infestation_data = models.FileField(verbose_name = _("infestation data"), help_text="Upload your initial infestation/infection data as a raster file (1 file with a layer for each year). At least 3 years are needed for calibration and validation ", blank=True, upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
     use_treatment = models.BooleanField(verbose_name = _("prior treatments"), help_text="Has management occurred during the time of initial infection/infestation?", default = False)
     treatment_data = models.FileField(verbose_name =  _("prior treatments data"), help_text="Upload the raster file for management actions. 1 file with a layer for each year.", upload_to = settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null=True, blank=True)
@@ -62,7 +62,7 @@ class Mortality(models.Model):
     method = models.CharField(verbose_name = _("mortality rate method"), help_text="Choose a method to determine mortality rate and time lag.", max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "DATA_FILE", blank = False)    
-    mortality_data = models.FileField(verbose_name = _("mortality data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, help_text="A single raster file with number of trees that experienced mortality (each year is a layer)", null = True, blank=True)
+    mortality_data = models.FileField(verbose_name = _("mortality data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, help_text="A single raster file with number of trees that experienced mortality as a result of the pest/pathogen that year (each layer is a year)", null = True, blank=True)
     rate = models.DecimalField(verbose_name = _("mortality rate (fraction)"), help_text="What percentage of hosts experience mortality each year from the pest or pathogen?", max_digits = 3, decimal_places = 2, blank=True, null=True, default = 0, validators = [MinValueValidator(0), MaxValueValidator(1)])
     rate_standard_deviation = models.DecimalField(verbose_name = _("mortality rate standard deviation"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null=True)
     time_lag = models.PositiveSmallIntegerField(verbose_name = _("mortality time lag (years)"), help_text="How long after initial infection/infestation (in years) before mortality occurs on average?", blank=True, null=True, default = 2, validators = [MinValueValidator(1), MaxValueValidator(10)])
@@ -225,7 +225,6 @@ class Wind(models.Model):
 
     weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
     DIRECTION_CHOICES = (
-        ("NONE", "None"),
         ("N", "North"),
         ("NE", "Northeast"),
         ("E", "East"),
@@ -238,7 +237,7 @@ class Wind(models.Model):
     wind_direction = models.CharField(verbose_name = _("wind direction"), help_text="What is the predominate wind direction in your study area?", 
                     max_length = 30,
                     choices = DIRECTION_CHOICES,
-                    default = "NONE", blank = False)
+                    default = "N", blank = False)
     KAPPA_CHOICES = (
             (1, "1"),
             (2, "2"),
@@ -358,9 +357,9 @@ class Precipitation(models.Model):
 class TemperatureReclass(models.Model):
 
     temperature = models.ForeignKey(Temperature, verbose_name = _("temperature"), on_delete = models.CASCADE)
-    min_value = models.DecimalField(verbose_name = _("min"), help_text="Minimum value to reclass from.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(100)])
-    max_value = models.DecimalField(verbose_name = _("max"), help_text="Maximum value to reclass from.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(100)])
-    reclass = models.DecimalField(verbose_name = _("reclass"), help_text="Value to reclass to between 0 and 1.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
+    min_value = models.DecimalField(verbose_name = _("min"), help_text="Minimum temperature (in degrees Celsius) to reclass from.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(100)])
+    max_value = models.DecimalField(verbose_name = _("max"), help_text="Maximum temperature (in degrees Celsius) to reclass from.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(100)])
+    reclass = models.DecimalField(verbose_name = _("reclass"), help_text="Reclass value (between 0 and 1).", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
 
     class Meta:
         verbose_name = _("temperature reclass")
@@ -372,9 +371,9 @@ class TemperatureReclass(models.Model):
 class PrecipitationReclass(models.Model):
 
     precipitation = models.ForeignKey(Precipitation, verbose_name = _("precipitation"), on_delete = models.CASCADE)
-    min_value = models.DecimalField(verbose_name = _("min"), help_text="Minimum value to reclass from.", max_digits = 6, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
-    max_value = models.DecimalField(verbose_name = _("max"), help_text="Maximum value to reclass from.", max_digits = 6, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
-    reclass = models.DecimalField(verbose_name = _("reclass"), help_text="Value to reclass to between 0 and 1.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
+    min_value = models.DecimalField(verbose_name = _("min"), help_text="Minimum precipitation (in millimeters) to reclass from.", max_digits = 6, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
+    max_value = models.DecimalField(verbose_name = _("max"), help_text="Maximum precipitation (in millimeters) to reclass from.", max_digits = 6, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
+    reclass = models.DecimalField(verbose_name = _("reclass"), help_text="Reclass value (between 0 and 1).", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
 
     class Meta:
         verbose_name = _("precipitation reclass")

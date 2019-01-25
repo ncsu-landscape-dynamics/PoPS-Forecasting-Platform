@@ -15,8 +15,30 @@ def fields_required_conditionally(self, fields):
             msg = forms.ValidationError("This field is required.")
             self.add_error(field, msg)
 
+#function to convert "bytes" to human readable file size
+def human_readable_size(num, suffix='B'):
+    for unit in ['','K','M','G']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)
+
+#Validate the files are smaller than the max file size set in settings.py
+def validate_file_size(self, fields):
+    for field in fields:
+        data_file = self.cleaned_data.get(field)
+        if data_file:
+            if data_file.content_type in settings.CASE_STUDY_UPLOAD_FILE_TYPES:
+                if data_file.size > settings.CASE_STUDY_UPLOAD_FILE_MAX_SIZE:
+                    msg = forms.ValidationError("File size must be less than %s. Selected file was: %s" % (human_readable_size(settings.CASE_STUDY_UPLOAD_FILE_MAX_SIZE), human_readable_size(data_file.size)))
+                    self.add_error(field, msg)
+            else:
+                msg = forms.ValidationError("File type must be TIFF (.tif)")
+                self.add_error(field, msg)
+
 class CaseStudyForm(forms.ModelForm):
     fields_required = fields_required_conditionally
+    validate_size = validate_file_size
     class Meta:
         model = CaseStudy
         fields = ['name','number_of_pests','number_of_hosts','start_year','end_year','future_years',
@@ -77,9 +99,20 @@ class CaseStudyForm(forms.ModelForm):
         )
 
     def clean(self):
-        self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years','infestation_data'])
-        use_treatment = self.cleaned_data.get('use_treatment')
 
+        self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years','infestation_data'])
+        self.validate_size(['infestation_data'])
+        first_year = self.cleaned_data.get("start_year")
+        last_year = self.cleaned_data.get("end_year")
+        final_sim_year = self.cleaned_data.get("future_years")
+        if first_year and last_year and final_sim_year:
+            if first_year >= last_year:
+                msg = forms.ValidationError("Final calibration year must be greater than first calibration year.")
+                self.add_error("end_year", msg)
+            if last_year >= final_sim_year:
+                msg = forms.ValidationError("Final model year must be greater than final calibration year.")
+                self.add_error("future_years", msg)
+        use_treatment = self.cleaned_data.get('use_treatment')
         if use_treatment:
             self.fields_required(['treatment_data'])
         else:
@@ -90,13 +123,14 @@ class CaseStudyForm(forms.ModelForm):
 
 class HostForm(forms.ModelForm):
     fields_required = fields_required_conditionally
-
+    validate_size = validate_file_size
     class Meta:
         model = Host
         fields = ['name','score','host_data','all_plants','mortality_on']
 
     def clean(self):
         self.fields_required(['name','score','host_data','all_plants'])
+        self.validate_size(['host_data','all_plants'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -129,6 +163,7 @@ class HostForm(forms.ModelForm):
 
 class MortalityForm(forms.ModelForm):
     fields_required = fields_required_conditionally
+    validate_size = validate_file_size
     class Meta:
         model = Mortality
         fields = ['method','mortality_data','rate','time_lag']
@@ -143,6 +178,7 @@ class MortalityForm(forms.ModelForm):
                 self.fields_required(['rate','time_lag'])
             else:
                 self.fields_required(['mortality_data'])
+                self.validate_size(['mortality_data'])
 
         return self.cleaned_data
 
@@ -494,6 +530,12 @@ class TemperatureReclassForm(forms.ModelForm):
     
     def clean(self):
         self.fields_required(['min_value','max_value','reclass'])
+        min_val = self.cleaned_data.get("min_value")
+        max_val = self.cleaned_data.get("max_value")
+        if min_val and max_val:
+            if min_val >= max_val:
+                msg = forms.ValidationError("Min temp must be less than max temp in each row.")
+                self.add_error("min_value", msg)
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -529,7 +571,7 @@ class TemperatureReclassForm(forms.ModelForm):
                 )
         )
 
-TemperatureReclassFormSet = forms.modelformset_factory(TemperatureReclass, form=TemperatureReclassForm, extra=1)
+TemperatureReclassFormSet = forms.modelformset_factory(TemperatureReclass, form=TemperatureReclassForm, min_num=2)
 
 class PrecipitationReclassForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -540,6 +582,12 @@ class PrecipitationReclassForm(forms.ModelForm):
     
     def clean(self):
         self.fields_required(['min_value','max_value','reclass'])
+        min_val = self.cleaned_data.get("min_value")
+        max_val = self.cleaned_data.get("max_value")
+        if min_val and max_val:
+            if min_val >= max_val:
+                msg = forms.ValidationError("Min precip must be less than max precip in each row.")
+                self.add_error("min_value", msg)
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -575,7 +623,7 @@ class PrecipitationReclassForm(forms.ModelForm):
                 )
         )
 
-PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, extra=1)
+PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, min_num=2)
 
 class TemperaturePolynomialForm(forms.ModelForm):
     fields_required = fields_required_conditionally

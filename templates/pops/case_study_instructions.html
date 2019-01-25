@@ -526,16 +526,25 @@
                     <div class="card-body">
                         <div class="row justify-content-between">
                             <div class="col-auto d-inline ">
-                                <h3 id="score" class="field-name card-title">Score</h3>
+                                <h3 id="host-score" class="field-name card-title">Score</h3>
                             </div>
                             <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
                         </div>
                         <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
                             <strong>field_type</strong>: decimal, <strong>minimum_value</strong>: 0.0, <strong>maximum_value</strong>:
                             1.0</div>
-                        <div class="field-description card-text">Host score is a value between 0.0
-                            and 1.0 that serves as an insects preference for the host or the hosts ability to produce
-                            incolum and become infected.</div>
+                        <div class="field-description card-text">
+                            <p>Host score is a value between 0.0
+                            and 1.0 that serves as an indication of the pest's (or pathogen's) preference 
+                            for the host (or the host's ability to produce
+                            inoculum and become infected). Host score should be 1.0 in a single host 
+                            system. In a multi-host system, host score provides a way to differentiate
+                            the pest's preference for the hosts. </p>
+                            <p>For example, in a 2-host system, Host 1 could have a host score of 1.0,
+                            and Host 2 could have a host score of 0.5. This would indicated
+                            that the pest's preference for Host 1 is 2x's greater than its preference
+                            for Host 2 (or that Host 1 produces 2x's as much inoculum as Host 2). </p>
+                            </div>
                         <div class="example"><em>Example:</em> 0.87
                         </div>
                     </div>
