@@ -379,7 +379,7 @@
             <div id="temp_polynomial_visibility" class="py-2">
               <!--Polynomial degree-->
               {% crispy temperature_polynomial_form %}
-              <h4>Temperature Coefficient = </h4>
+              <h5>Temperature Coefficient = </h5>
               <!--Degree 1 coefficients-->
               <div id="temp_degree_1" class=" input-group no-gutters">
                 <div class="col-2 ">
@@ -537,6 +537,7 @@
             <div id="precip_polynomial_visibility">
               <!--Polynomial degree form-->
               {% crispy precipitation_polynomial_form %}
+              <h5>Precipitation Coefficient = </h5>
               <!--Degree 1 form-->
               <div id="precip_degree_1" class=" input-group no-gutters">
                 <div class="col-2 ">
@@ -651,10 +652,10 @@
 
         <!--Submit button for form-->
         <div class="text-center py-2">
-          <button class="btn btn-info btn-lg" type="submit">Calibrate</button>
+          <button class="btn btn-info btn-lg" type="submit">Next</button>
         </div>
         <div class="text-center">
-          <span>Note: This process can take a few hours. We will send you an email when your case study is ready.</span>
+          <span>Note: You will be able to review your case study on the next page before submitting for calibration.</span>
         </div>
 
       </div>

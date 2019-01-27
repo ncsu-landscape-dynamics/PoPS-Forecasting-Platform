@@ -208,11 +208,11 @@ class InfectedToDiseased(models.Model):
 class Weather(models.Model):
 
     case_study = models.OneToOneField(CaseStudy, verbose_name = _("case study"), on_delete = models.CASCADE, primary_key=True)
-    wind_on = models.BooleanField(verbose_name = _("use wind"), help_text="Does wind strongly affect the spread of your pest/pathogen and do you have a predominate wind direction and strength?", default = False)
-    seasonality_on = models.BooleanField(verbose_name = _("use seasonality"), help_text="Does your pest/pathogen not spread during part of the year?", default = False)
-    lethal_temp_on = models.BooleanField(verbose_name = _("use lethal temp"), help_text="Does your pest/pathogen experience mortality due to extreme temperature conditions?", default = False)
-    temp_on = models.BooleanField(verbose_name = _("use temp"), help_text="Does temperature affect the reproduction and survival of your pest/pathogen?", default = False)
-    precipitation_on = models.BooleanField(verbose_name = _("use precipitation"), help_text="Does precipitation affect the reproduction and survival of your pest/pathogen?", default = False)
+    wind_on = models.BooleanField(verbose_name = _("wind"), help_text="Does wind strongly affect the spread of your pest/pathogen and do you have a predominate wind direction and strength?", default = False)
+    seasonality_on = models.BooleanField(verbose_name = _("seasonality"), help_text="Does your pest/pathogen not spread during part of the year?", default = False)
+    lethal_temp_on = models.BooleanField(verbose_name = _("lethal temperature"), help_text="Does your pest/pathogen experience mortality due to extreme temperature conditions?", default = False)
+    temp_on = models.BooleanField(verbose_name = _("temperature"), help_text="Does temperature affect the reproduction and survival of your pest/pathogen?", default = False)
+    precipitation_on = models.BooleanField(verbose_name = _("precipitation"), help_text="Does precipitation affect the reproduction and survival of your pest/pathogen?", default = False)
 
     class Meta:
         verbose_name = _("weather")

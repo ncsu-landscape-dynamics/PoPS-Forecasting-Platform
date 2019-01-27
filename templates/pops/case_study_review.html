@@ -20,6 +20,8 @@
                     If you find any mistakes, click "Edit" to edit the case study.
                 </p>
                 <p>
+                    Note: Calibration and validation can take many hours. You may check on the
+                    progress of your case study on your Account page.
                     If you have any questions, be sure to read the
                     <a class="" href="{% url 'case_study_help' %}">Case Study Help page</a>.
                 </p>
@@ -28,9 +30,9 @@
         <div class="col-sm-4 col-md-4 col-lg-2 pb-4">
             <!--Submit button for form-->
             <div class="text-center p-2">
-                <button class="btn btn-secondary btn-lg btn-block" type="submit">Edit</button>
+                <a class="btn btn-secondary btn-lg btn-block" href="{% url 'case_study_edit' pk=case_study.pk %}" role="button">Edit</a>                
             </div>
-            <!--Submit button for form-->
+            <!--Submit button for form--> 
             <div class="text-center p-2">
                 <button class="btn btn-info btn-lg btn-block" type="submit">Calibrate</button>
             </div>
@@ -369,7 +371,7 @@
             <div class="row justify-content-end pb-4">
                 <div class="col-auto">
                     <div class="d-inline text-center p-2">
-                        <button class="btn btn-secondary btn-lg" type="submit">Edit</button>
+                        <a class="btn btn-secondary btn-lg" href="{% url 'case_study_edit' pk=case_study.pk %}" role="button">Edit</a>                
                     </div>
                     <div class="d-inline text-center p-2">
                         <button class="btn btn-info btn-lg" type="submit">Calibrate</button>
