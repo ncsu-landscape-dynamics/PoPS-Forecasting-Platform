@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
 from django.views.generic import TemplateView
 
 urlpatterns = [
@@ -29,3 +30,9 @@ urlpatterns = [
     path('privacy_policy/', TemplateView.as_view(template_name="privacy_policy.html"), name='privacy_policy'),
 
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

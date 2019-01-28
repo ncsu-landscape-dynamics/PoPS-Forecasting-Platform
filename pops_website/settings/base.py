@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'faq.apps.FaqConfig',
     'crispy_forms',
     'pops.apps.PopsConfig',
+    'debug_toolbar',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'pops_website.urls'
@@ -139,3 +141,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 CASE_STUDY_UPLOAD_FILE_TYPES=['image/tiff']
 CASE_STUDY_UPLOAD_FILE_MAX_SIZE=10240 #Max file size in Bytes (multiply MB by 1024*1024 to get bytes)
+
+INTERNAL_IPS=['127.0.0.1']
