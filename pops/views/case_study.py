@@ -10,8 +10,8 @@ from rest_framework import serializers
 from django.forms import ModelForm, modelform_factory
 from django.db.models import Q
 
-from .models import *
-from .forms import *
+from ..models import *
+from ..forms import *
 
 def testcase(post_data, files_data):
     case_study_form = CaseStudyForm(post_data, files_data, prefix="cs")
