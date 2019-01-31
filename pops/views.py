@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.generic import ListView, DetailView, TemplateView, CreateView
 from django.contrib.auth.decorators import login_required
+from rest_framework import serializers
+from django.forms import ModelForm, modelform_factory
 from django.db.models import Q
 
 from .models import *
@@ -317,57 +319,31 @@ import plotly.offline as opy
 import plotly.graph_objs as go
 import numpy as np
 
+class SomeModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CaseStudy
+        fields = "__all__"
+
+class CaseStudyDetailView(DetailView):
+
+    model = CaseStudy
+    template_name = 'pops/case_study_details.html'
 
 def case_study_details(request, pk):
     case_study = get_object_or_404(CaseStudy, pk=pk)
-    reclass_line=[]
-    
-    # for row in case_study.weather.temperature.temperaturereclass_set.all():
-    #     reclass_line.append(go.Scatter(x=[row.min_value, row.max_value], y=[row.reclass, row.reclass],
-    #         marker = dict(
-    #             size = 10,
-    #             color = 'black',
-    #             line = dict(
-    #                 width = 2,
-    #                 color = 'cyan'
-    #             )
-    #         ),
-    #         line = dict(
-    #                 width = 2,
-    #                 color = 'cyan'
-    #         )
-    #     ))
-    #     reclass_line.append(go.Scatter(x=[row.min_value], y=[row.reclass],        
-    #         marker = dict(
-    #             size = 10,
-    #             color = 'cyan',
-    #             line = dict(
-    #                 width = 2,
-    #                 color = 'cyan'
-    #             )
-    #         ),
-    #     ))
+    class HostSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Host
+            fields = "__all__"
+    class CaseStudySerializer(serializers.ModelSerializer):
+        hosts=HostSerializer(many=True, read_only=True)
+        class Meta:
+            model = CaseStudy
+            fields = "__all__"
+            print(fields)
 
-    # graph=opy.plot({
-    #     "data": reclass_line,
-    #     "layout": go.Layout(showlegend= False, 
-    #         xaxis=dict(range=[-50, 50],showgrid=False, tickfont=dict(color='white'),title='Temp',titlefont=dict(color='white')), 
-    #         yaxis=dict(range=[0, 1], showgrid=False, tickfont=dict(color='white'),title='Reclass',titlefont=dict(color='white')), 
-    #         width=300, height=200, 
-    #         paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-    #         margin=go.layout.Margin(
-    #     l=50,
-    #     r=10,
-    #     b=40,
-    #     t=20,
-    #     pad=4
-    # ),
- 
-    #         ),
-        
-    #     }, auto_open=False, output_type='div', config={"displayModeBar": False}
-    # )
-    return render(request, 'pops/case_study_details.html', {'case_study': case_study})#,'graph':graph})
+    casestudy = CaseStudySerializer(case_study).data
+    return render(request, 'pops/case_study_details.html', {'case_study': case_study, 'casestudy': casestudy })#,'graph':graph})
 
 def case_study_review(request, pk):
     case_study = CaseStudy.objects.select_related('weather').get(pk=pk) #get_object_or_404(CaseStudy, pk=pk)
