@@ -21,6 +21,7 @@ class CaseStudy(models.Model):
     end_year = models.PositiveSmallIntegerField(verbose_name = _("final calibration year"), help_text="The last year that you have pest occurence data for calibration.", blank=True, default = 2018, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
     future_years = models.PositiveSmallIntegerField(verbose_name = _("final model year"), help_text="The last year that you want to run the PoPS model (this is in the future).", blank=True, default = 2023, validators = [MinValueValidator(2018), MaxValueValidator(2200)])
     infestation_data = models.FileField(verbose_name = _("infestation data"), help_text="Upload your initial infestation/infection data as a raster file (1 file with a layer for each year). At least 3 years are needed for calibration and validation ", blank=True, upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
+    all_plants = models.FileField(verbose_name = _("all plant data"), help_text="Upload your total plants data as a raster file. This could be all the plants in a cell or all cells could have the value of the maximum number of hosts foound in any cell in your study area.",upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True, blank=True)
     use_treatment = models.BooleanField(verbose_name = _("prior treatments"), help_text="Has management occurred during the time of initial infection/infestation?", default = False)
     treatment_data = models.FileField(verbose_name =  _("prior treatments data"), help_text="Upload the raster file for management actions. 1 file with a layer for each year.", upload_to = settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null=True, blank=True)
     MONTH = 'month'
@@ -28,6 +29,16 @@ class CaseStudy(models.Model):
     DAY = 'day'
     TIME_STEP_CHOICES = ((MONTH, 'Month'), (WEEK, 'Week'), (DAY, 'Day'))
     time_step = models.CharField(verbose_name = _("time step"), default = "Month", max_length = 50, choices = TIME_STEP_CHOICES, help_text='Select a time step for your simulation:')
+    staff_approved = models.BooleanField(verbose_name = _("approved by staff"), help_text="Sample help text.", default = False)
+    STATUS_CHOICES = (
+        ("NO START", "Not started"),
+        ("IN PROGRESS", "In progress"),
+        ("FAILED", "Failed"),
+        ("SUCCESS", "Successful"),
+    )
+    calibration_status = models.CharField(verbose_name = _("calibration status"), help_text="What type of model do you want to use?", max_length = 20,
+                    choices = STATUS_CHOICES,
+                    default = "NO START", blank=True)
 
     class Meta:
         verbose_name = _("case study")
@@ -36,6 +47,25 @@ class CaseStudy(models.Model):
     def __str__(self):
         return self.name
 
+    def get_string_fields(self):
+        # list of some excluded fields
+        excluded_fields = ['']
+
+        # getting all fields that available in `Client` model,
+        # but not in `excluded_fields`
+        field_names = [field.name for field in CaseStudy._meta.get_fields() 
+                       if field.name not in excluded_fields]
+        values = []
+        for field_name in field_names:
+            pass
+            # get specific value from instanced object.
+            # and outputing as `string` value.
+            #values.append('%s' % getattr(self, field_name))
+
+        # joining all string values.
+        return field_names
+
+
 class Host(models.Model):
 
     case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
@@ -43,7 +73,6 @@ class Host(models.Model):
     score = models.DecimalField(verbose_name = _("score"), help_text="Host score is a value between 0 and 1. 0 has no effect while 1 has maximum effect. This is for generalist pests with differing host preferences and pathogens with differing host competencies.", blank=True, max_digits = 5, decimal_places = 2, default = 1, validators = [MinValueValidator(0), MaxValueValidator(1)])
     mortality_on = models.BooleanField(verbose_name = _("mortality"), help_text="Does the host experience mortality as a result of the pest/pathogen?", blank=True)
     host_data = models.FileField(verbose_name = _("host data"), help_text="Upload your host data as a raster file.", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, blank=True)
-    all_plants = models.FileField(verbose_name = _("all plant data"), help_text="Upload your total plants data as a raster file. This could be all the plants in a cell or all cells could have the value of the maximum number of hosts foound in any cell in your study area.",upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True, blank=True)
 
     class Meta:
         verbose_name = _("host")
@@ -140,6 +169,7 @@ class Vector(models.Model):
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
     common_name = models.CharField(verbose_name = _("vector common name"), help_text="What is the common name of the vector?", max_length = 150, blank=True)
     scientific_name = models.CharField(verbose_name = _("vector scientific name"), help_text="What is the scientific name of the vector?", max_length = 150, blank=True)
+    vector_data = models.FileField(verbose_name = _("vector data"), help_text="Upload your vector data as a raster file.",upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True, blank=True)
     vector_to_host_transmission_rate = models.DecimalField(verbose_name = _("vector to host transmission rate"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null = True)
     vector_to_host_transmission_rate_standard_deviation = models.DecimalField(verbose_name = _("vector to host transmission rate standard deviation"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null=True)
     host_to_vector_transmission_rate = models.DecimalField(verbose_name = _("host to vector transmission rate"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null = True)
@@ -303,8 +333,13 @@ class LethalTemperature(models.Model):
             (11, "November"),
             (12, "December"),
         )
+    LETHAL_TYPE = (
+            ('COLD', "Cold"),
+            ('HOT', "Hot"),
+        )
 
     weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
+    lethal_type = models.CharField(verbose_name = _("lethal temperature type"), help_text="Is your pest killed by hot or cold temperatures?", choices = LETHAL_TYPE, max_length = 4, default = "COLD", blank=False)
     month = models.PositiveSmallIntegerField(verbose_name = _("month in which lethal temperature occurs"), help_text="What month does your lethal temperature occur?", choices = MONTH, default = 1, blank=False)
     value = models.DecimalField(verbose_name = _("lethal temperature"), help_text="What is the lethal temperature at which pest/pathogen mortality occurs?", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(50)])
     lethal_temperature_data = models.FileField(verbose_name = _("lethal temperature data"), help_text="Upload your letah temperature data as a raster file (1 file with a layer for each year).", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)

@@ -42,7 +42,7 @@ class CaseStudyForm(forms.ModelForm):
     class Meta:
         model = CaseStudy
         fields = ['name','number_of_pests','number_of_hosts','start_year','end_year','future_years',
-                'time_step','infestation_data','use_treatment','treatment_data']
+                'time_step','infestation_data','all_plants','use_treatment','treatment_data']
 
     def __init__(self, *args, **kwargs):
         super(CaseStudyForm, self).__init__(*args, **kwargs)
@@ -100,8 +100,8 @@ class CaseStudyForm(forms.ModelForm):
 
     def clean(self):
 
-        self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years','infestation_data'])
-        self.validate_size(['infestation_data'])
+        self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years','infestation_data','all_plants'])
+        self.validate_size(['infestation_data','all_plants'])
         first_year = self.cleaned_data.get("start_year")
         last_year = self.cleaned_data.get("end_year")
         final_sim_year = self.cleaned_data.get("future_years")
@@ -126,11 +126,11 @@ class HostForm(forms.ModelForm):
     validate_size = validate_file_size
     class Meta:
         model = Host
-        fields = ['name','score','host_data','all_plants','mortality_on']
+        fields = ['name','score','host_data','mortality_on']
 
     def clean(self):
-        self.fields_required(['name','score','host_data','all_plants'])
-        self.validate_size(['host_data','all_plants'])
+        self.fields_required(['name','score','host_data'])
+        self.validate_size(['host_data'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -230,6 +230,7 @@ class PestForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PestForm, self).__init__(*args, **kwargs)
+        self.fields['pest_information'].queryset = PestInformation.objects.filter(staff_approved=True)
         for field in self.fields:
             help_text = self.fields[field].help_text
             input_type=self.fields[field].widget.__class__.__name__
@@ -270,13 +271,14 @@ class PestForm(forms.ModelForm):
 
 class VectorForm(forms.ModelForm):
     fields_required = fields_required_conditionally
-    
+    validate_size = validate_file_size
     class Meta:
         model = Vector
-        fields = ['common_name','scientific_name']
+        fields = ['common_name','scientific_name','vector_data']
     
     def clean(self):
-        self.fields_required(['common_name','scientific_name'])
+        self.fields_required(['common_name','scientific_name','vector_data'])
+        self.validate_size(['vector_data'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -428,10 +430,10 @@ class LethalTemperatureForm(forms.ModelForm):
 
     class Meta:
         model = LethalTemperature
-        fields = ['month','value']
+        fields = ['lethal_type','month','value']
 
     def clean(self):
-        self.fields_required(['month','value'])
+        self.fields_required(['lethal_type','month','value'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -449,6 +451,7 @@ class LethalTemperatureForm(forms.ModelForm):
         self.helper.label_class = ''
         self.helper.field_class = ''
         self.helper.layout = Layout(
+            InlineRadios('lethal_type'),
                 Row(
                     Div(
                         Field('month'),

@@ -11,9 +11,32 @@
 
 <div class="container py-4">
 
-    <h2 id="top-of-page" class="text-center">Case Study Instructions</h2>
+    <h2 id="top-of-page" class="text-center">Case Study Help</h2>
     <div class="row justify-content-center">
         <div class="col-md-12 col-lg-10 col-xl-8">
+            <div class="alert alert-info">
+            <p>
+                <strong>Welcome to the Case Study Help page!</strong> This page 
+                provides details about the fields in the 
+                <a class="" href="{% url 'create_case_study' %}">Create Case Study</a> form.
+                </p>
+                <p>
+                A case study is a model that describes a pest/pathogen system
+                for a desired geographic region and time period. 
+                To create a case study, the user must provide historical infestation/infection data, 
+                host data, weather data, and pest/host qualities. PoPS then uses this information
+                to calibrate and validate case study model parameters.
+                Once a case study is successfully calibrated and validated, a user may use
+                it to run PoPS simulations on the My PoPS page to estimate pest/pathogen
+                spread into the future with or without management scenarios.
+                </p>
+                <p>
+                You do <strong>not</strong> have to create a case study to run the PoPS model. You may run the
+                PoPS model for pre-existing case studies created by the PoPS team. Go to My Account,
+                Create Session, and select a staff-approved case study from the drop-down menu.
+
+            </p>
+            </div>
             <div class="table-of-contents">
                 <ul>
                     <li><a class="toc-link" href="#case-study-details">Case study details</a>

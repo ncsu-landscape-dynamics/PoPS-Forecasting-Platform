@@ -68,7 +68,7 @@
                             <th scope="row">Time step:</th>
                             <td> {{ case_study.time_step }}</td>
                         </tr>
-                        {% for pest in case_study.pest_set.all %}
+                        {% for pest in pests %}
                         <tr class="bg-dark">
                             <th scope="row">PEST {{ forloop.counter }}:</th>
                             <td> {% firstof pest.pest_information pest.name %} </td>
@@ -83,7 +83,7 @@
                         </tr>
 
                         {% endfor %}
-                        {% for host in case_study.host_set.all %}
+                        {% for host in hosts %}
                         <tr class="bg-dark">
                             <th scope="row">HOST {{ forloop.counter }}:</th>
                             <td> {{ host.name }} </td>
@@ -95,7 +95,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                {% for host in case_study.host_set.all %}
+                {% for host in hosts %}
                 <div class="row no-gutters align-items-center">
                     {% include "pops/toggle_switch_disabled.html" with label="Mortality" check_if_true=host.mortality_on %}
                     {% if host.mortality_on %}
@@ -119,7 +119,7 @@
                     </div>
                     {% endif %}
                 </div>
-                {% for pest in case_study.pest_set.all %}
+                {% for pest in pests %}
                 <div class="row no-gutters align-items-center">
                     {% include "pops/toggle_switch_disabled.html" with label="Vector" check_if_true=pest.vector_born %}
                     {% if pest.vector_born %}
@@ -139,18 +139,17 @@
                                 {{ case_study.infestation_data|filename }}
                             </td>
                         </tr>
-
-                        {% for host in case_study.host_set.all %}
+                        <tr>
+                            <th scope="row">All plant data:</th>
+                            <td>
+                                {{ case_study.all_plants|filename }}
+                            </td>
+                        </tr>
+                        {% for host in hosts %}
                         <tr>
                             <th scope="row">Host {{ forloop.counter }} data:</th>
                             <td>
                                 {{ host.host_data|filename }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">All plant data:</th>
-                            <td>
-                                {{ host.all_plants|filename }}
                             </td>
                         </tr>
                         {% if host.mortality_on %}
@@ -172,7 +171,7 @@
                             </td>
                         </tr>
                         {% endif %}
-                        {% for pest in case_study.pest_set.all %}
+                        {% for pest in pests %}
                         {% if pest.vector_born %}
                         <tr>
                             <th scope="row">Vector data:</th>
@@ -215,7 +214,8 @@
                     {% if case_study.weather.lethal_temp_on %}
                     <p>
                         ({{ case_study.weather.lethaltemperature.get_month_display }},
-                        {{ case_study.weather.lethaltemperature.value }} &#8451)
+                        {{ case_study.weather.lethaltemperature.value }} &#8451,
+                        {{ case_study.weather.lethaltemperature.get_lethal_type_display }})
                     </p>
                     {% endif %}
                 </div>

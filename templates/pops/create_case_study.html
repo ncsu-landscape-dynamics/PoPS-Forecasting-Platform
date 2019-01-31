@@ -19,7 +19,7 @@
         <div class="alert alert-warning">
           <p>
             <strong>Welcome to the create case study page!</strong> Please be sure to read the
-            <a class="" href="{% url 'case_study_help' %}">Case Study Help</a> before getting started.
+            <a class="" href="{% url 'case_study_help' %}">Case Study Help page</a> before getting started.
           </p>
         </div>
 
@@ -44,6 +44,13 @@
           <!--Infestation data file field-->
           {{ case_study_form.infestation_data|as_crispy_field }}
           {% for error in case_study_form.infestation_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+          <!--All plants data file field-->
+          {{ case_study_form.all_plants|as_crispy_field }}
+          {% for error in case_study_form.all_plants.errors %}
           <div class=" text-danger pt-0" style="font-size:0.8em">
             <strong>{{ error|escape }}</strong>
           </div>
@@ -126,6 +133,13 @@
           <!--Vector form (visibility dependent on Vector toggle above)-->
           <div id="vector_form_visibility">
             {% crispy vector_form %}
+          <!--All plants data file field-->
+          {{ vector_form.vector_data|as_crispy_field }}
+          {% for error in vector_form.vector_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
           </div>
           <!--Vector visibility javascript (hides vector form based on toggle)-->
           <script>
@@ -153,13 +167,6 @@
           <!--Host data file field-->
           {{ host_form.host_data|as_crispy_field }}
           {% for error in host_form.host_data.errors %}
-          <div class=" text-danger pt-0" style="font-size:0.8em">
-            <strong>{{ error|escape }}</strong>
-          </div>
-          {% endfor %}
-          <!--All plants data file field-->
-          {{ host_form.all_plants|as_crispy_field }}
-          {% for error in host_form.all_plants.errors %}
           <div class=" text-danger pt-0" style="font-size:0.8em">
             <strong>{{ error|escape }}</strong>
           </div>

@@ -79,7 +79,7 @@ def create_case_study(request):
         pest_form = PestForm(request.POST, prefix="pest")
         weather_form = WeatherForm(request.POST, prefix="weather")
         mortality_form = MortalityForm(request.POST, request.FILES, prefix="mortality")
-        vector_form = VectorForm(request.POST, prefix="vector")
+        vector_form = VectorForm(request.POST, request.FILES, prefix="vector")
         wind_form = WindForm(request.POST, prefix="wind")
         seasonality_form = SeasonalityForm(request.POST, prefix="seasonality")
         lethal_temp_form = LethalTemperatureForm(request.POST, prefix="lethal_temp")
@@ -129,7 +129,6 @@ def create_case_study(request):
                     print("Mortality form is INVALID")
 
             if new_pest.vector_born == True:
-                vector_form = VectorForm(request.POST, prefix="vector")
                 if vector_form.is_valid():
                     print("Vector form is valid")
                     new_vector = vector_form.save(commit=False)
@@ -358,9 +357,13 @@ def case_study_details(request, pk):
     return render(request, 'pops/case_study_details.html', {'case_study': case_study})#,'graph':graph})
 
 def case_study_review(request, pk):
-    case_study = get_object_or_404(CaseStudy, pk=pk)
+    case_study = CaseStudy.objects.select_related('weather').get(pk=pk) #get_object_or_404(CaseStudy, pk=pk)
+    hosts = Host.objects.filter(case_study__pk=pk)
+    pests = Pest.objects.filter(case_study__pk=pk).select_related('pest_information')
     context={}
     context['case_study'] = case_study
+    context['hosts'] = hosts
+    context['pests'] = pests
     temp_data=[]
     precip_data=[]
     if case_study.weather.temp_on:
