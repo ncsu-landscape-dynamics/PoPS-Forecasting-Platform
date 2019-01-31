@@ -241,6 +241,7 @@ def create_case_study(request):
         if success:
             print("Success!")
             print(success)
+            new_case_study.created_by = request.user
             new_case_study.save()
             new_host.save()
             new_host.case_study.add(new_case_study)
