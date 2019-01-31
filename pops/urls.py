@@ -10,5 +10,6 @@ urlpatterns = [
     path('case_study/submitted', views.case_study_submitted, name='case_study_submitted'),
     path('case_study/<int:pk>/', views.case_study_details, name='case_study_details'),
     path('case_study/<int:pk>/edit', views.case_study_edit, name='case_study_edit'),
+    path('myaccount', views.CaseStudyListView.as_view(), name='case-study-list'),
     path('plot/', views.Graph.as_view(), name='plotly_test'), 
 ]

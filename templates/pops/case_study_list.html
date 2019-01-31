@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container py-2 pb-4">
+<h3>Welcome to your PoPS workspace, {{ user }} </h3>
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="panel-container">
+                <h4>My case studies:</h4>
+                {% if object_list %}
+<table class="table table-hover table-dark table-sm ">
+                <thead>
+                <th>Name</th>
+                <th>Date created</th>
+                <th>Status</th>
+                <th></th>
+                </thead>
+
+<tbody>
+        {% for cs in object_list %}
+        <tr>
+        <td>{{ cs.name }}</td>
+        <td>{{ cs.date_created }}</td>
+        <td><em>{{ cs.get_calibration_status_display }}</em></td>
+        <td><a class="btn btn-info btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}" role="button">View</a></td>
+            </tr>
+        {% endfor %}
+
+</tbody>
+</table>
+{% else %}
+    You have no custom case studies yet.
+{% endif %}
+</div>
+</div>
+
+        <div class="col-lg-7">
+            <div class="panel-container">
+                <h4>My sessions:</h4>
+                {% if object_list %}
+<table class="table table-hover table-dark table-sm ">
+                <thead>
+                <th>Name</th>
+                <th>Case study</th>
+                <th>Runs</th>
+                <th>Last run</th>
+                <th></th>
+                </thead>
+
+<tbody>
+        {% for cs in object_list %}
+        <tr>
+        <td>{{ cs.name }}</td>
+        <td>{{ cs.name }}</td>
+        <td>{{ cs.number_of_hosts }}</td>
+        <td>{{ cs.date_created }}</td>
+        <td><a class="btn btn-success btn-sm btn-block" href="{% url 'case_study_edit' pk=cs.pk %}" role="button">Go!</a></td>
+            </tr>
+        {% endfor %}
+
+</tbody>
+</table>
+{% else %}
+    You have no sessions yet.
+{% endif %}
+</div>
+</div>
+
+</div>
+
+</div>
+{% endblock %}

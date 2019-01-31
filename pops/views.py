@@ -6,8 +6,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.generic import ListView, DetailView, TemplateView, CreateView
 from django.contrib.auth.decorators import login_required
-from django.core import serializers
-from django.forms import ModelForm
+from django.db.models import Q
+
 from .models import *
 from .forms import *
 
@@ -296,6 +296,18 @@ def create_case_study(request):
         }
     return render(request, 'pops/create_case_study.html', context)
 
+class CaseStudyListView(ListView):
+
+    model = CaseStudy
+    paginate_by = 10  # if pagination is desired
+    template_name = 'pops/case_study_list.html'
+
+    def get_queryset(self):
+        return CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 def case_study_submitted(request):
     return render(request, 'pops/case_study_submitted.html',)
