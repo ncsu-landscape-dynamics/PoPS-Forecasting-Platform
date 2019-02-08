@@ -14,6 +14,7 @@ class CaseStudy(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name = _('created by'), editable = False,
         null = True, on_delete = models.SET_NULL)
     name = models.CharField(verbose_name = _("case study name"), max_length = 150, blank=True, help_text="Give your case study a descriptive name.")
+    description = models.TextField(verbose_name = _("case study description"), max_length = 300, blank=True, null=True, help_text="Give your case study a description.")
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     number_of_pests = models.PositiveSmallIntegerField(verbose_name = _("number of pests"), help_text="How many pests are in your model system?", blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
     number_of_hosts = models.PositiveSmallIntegerField(verbose_name = _("number of hosts"), help_text="How many hosts are in your model system?", blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
@@ -35,10 +36,13 @@ class CaseStudy(models.Model):
         ("IN PROGRESS", "In progress"),
         ("FAILED", "Failed"),
         ("SUCCESS", "Successful"),
+        ("EXTERNAL", "Non-self"),
     )
     calibration_status = models.CharField(verbose_name = _("calibration status"), help_text="What type of model do you want to use?", max_length = 20,
                     choices = STATUS_CHOICES,
                     default = "NO START", blank=True)
+    use_external_calibration = models.BooleanField(verbose_name = _("use another case study's calibration?"), help_text="Sample help text.", default = False)
+    calibration = models.ForeignKey("self", verbose_name = _("calibrated case study"), null=True, blank=True, on_delete = models.SET_NULL)
 
     class Meta:
         verbose_name = _("case study")
@@ -46,6 +50,85 @@ class CaseStudy(models.Model):
 
     def __str__(self):
         return self.name
+
+    # def duplicate_object(self):
+    #     """
+    #     Duplicate a model instance, making copies of all foreign keys pointing to it.
+    #     There are 3 steps that need to occur in order:
+
+    #         1.  Enumerate the related child objects and m2m relations, saving in lists/dicts
+    #         2.  Copy the parent object per django docs (doesn't copy relations)
+    #         3a. Copy the child objects, relating to the copied parent object
+    #         3b. Re-create the m2m relations on the copied parent object
+
+    #     """
+    #     related_objects_to_copy = []
+    #     relations_to_set = {}
+    #     # Iterate through all the fields in the parent object looking for related fields
+    #     for field in self._meta.get_fields():
+    #         print(f'Field: {field.name}')
+    #         if field.one_to_many:
+    #             # One to many fields are backward relationships where many child objects are related to the
+    #             # parent (i.e. SelectedPhrases). Enumerate them and save a list so we can copy them after
+    #             # duplicating our parent object.
+    #             print(f'Found a one-to-many field: {field.name}')
+
+    #             # 'field' is a ManyToOneRel which is not iterable, we need to get the object attribute itself
+    #             related_object_manager = getattr(self, field.name)
+    #             related_objects = list(related_object_manager.all())
+    #             if related_objects:
+    #                 print(f' - {len(related_objects)} related objects to copy')
+    #                 related_objects_to_copy += related_objects
+
+    #         elif field.many_to_one:
+    #             # In testing so far, these relationships are preserved when the parent object is copied,
+    #             # so they don't need to be copied separately.
+    #             print(f'Found a many-to-one field: {field.name}')
+
+    #         elif field.many_to_many:
+    #             # Many to many fields are relationships where many parent objects can be related to many
+    #             # child objects. Because of this the child objects don't need to be copied when we copy
+    #             # the parent, we just need to re-create the relationship to them on the copied parent.
+    #             print(f'Found a many-to-many field: {field.name}')
+    #             related_object_manager = getattr(self, field.name)
+    #             relations = list(related_object_manager.all())
+    #             if relations:
+    #                 print(f' - {len(relations)} relations to set')
+    #                 relations_to_set[field.name] = relations
+
+    #     # Duplicate the parent object
+    #     self.pk = None
+    #     self.save()
+    #     print(f'Copied parent object ({str(self)})')
+
+    #     # Copy the one-to-many child objects and relate them to the copied parent
+    #     for related_object in related_objects_to_copy:
+    #         # Iterate through the fields in the related object to find the one that relates to the
+    #         # parent model (I feel like there might be an easier way to get at this).
+    #         for related_object_field in related_object._meta.fields:
+    #             if related_object_field.related_model == self.__class__:
+    #                 # If the related_model on this field matches the parent object's class, perform the
+    #                 # copy of the child object and set this field to the parent object, creating the
+    #                 # new child -> parent relationship.
+    #                 related_object.pk = None
+    #                 setattr(related_object, related_object_field.name, self)
+    #                 related_object.save()
+
+    #                 text = str(related_object)
+    #                 text = (text[:40] + '..') if len(text) > 40 else text
+    #                 print(f'|- Copied child object ({text})')
+
+    #     # Set the many-to-many relations on the copied parent
+    #     for field_name, relations in relations_to_set.items():
+    #         # Get the field by name and set the relations, creating the new relationships
+    #         field = getattr(self, field_name)
+    #         field.set(relations)
+    #         text_relations = []
+    #         for relation in relations:
+    #             text_relations.append(str(relation))
+    #         print(f'|- Set {len(relations)} many-to-many relations on {field_name} {text_relations}')
+
+    #     return self
 
     def get_string_fields(self):
         # list of some excluded fields
@@ -68,7 +151,7 @@ class CaseStudy(models.Model):
 
 class Host(models.Model):
 
-    case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
+    case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study"), on_delete=models.CASCADE)
     name = models.CharField(verbose_name = _("host common name"), help_text="What is the host's common name?", max_length = 150, blank=True)
     score = models.DecimalField(verbose_name = _("score"), help_text="Host score is a value between 0 and 1. 0 has no effect while 1 has maximum effect. This is for generalist pests with differing host preferences and pathogens with differing host competencies.", blank=True, max_digits = 5, decimal_places = 2, default = 1, validators = [MinValueValidator(0), MaxValueValidator(1)])
     mortality_on = models.BooleanField(verbose_name = _("mortality"), help_text="Does the host experience mortality as a result of the pest/pathogen?", blank=True)
@@ -136,7 +219,7 @@ class PestInformation(models.Model):
 class Pest(models.Model):
 
     name = models.CharField(verbose_name = _("pest common name"), help_text="What is the common name of the pest/pathogen?", max_length = 150, blank=True, null=True)
-    case_study = models.ManyToManyField(CaseStudy, verbose_name = _("case study"))
+    case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study"), on_delete=models.CASCADE)
     pest_information = models.ForeignKey(PestInformation, verbose_name = _("pest"), help_text="Sample help text.", null=True, blank=True, on_delete = models.SET_NULL)
     vector_born = models.BooleanField(verbose_name = _("vector born"), help_text="Is the disease spread by a vector (e.g. an insect)?", default = False)
     MODEL_CHOICES = (

@@ -1,2 +1,2 @@
-from .case_study import *
+from .case_study2 import *
 from .dashboard import *

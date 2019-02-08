@@ -1,0 +1,391 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+{% endblock %}
+{% load filename %}
+
+
+{% block content %}
+
+<div class="container py-2 pb-4">
+
+    <h2 class="text-center">Review Case Study</h2>
+    <div class="row align-items-end">
+        <div class="col-sm-8 col-md-8 col-lg-10">
+            <div class="alert alert-info">
+                <p>
+                    <strong>Please carefully review your case study.</strong> If everything is
+                    correct, click "Calibrate" to calibrate and validate the case study. 
+                    If you find any mistakes, click "Edit" to edit the case study.
+                </p>
+                <p>
+                    Note: Calibration and validation can take many hours. You may check on the
+                    progress of your case study on your Account page.
+                    If you have any questions, be sure to read the
+                    <a class="" href="{% url 'case_study_help' %}">Case Study Help page</a>.
+                </p>
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-4 col-lg-2 pb-4">
+            <!--Submit button for form-->
+            <div class="text-center p-2">
+                <a class="btn btn-secondary btn-lg btn-block" href="#" role="button">Edit</a>                
+            </div>
+            <!--Submit button for form--> 
+            <div class="text-center p-2">
+                <button class="btn btn-info btn-lg btn-block" type="submit">Calibrate</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="panel-container">
+                <h4>Case study details:</h4>
+                <table class="table table-hover table-dark table-sm">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Name:</th>
+                            <td> {{ casestudy.name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Number of pests:</th>
+                            <td> {{ casestudy.number_of_pests }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Number of hosts:</th>
+                            <td> {{ casestudy.number_of_hosts }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">First calibration year:</th>
+                            <td> {{ casestudy.start_year }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Final calibration year:</th>
+                            <td> {{ casestudy.end_year }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Final model year:</th>
+                            <td> {{ casestudy.future_years }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Time step:</th>
+                            <td> {{ casestudy.time_step }}</td>
+                        </tr>
+                        {% for pest in pests %}
+                        <tr class="bg-dark">
+                            <th scope="row">PEST {{ forloop.counter }}:</th>
+                            <td> {% firstof pest.pest_information pest.name %} </td>
+                        </tr>
+                        <tr>
+                            <th class="pl-4" scope="row">Model type:</th>
+                            <td> {{ pest.model_type }}</td>
+                        </tr>
+                        <tr>
+                            <th class="pl-4" scope="row">Dispersal type:</th>
+                            <td> {{ pest.dispersal_type }}</td>
+                        </tr>
+
+                        {% endfor %}
+                        {% for host in hosts %}
+                        <tr class="bg-dark">
+                            <th scope="row">HOST {{ forloop.counter }}:</th>
+                            <td> {{ host.name }} </td>
+                        </tr>
+                        <tr>
+                            <th class="pl-4" scope="row">Score:</th>
+                            <td> {{ host.score }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% for host in hosts %}
+                <div class="row no-gutters align-items-center">
+                    {% include "pops/toggle_switch_disabled.html" with label="Mortality" check_if_true=host.mortality_on %}
+                    {% if host.mortality_on %}
+                    <div class="col-auto">
+                        {% if host.mortality.method == "USER" %}
+                        <p>(Rate: {{ host.mortality.rate }},
+                            Time lag: {{ host.mortality.time_lag }} years)</p>
+                        {% else %}
+                        <p></p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="row no-gutters align-items-center">
+                    {% include "pops/toggle_switch_disabled.html" with label="Prior treatments" check_if_true=casestudy.use_treatment %}
+                    {% if casestudy.use_treatment %}
+                    <div class="col-auto">
+                        <p></p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% for pest in pests %}
+                <div class="row no-gutters align-items-center">
+                    {% include "pops/toggle_switch_disabled.html" with label="Vector" check_if_true=pest.vector_born %}
+                    {% if pest.vector_born %}
+                    <p>(Name: {{pest.vector.common_name}})</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="panel-container">
+                <h4>Uploaded files:</h4>
+                <table class="table table-dark table-hover table-sm">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Infestation data:</th>
+                            <td>
+                                {{ casestudy.infestation_data|filename }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">All plant data:</th>
+                            <td>
+                                {{ casestudy.all_plants|filename }}
+                            </td>
+                        </tr>
+                        {% for host in hosts %}
+                        <tr>
+                            <th scope="row">Host {{ forloop.counter }} data:</th>
+                            <td>
+                                {{ host.host_data|filename }}
+                            </td>
+                        </tr>
+                        {% if host.mortality_on %}
+                        {% if host.mortality.method == "DATA_FILE" %}
+                        <tr>
+                            <th scope="row">Mortality data:</th>
+                            <td>
+                                {{ host.mortality.mortality_data|filename }}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% if casestudy.use_treatment %}
+                        <tr>
+                            <th scope="row">Prior treatment data:</th>
+                            <td>
+                                {{ casestudy.treatment_data|filename }}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% for pest in pests %}
+                        {% if pest.vector_born %}
+                        <tr>
+                            <th scope="row">Vector data:</th>
+                            <td>
+                                {{ pest.vector.vector_data|filename }}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+        <div class="col-lg-7">
+            <div class="panel-container">
+                <h4>Weather details:</h4>
+                <div class="row no-gutters align-items-center">
+                    {% include "pops/toggle_switch_disabled.html" with label="Wind" check_if_true=casestudy.weather.wind_on %}
+                    {% if casestudy.weather.wind_on %}
+                    <p>
+                        (Direction: {{ casestudy.weather.wind.get_wind_direction_display }},
+                        Kappa: {{ casestudy.weather.wind.kappa }})
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="row no-gutters align-items-center">
+                    {% include "pops/toggle_switch_disabled.html" with label="Seasonality" check_if_true=casestudy.weather.seasonality_on %}
+                    {% if casestudy.weather.seasonality_on %}
+                    <p>
+                        ({{ casestudy.weather.seasonality.get_first_month_display }} -
+                        {{ casestudy.weather.seasonality.get_last_month_display }})
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="row no-gutters align-items-center">
+                    {% include "pops/toggle_switch_disabled.html" with label="Lethal temperature" check_if_true=casestudy.weather.lethal_temp_on %}
+                    {% if casestudy.weather.lethal_temp_on %}
+                    <p>
+                        ({{ casestudy.weather.lethaltemperature.get_month_display }},
+                        {{ casestudy.weather.lethaltemperature.value }} &#8451,
+                        {{ casestudy.weather.lethaltemperature.get_lethal_type_display }})
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="row no-gutters align-items-center">
+                    {% include "pops/toggle_switch_disabled.html" with label="Temperature" check_if_true=casestudy.weather.temp_on %}
+                    {% if casestudy.weather.temp_on %}
+                    {% if casestudy.weather.temperature.method == "RECLASS" %}
+                    <p>(Method: Reclass)</p>
+                    {% else %}
+                    <p>(Method: Polynomial)</p>
+                    {% endif %}
+                    {% endif %}
+                </div>
+                <div class="row no-gutters align-items-center">
+                    {% include "pops/toggle_switch_disabled.html" with label="Precipitation" check_if_true=casestudy.weather.precipitation_on %}
+                    {% if casestudy.weather.precipitation_on %}
+                    {% if casestudy.weather.precipitation.method == "RECLASS" %}
+                    <p>(Method: Reclass)</p>
+                    {% else %}
+                    <p>(Method: Polynomial)</p>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if casestudy.weather.temp_on %}
+            <div class="panel-container">
+                <div class="row">
+                    <div class="col-5">
+                        {% if casestudy.weather.temperature.method == "RECLASS" %}
+                        <h5>Temperature reclass</h5>
+                        <table class="table table-hover table-dark table-sm table-bordered">
+                            <thead>
+                                <th>Min (&#8451)</th>
+                                <th>Max (&#8451)</th>
+                                <th>Reclass</th>
+                            </thead>
+                            <tbody>
+                                {% for row in casestudy.weather.temperature.temperaturereclass_set.all %}
+                                <tr>
+                                    <td>{{ row.min_value}}</td>
+                                    <td> {{row.max_value}}</td>
+                                    <td> {{row.reclass}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
+                        {% if casestudy.weather.temperature.method == "POLYNOMIAL" %}
+                        <h5>Temperature polynomial</h5>
+                        {% if casestudy.weather.temperature.temperaturepolynomial.degree == 1 %}
+                        <div class="">
+                            <div>Coefficient = {{ casestudy.weather.temperature.temperaturepolynomial.a0 }} </div>
+                            <div class="offset-2">+ {{ casestudy.weather.temperature.temperaturepolynomial.a1 }}
+                            (P+{{ casestudy.weather.temperature.temperaturepolynomial.x1 }}) </div>
+                        </div>
+                        {% elif casestudy.weather.temperature.temperaturepolynomial.degree == 2 %}
+                        <div class="">
+                            <div>Coefficient = {{ casestudy.weather.temperature.temperaturepolynomial.a0 }} </div>
+                            <div class="offset-2">+ {{ casestudy.weather.temperature.temperaturepolynomial.a1 }}
+                            (P+{{ casestudy.weather.temperature.temperaturepolynomial.x1 }}) </div>
+                            <div class="offset-2">+ {{ casestudy.weather.temperature.temperaturepolynomial.a2 }}
+                            (P+{{ casestudy.weather.temperature.temperaturepolynomial.x2 }})<sup>2</sup></div>
+                        </div>
+                        {% else %}
+                        <div class="">
+                            <div>Coefficient = {{ casestudy.weather.temperature.temperaturepolynomial.a0 }} </div>
+                            <div class="offset-2">+ {{ casestudy.weather.temperature.temperaturepolynomial.a1 }}
+                            (P+{{ casestudy.weather.temperature.temperaturepolynomial.x1 }}) </div>
+                            <div class="offset-2">+ {{ casestudy.weather.temperature.temperaturepolynomial.a2 }}
+                            (P+{{ casestudy.weather.temperature.temperaturepolynomial.x2 }})<sup>2</sup></div>
+                            <div class="offset-2">+ {{ casestudy.weather.temperature.temperaturepolynomial.a3 }}
+                            (P+{{ casestudy.weather.temperature.temperaturepolynomial.x3 }})<sup>3</sup></div>
+                        </div>
+                        {% endif %}
+                        {% endif %}                    
+                        </div>
+                    <div class="col-7">
+                        {% if temp_graph %}
+                        <h5>Plot preview:</h5>
+                        <div style="width:600;height:500">
+                            {{ temp_graph|safe }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if casestudy.weather.precipitation_on %}
+            <div class="panel-container">
+                <div class="row">
+                    <div class="col-5">
+                        {% if casestudy.weather.precipitation.method == "RECLASS" %}
+                        <h5>Precipitation reclass</h5>
+                        <table class="table table-hover table-dark table-sm table-bordered">
+                            <thead>
+                                <th>Min (mm)</th>
+                                <th>Max (mm)</th>
+                                <th>Reclass</th>
+                            </thead>
+                            <tbody>
+                                {% for row in casestudy.weather.precipitation.precipitationreclass_set.all %}
+                                <tr>
+                                    <td>{{ row.min_value}}</td>
+                                    <td> {{row.max_value}}</td>
+                                    <td> {{row.reclass}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
+                        {% if casestudy.weather.precipitation.method == "POLYNOMIAL" %}
+                        <h5>Precipitation polynomial</h5>
+                        {% if casestudy.weather.precipitation.precipitationpolynomial.degree == 1 %}
+                        <div class="">
+                            <div>Coefficient = {{ casestudy.weather.precipitation.precipitationpolynomial.a0 }} </div>
+                            <div class="offset-2">+ {{ casestudy.weather.precipitation.precipitationpolynomial.a1 }}
+                            (P+{{ casestudy.weather.precipitation.precipitationpolynomial.x1 }}) </div>
+                        </div>
+                        {% elif casestudy.weather.precipitation.precipitationpolynomial.degree == 2 %}
+                        <div class="">
+                            <div>Coefficient = {{ casestudy.weather.precipitation.precipitationpolynomial.a0 }} </div>
+                            <div class="offset-2">+ {{ casestudy.weather.precipitation.precipitationpolynomial.a1 }}
+                            (P+{{ casestudy.weather.precipitation.precipitationpolynomial.x1 }}) </div>
+                            <div class="offset-2">+ {{ casestudy.weather.precipitation.precipitationpolynomial.a2 }}
+                            (P+{{ casestudy.weather.precipitation.precipitationpolynomial.x2 }})<sup>2</sup></div>
+                        </div>
+                        {% else %}
+                        <div class="">
+                            <div>Coefficient = {{ casestudy.weather.precipitation.precipitationpolynomial.a0 }} </div>
+                            <div class="offset-2">+ {{ casestudy.weather.precipitation.precipitationpolynomial.a1 }}
+                            (P+{{ casestudy.weather.precipitation.precipitationpolynomial.x1 }}) </div>
+                            <div class="offset-2">+ {{ casestudy.weather.precipitation.precipitationpolynomial.a2 }}
+                            (P+{{ casestudy.weather.precipitation.precipitationpolynomial.x2 }})<sup>2</sup></div>
+                            <div class="offset-2">+ {{ casestudy.weather.precipitation.precipitationpolynomial.a3 }}
+                            (P+{{ casestudy.weather.precipitation.precipitationpolynomial.x3 }})<sup>3</sup></div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="col-7">
+                        {% if precip_graph %}
+                        <h5>Plot preview:</h5>
+                        <div style="width:600;height:500">
+                            {{ precip_graph|safe }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="row justify-content-end pb-4">
+                <div class="col-auto">
+                    <div class="d-inline text-center p-2">
+                        <a class="btn btn-secondary btn-lg" href="#" role="button">Edit</a>                
+                    </div>
+                    <div class="d-inline text-center p-2">
+                        <button class="btn btn-info btn-lg" type="submit">Calibrate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock %}

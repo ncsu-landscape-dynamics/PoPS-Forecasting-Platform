@@ -1,7 +1,7 @@
 # pops/forms.py
 from django import forms
 
-from .models import *
+from ..models import *
 
 from crispy_forms.bootstrap import Field, InlineRadios, TabHolder, Tab, PrependedText, AppendedText
 from crispy_forms.helper import FormHelper
@@ -28,21 +28,28 @@ def validate_file_size(self, fields):
     for field in fields:
         data_file = self.cleaned_data.get(field)
         if data_file:
-            if data_file.content_type in settings.CASE_STUDY_UPLOAD_FILE_TYPES:
-                if data_file.size > settings.CASE_STUDY_UPLOAD_FILE_MAX_SIZE:
-                    msg = forms.ValidationError("File size must be less than %s. Selected file was: %s" % (human_readable_size(settings.CASE_STUDY_UPLOAD_FILE_MAX_SIZE), human_readable_size(data_file.size)))
+            print('Data file is here')
+            print(data_file)
+            print(type(data_file))
+            print(hasattr(data_file, 'instance'))
+            if not hasattr(data_file, 'instance'):
+                print('Instance check is true')
+                if data_file.content_type in settings.CASE_STUDY_UPLOAD_FILE_TYPES:
+                    if data_file.size > settings.CASE_STUDY_UPLOAD_FILE_MAX_SIZE:
+                        msg = forms.ValidationError("File size must be less than %s. Selected file was: %s" % (human_readable_size(settings.CASE_STUDY_UPLOAD_FILE_MAX_SIZE), human_readable_size(data_file.size)))
+                        self.add_error(field, msg)
+                else:
+                    msg = forms.ValidationError("File type must be TIFF (.tif)")
                     self.add_error(field, msg)
-            else:
-                msg = forms.ValidationError("File type must be TIFF (.tif)")
-                self.add_error(field, msg)
 
 class CaseStudyForm(forms.ModelForm):
     fields_required = fields_required_conditionally
     validate_size = validate_file_size
     class Meta:
         model = CaseStudy
-        fields = ['name','number_of_pests','number_of_hosts','start_year','end_year','future_years',
+        fields = ['name', 'description','number_of_pests','number_of_hosts','start_year','end_year','future_years',
                 'time_step','infestation_data','all_plants','use_treatment','treatment_data']
+        widgets = {'infestation_data': forms.FileInput, 'all_plants': forms.FileInput}
 
     def __init__(self, *args, **kwargs):
         super(CaseStudyForm, self).__init__(*args, **kwargs)
@@ -63,6 +70,12 @@ class CaseStudyForm(forms.ModelForm):
                 Row(
                     Div(
                         Field('name', wrapper_class=""),
+                            css_class='col-sm-12'
+                        ),
+                ),
+                Row(
+                    Div(
+                        Field('description', wrapper_class=""),
                             css_class='col-sm-12'
                         ),
                 ),
@@ -115,6 +128,7 @@ class CaseStudyForm(forms.ModelForm):
         use_treatment = self.cleaned_data.get('use_treatment')
         if use_treatment:
             self.fields_required(['treatment_data'])
+            self.validate_size(['treatment_data'])
         else:
             self.cleaned_data['treatment_data'] = ''
 
@@ -127,6 +141,7 @@ class HostForm(forms.ModelForm):
     class Meta:
         model = Host
         fields = ['name','score','host_data','mortality_on']
+        widgets = {'host_data': forms.FileInput}
 
     def clean(self):
         self.fields_required(['name','score','host_data'])

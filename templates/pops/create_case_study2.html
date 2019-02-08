@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+  <!--Page title-->
+  <h2 class="text-center">Create Case Study</h2>
+  <!--Start of form-->
+  <form method="post" enctype="multipart/form-data" class="form-horizontal">
+    <div class="row justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-6">
+        <!--Announcement at top of page-->
+        <div class="alert alert-warning">
+          <p>
+            <strong>Welcome to the create case study page!</strong> Please be sure to read the
+            <a class="" href="{% url 'case_study_help' %}">Case Study Help page</a> before getting started.
+          </p>
+        </div>
+
+        <!--Warning message that there were errors in the form-->
+        {% if error_message %}
+        <div class="alert alert-danger text-center" role="alert">
+          <strong>Please correct the errors below!</strong>
+          <p>Note! You must also reselect any files to upload.</p>
+        </div>
+        {% endif %}
+        <!--CSRF Token-->
+        {% csrf_token %}
+
+        <!--Case study form section-->
+        <div class="border border-light p-2 my-1">
+          <div class="">
+            <legend>Case study details</legend>
+          </div>
+          <!--Most of case study form (defined in Crispy Layout in forms.py)-->
+          {% crispy case_study_form %}
+
+          <!--Infestation data file field-->
+          {{ case_study_form.infestation_data|as_crispy_field }}
+          {% for error in case_study_form.infestation_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+          <em>Current file: {{ case_study_form.infestation_data.value }}</em>
+          <!--All plants data file field-->
+          {{ case_study_form.all_plants|as_crispy_field }}
+          {% for error in case_study_form.all_plants.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+          <em>Current file: {{ case_study_form.all_plants.value }}</em>
+
+          <!--Treatments On/Off Toggle-->
+          <div class="row no-gutters pt-3">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ case_study_form.use_treatment.help_text }}"
+                data-container="body">
+                {{ case_study_form.use_treatment }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto align-middle px-2">
+              <p style="font-size:1.2em"> {{ case_study_form.use_treatment.label }} </p>
+            </div>
+          </div>
+          <!--Treatment form (visibility dependent on toggle above)-->
+          <div id="treatment_form_visibility">
+            {{ case_study_form.treatment_data|as_crispy_field }}
+          </div>
+          {% for error in case_study_form.treatment_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+          <!--Treatment visibility javascript (hides treatment form based on toggle)-->
+          <script>
+            if ($("#id_cs-use_treatment").is(':checked')){
+              $("#treatment_form_visibility").show();}
+            else {$("#treatment_form_visibility").hide();}
+            $(document).ready(function () {
+                var ckbox = $('#id_cs-use_treatment');
+                $('input').on('click',function () {
+                    if (ckbox.is(':checked')) {$("#treatment_form_visibility").show();} 
+                    else {$("#treatment_form_visibility").hide();}
+                });
+            });
+          </script>
+
+        </div>
+
+        <!--Host details form section-->
+        <div class="border border-light p-2 my-1">
+          <div class="">
+            <legend>Host details</legend>
+          </div>
+          <!--Most of host form (defined in Crispy Layout in forms.py)-->
+          {% crispy host_form %}
+          <!--Host data file field-->
+          {{ host_form.host_data|as_crispy_field }}
+          {% for error in host_form.host_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+          <em>Current file: {{ host_form.host_data.value }}</em>
+          <!--Mortality form On/Off toggle-->
+          <div class="row no-gutters pt-3">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ host_form.mortality_on.help_text }}"
+                data-container="body">
+                {{ host_form.mortality_on }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em"> {{ host_form.mortality_on.label }} </p>
+            </div>
+          </div>
+</div>
+
+        <!--Submit button for form-->
+        <div class="text-center py-2">
+          <button class="btn btn-info btn-lg" type="submit">Next</button>
+        </div>
+        <div class="text-center">
+          <span>Note: You will be able to review your case study on the next page before submitting for calibration.</span>
+        </div>
+
+      </div>
+    </div>
+
+  </form>
+  <!--End form-->
+
+</div>
+<!--End main container-->
+
+<!--Script to make tooltips appear on hover-->
+<script>
+  $(document).ready(function () {
+    $("body").tooltip({
+      selector: '[data-toggle=tooltip]'
+    });
+  });
+</script>
+{% endblock %}
+
+{% block scripts %}
+<!--Scripts to add/remove reclass rows to temp/precip forms-->
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script>
+  $('div#temp_reclass_formset').formset({
+    prefix: '{{ temperature_reclass_formset.prefix }}',
+    addText: 'Add Row',
+    deleteText: 'remove',
+    addCssClass: 'btn btn-info',
+    deleteCssClass: 'text-light'
+  });
+</script>
+
+<script>
+  $('div#precip_reclass_formset').formset({
+    prefix: '{{ precipitation_reclass_formset.prefix }}',
+    addText: 'Add Row',
+    deleteText: 'remove',
+    addCssClass: 'btn btn-info',
+    deleteCssClass: 'text-light'
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="container py-2 pb-4">
+
+    <h2 class="text-center">Create Case Study</h2>
+        <div class="alert alert-info">
+            <p>
+                <strong>Welcome!</strong>
+                <strong>Please select your case study creation method.</strong>
+                If you have any questions, be sure to read the
+                <a class="" href="{% url 'case_study_help' %}">Case Study Help page</a>.
+
+            </p>
+            <p>
+                Note: Calibration and validation can take many hours. You may check on the
+                progress of your case study on your Account page.
+            </p>
+        </div>
+
+
+
+
+
+
+    <div class="row">
+            <div class=" col">
+
+    <div class="card-deck">
+        <div class="card bg-dark border-light">
+            <div class="card-body">
+                <h4 class="card-title">Option 1: Calibrate my own case study</h4>
+                I have the following data files to calibrate my own case study:
+                <ul class="text-left">
+                    <li>Initial infection data (3+ years)</li>
+                    <li>Host data (1 year)</li>
+                    <li>All plant data (1 year)</li>
+                    <li>Prior treatment data (1+ years, optional)</li>
+                    <li>Mortality data (3+ years, optional)</li>
+                    <li>Vector data (3+ years, optional)</li>
+                </ul>
+            </div>
+            <div class="card-footer border-0">
+                <a class="btn btn-success btn-lg btn-block" href="{% url 'create_case_study' %}" role="button" style="white-space: normal;"><i
+                        class="fas fa-plus-circle"></i> Create New Case Study
+                </a>
+            </div>
+        </div>
+        <div class="card bg-dark border-light">
+            <div class="card-body">
+                <h4 class="card-title">Option 2: Use an existing calibration</h4>
+                I do not have enough data to calibrate my own case study, so
+                I would like to use the calibration from a similar case study
+                (i.e. one wih the same pest-host system).
+                I have the following data files:
+                <ul>
+                    <li>Initial infection data (1 year)</li>
+                    <li>Host data (1 year)</li>
+                    <li>All plant data (1 year)</li>
+                </ul>
+            </div>
+            <div class="card-footer border-0">
+                <a class="btn btn-info btn-lg btn-block" href="{% url 'case_study_list' %}" role="button" style="white-space: normal;"><i
+                        class="fas fa-search"></i> Browse Case Studies
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} <div class="row  row-eq-height">
+
+        <div class="col-6 pb-4 d-flex align-items-stretch">
+            <!--Submit button for form-->
+            <a class="btn btn-secondary btn-lg btn-block" href="{% url 'create_case_study' %}" role="button" style="white-space: normal;">
+                <h4 class="text-center">Option 1: Calibrate my own case study</h4>
+                <p class="text-left">
+                    I have the following data files to calibrate my own case study:
+                    <ul class="text-left">
+                        <li>Initial infection data (3+ years)</li>
+                        <li>Host data (1 year)</li>
+                        <li>All plant data (1 year)</li>
+                        <li>Prior treatment data (1+ years, optional)</li>
+                        <li>Mortality data (3+ years, optional)</li>
+                        <li>Vector data (3+ years, optional)</li>
+                    </ul>
+                    <i class="fas fa-arrow-right"></i>
+                </p>
+
+            </a>
+
+        </div>
+
+        <div class="col-6 pb-4 d-flex align-items-stretch">
+            <!--Submit button for form-->
+            <a class="btn btn-secondary btn-lg btn-block" href="{% url 'case_study_list' %}" role="button" style="white-space: normal;">
+                <h4 class="text-center">Option 2: Use an existing calibration</h4>
+                <p class="text-left">
+                    I do not have enough data to calibrate my own case study, so
+                    I would like to use the calibration from a similar case study
+                    (i.e. one wih the same pest-host system).
+                    I have the following data files:
+                    <ul class="text-left">
+                        <li>Initial infection data (1 year)</li>
+                        <li>Host data (1 year)</li>
+                        <li>All plant data (1 year)</li>
+                    </ul>
+                    <i class="fas fa-arrow-right"></i>
+                </p>
+            </a>
+            {% comment %} <form method="post">
+                {% csrf_token %}
+                <select class="form-control" name="case_study_id">
+                    {% for case_study in case_studies %}
+                    <option value="{{ case_study.pk }}">{{ case_study.name }}</option>
+                    {% endfor %}
+                </select>
+                <div class="text-center py-2">
+                    <button class="btn btn-secondary btn-lg btn-block" type="submit">Use this calibration</button>
+                </div>
+            </form> 
+        </div>
+    </div> {% endcomment %}
+</div>
+</div>
+</div>
+
+
+
+{% endblock %}

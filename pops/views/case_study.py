@@ -245,10 +245,10 @@ def create_case_study(request):
             print(success)
             new_case_study.created_by = request.user
             new_case_study.save()
+            new_host.case_study=new_case_study
             new_host.save()
-            new_host.case_study.add(new_case_study)
+            new_pest.case_study=new_case_study
             new_pest.save()
-            new_pest.case_study.add(new_case_study)
             new_weather.case_study = new_case_study
             new_weather.save()
             for model in host_success_models:
@@ -743,10 +743,8 @@ def case_study_edit(request,pk):
             print("Success!")
             print(success)
             new_case_study.save()
-            new_host.save()
-            new_host.case_study.add(new_case_study)
-            new_pest.save()
-            new_pest.case_study.add(new_case_study)
+            new_host.save(case_study=new_case_study)
+            new_pest.save(case_study=new_case_study)
             new_weather.case_study = new_case_study
             new_weather.save()
             for model in host_success_models:
