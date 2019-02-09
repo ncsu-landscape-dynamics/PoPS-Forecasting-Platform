@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'faq.apps.FaqConfig',
     'crispy_forms',
+    'widget_tweaks',
     'pops.apps.PopsConfig',
     'debug_toolbar',
 ]

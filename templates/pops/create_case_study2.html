@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
+{% load widget_tweaks %}
 {% load static %}
 
 {% block page_styles %}
@@ -39,54 +39,41 @@
             <legend>Case study details</legend>
           </div>
           <!--Most of case study form (defined in Crispy Layout in forms.py)-->
-          {% crispy case_study_form %}
-
-          <!--Infestation data file field-->
-          {{ case_study_form.infestation_data|as_crispy_field }}
-          {% for error in case_study_form.infestation_data.errors %}
-          <div class=" text-danger pt-0" style="font-size:0.8em">
-            <strong>{{ error|escape }}</strong>
-          </div>
+          {% for hidden in case_study_form.hidden_fields %}
+          {{ hidden }}
           {% endfor %}
-          <em>Current file: {{ case_study_form.infestation_data.value }}</em>
-          <!--All plants data file field-->
-          {{ case_study_form.all_plants|as_crispy_field }}
-          {% for error in case_study_form.all_plants.errors %}
-          <div class=" text-danger pt-0" style="font-size:0.8em">
-            <strong>{{ error|escape }}</strong>
-          </div>
-          {% endfor %}
-          <em>Current file: {{ case_study_form.all_plants.value }}</em>
 
-          <!--Treatments On/Off Toggle-->
-          <div class="row no-gutters pt-3">
-            <div class="col-auto">
-              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ case_study_form.use_treatment.help_text }}"
-                data-container="body">
-                {{ case_study_form.use_treatment }}
-                <span class="slider round"></span>
-              </label>
-            </div>
-            <div class="col-auto align-middle px-2">
-              <p style="font-size:1.2em"> {{ case_study_form.use_treatment.label }} </p>
-            </div>
+          {% include "pops/include/form_field.html" with field=case_study_form.name %}
+          {% include "pops/include/form_field.html" with field=case_study_form.description|attr:"rows:5" %}
+          <div class="row">
+            {% include "pops/include/form_field.html" with field=case_study_form.start_year form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=case_study_form.end_year form_class="col-6" %}
           </div>
-          <!--Treatment form (visibility dependent on toggle above)-->
+          <div class="row">
+            {% include "pops/include/form_field.html" with field=case_study_form.future_years form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=case_study_form.time_step form_class="col-6" %}
+          </div>
+          <div class="row">
+            {% include "pops/include/form_field.html" with field=case_study_form.number_of_pests form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=case_study_form.number_of_hosts form_class="col-6" %}
+          </div>
+          <div class="row">
+            {% include "pops/include/form_field.html" with field=case_study_form.infestation_data|attr:"class:form-control-file" form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=case_study_form.all_plants|attr:"class:form-control-file" form_class="col-6" %}
+
+          </div>
+          {% include "pops/include/toggle_switch.html" with field=case_study_form.use_treatment %}
           <div id="treatment_form_visibility">
-            {{ case_study_form.treatment_data|as_crispy_field }}
+            {% include "pops/include/form_field.html" with field=case_study_form.treatment_data|attr:"class:form-control-file" %}
           </div>
-          {% for error in case_study_form.treatment_data.errors %}
-          <div class=" text-danger pt-0" style="font-size:0.8em">
-            <strong>{{ error|escape }}</strong>
-          </div>
-          {% endfor %}
+
           <!--Treatment visibility javascript (hides treatment form based on toggle)-->
           <script>
-            if ($("#id_cs-use_treatment").is(':checked')){
+            if ($("#{{ case_study_form.use_treatment.id_for_label }}").is(':checked')){
               $("#treatment_form_visibility").show();}
             else {$("#treatment_form_visibility").hide();}
             $(document).ready(function () {
-                var ckbox = $('#id_cs-use_treatment');
+                var ckbox = $('#{{ case_study_form.use_treatment.id_for_label }}');
                 $('input').on('click',function () {
                     if (ckbox.is(':checked')) {$("#treatment_form_visibility").show();} 
                     else {$("#treatment_form_visibility").hide();}
@@ -101,30 +88,18 @@
           <div class="">
             <legend>Host details</legend>
           </div>
-          <!--Most of host form (defined in Crispy Layout in forms.py)-->
-          {% crispy host_form %}
-          <!--Host data file field-->
-          {{ host_form.host_data|as_crispy_field }}
-          {% for error in host_form.host_data.errors %}
-          <div class=" text-danger pt-0" style="font-size:0.8em">
-            <strong>{{ error|escape }}</strong>
-          </div>
+          {% for hidden in host_form.hidden_fields %}
+          {{ hidden }}
           {% endfor %}
-          <em>Current file: {{ host_form.host_data.value }}</em>
-          <!--Mortality form On/Off toggle-->
-          <div class="row no-gutters pt-3">
-            <div class="col-auto">
-              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ host_form.mortality_on.help_text }}"
-                data-container="body">
-                {{ host_form.mortality_on }}
-                <span class="slider round"></span>
-              </label>
-            </div>
-            <div class="col-auto px-2">
-              <p style="font-size:1.2em"> {{ host_form.mortality_on.label }} </p>
-            </div>
+
+          <div class="row">
+            {% include "pops/include/form_field.html" with field=host_form.name form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=host_form.score form_class="col-6" %}
           </div>
-</div>
+          {% include "pops/include/form_field.html" with field=host_form.host_data|attr:"class:form-control-file"  %}
+          {% include "pops/include/toggle_switch.html" with field=host_form.mortality_on %}
+
+        </div>
 
         <!--Submit button for form-->
         <div class="text-center py-2">

@@ -1,0 +1,14 @@
+{% load widget_tweaks %}
+
+<div class="row no-gutters pt-3">
+  <div class="col-auto">
+    <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ field.help_text }}"
+      data-container="body">
+      {{ field }}
+      <span class="slider round"></span>
+    </label>
+  </div>
+  <div class="col-auto align-middle px-2">
+    <p style="font-size:1.2em"> {{ field.label }} </p>
+  </div>
+</div>
