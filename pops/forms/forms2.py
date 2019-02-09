@@ -61,56 +61,6 @@ class CaseStudyForm(forms.ModelForm):
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
 
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.label_class = ''
-        self.helper.field_class = ''
-        self.helper.layout = Layout(
-                Row(
-                    Div(
-                        Field('name', wrapper_class=""),
-                            css_class='col-sm-12'
-                        ),
-                ),
-                Row(
-                    Div(
-                        Field('description', wrapper_class=""),
-                            css_class='col-sm-12'
-                        ),
-                ),
-                Row(
-                    Div(
-                        Field('start_year', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                    Div(
-                        Field('end_year', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                ),
-                Row(
-                    Div(
-                        Field('future_years', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                    Div(
-                        Field('time_step', wrapper_class=""),
-                            css_class='col-sm-6'
-                        )
-                ),
-                Row(
-                    Div(
-                        Field('number_of_pests', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                    Div(
-                        Field('number_of_hosts', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                ),
-        )
-
     def clean(self):
 
         self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years','infestation_data','all_plants'])
@@ -157,24 +107,7 @@ class HostForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.label_class = ''
-        self.helper.field_class = ''
-        self.helper.layout = Layout(
-                Row(
-                    Div(
-                        Field('name', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                    Div(
-                        Field('score', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                ),
 
-        )
 
 class MortalityForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -206,24 +139,7 @@ class MortalityForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.label_class = ''
-        self.helper.field_class = ''
-        self.helper.layout = Layout(
-                Row(
-                    Div(
-                        Field('rate', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                    Div(
-                        Field('time_lag', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                ),
 
-        )
 
 class PestForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -253,36 +169,6 @@ class PestForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.label_class = ''
-        self.helper.field_class = ''
-        self.helper.layout = Layout(
-                Row(
-                    Div(
-                        Field('pest_information', wrapper_class=""),
-                            css_class='col-sm-12'
-                        ),
-                ),
-                Row(
-                    Div(
-                        Field('name', wrapper_class=""),
-                            css_class='col-sm-12'
-                        ),
-                ),
-                Row(
-                    Div(
-                        Field('model_type', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                    Div(
-                        Field('dispersal_type', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                ),
-        )
-
 
 class VectorForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -305,25 +191,7 @@ class VectorForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.label_class = ''
-        self.helper.field_class = ''
-        self.helper.layout = Layout(
-                Row(
-                    Div(
-                        Field('common_name', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                    Div(
-                        Field('scientific_name', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                ),
 
-            
-        )
 
 class ShortDistanceForm(forms.ModelForm):
 
@@ -358,9 +226,7 @@ class WeatherForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(WeatherForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
+
 
 class WindForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -382,24 +248,7 @@ class WindForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.label_class = ''
-        self.helper.field_class = ''
-        self.helper.layout = Layout(
-                Row(
-                    Div(
-                        Field('wind_direction', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                    Div(
-                        Field('kappa', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                ),
 
-        )
 
 class SeasonalityForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -421,24 +270,6 @@ class SeasonalityForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.label_class = ''
-        self.helper.field_class = ''
-        self.helper.layout = Layout(
-                Row(
-                    Div(
-                        Field('first_month', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                    Div(
-                        Field('last_month', wrapper_class=""),
-                            css_class='col-sm-6'
-                        ),
-                ),
-
-        )
 
 class LethalTemperatureForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -460,26 +291,6 @@ class LethalTemperatureForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.label_class = ''
-        self.helper.field_class = ''
-        self.helper.layout = Layout(
-            InlineRadios('lethal_type'),
-                Row(
-                    Div(
-                        Field('month'),
-                            css_class='col-sm-8'
-                        ),
-                    Div(
-                        Field(AppendedText('value', '&#176;C')),
-                        HTML("{% for error in lethal_temp_form.value.errors %}<div class='py-0' style='color:red; font-size:0.8em'><strong>{{ error }}</strong></div>{% endfor %}"),
-                            css_class='col-sm-4'
-                        ),
-                ),
-
-        )
 
 class TemperatureForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -501,14 +312,7 @@ class TemperatureForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.label_class = ''
-        self.helper.field_class = ''
-        self.helper.layout = Layout(
-                            InlineRadios('method')        
-                            )
+
 
 class PrecipitationForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -530,14 +334,7 @@ class PrecipitationForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.label_class = ''
-        self.helper.field_class = ''
-        self.helper.layout = Layout(
-                            InlineRadios('method')        
-                            )
+
 
 class TemperatureReclassForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -565,29 +362,7 @@ class TemperatureReclassForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.form_show_labels = False
-        self.helper.label_class = ''
-        self.helper.field_class = ''
-        self.helper.layout = Layout(
-                Row(
-                    Div(
-                        Field('min_value', style=""),
-                            css_class='col-3'
-                        ),
-                    Div(
-                        Field('max_value', style=""),
-                            css_class='col-3'
-                        ),
-                    Div(
-                        Field('reclass', style=""),
-                            css_class='col-3'
-                        ),
-                    #HTML('<div class="col-1 pb-3 px-1 input-group-append"><button class="btn btn-info add-form-row" style="font-size: 1em; max-height:2.5em;">+</button></div>'),
-                )
-        )
+
 
 TemperatureReclassFormSet = forms.modelformset_factory(TemperatureReclass, form=TemperatureReclassForm, min_num=2)
 
@@ -617,29 +392,7 @@ class PrecipitationReclassForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.form_show_labels = False
-        self.helper.label_class = ''
-        self.helper.field_class = ''
-        self.helper.layout = Layout(
-                Row(
-                    Div(
-                        Field('min_value', style=""),
-                            css_class='col-3'
-                        ),
-                    Div(
-                        Field('max_value', style=""),
-                            css_class='col-3'
-                        ),
-                    Div(
-                        Field('reclass', style=""),
-                            css_class='col-3'
-                        ),
-                    #HTML('<div class="col-1 pb-3 px-1 input-group-append"><button class="btn btn-info add-form-row" style="font-size: 1em; max-height:2.5em;">+</button></div>'),
-                )
-        )
+
 
 PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, min_num=2)
 
@@ -659,15 +412,7 @@ class TemperaturePolynomialForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.form_show_labels = False
-        #self.helper.label_class = 'col-4 control-label'
-        #self.helper.field_class = 'col-8'
-        self.helper.layout = Layout(
-                            InlineRadios('degree')        
-                            )
+
 
     def clean(self):
         degree = self.cleaned_data.get('degree')
@@ -696,15 +441,6 @@ class PrecipitationPolynomialForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.disable_csrf = True
-        self.helper.form_show_labels = False
-        #self.helper.label_class = 'col-4 control-label'
-        #self.helper.field_class = 'col-8'
-        self.helper.layout = Layout(
-                            InlineRadios('degree'),        
-                            )
 
     def clean(self):
         degree = self.cleaned_data.get('degree')

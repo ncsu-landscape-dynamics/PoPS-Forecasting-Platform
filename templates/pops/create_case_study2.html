@@ -62,6 +62,8 @@
             {% include "pops/include/form_field.html" with field=case_study_form.all_plants|attr:"class:form-control-file" form_class="col-6" %}
 
           </div>
+                      {{ case_study_form.infestation_data.value }}
+
           {% include "pops/include/toggle_switch.html" with field=case_study_form.use_treatment %}
           <div id="treatment_form_visibility">
             {% include "pops/include/form_field.html" with field=case_study_form.treatment_data|attr:"class:form-control-file" %}

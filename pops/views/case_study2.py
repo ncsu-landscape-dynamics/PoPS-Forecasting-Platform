@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from rest_framework import serializers
 from django.forms import ModelForm, modelform_factory
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 
 from ..models import *
 from ..forms import *
@@ -31,6 +31,93 @@ class CaseStudyReview(DetailView):
             context['pests'] = pests
             return context
 
+class NewCaseStudyView(TemplateView):
+
+    template_name = 'pops/create_case_study2.html'
+    
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        my_forms=self.initialize_forms(request, pk=pk)
+        instances, success = self.validate_forms(my_forms)
+        if success:
+            instances = self.save_forms(request, instances, success)
+            return redirect('case_study_review2', pk=instances['new_case_study'].pk)
+        else:
+            my_forms['error_message'] = "Please correct the errors below:"    
+        return self.render_to_response(my_forms) 
+
+    def check_permissions(self, request, pk):
+        cs = get_object_or_404(CaseStudy, pk=pk)
+        if cs.created_by == request.user:
+            return True
+        return
+
+    def initialize_forms(self, request, pk=None):
+        my_forms={}
+        post_data = request.POST or None
+        file_data = request.FILES or None
+        cs=None
+        host=None
+        mortality=None
+        if pk:
+            cs = get_object_or_404(CaseStudy, pk=pk)
+            host = get_object_or_404(Host, case_study=cs)
+        my_forms['case_study_form'] = CaseStudyForm(post_data, file_data, instance=cs, prefix='cs')
+        my_forms['host_form'] = HostForm(post_data, file_data, instance=host, prefix='host')
+        return my_forms
+
+    def validate_forms(self, my_forms):
+        instances={}
+        if my_forms['case_study_form'].is_valid() and my_forms['host_form'].is_valid():
+            instances['new_case_study'] = my_forms['case_study_form'].save(commit=False)
+            instances['new_host'] = my_forms['host_form'].save(commit=False)
+            success=True
+        else:
+            success=False
+        return instances, success
+
+    def save_forms(self, request, instances, success):
+        instances['new_case_study'].created_by = request.user
+        instances['new_case_study'].save()
+        instances['new_host'].case_study = instances['new_case_study']
+        instances['new_host'].save()
+        #If successful, send the user to a page showing all of the case study details.
+        return instances
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        my_forms=self.initialize_forms(request, pk=pk)
+        return self.render_to_response(my_forms) 
+        #return self.post(request, *args, **kwargs)
+
+class ExtendCaseStudyView(NewCaseStudyView):
+
+    def save_forms(self, request, instances, success):
+        original_case_study = get_object_or_404(CaseStudy, pk=self.kwargs.get('pk'))  
+        instances['new_case_study'].created_by = request.user
+        instances['new_case_study'].use_external_calibration = True      
+        instances['new_case_study'].calibration = original_case_study     
+        instances['new_case_study'].pk = None
+        instances['new_case_study'].save()
+        instances['new_host'].pk = None
+        instances['new_host'].case_study = instances['new_case_study']
+        instances['new_host'].save()
+        return instances
+
+    def check_permissions(self, request, pk):
+        cs = get_object_or_404(CaseStudy, pk=pk)
+        if cs.created_by == request.user or cs.staff_approved == True:
+            return True
+        return
+        
 class ApprovedCaseStudyListView(ListView):
 
     model = CaseStudy
