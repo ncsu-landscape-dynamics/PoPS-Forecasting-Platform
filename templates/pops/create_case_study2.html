@@ -5,6 +5,7 @@
 
 {% block page_styles %}
 <link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+<script src="{% static 'js/case_study/form_visibility.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -17,7 +18,7 @@
     <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-6">
         <!--Announcement at top of page-->
-        <div class="alert alert-warning">
+        <div class="alert alert-info">
           <p>
             <strong>Welcome to the create case study page!</strong> Please be sure to read the
             <a class="" href="{% url 'case_study_help' %}">Case Study Help page</a> before getting started.
@@ -28,7 +29,7 @@
         {% if error_message %}
         <div class="alert alert-danger text-center" role="alert">
           <strong>Please correct the errors below!</strong>
-          <p>Note! You must also reselect any files to upload.</p>
+          <p>Note! For security reasons, you must also reselect any files to upload.</p>
         </div>
         {% endif %}
         <!--CSRF Token-->
@@ -43,7 +44,7 @@
           {% for hidden in case_study_form.hidden_fields %}
           {{ hidden }}
           {% endfor %}
-{{ case_study.non_field_errors }}
+          {{ case_study.non_field_errors }}
           {% include "pops/include/form_field.html" with field=case_study_form.name %}
           {% include "pops/include/form_field.html" with field=case_study_form.description|attr:"rows:5" %}
           <div class="row">
@@ -59,28 +60,23 @@
             {% include "pops/include/form_field.html" with field=case_study_form.number_of_hosts form_class="col-6" %}
           </div>
           <div class="row">
-            {% include "pops/include/form_field.html" with field=case_study_form.infestation_data|attr:"class:form-control-file" form_class="col-6" current_value=infestation_data %}
-            {% include "pops/include/form_field.html" with field=case_study_form.all_plants|attr:"class:form-control-file" form_class="col-6" current_value=all_plants_data %}
+            {% include "pops/include/form_file_upload_field.html" with form=case_study_form field=case_study_form.infestation_data|attr:"class:form-control-file" form_class="col-6" current_value=infestation_data %}
+            {% include "pops/include/form_file_upload_field.html" with form=case_study_form field=case_study_form.all_plants|attr:"class:form-control-file" form_class="col-6" current_value=all_plants_data %}
           </div>
           {% include "pops/include/toggle_switch.html" with field=case_study_form.use_treatment %}
-          <div id="treatment_form_visibility">
-            {% include "pops/include/form_field.html" with field=case_study_form.treatment_data|attr:"class:form-control-file" current_value=treatment_data %}
-          </div>
 
+          <div id="treatment_form_visibility">
+            {% include "pops/include/form_file_upload_field.html" with form=case_study_form field=case_study_form.treatment_data|attr:"class:form-control-file" current_value=treatment_data %}
+          </div>
           <!--Treatment visibility javascript (hides treatment form based on toggle)-->
           <script>
-            if ($("#{{ case_study_form.use_treatment.id_for_label }}").is(':checked')){
-              $("#treatment_form_visibility").show();}
-            else {$("#treatment_form_visibility").hide();}
+            toggleVisibilityOnOff('#{{ case_study_form.use_treatment.id_for_label }}','#treatment_form_visibility')
             $(document).ready(function () {
-                var ckbox = $('#{{ case_study_form.use_treatment.id_for_label }}');
-                $('input').on('click',function () {
-                    if (ckbox.is(':checked')) {$("#treatment_form_visibility").show();} 
-                    else {$("#treatment_form_visibility").hide();}
-                });
+              $('input').on('click',function () {
+              toggleVisibilityOnOff('#{{ case_study_form.use_treatment.id_for_label }}','#treatment_form_visibility')
+              })
             });
-          </script>
-
+          </script>     
         </div>
 
         <!--Host details form section-->
@@ -96,7 +92,7 @@
             {% include "pops/include/form_field.html" with field=host_form.name form_class="col-6" %}
             {% include "pops/include/form_field.html" with field=host_form.score form_class="col-6" %}
           </div>
-          {% include "pops/include/form_field.html" with field=host_form.host_data|attr:"class:form-control-file" current_value=host_data %}
+          {% include "pops/include/form_file_upload_field.html" with form=host_form field=host_form.host_data|attr:"class:form-control-file" current_value=host_data %}
           {% include "pops/include/toggle_switch.html" with field=host_form.mortality_on %}
 
           <div id="mortality_form_visibility">
@@ -105,7 +101,7 @@
             {{ hidden }}
             {% endfor %}
             <div id="mortality_file_visibility">
-              {% include "pops/include/form_field.html" with field=mortality_form.mortality_data|attr:"class:form-control-file" current_value=mortality_data %}
+              {% include "pops/include/form_file_upload_field.html" with form=mortality_form field=mortality_form.mortality_data|attr:"class:form-control-file" current_value=mortality_data %}
             </div>
             <div id="mortality_user_input_visibility">
               <div class="row">
@@ -113,10 +109,29 @@
                 {% include "pops/include/form_field.html" with field=mortality_form.time_lag append="years" form_class="col-6"%}
               </div>
             </div>
-          </div>
-          <!--End mortality section-->
+          </div><!--End mortality section-->
+          <!--Mortality visibility javascript (hides treatment form based on toggle)-->
+          <script>
+            toggleVisibilityOnOff('#{{ host_form.mortality_on.id_for_label }}','#mortality_form_visibility')
+            $(document).ready(function () {
+              $('input').on('click',function () {
+              toggleVisibilityOnOff('#{{ host_form.mortality_on.id_for_label }}','#mortality_form_visibility')
+              })
+            });
+          </script>     
+          <!--Mortality visibility javascript (hides treatment form based on toggle)-->
+          <script>
+            toggleVisibilityOnOff('#{{ mortality_form.method.0.id_for_label }}','#mortality_file_visibility')
+            toggleVisibilityOnOff('#{{ mortality_form.method.1.id_for_label }}','#mortality_user_input_visibility')
+            $(document).ready(function () {
+              $('input').on('click',function () {
+              toggleVisibilityOnOff('#{{ mortality_form.method.0.id_for_label }}','#mortality_file_visibility')
+              toggleVisibilityOnOff('#{{ mortality_form.method.1.id_for_label }}','#mortality_user_input_visibility')
+              })
+            });
+          </script>     
+        </div> <!--End host section-->
 
-        </div>
         <!--Pest details form section-->
         <div class="border border-light p-2 my-1">
           <div class="">
@@ -144,9 +159,18 @@
               {% include "pops/include/form_field.html" with field=vector_form.common_name form_class="col-6"%}
               {% include "pops/include/form_field.html" with field=vector_form.scientific_name form_class="col-6"%}
             </div>
-            {% include "pops/include/form_field.html" with field=vector_form.vector_data|attr:"class:form-control-file" current_value=vector_data %}
+            {% include "pops/include/form_file_upload_field.html" with form=vector_form field=vector_form.vector_data|attr:"class:form-control-file" current_value=vector_data %}
           </div>
         </div>
+          <!--Vector visibility javascript (hides form based on toggle)-->
+          <script>
+            toggleVisibilityOnOff('#{{ pest_form.vector_born.id_for_label }}','#vector_form_visibility')
+            $(document).ready(function () {
+              $('input').on('click',function () {
+              toggleVisibilityOnOff('#{{ pest_form.vector_born.id_for_label }}','#vector_form_visibility')
+              })
+            });
+          </script>     
 
         <div class="border border-light p-2 my-1">
           <div class="">
@@ -155,16 +179,37 @@
           {% for hidden in weather_form.hidden_fields %}
           {{ hidden }}
           {% endfor %}
+          
           {% include "pops/include/toggle_switch.html" with field=weather_form.wind_on %}
           <div id="wind_form_visibility" class="row">
             {% include "pops/include/form_field.html" with field=wind_form.wind_direction form_class="col-6"%}
             {% include "pops/include/form_field.html" with field=wind_form.kappa form_class="col-6"%}
           </div>
+          <!--Wind visibility javascript (hides form based on toggle)-->
+          <script>
+            toggleVisibilityOnOff('#{{ weather_form.wind_on.id_for_label }}','#wind_form_visibility')
+            $(document).ready(function () {
+              $('input').on('click',function () {
+              toggleVisibilityOnOff('#{{ weather_form.wind_on.id_for_label }}','#wind_form_visibility')
+              })
+            });
+          </script>     
+
           {% include "pops/include/toggle_switch.html" with field=weather_form.seasonality_on %}
           <div id="seasonality_form_visibility" class="row">
             {% include "pops/include/form_field.html" with field=seasonality_form.first_month form_class="col-6"%}
             {% include "pops/include/form_field.html" with field=seasonality_form.last_month form_class="col-6"%}
           </div>
+          <!--Seasonality visibility javascript (hides form based on toggle)-->
+          <script>
+            toggleVisibilityOnOff('#{{ weather_form.seasonality_on.id_for_label }}','#seasonality_form_visibility')
+            $(document).ready(function () {
+              $('input').on('click',function () {
+              toggleVisibilityOnOff('#{{ weather_form.seasonality_on.id_for_label }}','#seasonality_form_visibility')
+              })
+            });
+          </script>     
+
           {% include "pops/include/toggle_switch.html" with field=weather_form.lethal_temp_on %}
           <div id="lethal_temp_form_visiblity">
             {% include "pops/include/radio_method_form.html" with field=lethal_temp_form.lethal_type %}
@@ -173,6 +218,16 @@
               {% include "pops/include/form_field.html" with field=lethal_temp_form.month form_class="col-8"%}
             </div>
           </div>
+          <!--Lethal temp visibility javascript (hides form based on toggle)-->
+          <script>
+            toggleVisibilityOnOff('#{{ weather_form.lethal_temp_on.id_for_label }}','#lethal_temp_form_visiblity')
+            $(document).ready(function () {
+              $('input').on('click',function () {
+              toggleVisibilityOnOff('#{{ weather_form.lethal_temp_on.id_for_label }}','#lethal_temp_form_visiblity')
+              })
+            });
+          </script>     
+          
           {% include "pops/include/toggle_switch.html" with field=weather_form.temp_on %}
 
           <div id="temp_form_visibility">
@@ -192,12 +247,33 @@
               </div>
               {% include "pops/include/reclass_formset.html" with formset=temperature_reclass_formset %}
             </div>
-            <div class="p-1 pt-4" id="temp_polynomial_form_visibility">
+            <div class="p-1" id="temp_polynomial_form_visibility">
               {% include "pops/include/polynomial_form.html" with form=temperature_polynomial_form %}
             </div>
           </div>
-          {% include "pops/include/toggle_switch.html" with field=weather_form.precipitation_on %}
+          <!--Temperature visibility javascript (hides form based on toggle)-->
+          <script>
+            toggleVisibilityOnOff('#{{ weather_form.temp_on.id_for_label }}','#temp_form_visibility')
+            $(document).ready(function () {
+              $('input').on('click',function () {
+              toggleVisibilityOnOff('#{{ weather_form.temp_on.id_for_label }}','#temp_form_visibility')
+              })
+            });
+          </script>     
 
+          <!--Temperature visibility javascript (hides treatment form based on toggle)-->
+          <script>
+            toggleVisibilityOnOff('#{{ temperature_form.method.0.id_for_label }}','#temp_reclass_form_visibility')
+            toggleVisibilityOnOff('#{{ temperature_form.method.1.id_for_label }}','#temp_polynomial_form_visibility')
+            $(document).ready(function () {
+              $('input').on('click',function () {
+              toggleVisibilityOnOff('#{{ temperature_form.method.0.id_for_label }}','#temp_reclass_form_visibility')
+              toggleVisibilityOnOff('#{{ temperature_form.method.1.id_for_label }}','#temp_polynomial_form_visibility')
+              })
+            });
+          </script>            
+          {% include "pops/include/toggle_switch.html" with field=weather_form.precipitation_on %}
+          <!--Precipitation Form-->
           <div id="precip_form_visibility">
             {% include "pops/include/radio_method_form.html" with field=precipitation_form.method %}
 
@@ -215,10 +291,32 @@
               </div>
               {% include "pops/include/reclass_formset.html" with formset=precipitation_reclass_formset %}
             </div>
-            <div class="p-1 pt-4" id="precip_polynomial_form_visibility">
+            <div class="p-1" id="precip_polynomial_form_visibility">
               {% include "pops/include/polynomial_form.html" with form=precipitation_polynomial_form %}
             </div>
           </div>
+          <!--Precipitation visibility javascript (hides form based on toggle)-->
+          <script>
+            toggleVisibilityOnOff('#{{ weather_form.precipitation_on.id_for_label }}','#precip_form_visibility')
+            $(document).ready(function () {
+              $('input').on('click',function () {
+              toggleVisibilityOnOff('#{{ weather_form.precipitation_on.id_for_label }}','#precip_form_visibility')
+              })
+            });
+          </script>  
+
+          <!--Temperature visibility javascript (hides treatment form based on toggle)-->
+          <script>
+            toggleVisibilityOnOff('#{{ precipitation_form.method.0.id_for_label }}','#precip_reclass_form_visibility')
+            toggleVisibilityOnOff('#{{ precipitation_form.method.1.id_for_label }}','#precip_polynomial_form_visibility')
+            $(document).ready(function () {
+              $('input').on('click',function () {
+              toggleVisibilityOnOff('#{{ precipitation_form.method.0.id_for_label }}','#precip_reclass_form_visibility')
+              toggleVisibilityOnOff('#{{ precipitation_form.method.1.id_for_label }}','#precip_polynomial_form_visibility')
+              })
+            });
+
+          </script>  
           <!--Submit button for form-->
           <div class="text-center py-2">
             <button class="btn btn-info btn-lg" type="submit">Next</button>
@@ -248,7 +346,7 @@
 
 {% block scripts %}
 <!--Scripts to add/remove reclass rows to temp/precip forms-->
-<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script src="{% static 'js/case_study/jquery.formset.js' %}"></script>
 <script>
   $('div.{{ temperature_reclass_formset.prefix }}').formset({
     prefix: '{{ temperature_reclass_formset.prefix }}',

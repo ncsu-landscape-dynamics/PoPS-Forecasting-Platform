@@ -16,7 +16,7 @@
 
 <div class="pb-2" style="font-size:1.2em">Coefficient = </div>
 <!--Degree 1 coefficients-->
-<div id="temp_degree_1" class="row input-group no-gutters">
+<div id="{{form.prefix}}_degree_1" class="row input-group no-gutters">
   {% include "pops/include/form_field_no_label.html" with field=form.a0 form_class="col-3"%}
   <div class="col-auto px-1 text-center">
     <h3> + </h3>
@@ -31,7 +31,7 @@
   </div>
 </div>
 <!--Degree 2 coefficients-->
-<div id="temp_degree_2" class="input-group no-gutters">
+<div id="{{form.prefix}}_degree_2" class="input-group no-gutters">
   <div class="col-auto offset-3 px-1 text-center">
     <h3> + </h3>
   </div>
@@ -45,7 +45,7 @@
   </div>
 </div>
 <!--Degree 3 coefficients-->
-<div id="temp_degree_3" class="input-group no-gutters">
+<div id="{{form.prefix}}_degree_3" class="input-group no-gutters">
   <div class="col-auto offset-3 px-1 text-center">
     <h3> + </h3>
   </div>
@@ -58,3 +58,12 @@
     <h3> )<sup>3</sup></h3>
   </div>
 </div>
+
+<script>
+togglePolynomialVisibility('#{{ form.degree.0.id_for_label }}','#{{ form.degree.1.id_for_label }}','#{{ form.degree.2.id_for_label }}','#{{form.prefix}}_degree_1','#{{form.prefix}}_degree_2','#{{form.prefix}}_degree_3')
+$(document).ready(function () {
+  $('input').on('click',function () {
+    togglePolynomialVisibility('#{{ form.degree.0.id_for_label }}','#{{ form.degree.1.id_for_label }}','#{{ form.degree.2.id_for_label }}','#{{form.prefix}}_degree_1','#{{form.prefix}}_degree_2','#{{form.prefix}}_degree_3')
+  })
+});
+</script>
