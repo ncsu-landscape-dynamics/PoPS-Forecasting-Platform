@@ -29,6 +29,7 @@ def validate_file_size(self, fields):
         data_file = self.cleaned_data.get(field)
         if data_file:
             print('Data file is here')
+            print(field)
             print(data_file)
             print(type(data_file))
             print(hasattr(data_file, 'instance'))
@@ -49,7 +50,7 @@ class CaseStudyForm(forms.ModelForm):
         model = CaseStudy
         fields = ['name', 'description','number_of_pests','number_of_hosts','start_year','end_year','future_years',
                 'time_step','infestation_data','all_plants','use_treatment','treatment_data']
-        widgets = {'infestation_data': forms.FileInput, 'all_plants': forms.FileInput}
+        widgets = {'infestation_data': forms.FileInput, 'all_plants': forms.FileInput, 'treatment_data': forms.FileInput}
 
     def __init__(self, *args, **kwargs):
         super(CaseStudyForm, self).__init__(*args, **kwargs)
@@ -62,7 +63,7 @@ class CaseStudyForm(forms.ModelForm):
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
 
     def clean(self):
-
+        print("VALIDATING CASE STUDY FORM")
         self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years','infestation_data','all_plants'])
         self.validate_size(['infestation_data','all_plants'])
         first_year = self.cleaned_data.get("start_year")
@@ -94,6 +95,7 @@ class HostForm(forms.ModelForm):
         widgets = {'host_data': forms.FileInput}
 
     def clean(self):
+        print('VALIDATING HOST FORM')
         self.fields_required(['name','score','host_data'])
         self.validate_size(['host_data'])
         return self.cleaned_data
@@ -115,7 +117,7 @@ class MortalityForm(forms.ModelForm):
     class Meta:
         model = Mortality
         fields = ['method','mortality_data','rate','time_lag']
-        widgets = {'method': forms.RadioSelect,}
+        widgets = {'method': forms.RadioSelect(attrs={'display':'inline-block'}),'mortality_data': forms.FileInput}
     
     def clean(self):
         self.fields_required(['method'])
@@ -176,7 +178,8 @@ class VectorForm(forms.ModelForm):
     class Meta:
         model = Vector
         fields = ['common_name','scientific_name','vector_data']
-    
+        widgets = {'vector_data': forms.FileInput}
+
     def clean(self):
         self.fields_required(['common_name','scientific_name','vector_data'])
         self.validate_size(['vector_data'])
@@ -277,7 +280,7 @@ class LethalTemperatureForm(forms.ModelForm):
     class Meta:
         model = LethalTemperature
         fields = ['lethal_type','month','value']
-
+        widgets = {'lethal_type': forms.RadioSelect(attrs={'display':'inline-block'})}
     def clean(self):
         self.fields_required(['lethal_type','month','value'])
         return self.cleaned_data
@@ -298,7 +301,8 @@ class TemperatureForm(forms.ModelForm):
     class Meta:
         model = Temperature
         fields = ['method']
-        
+        widgets = {'method': forms.RadioSelect(attrs={'display':'inline-block'})}
+
     def clean(self):
         self.fields_required(['method'])
         return self.cleaned_data
@@ -320,6 +324,7 @@ class PrecipitationForm(forms.ModelForm):
     class Meta:
         model = Precipitation
         fields = ['method']
+        widgets = {'method': forms.RadioSelect(attrs={'display':'inline-block'})}
 
     def clean(self):
         self.fields_required(['method'])
@@ -364,7 +369,7 @@ class TemperatureReclassForm(forms.ModelForm):
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
 
 
-TemperatureReclassFormSet = forms.modelformset_factory(TemperatureReclass, form=TemperatureReclassForm, min_num=2)
+#TemperatureReclassFormSet = forms.modelformset_factory(TemperatureReclass, form=TemperatureReclassForm, min_num=2)
 
 class PrecipitationReclassForm(forms.ModelForm):
     fields_required = fields_required_conditionally
@@ -402,6 +407,7 @@ class TemperaturePolynomialForm(forms.ModelForm):
     class Meta:
         model = TemperaturePolynomial
         fields = ['degree','a0','a1','a2','a3','x1','x2','x3']
+        widgets = {'degree': forms.RadioSelect(attrs={'display':'inline-block'})}
 
     def __init__(self, *args, **kwargs):
         super(TemperaturePolynomialForm, self).__init__(*args, **kwargs)
@@ -431,7 +437,8 @@ class PrecipitationPolynomialForm(forms.ModelForm):
     class Meta:
         model = PrecipitationPolynomial
         fields = ['degree','a0','a1','a2','a3','x1','x2','x3']
-   
+        widgets = {'degree': forms.RadioSelect(attrs={'display':'inline-block'})}
+
     def __init__(self, *args, **kwargs):
         super(PrecipitationPolynomialForm, self).__init__(*args, **kwargs)
         for field in self.fields:

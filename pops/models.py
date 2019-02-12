@@ -3,10 +3,19 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator 
+from django.core.exceptions import ObjectDoesNotExist 
 from django.contrib.postgres.fields import ArrayField
 import os
 
 from users.models import CustomUser
+
+class MyManager(models.Manager):
+
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except ObjectDoesNotExist:
+            return None
 
 # Django automatically creates a primary key for each model and we are not overwriting this default behavior in any of our models.
 class CaseStudy(models.Model):
@@ -43,6 +52,8 @@ class CaseStudy(models.Model):
                     default = "NO START", blank=True)
     use_external_calibration = models.BooleanField(verbose_name = _("use another case study's calibration?"), help_text="Sample help text.", default = False)
     calibration = models.ForeignKey("self", verbose_name = _("calibrated case study"), null=True, blank=True, on_delete = models.SET_NULL)
+
+    objects = MyManager()
 
     class Meta:
         verbose_name = _("case study")
@@ -157,6 +168,8 @@ class Host(models.Model):
     mortality_on = models.BooleanField(verbose_name = _("mortality"), help_text="Does the host experience mortality as a result of the pest/pathogen?", blank=True)
     host_data = models.FileField(verbose_name = _("host data"), help_text="Upload your host data as a raster file.", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, blank=True)
 
+    objects = MyManager()
+
     class Meta:
         verbose_name = _("host")
         verbose_name_plural = _("hosts")
@@ -179,6 +192,8 @@ class Mortality(models.Model):
     rate_standard_deviation = models.DecimalField(verbose_name = _("mortality rate standard deviation"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null=True)
     time_lag = models.PositiveSmallIntegerField(verbose_name = _("mortality time lag (years)"), help_text="How long after initial infection/infestation (in years) before mortality occurs on average?", blank=True, null=True, default = 2, validators = [MinValueValidator(1), MaxValueValidator(10)])
     time_lag_standard_deviation = models.DecimalField(verbose_name = _("mortality time lag standard deviation"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, null=True)
+
+    objects = MyManager()
 
     class Meta:
         verbose_name = _("mortality")
@@ -208,6 +223,8 @@ class PestInformation(models.Model):
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     date_updated = models.DateTimeField(verbose_name = _("date updated"), auto_now = True, auto_now_add = False)
     staff_approved = models.BooleanField(verbose_name = _("approved by staff"), help_text="Sample help text.", default = False)
+
+    objects = MyManager()
 
     class Meta:
         verbose_name = _("pest information")
@@ -239,6 +256,8 @@ class Pest(models.Model):
     dispersal_type = models.CharField(verbose_name = _("dispersal type"), help_text="", max_length = 70,
                     choices = DISPERSAL_CHOICES,
                     default = "CAUCHY", blank=True)
+    
+    objects = MyManager()
 
     class Meta:
         verbose_name = _("pest")
@@ -258,6 +277,8 @@ class Vector(models.Model):
     host_to_vector_transmission_rate = models.DecimalField(verbose_name = _("host to vector transmission rate"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null = True)
     host_to_vector_transmission_rate_standard_deviation = models.DecimalField(verbose_name = _("host to vector transmission rate standard deviation"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null=True)
 
+    objects = MyManager()
+
     class Meta:
         verbose_name = _("vector")
         verbose_name_plural = _("vectors")
@@ -272,6 +293,8 @@ class ShortDistance(models.Model):
     scale_standard_deviation = models.DecimalField(verbose_name = _("short distance scale standard deviation"), max_digits = 5, decimal_places = 1)
     percent_short_distance = models.DecimalField(verbose_name = _("percentage of dispersal that is short distance"), default = 1, max_digits = 3, decimal_places = 2)
 
+    objects = MyManager()
+
     class Meta:
         verbose_name = _("short distance dispersal")
         verbose_name_plural = _("short distance dispersals")
@@ -284,6 +307,8 @@ class LongDistance(models.Model):
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
     scale = models.DecimalField(verbose_name = _("long distance scale"), max_digits = 5, decimal_places = 1)
     scale_standard_deviation = models.DecimalField(verbose_name = _("long distance scale standard deviation"), max_digits = 5, decimal_places = 1)
+
+    objects = MyManager()
 
     class Meta:
         verbose_name = _("long distance dispersal")
@@ -298,6 +323,8 @@ class CrypticToInfected(models.Model):
     rate = models.DecimalField(verbose_name = _("cryptic to infected rate"), max_digits = 3, decimal_places = 2)
     rate_standard_deviation = models.DecimalField(verbose_name = _("cryptic to infected standard deviation"), max_digits = 3, decimal_places = 2)
 
+    objects = MyManager()
+
     class Meta:
         verbose_name = _("cryptic to infected")
         verbose_name_plural = _("cryptic to infecteds")
@@ -310,6 +337,8 @@ class InfectedToDiseased(models.Model):
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
     rate = models.DecimalField(verbose_name = _("infected to diseased rate"), max_digits = 3, decimal_places = 2)
     rate_standard_deviation = models.DecimalField(verbose_name = _("infected to diseased standard deviation"), max_digits = 3, decimal_places = 2)
+
+    objects = MyManager()
 
     class Meta:
         verbose_name = _("infected to diseased")
@@ -326,6 +355,8 @@ class Weather(models.Model):
     lethal_temp_on = models.BooleanField(verbose_name = _("lethal temperature"), help_text="Does your pest/pathogen experience mortality due to extreme temperature conditions?", default = False)
     temp_on = models.BooleanField(verbose_name = _("temperature"), help_text="Does temperature affect the reproduction and survival of your pest/pathogen?", default = False)
     precipitation_on = models.BooleanField(verbose_name = _("precipitation"), help_text="Does precipitation affect the reproduction and survival of your pest/pathogen?", default = False)
+
+    objects = MyManager()
 
     class Meta:
         verbose_name = _("weather")
@@ -368,6 +399,8 @@ class Wind(models.Model):
 
     kappa = models.PositiveSmallIntegerField(verbose_name = _("wind strenth (kappa)"), help_text="What is the average wind strength in your study area? 0 is no effect and 12 is very strong directional movement", choices = KAPPA_CHOICES, default = 1, blank = False, validators = [MinValueValidator(1), MaxValueValidator(12)])
 
+    objects = MyManager()
+
     class Meta:
         verbose_name = _("wind")
         verbose_name_plural = _("winds")
@@ -393,6 +426,8 @@ class Seasonality(models.Model):
     weather = models.OneToOneField(Weather, verbose_name = _("weather"), on_delete = models.CASCADE, primary_key=True)
     first_month = models.PositiveSmallIntegerField(verbose_name = _("first month of season"), help_text="What is the first month your pest/pathogen spreads during the year?", choices = MONTH, default = 1, blank=False, validators = [MinValueValidator(1), MaxValueValidator(12)])
     last_month = models.PositiveSmallIntegerField(verbose_name = _("last month of season"), help_text="What is the last month your pest/pathogen spreads during the year?", choices = MONTH, default = 12, blank=False, validators = [MinValueValidator(1), MaxValueValidator(12)])
+
+    objects = MyManager()
 
     class Meta:
         verbose_name = _("seasonality")
@@ -427,6 +462,8 @@ class LethalTemperature(models.Model):
     value = models.DecimalField(verbose_name = _("lethal temperature"), help_text="What is the lethal temperature at which pest/pathogen mortality occurs?", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(50)])
     lethal_temperature_data = models.FileField(verbose_name = _("lethal temperature data"), help_text="Upload your letah temperature data as a raster file (1 file with a layer for each year).", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
 
+    objects = MyManager()
+
     class Meta:
         verbose_name = _("lethal temperature")
         verbose_name_plural = _("lethal temperatures")
@@ -445,6 +482,8 @@ class Temperature(models.Model):
                     choices = METHOD_CHOICES,
                     default = "RECLASS", blank = False)
     temperature_data = models.FileField(verbose_name = _("temperature data"), help_text="Upload your temperature data as a raster file (1 file with a layer for each timestep).", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
+
+    objects = MyManager()
 
     class Meta:
         verbose_name = _("temperature")
@@ -465,6 +504,8 @@ class Precipitation(models.Model):
                     default = "RECLASS", blank = False)
     precipitation_data = models.FileField(verbose_name = _("precipitation data"), help_text="Upload your precipitation data as a raster file (1 file with a layer for each timestep).", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
 
+    objects = MyManager()
+
     class Meta:
         verbose_name = _("precipitation")
         verbose_name_plural = _("precipitations")
@@ -479,12 +520,15 @@ class TemperatureReclass(models.Model):
     max_value = models.DecimalField(verbose_name = _("max"), help_text="Maximum temperature (in degrees Celsius) to reclass from.", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(100)])
     reclass = models.DecimalField(verbose_name = _("reclass"), help_text="Reclass value (between 0 and 1).", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
 
+    objects = MyManager()
+
     class Meta:
         verbose_name = _("temperature reclass")
         verbose_name_plural = _("temperature reclasses")
+        ordering = ['min_value']
 
     def __str__(self):
-        return self.reclass
+        return str(self.temperature.weather.case_study.pk)
 
 class PrecipitationReclass(models.Model):
 
@@ -493,9 +537,12 @@ class PrecipitationReclass(models.Model):
     max_value = models.DecimalField(verbose_name = _("max"), help_text="Maximum precipitation (in millimeters) to reclass from.", max_digits = 6, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
     reclass = models.DecimalField(verbose_name = _("reclass"), help_text="Reclass value (between 0 and 1).", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(0), MaxValueValidator(1)])
 
+    objects = MyManager()
+
     class Meta:
         verbose_name = _("precipitation reclass")
         verbose_name_plural = _("precipitation reclasses")
+        ordering = ['min_value']
 
     def __str__(self):
         return self.reclass
@@ -518,6 +565,8 @@ class TemperaturePolynomial(models.Model):
     x1 = models.DecimalField(verbose_name = _("x1"), help_text="value of x1 in your polynomial transformation.", max_digits = 5, decimal_places = 2, blank = True, null = True)
     x2 = models.DecimalField(verbose_name = _("x2"), help_text="value of x2 in your polynomial transformation.", max_digits = 5, decimal_places = 2, blank = True, null = True)
     x3 = models.DecimalField(verbose_name = _("x3"), help_text="value of x3 in your polynomial transformation.", max_digits = 5, decimal_places = 2, blank = True, null = True)
+
+    objects = MyManager()
 
     class Meta:
         verbose_name = _("temperature polynomial")
@@ -543,6 +592,8 @@ class PrecipitationPolynomial(models.Model):
     x1 = models.DecimalField(verbose_name = _("x1"), help_text="value of x1 in your polynomial transformation.", max_digits = 5, decimal_places = 2, blank = True, null = True)
     x2 = models.DecimalField(verbose_name = _("x2"), help_text="value of x2 in your polynomial transformation.", max_digits = 5, decimal_places = 2, blank = True, null = True)
     x3 = models.DecimalField(verbose_name = _("x3"), help_text="value of x3 in your polynomial transformation.", max_digits = 5, decimal_places = 2, blank = True, null = True)
+
+    objects = MyManager()
 
     class Meta:
         verbose_name = _("precipitation polynomial")

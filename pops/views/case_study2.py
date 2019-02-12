@@ -41,14 +41,15 @@ class NewCaseStudyView(TemplateView):
              permission = self.check_permissions(request, pk=pk)
              if not permission:
                  return HttpResponseForbidden()
-        my_forms=self.initialize_forms(request, pk=pk)
-        instances, success = self.validate_forms(my_forms)
+        my_forms, database_content=self.initialize_forms(request, pk=pk)
+        required_models, success, optional_models = self.validate_forms(my_forms)
         if success:
-            instances = self.save_forms(request, instances, success)
-            return redirect('case_study_review2', pk=instances['new_case_study'].pk)
+            required_models = self.save_forms(request, required_models, success, optional_models)
+            return redirect('case_study_review2', pk=required_models['new_case_study'].pk)
         else:
             my_forms['error_message'] = "Please correct the errors below:"    
-        return self.render_to_response(my_forms) 
+        context ={**my_forms, **database_content}
+        return self.render_to_response(context) 
 
     def check_permissions(self, request, pk):
         cs = get_object_or_404(CaseStudy, pk=pk)
@@ -58,35 +59,194 @@ class NewCaseStudyView(TemplateView):
 
     def initialize_forms(self, request, pk=None):
         my_forms={}
+        original_datafiles={}
         post_data = request.POST or None
         file_data = request.FILES or None
         cs=None
         host=None
         mortality=None
+        pest=None
+        vector=None
+        weather=None
+        wind=None
+        seasonality=None
+        lethal_temp=None
+        temperature=None
+        precipitation=None
+        temperature_polynomial=None
+        precipitation_polynomial=None
+        temperature_reclass=None
+        precipitation_reclass=None
         if pk:
             cs = get_object_or_404(CaseStudy, pk=pk)
+            original_datafiles['infestation_data'] = cs.infestation_data
+            original_datafiles['all_plants_data'] = cs.all_plants
+            original_datafiles['treatment_data'] = cs.treatment_data
             host = get_object_or_404(Host, case_study=cs)
+            original_datafiles['host_data'] = host.host_data
+            mortality = Mortality.objects.get_or_none(host=host)   
+            if mortality:
+                original_datafiles['mortality_data'] = mortality.mortality_data
+            pest = get_object_or_404(Pest, case_study=cs)
+            vector = Vector.objects.get_or_none(pest=pest)
+            if vector:
+                original_datafiles['vector_data'] = vector.vector_data
+            weather = get_object_or_404(Weather, case_study=cs)
+            wind = Wind.objects.get_or_none(weather=weather)
+            seasonality = Seasonality.objects.get_or_none(weather=weather)
+            lethal_temp = LethalTemperature.objects.get_or_none(weather=weather)
+            temperature = Temperature.objects.get_or_none(weather=weather)
+            precipitation = Precipitation.objects.get_or_none(weather=weather)
+            temperature_polynomial = TemperaturePolynomial.objects.get_or_none(temperature=temperature)
+            precipitation_polynomial = PrecipitationPolynomial.objects.get_or_none(precipitation=precipitation)
+            temperature_reclass=TemperatureReclass.objects.filter(temperature=temperature)
+            precipitation_reclass=PrecipitationReclass.objects.filter(precipitation=precipitation)
         my_forms['case_study_form'] = CaseStudyForm(post_data, file_data, instance=cs, prefix='cs')
         my_forms['host_form'] = HostForm(post_data, file_data, instance=host, prefix='host')
-        return my_forms
+        my_forms['mortality_form'] = MortalityForm(post_data, file_data, instance=mortality, prefix='mortality')
+        my_forms['pest_form'] = PestForm(post_data, file_data, instance=pest, prefix='pest')
+        my_forms['vector_form'] = VectorForm(post_data, file_data, instance=vector, prefix='vector')
+        my_forms['weather_form'] = WeatherForm(post_data, instance=weather, prefix='weather')
+        my_forms['wind_form'] = WindForm(post_data, instance=wind, prefix='wind')
+        my_forms['seasonality_form'] = SeasonalityForm(post_data, instance=seasonality, prefix='seasonality')
+        my_forms['lethal_temp_form'] = LethalTemperatureForm(post_data, instance=lethal_temp, prefix='lethal_temp')
+        my_forms['temperature_form'] = TemperatureForm(post_data, instance=temperature, prefix='temperature')
+        my_forms['precipitation_form'] = PrecipitationForm(post_data, instance=precipitation, prefix='precipitation')
+        my_forms['temperature_polynomial_form'] = TemperaturePolynomialForm(post_data, instance=temperature_polynomial, prefix='temperature_polynomial')
+        my_forms['precipitation_polynomial_form'] = PrecipitationPolynomialForm(post_data, instance=precipitation_polynomial, prefix='precipitation_polynomial')
+        TemperatureReclassFormSet = forms.inlineformset_factory(Temperature, TemperatureReclass, form=TemperatureReclassForm, min_num=2, validate_min=True, extra=1)
+        my_forms['temperature_reclass_formset'] = TemperatureReclassFormSet(post_data, instance=temperature, prefix='temp_reclass')
+        PrecipitationReclassFormSet = forms.inlineformset_factory(Precipitation, PrecipitationReclass, form=PrecipitationReclassForm, min_num=2, validate_min=True, extra=1)
+        my_forms['precipitation_reclass_formset'] = PrecipitationReclassFormSet(post_data, instance=precipitation, prefix='precip_reclass')
+        return my_forms, original_datafiles
 
     def validate_forms(self, my_forms):
-        instances={}
-        if my_forms['case_study_form'].is_valid() and my_forms['host_form'].is_valid():
-            instances['new_case_study'] = my_forms['case_study_form'].save(commit=False)
-            instances['new_host'] = my_forms['host_form'].save(commit=False)
+        required_models={}
+        optional_models={}
+        optional_models['new_case_study']=[]
+        optional_models['host']=[]
+        optional_models['pest']=[]
+        optional_models['weather']=[]
+        optional_models['temperature']=[]
+        optional_models['precipitation']=[]
+        if my_forms['case_study_form'].is_valid() and my_forms['host_form'].is_valid() and my_forms['pest_form'].is_valid() and my_forms['weather_form'].is_valid():
+            required_models['new_case_study'] = my_forms['case_study_form'].save(commit=False)
+            required_models['new_host'] = my_forms['host_form'].save(commit=False)
+            required_models['new_pest'] = my_forms['pest_form'].save(commit=False)
+            required_models['new_weather'] = my_forms['weather_form'].save(commit=False)
             success=True
+            if required_models['new_host'].mortality_on == True:
+                if my_forms['mortality_form'].is_valid():
+                    required_models['new_mortality'] = my_forms['mortality_form'].save(commit=False)
+                    optional_models['host'].append(required_models['new_mortality'])
+                else:
+                    success = False
+            if required_models['new_pest'].vector_born == True:
+                if my_forms['vector_form'].is_valid():
+                    required_models['new_vector'] = my_forms['vector_form'].save(commit=False)
+                    optional_models['pest'].append(required_models['new_vector'])
+                else:
+                    success = False
+            if required_models['new_weather'].wind_on == True:
+                if my_forms['wind_form'].is_valid():
+                    required_models['new_wind'] = my_forms['wind_form'].save(commit=False)
+                    optional_models['weather'].append(required_models['new_wind'])
+                else:
+                    success = False
+            if required_models['new_weather'].seasonality_on == True:
+                if my_forms['seasonality_form'].is_valid():
+                    required_models['new_seasonality'] = my_forms['seasonality_form'].save(commit=False)
+                    optional_models['weather'].append(required_models['new_seasonality'])
+                else:
+                    success = False
+            if required_models['new_weather'].lethal_temp_on == True:
+                if my_forms['lethal_temp_form'].is_valid():
+                    required_models['new_lethal_temp'] = my_forms['lethal_temp_form'].save(commit=False)
+                    optional_models['weather'].append(required_models['new_lethal_temp'])
+                else:
+                    success = False
+            if required_models['new_weather'].temp_on == True:
+                if my_forms['temperature_form'].is_valid():
+                    required_models['new_temperature'] = my_forms['temperature_form'].save(commit=False)
+                    optional_models['weather'].append(required_models['new_temperature'])
+                    if required_models['new_temperature'].method == "POLYNOMIAL":
+                        if my_forms['temperature_polynomial_form'].is_valid():
+                            required_models['new_temperature_polynomial'] = my_forms['temperature_polynomial_form'].save(commit=False)
+                            optional_models['temperature'].append(required_models['new_temperature_polynomial'])
+                        else:
+                            success = False
+                    if required_models['new_temperature'].method == "RECLASS":
+                        if my_forms['temperature_reclass_formset'].is_valid():
+                            print("temp Reclass formset is valid")
+                            reclass_forms = my_forms['temperature_reclass_formset'].save(commit=False)
+                            for obj in my_forms['temperature_reclass_formset'].deleted_objects:
+                                obj.delete()
+                            for instance in reclass_forms:
+                                optional_models['temperature'].append(instance)
+                                print("instance stuff happened")
+                                print(instance.min_value)
+                        else:
+                            success = False
+                            print("Temp reclass formset form is INVALID")
+                else:
+                    success = False
+            if required_models['new_weather'].precipitation_on == True:
+                if my_forms['precipitation_form'].is_valid():
+                    required_models['new_precipitation'] = my_forms['precipitation_form'].save(commit=False)
+                    optional_models['weather'].append(required_models['new_precipitation'])
+                    if required_models['new_precipitation'].method == "POLYNOMIAL":
+                        if my_forms['precipitation_polynomial_form'].is_valid():
+                            required_models['new_precipitation_polynomial'] = my_forms['precipitation_polynomial_form'].save(commit=False)
+                            optional_models['precipitation'].append(required_models['new_precipitation_polynomial'])
+                        else:
+                            success = False
+                    if required_models['new_precipitation'].method == "RECLASS":
+                        if my_forms['precipitation_reclass_formset'].is_valid():
+                            print("temp Reclass formset is valid")
+                            reclass_forms = my_forms['precipitation_reclass_formset'].save(commit=False)
+                            for obj in my_forms['precipitation_reclass_formset'].deleted_objects:
+                                obj.delete()
+                            for instance in reclass_forms:
+                                optional_models['precipitation'].append(instance)
+                                print("instance stuff happened")
+                                print(instance.min_value)
+                        else:
+                            success = False
+                            print("Temp reclass formset form is INVALID")                
+                else:
+                    success = False
         else:
+            print('VALIDATION FAILED')
             success=False
-        return instances, success
 
-    def save_forms(self, request, instances, success):
-        instances['new_case_study'].created_by = request.user
-        instances['new_case_study'].save()
-        instances['new_host'].case_study = instances['new_case_study']
-        instances['new_host'].save()
-        #If successful, send the user to a page showing all of the case study details.
-        return instances
+        return required_models, success, optional_models
+
+    def save_forms(self, request, required_models, success, optional_models):
+        required_models['new_case_study'].created_by = request.user
+        required_models['new_case_study'].save()
+        required_models['new_host'].case_study = required_models['new_case_study']
+        required_models['new_host'].save()
+        required_models['new_pest'].case_study = required_models['new_case_study']
+        required_models['new_pest'].save()
+        required_models['new_weather'].case_study = required_models['new_case_study']
+        required_models['new_weather'].save()
+        for model in optional_models['host']:
+            model.host = required_models['new_host']
+            model.save()
+        for model in optional_models['pest']:
+            model.pest = required_models['new_pest']
+            model.save()
+        for model in optional_models['weather']:
+            model.weather = required_models['new_weather']
+            model.save()
+        for model in optional_models['temperature']:
+            model.temperature = required_models['new_temperature']
+            model.save()
+        for model in optional_models['precipitation']:
+            model.precipitation = required_models['new_precipitation']
+            model.save()
+
+        return required_models
 
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
@@ -94,23 +254,24 @@ class NewCaseStudyView(TemplateView):
              permission = self.check_permissions(request, pk=pk)
              if not permission:
                  return HttpResponseForbidden()
-        my_forms=self.initialize_forms(request, pk=pk)
-        return self.render_to_response(my_forms) 
+        my_forms, database_content =self.initialize_forms(request, pk=pk)
+        context ={**my_forms, **database_content}
+        return self.render_to_response(context) 
         #return self.post(request, *args, **kwargs)
 
 class ExtendCaseStudyView(NewCaseStudyView):
 
-    def save_forms(self, request, instances, success):
+    def save_forms(self, request, required_models, success):
         original_case_study = get_object_or_404(CaseStudy, pk=self.kwargs.get('pk'))  
-        instances['new_case_study'].created_by = request.user
-        instances['new_case_study'].use_external_calibration = True      
-        instances['new_case_study'].calibration = original_case_study     
-        instances['new_case_study'].pk = None
-        instances['new_case_study'].save()
-        instances['new_host'].pk = None
-        instances['new_host'].case_study = instances['new_case_study']
-        instances['new_host'].save()
-        return instances
+        required_models['new_case_study'].created_by = request.user
+        required_models['new_case_study'].use_external_calibration = True      
+        required_models['new_case_study'].calibration = original_case_study     
+        required_models['new_case_study'].pk = None
+        required_models['new_case_study'].save()
+        required_models['new_host'].pk = None
+        required_models['new_host'].case_study = required_models['new_case_study']
+        required_models['new_host'].save()
+        return required_models
 
     def check_permissions(self, request, pk):
         cs = get_object_or_404(CaseStudy, pk=pk)
@@ -164,11 +325,11 @@ def create_case_study(request):
     #If the user has submitted the form
     if request.method == "POST":
 
-        host_success_models = []
-        pest_success_models = []
-        weather_success_models = []
-        temperature_success_models = []
-        precipitation_success_models = []
+        host_optional_models = []
+        pest_optional_models = []
+        weather_optional_models = []
+        temperature_optional_models = []
+        precipitation_optional_models = []
 
         case_study_form = CaseStudyForm(request.POST, request.FILES, prefix="cs")
         host_form = HostForm(request.POST, request.FILES, prefix="host")
@@ -220,11 +381,11 @@ def case_study_edit(request,pk=None):
     #If the user has submitted the form
     if request.method == "POST":
 
-        host_success_models = []
-        pest_success_models = []
-        weather_success_models = []
-        temperature_success_models = []
-        precipitation_success_models = []
+        host_optional_models = []
+        pest_optional_models = []
+        weather_optional_models = []
+        temperature_optional_models = []
+        precipitation_optional_models = []
         if pk:
             cs = get_object_or_404(CaseStudy, pk=pk)
             host = get_object_or_404(Host, case_study=cs)

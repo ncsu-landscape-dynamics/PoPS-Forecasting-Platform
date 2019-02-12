@@ -1,0 +1,11 @@
+{% load widget_tweaks %}
+
+        {% for form in formset %}
+      <div id="" class="row {{ formset.prefix }}">
+        {{ form.id }}
+        {% include "pops/include/form_field_no_label.html" with field=form.min_value form_class="col-3 px-1 pl-2"%}
+        {% include "pops/include/form_field_no_label.html" with field=form.max_value form_class="col-3 px-1"%}
+        {% include "pops/include/form_field_no_label.html" with field=form.reclass form_class="col-3 px-1"%}
+        {{ form.DELETE }}
+        </div>
+        {% endfor %}
