@@ -6,6 +6,7 @@
 {% block page_styles %}
 <link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
 <script src="{% static 'js/case_study/form_visibility.js' %}"></script>
+<script src="{% static 'js/case_study/jquery.formset.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -253,16 +254,20 @@
           </div>
           <!--Temperature visibility javascript (hides form based on toggle)-->
           <script>
+          // Dynamically add and remove form rows from reclass
+            $('div.{{ temperature_reclass_formset.prefix }}').formset({
+              prefix: '{{ temperature_reclass_formset.prefix }}',
+              addText: 'Add reclass row',
+              deleteText: 'remove',
+              addCssClass: 'btn btn-secondary',
+              deleteCssClass: 'text-light'
+            });
             toggleVisibilityOnOff('#{{ weather_form.temp_on.id_for_label }}','#temp_form_visibility')
             $(document).ready(function () {
               $('input').on('click',function () {
               toggleVisibilityOnOff('#{{ weather_form.temp_on.id_for_label }}','#temp_form_visibility')
               })
             });
-          </script>     
-
-          <!--Temperature visibility javascript (hides treatment form based on toggle)-->
-          <script>
             toggleVisibilityOnOff('#{{ temperature_form.method.0.id_for_label }}','#temp_reclass_form_visibility')
             toggleVisibilityOnOff('#{{ temperature_form.method.1.id_for_label }}','#temp_polynomial_form_visibility')
             $(document).ready(function () {
@@ -297,16 +302,20 @@
           </div>
           <!--Precipitation visibility javascript (hides form based on toggle)-->
           <script>
+          // Dynamically add and remove form rows from reclass
+            $('div.{{ precipitation_reclass_formset.prefix }}').formset({
+              prefix: '{{ precipitation_reclass_formset.prefix }}',
+              addText: 'Add reclass row',
+              deleteText: 'remove',
+              addCssClass: 'btn btn-secondary',
+              deleteCssClass: 'text-light'
+            });
             toggleVisibilityOnOff('#{{ weather_form.precipitation_on.id_for_label }}','#precip_form_visibility')
             $(document).ready(function () {
               $('input').on('click',function () {
               toggleVisibilityOnOff('#{{ weather_form.precipitation_on.id_for_label }}','#precip_form_visibility')
               })
             });
-          </script>  
-
-          <!--Temperature visibility javascript (hides treatment form based on toggle)-->
-          <script>
             toggleVisibilityOnOff('#{{ precipitation_form.method.0.id_for_label }}','#precip_reclass_form_visibility')
             toggleVisibilityOnOff('#{{ precipitation_form.method.1.id_for_label }}','#precip_polynomial_form_visibility')
             $(document).ready(function () {
@@ -346,24 +355,6 @@
 
 {% block scripts %}
 <!--Scripts to add/remove reclass rows to temp/precip forms-->
-<script src="{% static 'js/case_study/jquery.formset.js' %}"></script>
 <script>
-  $('div.{{ temperature_reclass_formset.prefix }}').formset({
-    prefix: '{{ temperature_reclass_formset.prefix }}',
-    addText: 'Add reclass row',
-    deleteText: 'remove',
-    addCssClass: 'btn btn-secondary',
-    deleteCssClass: 'text-light'
-  });
-</script>
-
-<script>
-  $('div.{{ precipitation_reclass_formset.prefix }}').formset({
-    prefix: '{{ precipitation_reclass_formset.prefix }}',
-    addText: 'Add reclass row',
-    deleteText: 'remove',
-    addCssClass: 'btn btn-secondary',
-    deleteCssClass: 'text-light'
-  });
 </script>
 {% endblock %}

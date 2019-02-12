@@ -399,7 +399,7 @@ class PrecipitationReclassForm(forms.ModelForm):
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
 
 
-PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, min_num=2)
+#PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, min_num=2)
 
 class TemperaturePolynomialForm(forms.ModelForm):
     fields_required = fields_required_conditionally
