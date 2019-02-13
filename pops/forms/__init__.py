@@ -1,1 +1,1 @@
-from .forms2 import *
+from .forms import *

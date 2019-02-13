@@ -1,160 +1,143 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load get_staff_approved %}
 {% block page_styles %}
 <link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
 {% endblock %}
 {% block content %}
 
 <style type="text/css" media="screen">
-
-.table-wrapper-scroll-y  {
-display: block;
-max-height: 15em;
-overflow-y: auto;
--ms-overflow-style: -ms-autohiding-scrollbar;
-}
-
+    .table-wrapper-scroll-y {
+        display: block;
+        max-height: 15em;
+        overflow-y: auto;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
 </style>
 
 <div class="container py-2 pb-4">
-<h3>Available case studies: </h3>
+    <h3>Available case studies: </h3>
     <div class="row">
         <div class="col-12">
             <div class="panel-container">
                 <h4>Staff-approved case studies:</h4>
+                {% with case_studies=staff_approved_case_studies %}
                 {% if case_studies %}
-<div class="table-wrapper-scroll-y">
-<table class="table table-hover table-bordered table-dark table-sm ">
-                <thead>
-                <th style="width: 60%">Description</th>
-                <th>Pests</th>
-                <th>Hosts</th>
-                <th></th>
+                <div class="table-wrapper-scroll-y">
+                    <table class="table table-hover table-bordered table-dark table-sm ">
+                        <thead>
+                            <th style="width: 60%">Description</th>
+                            <th>Pests</th>
+                            <th>Hosts</th>
+                            <th></th>
 
-                </thead>
+                        </thead>
 
-<tbody>
-        {% for cs in case_studies %}
-        <tr>
-        <td> 
-        <div class="row no-gutters align-items-center justify-content-between	">
+                        <tbody>
+ 
+                            {% for cs in case_studies %}
+                            {% if cs.staff_approved == True %}
+                            <tr>
+                                <td>
+                                    <div class="row no-gutters align-items-center justify-content-between	">
 
-        <h5 class="col-auto">{{ cs.name }}</h5>
-        
-        <div class="col-auto px-2">
-        <em>{{ cs.date_created }}</em>
-</div>        
+                                        <h5 class="col-auto">{{ cs.name }}</h5>
+
+                                        <div class="col-auto px-2">
+                                            <em>{{ cs.date_created }}</em>
+                                        </div>
+                                    </div>
+
+                                    <p> {% lorem 30 w %}</p>
+                                </td>
+                                {% with pests=cs.pest_set.all %}
+                                <td>{% for pest in pests %} <p>{% firstof pest.pest_information pest.name %}
+                                    </p>{% endfor %} </td>
+                                <td>{% for host in cs.host_set.all %} <p>{{ host.name }}</p>{% endfor %} </td>
+                                <td>
+                                    <a class="btn btn-info btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
+                                        role="button">View Details</a>
+                                    {% if not cs.use_external_calibration %}
+                                    <a class="btn btn-secondary btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
+                                        role="button" style="white-space: normal;" data-toggle="tooltip" data-placement="top"
+                                        title="Tooltip on top">Extend Case Study</a>
+                                    {% endif %}
+                                    <a class="btn btn-success btn-sm btn-block" href="{% url 'case_study_edit' pk=cs.pk %}"
+                                        role="button" style="white-space: normal;">Create Session</a>
+                                </td>
+                            </tr>
+                {% endwith %}
+                {% endif %}
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
                 </div>
+                {% else %}
+                There are no staff approved case studies available at this time.
+                {% endif %}
+            </div>
+                            {% endwith %}
 
-        <p> {% lorem 30 w %}</p>
-        </td>
-        <td>{% for pest in cs.pest_set.all %} <p>{% firstof pest.pest_information pest.name %} </p>{% endfor %} </td>
-        <td>{% for host in cs.host_set.all %} <p>{{ host.name }}</p>{% endfor %} </td>
-        <td>
-        <a class="btn btn-info btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}" role="button">View Details</a>
-        {% if not cs.use_external_calibration %}
-        <a class="btn btn-secondary btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}" role="button" style="white-space: normal;" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Extend Case Study</a>
-        {% endif %}
-        <a class="btn btn-success btn-sm btn-block" href="{% url 'case_study_edit' pk=cs.pk %}" role="button" style="white-space: normal;">Create Session</a>  
-        </td>
-                  </tr>
-        {% endfor %}
-
-</tbody>
-</table>
-</div>
-{% else %}
-    There are no staff approved case studies available at this time.
-{% endif %}
-</div>
-</div>
+        </div>
 
 
         <div class="col-12">
             <div class="panel-container">
                 <h4>Case studies created by {{ user }}:</h4>
                 {% if user_case_studies %}
-<div class="table-wrapper-scroll-y">
-<table class="table table-hover table-bordered table-dark table-sm ">
-                <thead>
-                <th style="width: 60%">Description</th>
-                <th>Pests</th>
-                <th>Hosts</th>
-                <th></th>
+                <div class="table-wrapper-scroll-y">
+                    <table class="table table-hover table-bordered table-dark table-sm ">
+                        <thead>
+                            <th style="width: 60%">Description</th>
+                            <th>Pests</th>
+                            <th>Hosts</th>
+                            <th></th>
 
-                </thead>
+                        </thead>
 
-<tbody>
-        {% for cs in user_case_studies %}
-        <tr>
-        <td> 
-        <div class="row no-gutters align-items-center justify-content-between	">
+                        <tbody>
+                            {% for cs in user_case_studies %}
+                            <tr>
+                                <td>
+                                    <div class="row no-gutters align-items-center justify-content-between	">
 
-        <h5 class="col-auto">{{ cs.name }}</h5>
-        
-        <div class="col-auto px-2">
-        <em>{{ cs.date_created }}</em>
-</div>        
+                                        <h5 class="col-auto">{{ cs.name }}</h5>
+
+                                        <div class="col-auto px-2">
+                                            <em>{{ cs.date_created }}</em>
+                                        </div>
+                                    </div>
+
+                                    <p> {% lorem 30 w %}</p>
+                                </td>
+                                <td>{% for pest in cs.pest_set.all %} <p>{% firstof pest.pest_information pest.name %}
+                                    </p>{% endfor %} </td>
+                                <td>{% for host in cs.host_set.all %} <p>{{ host.name }}</p>{% endfor %} </td>
+                                <td>
+                                    <a class="btn btn-info btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
+                                        role="button">View Details</a>
+                                    {% if not cs.use_external_calibration %}
+                                    <a class="btn btn-secondary btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
+                                        role="button" style="white-space: normal;" data-toggle="tooltip" data-placement="top"
+                                        title="Tooltip on top">Extend Case Study</a>
+                                    {% endif %}
+                                    <a class="btn btn-success btn-sm btn-block" href="{% url 'case_study_edit' pk=cs.pk %}"
+                                        role="button" style="white-space: normal;">Create Session</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
                 </div>
+                {% else %}
+                You haven't made any case studies yet.
+                {% endif %}
+            </div>
+        </div>
 
-        <p> {% lorem 30 w %}</p>
-        </td>
-        <td>{% for pest in cs.pest_set.all %} <p>{% firstof pest.pest_information pest.name %} </p>{% endfor %} </td>
-        <td>{% for host in cs.host_set.all %} <p>{{ host.name }}</p>{% endfor %} </td>
-        <td>
-        <a class="btn btn-info btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}" role="button">View Details</a>
-        {% if not cs.use_external_calibration %}
-        <a class="btn btn-secondary btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}" role="button" style="white-space: normal;" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Extend Case Study</a>
-        {% endif %}
-        <a class="btn btn-success btn-sm btn-block" href="{% url 'case_study_edit' pk=cs.pk %}" role="button" style="white-space: normal;">Create Session</a>  
-        </td>
-                  </tr>
-        {% endfor %}
 
-</tbody>
-</table>
+    </div>
 </div>
-{% else %}
-    You haven't made any case studies yet.
-{% endif %}
-</div>
-</div>
-      <div class="col-12">
-            <div class="panel-container">
-                <h4>Staff-approved case studies:</h4>
-                {% if case_studies %}
-<div class="table-wrapper-scroll-y">
-<table class="table table-hover table-dark table-sm ">
-                <thead>
-                <th>Name</th>
-                <th>Pests</th>
-                <th>Hosts</th>
-                <th>Date created</th>
-                <th></th>
-                <th></th>
-                </thead>
-
-<tbody>
-        {% for cs in case_studies %}
-        <tr>
-        <td>{{ cs.name }}</td>
-        <td>{% for pest in cs.pest_set.all %} <p>{% firstof pest.pest_information pest.name %} </p>{% endfor %} </td>
-        <td>{% for host in cs.host_set.all %} <p>{{ host.name }}</p>{% endfor %} </td>
-        <td>{{ cs.date_created }}</td>
-        <td><a class="btn btn-success btn-sm btn-block" href="{% url 'case_study_edit' pk=cs.pk %}" role="button">Go!</a></td>
-        <td><a class="btn btn-info btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}" role="button">View</a></td>
-            </tr>
-        {% endfor %}
-
-</tbody>
-</table>
-</div>
-{% else %}
-    There are no staff approved case studies available at this time.
-{% endif %}
-</div>
-</div>
-</div>
-
-</div>
-{% endblock %}
+    {% endblock %}

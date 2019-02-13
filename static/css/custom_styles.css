@@ -3,8 +3,14 @@
     background-color:#212529;
   }
   
-  nav {
+  nav, .dropdown-menu, .dropdown-menu a, .dropdown-menu a:hover {
     background-color:#0b0d0e;
+    color: grey;
+  }
+
+  .dropdown-menu a:hover {
+
+    color:white;
   }
 
   .card-custom {

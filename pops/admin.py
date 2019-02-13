@@ -15,6 +15,8 @@ class CaseStudyAdmin(admin.ModelAdmin):
 class HostAdmin(admin.ModelAdmin):
     list_display = ('name','score')
 
+class TemperatureReclassAdmin(admin.ModelAdmin):
+    list_display = ('__str__','min_value','max_value','reclass')
 
 admin.site.register(CaseStudy, CaseStudyAdmin)
 admin.site.register(Host, HostAdmin)
@@ -32,7 +34,7 @@ admin.site.register(Seasonality)
 admin.site.register(LethalTemperature)
 admin.site.register(Temperature)
 admin.site.register(Precipitation)
-admin.site.register(TemperatureReclass)
+admin.site.register(TemperatureReclass,TemperatureReclassAdmin)
 admin.site.register(TemperaturePolynomial)
 admin.site.register(PrecipitationReclass)
 admin.site.register(PrecipitationPolynomial)

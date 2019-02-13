@@ -10,7 +10,7 @@
 
 <div class="container py-2 pb-4">
 
-    <h2 class="text-center">Review Case Study: {{ case_study.name }}</h2>
+    <h2 class="text-center">Review Case Study</h2>
     <div class="row align-items-end">
         <div class="col-sm-8 col-md-8 col-lg-10">
             <div class="alert alert-info">
@@ -30,7 +30,7 @@
         <div class="col-sm-4 col-md-4 col-lg-2 pb-4">
             <!--Submit button for form-->
             <div class="text-center p-2">
-                <a class="btn btn-secondary btn-lg btn-block" href="{% url 'case_study_edit' pk=case_study.pk %}" role="button">Edit</a>                
+                <a class="btn btn-secondary btn-lg btn-block" href="#" role="button">Edit</a>                
             </div>
             <!--Submit button for form--> 
             <div class="text-center p-2">
@@ -44,6 +44,10 @@
                 <h4>Case study details:</h4>
                 <table class="table table-hover table-dark table-sm">
                     <tbody>
+                        <tr>
+                            <th scope="row">Name:</th>
+                            <td> {{ case_study.name }}</td>
+                        </tr>
                         <tr>
                             <th scope="row">Number of pests:</th>
                             <td> {{ case_study.number_of_pests }}</td>
@@ -71,7 +75,13 @@
                         {% for pest in pests %}
                         <tr class="bg-dark">
                             <th scope="row">PEST {{ forloop.counter }}:</th>
-                            <td> {% firstof pest.pest_information pest.name %} </td>
+                            <td> 
+                        {% if pest.pest_information.common_name == "Other" %}
+                        {{ pest.name }}                        
+                        {% else %}
+                        {{ pest.pest_information }}
+                        {% endif %}
+                             </td>
                         </tr>
                         <tr>
                             <th class="pl-4" scope="row">Model type:</th>
@@ -92,6 +102,7 @@
                             <th class="pl-4" scope="row">Score:</th>
                             <td> {{ host.score }}</td>
                         </tr>
+                        
                         {% endfor %}
                     </tbody>
                 </table>
@@ -110,7 +121,6 @@
                     {% endif %}
                 </div>
                 {% endfor %}
-
                 <div class="row no-gutters align-items-center">
                     {% include "pops/toggle_switch_disabled.html" with label="Prior treatments" check_if_true=case_study.use_treatment %}
                     {% if case_study.use_treatment %}
@@ -176,7 +186,7 @@
                         <tr>
                             <th scope="row">Vector data:</th>
                             <td>
-                                Need to add vector file
+                                {{ pest.vector.vector_data|filename }}
                             </td>
                         </tr>
                         {% endif %}
@@ -371,7 +381,7 @@
             <div class="row justify-content-end pb-4">
                 <div class="col-auto">
                     <div class="d-inline text-center p-2">
-                        <a class="btn btn-secondary btn-lg" href="{% url 'case_study_edit' pk=case_study.pk %}" role="button">Edit</a>                
+                        <a class="btn btn-secondary btn-lg" href="#" role="button">Edit</a>                
                     </div>
                     <div class="d-inline text-center p-2">
                         <button class="btn btn-info btn-lg" type="submit">Calibrate</button>

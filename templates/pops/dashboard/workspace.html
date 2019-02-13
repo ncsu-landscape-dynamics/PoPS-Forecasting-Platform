@@ -10,7 +10,7 @@
         <div class="col-lg-5">
             <div class="panel-container">
                 <h4>My case studies:</h4>
-                {% if object_list %}
+                {% if user_case_studies %}
 <table class="table table-hover table-dark table-sm ">
                 <thead>
                 <th>Name</th>
@@ -20,7 +20,7 @@
                 </thead>
 
 <tbody>
-        {% for cs in object_list %}
+        {% for cs in user_case_studies %}
         <tr>
         <td>{{ cs.name }}</td>
         <td>{{ cs.date_created }}</td>
@@ -40,7 +40,7 @@
         <div class="col-lg-7">
             <div class="panel-container">
                 <h4>My sessions:</h4>
-                {% if object_list %}
+                {% if user_sessions %}
 <table class="table table-hover table-dark table-sm ">
                 <thead>
                 <th>Name</th>
@@ -51,13 +51,13 @@
                 </thead>
 
 <tbody>
-        {% for cs in object_list %}
+        {% for session in user_sessions %}
         <tr>
-        <td>{{ cs.name }}</td>
-        <td>{{ cs.name }}</td>
-        <td>{{ cs.number_of_hosts }}</td>
-        <td>{{ cs.date_created }}</td>
-        <td><a class="btn btn-success btn-sm btn-block" href="{% url 'case_study_edit' pk=cs.pk %}" role="button">Go!</a></td>
+        <td>{{ session.name }}</td>
+        <td>{{ session.case_study }}</td>
+        <td>{{ session }}</td>
+        <td>{{ session.date_created }}</td>
+        <td><a class="btn btn-success btn-sm btn-block" href="#" role="button">Go!</a></td>
             </tr>
         {% endfor %}
 

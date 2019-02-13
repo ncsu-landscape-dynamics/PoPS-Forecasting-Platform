@@ -12,6 +12,9 @@ from django.contrib.auth import login, authenticate
 from .forms import CustomUserCreationForm
 from .models import CustomUser
 
+def my_account(request):
+    return render(request, 'accounts/my_account.html',)
+
 # sign_up creates the User Sign Up view using the CustomUserCreationForm created in
 # users/forms.py. 
 def sign_up(request):

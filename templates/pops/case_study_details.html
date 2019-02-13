@@ -8,19 +8,7 @@
 <div class="row justify-content-center py-4">
       <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6">
       <h4>Case study</h4>
-      {{ casestudy }}
-<table class="table table-sm table-bordered">
-  <tbody>
-      {% for field, value in casestudy.items %}
-    <tr>
-      <th scope="row">{{ field }}</th>
-      <td>{{ value}}</td>
-    </tr>
-      {% endfor %}
-      </tbody>
-      </table>
 
-{{ case_study.get_string_fields }}
 <table class="table table-sm table-bordered">
   <tbody>
     <tr>
