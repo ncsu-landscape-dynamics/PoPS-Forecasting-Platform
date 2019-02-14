@@ -144,3 +144,11 @@ CASE_STUDY_UPLOAD_FILE_TYPES=['image/tiff']
 CASE_STUDY_UPLOAD_FILE_MAX_SIZE=10240 #Max file size in Bytes (multiply MB by 1024*1024 to get bytes)
 
 INTERNAL_IPS=['127.0.0.1']
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

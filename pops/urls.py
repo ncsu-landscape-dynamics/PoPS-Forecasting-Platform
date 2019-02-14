@@ -1,7 +1,13 @@
 # pops/urls.py
 from django.urls import path, include
 from django.views.generic import TemplateView
+from rest_framework import routers
+
 from . import views
+
+router = routers.DefaultRouter()
+router.register('case_study', views.CaseStudyViewSet)
+
 
 urlpatterns = [
     path('case_study/help', TemplateView.as_view(template_name="pops/case_study_instructions.html"), name='case_study_help'),
@@ -15,6 +21,7 @@ urlpatterns = [
     path('case_study/<int:pk>/review', views.CaseStudyReview.as_view(), name='case_study_review'),
     path('case_study/submitted', views.case_study_submitted, name='case_study_submitted'),
     path('<int:pk>/', views.CaseStudyDetailView.as_view(), name='case-study'),
+    path('api/', include(router.urls)),
     #path('case_study/<int:pk>/edit', views.case_study_edit, name='case_study_edit'),
     #path('myaccount', views.CaseStudyListView.as_view(), name='case-study-list'),
 ]

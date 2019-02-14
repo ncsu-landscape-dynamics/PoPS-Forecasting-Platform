@@ -286,7 +286,7 @@ class Weather(models.Model):
         verbose_name_plural = _("weathers")
 
     def __str__(self):
-        return self.wind_on
+        return "Weather"
 
 class Wind(models.Model):
 
@@ -329,7 +329,8 @@ class Wind(models.Model):
         verbose_name_plural = _("winds")
 
     def __str__(self):
-        return self.wind_direction
+        return 'Wind: %s' (self.weather)
+
 
 class Seasonality(models.Model):
     MONTH = (
@@ -357,7 +358,7 @@ class Seasonality(models.Model):
         verbose_name_plural = _("seasonalities")
 
     def __str__(self):
-        return self.first_month
+        return "Seasonality"
 
 class LethalTemperature(models.Model):
     MONTH = (
@@ -392,7 +393,7 @@ class LethalTemperature(models.Model):
         verbose_name_plural = _("lethal temperatures")
 
     def __str__(self):
-        return self.value
+        return "Lethal_temp"
 
 class Temperature(models.Model):
 
@@ -413,7 +414,7 @@ class Temperature(models.Model):
         verbose_name_plural = _("temperatures")
 
     def __str__(self):
-        return self.method
+        return 'Temperature'
 
 class Precipitation(models.Model):
 
@@ -434,7 +435,7 @@ class Precipitation(models.Model):
         verbose_name_plural = _("precipitations")
 
     def __str__(self):
-        return self.method
+        return 'Precipitation'
 
 class TemperatureReclass(models.Model):
 
@@ -451,7 +452,7 @@ class TemperatureReclass(models.Model):
         ordering = ['min_value']
 
     def __str__(self):
-        return str(self.temperature.weather.case_study.pk)
+        return 'TemperatureReclass'
 
 class PrecipitationReclass(models.Model):
 
@@ -468,7 +469,7 @@ class PrecipitationReclass(models.Model):
         ordering = ['min_value']
 
     def __str__(self):
-        return self.reclass
+        return 'PrecipitationReclass'
 
 
 class TemperaturePolynomial(models.Model):
@@ -496,7 +497,7 @@ class TemperaturePolynomial(models.Model):
         verbose_name_plural = _("temperature polynomials")
 
     def __str__(self):
-        return self.a0
+        return 'Temperature Polynomial'
 
 class PrecipitationPolynomial(models.Model):
 
@@ -523,7 +524,7 @@ class PrecipitationPolynomial(models.Model):
         verbose_name_plural = _("precipitation polynomials")
 
     def __str__(self):
-        return self.a0
+        return 'Precipitation Polynomial'
 
 class Treatment(models.Model):
 
