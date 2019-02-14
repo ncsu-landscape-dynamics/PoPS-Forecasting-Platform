@@ -5,7 +5,7 @@
   
   nav, .dropdown-menu, .dropdown-menu a, .dropdown-menu a:hover {
     background-color:#0b0d0e;
-    color: grey;
+    color:lightgray;
   }
 
   .dropdown-menu a:hover {

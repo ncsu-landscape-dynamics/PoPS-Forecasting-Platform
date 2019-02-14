@@ -25,7 +25,7 @@
         <td>{{ cs.name }}</td>
         <td>{{ cs.date_created }}</td>
         <td><em>{{ cs.get_calibration_status_display }}</em></td>
-        <td><a class="btn btn-info btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}" role="button">View</a></td>
+        <td><a class="btn btn-secondary btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}" role="button">Details</a></td>
             </tr>
         {% endfor %}
 
@@ -34,7 +34,13 @@
 {% else %}
     You have no custom case studies yet.
 {% endif %}
-</div>
+                <a class="btn btn-info btn-lg btn-block" href="{% url 'case_study_list' %}" role="button" style="white-space: normal;"><i
+                        class="fas fa-search"></i> Browse All Case Studies
+                </a>
+                <a class="btn btn-success btn-lg btn-block" href="{% url 'create_case_study' %}" role="button" style="white-space: normal;"><i
+                        class="fas fa-plus-circle"></i> Create New Case Study
+                </a>
+                </div>
 </div>
 
         <div class="col-lg-7">
@@ -55,7 +61,7 @@
         <tr>
         <td>{{ session.name }}</td>
         <td>{{ session.case_study }}</td>
-        <td>{{ session }}</td>
+        <td>{{ session.created_by }}</td>
         <td>{{ session.date_created }}</td>
         <td><a class="btn btn-success btn-sm btn-block" href="#" role="button">Go!</a></td>
             </tr>

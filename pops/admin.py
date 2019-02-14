@@ -18,6 +18,16 @@ class HostAdmin(admin.ModelAdmin):
 class TemperatureReclassAdmin(admin.ModelAdmin):
     list_display = ('__str__','min_value','max_value','reclass')
 
+class SessionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'created_by', 'case_study', 'date_created')
+
+    def save_model(self, request, obj, form, change):
+        if not obj.created_by:
+            obj.created_by = request.user
+        obj.save()
+
+        return super(SessionAdmin, self).save_model(request, obj, form, change)
+
 admin.site.register(CaseStudy, CaseStudyAdmin)
 admin.site.register(Host, HostAdmin)
 admin.site.register(Mortality)
@@ -38,7 +48,7 @@ admin.site.register(TemperatureReclass,TemperatureReclassAdmin)
 admin.site.register(TemperaturePolynomial)
 admin.site.register(PrecipitationReclass)
 admin.site.register(PrecipitationPolynomial)
-admin.site.register(Session)
+admin.site.register(Session,SessionAdmin)
 admin.site.register(Run)
 admin.site.register(InputChange)
 admin.site.register(Output)

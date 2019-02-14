@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container py-2 pb-4">
+    <h3>Welcome to your PoPS dashboard, {{ user }} </h3>
+    {% if session %}
+    <div class="row">
+        <div class="col-md-10 col-lg-8 col-xl-6">
+
+            <form>
+                <div class="form-row">
+                    <div class="col input-group mb-2 mr-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">Session</div>
+                        </div>
+                        <input type="text" class="form-control" id="rename_session" placeholder="{{ session }}">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-secondary mb-2">Rename</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="panel-container">    
+            Case study details:
+    </div>
+    </div>
+    </div>
+
+
+
+    More dashboard content coming soon!
+
+    {% else %}
+    <div class="row">
+        <div class="col">
+
+            Oops! We couldn't find that session. Would you like to create a new session?
+        </div>
+
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

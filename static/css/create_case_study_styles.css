@@ -1,7 +1,3 @@
-div#make_me_red * {
-    color: red;
-  }
-
   div.panel-container{
     background-color:#0b0d0e;
     border-radius: 10px;
@@ -88,7 +84,3 @@ div#make_me_red * {
 
   /*--------- END --------*/
   
-  .delete-row {
-    float:right;
-    display:block;
-  }

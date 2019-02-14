@@ -6,6 +6,7 @@ from . import views
 urlpatterns = [
     path('case_study/help', TemplateView.as_view(template_name="pops/case_study_instructions.html"), name='case_study_help'),
     path('workspace', views.WorkspaceView.as_view(), name='workspace'),
+    path('dashboard/<int:pk>', views.DashboardView.as_view(), name='dashboard'),
     path('case_study/create', views.CreateCaseStudyStart.as_view(), name='create_case_study_start'),
     path('case_study/create/new', views.NewCaseStudyView.as_view(), name='create_case_study'),
     path('case_study/<int:pk>/edit', views.NewCaseStudyView.as_view(), name='case_study_edit'),
