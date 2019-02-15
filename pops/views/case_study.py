@@ -85,7 +85,6 @@ class NewCaseStudyView(TemplateView):
             # Create any data and add it to the context
             cs = CaseStudy.objects.select_related('weather__wind','weather__seasonality','weather__lethaltemperature','weather__temperature','weather__temperature__temperaturepolynomial','weather__precipitation','weather__precipitation__precipitationpolynomial').get(pk=pk)
             original_datafiles['all_plants_data'] = cs.all_plants
-            original_datafiles['treatment_data'] = cs.treatment_data
             host = get_object_or_404(Host, case_study=cs)
             original_datafiles['host_data'] = host.host_data
             mortality = Mortality.objects.get_or_none(host=host)   
@@ -94,22 +93,57 @@ class NewCaseStudyView(TemplateView):
             pest = get_object_or_404(Pest, case_study=cs)
             original_datafiles['infestation_data'] = pest.infestation_data
             vector = Vector.objects.get_or_none(pest=pest)
-            prior_treatment = PriorTreatment.objects.get_or_none(pest=pest)   
+            prior_treatment = PriorTreatment.objects.get_or_none(pest=pest) 
+            if prior_treatment:
+                original_datafiles['treatment_data'] = prior_treatment.treatment_data
             if vector:
                 original_datafiles['vector_data'] = vector.vector_data
             weather = cs.weather
-            wind = cs.weather.wind
-            seasonality = cs.weather.seasonality
-            lethal_temp = cs.weather.lethaltemperature
-            temperature = cs.weather.temperature
-            precipitation = cs.weather.precipitation
-            temperature_polynomial = cs.weather.temperature.temperaturepolynomial
+
+            try:
+                wind = cs.weather.wind
+            except ObjectDoesNotExist:
+                wind = None
+            try:
+                seasonality = cs.weather.seasonality
+            except ObjectDoesNotExist:
+                seasonality = None
+            try:
+                lethal_temp = cs.weather.lethaltemperature
+            except ObjectDoesNotExist:
+                lethal_temp = None
+            try:
+                temperature = cs.weather.temperature
+            except ObjectDoesNotExist:
+                temperature = None
+            try:
+                precipitation = cs.weather.precipitation
+            except ObjectDoesNotExist:
+                precipitation = None
+            try:
+                temperature_polynomial = cs.weather.temperature.temperaturepolynomial
+            except ObjectDoesNotExist:
+                temperature_polynomial = None
             try:
                 precipitation_polynomial = cs.weather.precipitation.precipitationpolynomial
             except ObjectDoesNotExist:
                 precipitation_polynomial = None
             temperature_reclass=TemperatureReclass.objects.filter(temperature=temperature)
             precipitation_reclass=PrecipitationReclass.objects.filter(precipitation=precipitation)
+            # TemperatureReclassFormSet = forms.modelformset_factory(TemperatureReclass, form=TemperatureReclassForm, min_num=2, validate_min=True, extra=1)
+            # my_forms['temperature_reclass_formset'] = TemperatureReclassFormSet(post_data, queryset=temperature_reclass, prefix='temp_reclass')
+            # PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, min_num=2, validate_min=True, extra=1)
+            # my_forms['precipitation_reclass_formset'] = PrecipitationReclassFormSet(post_data, queryset=precipitation_reclass, prefix='precip_reclass')
+            TemperatureReclassFormSet = forms.inlineformset_factory(Temperature, TemperatureReclass, form=TemperatureReclassForm, min_num=2, validate_min=True, extra=1)
+            my_forms['temperature_reclass_formset'] = TemperatureReclassFormSet(post_data, instance=temperature, prefix='temp_reclass')
+            PrecipitationReclassFormSet = forms.inlineformset_factory(Precipitation, PrecipitationReclass, form=PrecipitationReclassForm, min_num=2, validate_min=True, extra=1)
+            my_forms['precipitation_reclass_formset'] = PrecipitationReclassFormSet(post_data, instance=precipitation, prefix='precip_reclass')
+        else:
+            TemperatureReclassFormSet = forms.modelformset_factory(TemperatureReclass, form=TemperatureReclassForm, min_num=2, extra=1)
+            my_forms['temperature_reclass_formset'] = TemperatureReclassFormSet(post_data, queryset=TemperatureReclass.objects.none(), prefix='temp_reclass')
+            PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, min_num=2, extra=1)
+            my_forms['precipitation_reclass_formset'] = PrecipitationReclassFormSet(post_data, queryset=PrecipitationReclass.objects.none(), prefix='precip_reclass')
+
         my_forms['case_study_form'] = CaseStudyForm(post_data, file_data, instance=cs, prefix='cs')
         my_forms['host_form'] = HostForm(post_data, file_data, instance=host, prefix='host')
         my_forms['mortality_form'] = MortalityForm(post_data, file_data, instance=mortality, prefix='mortality')
@@ -124,10 +158,6 @@ class NewCaseStudyView(TemplateView):
         my_forms['precipitation_form'] = PrecipitationForm(post_data, instance=precipitation, prefix='precipitation')
         my_forms['temperature_polynomial_form'] = TemperaturePolynomialForm(post_data, instance=temperature_polynomial, prefix='temperature_polynomial')
         my_forms['precipitation_polynomial_form'] = PrecipitationPolynomialForm(post_data, instance=precipitation_polynomial, prefix='precipitation_polynomial')
-        TemperatureReclassFormSet = forms.inlineformset_factory(Temperature, TemperatureReclass, form=TemperatureReclassForm, min_num=2, validate_min=True, extra=1)
-        my_forms['temperature_reclass_formset'] = TemperatureReclassFormSet(post_data, instance=temperature, prefix='temp_reclass')
-        PrecipitationReclassFormSet = forms.inlineformset_factory(Precipitation, PrecipitationReclass, form=PrecipitationReclassForm, min_num=2, validate_min=True, extra=1)
-        my_forms['precipitation_reclass_formset'] = PrecipitationReclassFormSet(post_data, instance=precipitation, prefix='precip_reclass')
         return my_forms, original_datafiles
 
     def validate_forms(self, my_forms):
@@ -195,8 +225,8 @@ class NewCaseStudyView(TemplateView):
                         if my_forms['temperature_reclass_formset'].is_valid():
                             print("temp Reclass formset is valid")
                             reclass_forms = my_forms['temperature_reclass_formset'].save(commit=False)
-                            #for obj in my_forms['temperature_reclass_formset'].deleted_objects:
-                            #    obj.delete()
+                            for obj in my_forms['temperature_reclass_formset'].deleted_objects:
+                                obj.delete()
                             for instance in reclass_forms:
                                 optional_models['temperature'].append(instance)
                                 print("instance stuff happened")
@@ -204,6 +234,8 @@ class NewCaseStudyView(TemplateView):
                         else:
                             success = False
                             print("Temp reclass formset form is INVALID")
+                            print(my_forms['temperature_reclass_formset'])
+ 
                 else:
                     success = False
             if required_models['new_weather'].precipitation_on == True:
@@ -228,7 +260,8 @@ class NewCaseStudyView(TemplateView):
                                 print(instance.min_value)
                         else:
                             success = False
-                            print("Precip reclass formset form is INVALID")                
+                            print("Precip reclass formset form is INVALID")  
+                            print(my_forms['precipitation_reclass_formset'].errors)
                 else:
                     success = False
         else:

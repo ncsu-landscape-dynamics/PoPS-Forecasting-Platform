@@ -3,6 +3,11 @@
         {% for form in formset %}
       <div id="" class="row {{ formset.prefix }}">
         {{ form.id }}
+              {% for error in form.non_field_errors %}
+              <div class=" text-danger pt-0" style="font-size:0.8em">
+                <strong>{{ error|escape }}</strong>
+              </div>
+              {% endfor %}        
         {% include "pops/include/form_field_no_label.html" with field=form.min_value form_class="col-3 px-1 pl-2"%}
         {% include "pops/include/form_field_no_label.html" with field=form.max_value form_class="col-3 px-1"%}
         {% include "pops/include/form_field_no_label.html" with field=form.reclass form_class="col-3 px-1"%}

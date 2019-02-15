@@ -1,5 +1,8 @@
 # pops/forms.py
 from django import forms
+from django.forms import BaseInlineFormSet
+
+
 
 from ..models import *
 
@@ -485,3 +488,17 @@ class PrecipitationPolynomialForm(forms.ModelForm):
             self.fields_required(['a0','a1','a2','a3','x1','x2','x3'])
         return self.cleaned_data
 
+# class CustomInlineFormSet(forms.BaseInlineFormSet):
+#     def clean(self):
+#         super().clean()
+#         # example custom validation across forms in the formset
+#         for form in self.forms:
+#             # your custom formset validation
+#             form.fields_required(['min_value','max_value','reclass'])
+#             min_val = form.cleaned_data.get("min_value")
+#             max_val = form.cleaned_data.get("max_value")
+#             if min_val and max_val:
+#                 if min_val >= max_val:
+#                     msg = forms.ValidationError("Min precip must be less than max precip in each row.")
+#                     form.add_error("min_value", msg)
+#         return self.cleaned_data
