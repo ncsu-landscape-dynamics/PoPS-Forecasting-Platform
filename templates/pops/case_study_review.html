@@ -121,19 +121,19 @@
                     {% endif %}
                 </div>
                 {% endfor %}
-                <div class="row no-gutters align-items-center">
-                    {% include "pops/toggle_switch_disabled.html" with label="Prior treatments" check_if_true=case_study.use_treatment %}
-                    {% if case_study.use_treatment %}
-                    <div class="col-auto">
-                        <p></p>
-                    </div>
-                    {% endif %}
-                </div>
                 {% for pest in pests %}
                 <div class="row no-gutters align-items-center">
                     {% include "pops/toggle_switch_disabled.html" with label="Vector" check_if_true=pest.vector_born %}
                     {% if pest.vector_born %}
                     <p>(Name: {{pest.vector.common_name}})</p>
+                    {% endif %}
+                </div>
+                <div class="row no-gutters align-items-center">
+                    {% include "pops/toggle_switch_disabled.html" with label="Prior treatments" check_if_true=pest.use_treatment %}
+                    {% if pest.use_treatment %}
+                    <div class="col-auto">
+                        <p></p>
+                    </div>
                     {% endif %}
                 </div>
                 {% endfor %}
@@ -147,7 +147,7 @@
                         <tr>
                             <th scope="row">Infestation data:</th>
                             <td>
-                                {{ case_study.infestation_data|filename }}
+                                {{ pest.infestation_data|filename }}
                             </td>
                         </tr>
                         {% endfor %}
@@ -175,14 +175,7 @@
                         {% endif %}
                         {% endif %}
                         {% endfor %}
-                        {% if case_study.use_treatment %}
-                        <tr>
-                            <th scope="row">Prior treatment data:</th>
-                            <td>
-                                {{ case_study.treatment_data|filename }}
-                            </td>
-                        </tr>
-                        {% endif %}
+
                         {% for pest in pests %}
                         {% if pest.vector_born %}
                         <tr>
@@ -192,6 +185,14 @@
                             </td>
                         </tr>
                         {% endif %}
+                        {% if pest.use_treatment %}
+                        <tr>
+                            <th scope="row">Prior treatment data:</th>
+                            <td>
+                                {{ pest.priortreatment.treatment_data|filename }}
+                            </td>
+                        </tr>
+                        {% endif %}                        
                         {% endfor %}
                     </tbody>
                 </table>

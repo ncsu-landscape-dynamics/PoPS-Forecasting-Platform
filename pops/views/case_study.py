@@ -108,8 +108,6 @@ class NewCaseStudyView(TemplateView):
                 precipitation_polynomial = cs.weather.precipitation.precipitationpolynomial
             except ObjectDoesNotExist:
                 precipitation_polynomial = None
-      
-            
             temperature_reclass=TemperatureReclass.objects.filter(temperature=temperature)
             precipitation_reclass=PrecipitationReclass.objects.filter(precipitation=precipitation)
         my_forms['case_study_form'] = CaseStudyForm(post_data, file_data, instance=cs, prefix='cs')
@@ -197,8 +195,8 @@ class NewCaseStudyView(TemplateView):
                         if my_forms['temperature_reclass_formset'].is_valid():
                             print("temp Reclass formset is valid")
                             reclass_forms = my_forms['temperature_reclass_formset'].save(commit=False)
-                            for obj in my_forms['temperature_reclass_formset'].deleted_objects:
-                                obj.delete()
+                            #for obj in my_forms['temperature_reclass_formset'].deleted_objects:
+                            #    obj.delete()
                             for instance in reclass_forms:
                                 optional_models['temperature'].append(instance)
                                 print("instance stuff happened")
@@ -220,7 +218,7 @@ class NewCaseStudyView(TemplateView):
                             success = False
                     if required_models['new_precipitation'].method == "RECLASS":
                         if my_forms['precipitation_reclass_formset'].is_valid():
-                            print("temp Reclass formset is valid")
+                            print("precip Reclass formset is valid")
                             reclass_forms = my_forms['precipitation_reclass_formset'].save(commit=False)
                             for obj in my_forms['precipitation_reclass_formset'].deleted_objects:
                                 obj.delete()
@@ -230,7 +228,7 @@ class NewCaseStudyView(TemplateView):
                                 print(instance.min_value)
                         else:
                             success = False
-                            print("Temp reclass formset form is INVALID")                
+                            print("Precip reclass formset form is INVALID")                
                 else:
                     success = False
         else:
