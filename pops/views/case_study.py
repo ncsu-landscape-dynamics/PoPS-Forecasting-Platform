@@ -70,6 +70,7 @@ class NewCaseStudyView(TemplateView):
         mortality=None
         pest=None
         vector=None
+        prior_treatment=None
         weather=None
         wind=None
         seasonality=None
@@ -83,7 +84,6 @@ class NewCaseStudyView(TemplateView):
         if pk:
             # Create any data and add it to the context
             cs = CaseStudy.objects.select_related('weather__wind','weather__seasonality','weather__lethaltemperature','weather__temperature','weather__temperature__temperaturepolynomial','weather__precipitation','weather__precipitation__precipitationpolynomial').get(pk=pk)
-            original_datafiles['infestation_data'] = cs.infestation_data
             original_datafiles['all_plants_data'] = cs.all_plants
             original_datafiles['treatment_data'] = cs.treatment_data
             host = get_object_or_404(Host, case_study=cs)
@@ -92,7 +92,9 @@ class NewCaseStudyView(TemplateView):
             if mortality:
                 original_datafiles['mortality_data'] = mortality.mortality_data
             pest = get_object_or_404(Pest, case_study=cs)
+            original_datafiles['infestation_data'] = pest.infestation_data
             vector = Vector.objects.get_or_none(pest=pest)
+            prior_treatment = PriorTreatment.objects.get_or_none(pest=pest)   
             if vector:
                 original_datafiles['vector_data'] = vector.vector_data
             weather = cs.weather
@@ -114,6 +116,7 @@ class NewCaseStudyView(TemplateView):
         my_forms['host_form'] = HostForm(post_data, file_data, instance=host, prefix='host')
         my_forms['mortality_form'] = MortalityForm(post_data, file_data, instance=mortality, prefix='mortality')
         my_forms['pest_form'] = PestForm(post_data, file_data, instance=pest, prefix='pest')
+        my_forms['prior_treatment_form'] = PriorTreatmentForm(post_data, file_data, instance=prior_treatment, prefix='prior_treatment')
         my_forms['vector_form'] = VectorForm(post_data, file_data, instance=vector, prefix='vector')
         my_forms['weather_form'] = WeatherForm(post_data, instance=weather, prefix='weather')
         my_forms['wind_form'] = WindForm(post_data, instance=wind, prefix='wind')
@@ -154,6 +157,12 @@ class NewCaseStudyView(TemplateView):
                 if my_forms['vector_form'].is_valid():
                     required_models['new_vector'] = my_forms['vector_form'].save(commit=False)
                     optional_models['pest'].append(required_models['new_vector'])
+                else:
+                    success = False
+            if required_models['new_pest'].use_treatment == True:
+                if my_forms['prior_treatment_form'].is_valid():
+                    required_models['new_prior_treatment'] = my_forms['prior_treatment_form'].save(commit=False)
+                    optional_models['pest'].append(required_models['new_prior_treatment'])
                 else:
                     success = False
             if required_models['new_weather'].wind_on == True:

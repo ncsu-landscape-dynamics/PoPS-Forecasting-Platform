@@ -60,26 +60,8 @@
             {% include "pops/include/form_field.html" with field=case_study_form.number_of_pests form_class="col-6" %}
             {% include "pops/include/form_field.html" with field=case_study_form.number_of_hosts form_class="col-6" %}
           </div>
-          <div class="row">
-            {% include "pops/include/form_file_upload_field.html" with form=case_study_form field=case_study_form.infestation_data|attr:"class:form-control-file" form_class="col-6" current_value=infestation_data %}
-            {% include "pops/include/form_file_upload_field.html" with form=case_study_form field=case_study_form.all_plants|attr:"class:form-control-file" form_class="col-6" current_value=all_plants_data %}
-          </div>
-          {% include "pops/include/toggle_switch.html" with field=case_study_form.use_treatment %}
-
-          <div id="treatment_form_visibility">
-            {% include "pops/include/form_file_upload_field.html" with form=case_study_form field=case_study_form.treatment_data|attr:"class:form-control-file" current_value=treatment_data %}
-          </div>
-          <!--Treatment visibility javascript (hides treatment form based on toggle)-->
-          <script>
-            toggleVisibilityOnOff('#{{ case_study_form.use_treatment.id_for_label }}','#treatment_form_visibility')
-            $(document).ready(function () {
-              $('input').on('click',function () {
-              toggleVisibilityOnOff('#{{ case_study_form.use_treatment.id_for_label }}','#treatment_form_visibility')
-              })
-            });
-          </script>     
+            {% include "pops/include/form_file_upload_field.html" with form=case_study_form field=case_study_form.all_plants|attr:"class:form-control-file" form_class="" current_value=all_plants_data %}
         </div>
-
         <!--Host details form section-->
         <div class="border border-light p-2 my-1">
           <div class="">
@@ -150,6 +132,7 @@
             {% include "pops/include/form_field.html" with field=pest_form.model_type form_class="col-6" %}
             {% include "pops/include/form_field.html" with field=pest_form.dispersal_type form_class="col-6"%}
           </div>
+            {% include "pops/include/form_file_upload_field.html" with form=pest_form field=pest_form.infestation_data|attr:"class:form-control-file" form_class="" current_value=infestation_data %}
           {% include "pops/include/toggle_switch.html" with field=pest_form.vector_born %}
 
           {% for hidden in vector_form.hidden_fields %}
@@ -162,6 +145,21 @@
             </div>
             {% include "pops/include/form_file_upload_field.html" with form=vector_form field=vector_form.vector_data|attr:"class:form-control-file" current_value=vector_data %}
           </div>
+          {% include "pops/include/toggle_switch.html" with field=pest_form.use_treatment %}
+
+          <div id="treatment_form_visibility">
+            {% include "pops/include/form_file_upload_field.html" with form=prior_treatment_form field=prior_treatment_form.treatment_data|attr:"class:form-control-file" current_value=treatment_data %}
+          </div>
+          <!--Treatment visibility javascript (hides treatment form based on toggle)-->
+          <script>
+            toggleVisibilityOnOff('#{{ pest_form.use_treatment.id_for_label }}','#treatment_form_visibility')
+            $(document).ready(function () {
+              $('input').on('click',function () {
+              toggleVisibilityOnOff('#{{ pest_form.use_treatment.id_for_label }}','#treatment_form_visibility')
+              })
+            });
+          </script>     
+
         </div>
           <!--Vector visibility javascript (hides form based on toggle)-->
           <script>

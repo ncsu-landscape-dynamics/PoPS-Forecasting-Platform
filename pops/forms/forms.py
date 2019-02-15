@@ -49,8 +49,8 @@ class CaseStudyForm(forms.ModelForm):
     class Meta:
         model = CaseStudy
         fields = ['name', 'description','number_of_pests','number_of_hosts','start_year','end_year','future_years',
-                'time_step','infestation_data','all_plants','use_treatment','treatment_data']
-        widgets = {'infestation_data': forms.FileInput, 'all_plants': forms.FileInput, 'treatment_data': forms.FileInput}
+                'time_step','all_plants']
+        widgets = {'all_plants': forms.FileInput}
 
     def __init__(self, *args, **kwargs):
         super(CaseStudyForm, self).__init__(*args, **kwargs)
@@ -64,8 +64,8 @@ class CaseStudyForm(forms.ModelForm):
 
     def clean(self):
         print("VALIDATING CASE STUDY FORM")
-        self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years','infestation_data','all_plants'])
-        self.validate_size(['infestation_data','all_plants'])
+        self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years','all_plants'])
+        self.validate_size(['all_plants'])
         first_year = self.cleaned_data.get("start_year")
         last_year = self.cleaned_data.get("end_year")
         final_sim_year = self.cleaned_data.get("future_years")
@@ -142,16 +142,17 @@ class MortalityForm(forms.ModelForm):
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
 
-
 class PestForm(forms.ModelForm):
     fields_required = fields_required_conditionally
-
+    validate_size = validate_file_size
     class Meta:
         model = Pest
-        fields = ['pest_information','name','model_type','dispersal_type','vector_born']
-
+        fields = ['pest_information','name','infestation_data','model_type','dispersal_type','vector_born','use_treatment']
+        widgets = {'infestation_data': forms.FileInput}     
+    
     def clean(self):
-        self.fields_required(['pest_information','model_type','dispersal_type'])
+        self.fields_required(['pest_information','model_type','dispersal_type','infestation_data'])
+        self.validate_size(['infestation_data'])
         pest_information = self.cleaned_data.get('pest_information')
         if pest_information:
             if pest_information.common_name == "Other":
@@ -171,6 +172,30 @@ class PestForm(forms.ModelForm):
                 self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
+
+class PriorTreatmentForm(forms.ModelForm):
+    fields_required = fields_required_conditionally
+    validate_size = validate_file_size
+    class Meta:
+        model = PriorTreatment
+        fields = ['treatment_data']
+        widgets = {'treatment_data': forms.FileInput}
+
+    def clean(self):
+        self.fields_required(['treatment_data'])
+        self.validate_size(['treatment_data'])
+        return self.cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(PriorTreatmentForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            input_type=self.fields[field].widget.__class__.__name__
+            if input_type != 'CheckboxInput':
+                self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
+
 
 class VectorForm(forms.ModelForm):
     fields_required = fields_required_conditionally

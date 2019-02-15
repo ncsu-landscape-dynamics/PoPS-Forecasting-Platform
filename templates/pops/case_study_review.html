@@ -143,12 +143,14 @@
                 <h4>Uploaded files:</h4>
                 <table class="table table-dark table-hover table-sm">
                     <tbody>
+                    {% for pest in pests %}
                         <tr>
                             <th scope="row">Infestation data:</th>
                             <td>
                                 {{ case_study.infestation_data|filename }}
                             </td>
                         </tr>
+                        {% endfor %}
                         <tr>
                             <th scope="row">All plant data:</th>
                             <td>
