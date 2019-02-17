@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'users.apps.UsersConfig',
-    'faq.apps.FaqConfig',
     'crispy_forms',
     'widget_tweaks',
     'pops.apps.PopsConfig',

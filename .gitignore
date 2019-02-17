@@ -11,8 +11,10 @@ static_files_all/
 db.sqlite3
 */migrations/0*
 /db.sqlite3
-
+media/*
 cloud_sql_proxy.exe
 pops-project-b461537ece08.json
 
 app.yaml
+
+stuff/*
