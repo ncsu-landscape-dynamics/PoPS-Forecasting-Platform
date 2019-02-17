@@ -16,7 +16,24 @@ class MyManager(models.Manager):
             return self.get(**kwargs)
         except ObjectDoesNotExist:
             return None
-        
+
+def all_plants_directory(instance, filename):
+    return 'case_studies/{0}/all_plants/{1}'.format(instance.case_study.id, filename)
+
+def host_directory(instance, filename):
+    return 'case_studies/{0}/hosts/{1}/host_data/{2}'.format(instance.host.case_study.id, instance.host.id, filename)
+
+def mortality_directory(instance, filename):
+    return 'case_studies/{0}/hosts/{1}/mortality/{2}'.format(instance.host.case_study.id, instance.host.id, filename)
+
+def initial_infestation_directory(instance, filename):
+    return 'case_studies/{0}/pests/{1}/initial_infestation/{2}'.format(instance.pest.case_study.id, instance.pest.id, filename)
+
+def vector_directory(instance, filename):
+    return 'case_studies/{0}/pests/{1}/vector/{2}'.format(instance.pest.case_study.id, instance.pest.id, filename)
+
+def treatment_directory(instance, filename):
+    return 'case_studies/{0}/pests/{1}/prior_treatment/{2}'.format(instance.pest.case_study.id, instance.pest.id, filename)
 
 
 # Django automatically creates a primary key for each model and we are not overwriting this default behavior in any of our models.
@@ -32,7 +49,6 @@ class CaseStudy(models.Model):
     start_year = models.PositiveSmallIntegerField(verbose_name = _("first calibration year"), help_text="The first year that you have pest occurence data for calibration.", blank=True, default = 2012, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
     end_year = models.PositiveSmallIntegerField(verbose_name = _("final calibration year"), help_text="The last year that you have pest occurence data for calibration.", blank=True, default = 2018, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
     future_years = models.PositiveSmallIntegerField(verbose_name = _("final model year"), help_text="The last year that you want to run the PoPS model (this is in the future).", blank=True, default = 2023, validators = [MinValueValidator(2018), MaxValueValidator(2200)])
-    all_plants = models.FileField(verbose_name = _("all plant data"), help_text="Upload your total plants data as a raster file. This could be all the plants in a cell or all cells could have the value of the maximum number of hosts foound in any cell in your study area.",upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True, blank=True)
     MONTH = 'month'
     WEEK = 'week'
     DAY = 'day'
@@ -79,6 +95,19 @@ class CaseStudy(models.Model):
         # joining all string values.
         return field_names
 
+class AllPlantsData(models.Model):
+
+    case_study = models.OneToOneField(CaseStudy, verbose_name = _("case study"), on_delete = models.CASCADE, primary_key=True)
+    user_file = models.FileField(verbose_name = _("all plant data"), help_text="Upload your total plants data as a raster file. This could be all the plants in a cell or all cells could have the value of the maximum number of hosts foound in any cell in your study area.",upload_to=all_plants_directory, max_length=100, blank=True)
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("all_plant")
+        verbose_name_plural = _("all_plants")
+
+    def __str__(self):
+        return self.data
 
 class Host(models.Model):
 
@@ -86,7 +115,6 @@ class Host(models.Model):
     name = models.CharField(verbose_name = _("host common name"), help_text="What is the host's common name?", max_length = 150, blank=True)
     score = models.DecimalField(verbose_name = _("score"), help_text="Host score is a value between 0 and 1. 0 has no effect while 1 has maximum effect. This is for generalist pests with differing host preferences and pathogens with differing host competencies.", blank=True, max_digits = 5, decimal_places = 2, default = 1, validators = [MinValueValidator(0), MaxValueValidator(1)])
     mortality_on = models.BooleanField(verbose_name = _("mortality"), help_text="Does the host experience mortality as a result of the pest/pathogen?", blank=True)
-    host_data = models.FileField(verbose_name = _("host data"), help_text="Upload your host data as a raster file.", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, blank=True)
 
     objects = MyManager()
 
@@ -97,6 +125,20 @@ class Host(models.Model):
     def __str__(self):
         return self.name
 
+class HostData(models.Model):
+
+    host = models.OneToOneField(Host, verbose_name = _("host"), on_delete = models.CASCADE, primary_key=True)
+    user_file = models.FileField(verbose_name = _("host data"), help_text="Upload your host data as a raster file.", upload_to=host_directory, max_length=100, blank=True)
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("host_data")
+        verbose_name_plural = _("hosts_data")
+
+    def __str__(self):
+        return self.data
+        
 class Mortality(models.Model):
 
     host = models.OneToOneField(Host, verbose_name = _("host"), on_delete = models.CASCADE, primary_key=True)
@@ -107,7 +149,7 @@ class Mortality(models.Model):
     method = models.CharField(verbose_name = _("mortality rate method"), help_text="Choose a method to determine mortality rate and time lag.", max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "DATA_FILE", blank = False)    
-    mortality_data = models.FileField(verbose_name = _("mortality data"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, help_text="A single raster file with number of trees that experienced mortality as a result of the pest/pathogen that year (each layer is a year)", null = True, blank=True)
+    user_file = models.FileField(verbose_name = _("mortality data"), upload_to=mortality_directory, max_length=100, help_text="A single raster file with number of trees that experienced mortality as a result of the pest/pathogen that year (each layer is a year)", null = True, blank=True)
     rate = models.DecimalField(verbose_name = _("mortality rate (fraction)"), help_text="What percentage of hosts experience mortality each year from the pest or pathogen?", max_digits = 3, decimal_places = 2, blank=True, null=True, default = 0, validators = [MinValueValidator(0), MaxValueValidator(1)])
     rate_standard_deviation = models.DecimalField(verbose_name = _("mortality rate standard deviation"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null=True)
     time_lag = models.PositiveSmallIntegerField(verbose_name = _("mortality time lag (years)"), help_text="How long after initial infection/infestation (in years) before mortality occurs on average?", blank=True, null=True, default = 2, validators = [MinValueValidator(1), MaxValueValidator(10)])
@@ -157,7 +199,6 @@ class Pest(models.Model):
 
     pest_information = models.ForeignKey(PestInformation, verbose_name = _("pest"), help_text="Sample help text.", null=True, blank=True, on_delete = models.SET_NULL)
     name = models.CharField(verbose_name = _("pest common name"), help_text="What is the common name of the pest/pathogen?", max_length = 150, blank=True, null=True)
-    infestation_data = models.FileField(verbose_name = _("infestation data"), help_text="Upload your initial infestation/infection data as a raster file (1 file with a layer for each year). At least 3 years are needed for calibration and validation ", blank=True, upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100)
     case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study"), on_delete=models.CASCADE)
     use_treatment = models.BooleanField(verbose_name = _("prior treatments"), help_text="Has management occurred during the time of initial infection/infestation?", default = False)
     vector_born = models.BooleanField(verbose_name = _("vector born"), help_text="Is the disease spread by a vector (e.g. an insect)?", default = False)
@@ -188,10 +229,24 @@ class Pest(models.Model):
     def __str__(self):
         return self.name
 
+class InitialInfestation(models.Model):
+
+    pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
+    user_file = models.FileField(verbose_name = _("initial infestation data"), help_text="Upload your initial infestation/infection data as a raster file (1 file with a layer for each year). At least 3 years are needed for calibration and validation ", blank=True, upload_to=initial_infestation_directory, max_length=100)
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("initial_infestation_data")
+        verbose_name_plural = _("initial_infestation_datas")
+
+    def __str__(self):
+        return self.pest
+        
 class PriorTreatment(models.Model):
 
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
-    treatment_data = models.FileField(verbose_name =  _("prior treatments data"), help_text="Upload the raster file for management actions. 1 file with a layer for each year.", upload_to = settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null=True, blank=True)
+    user_file = models.FileField(verbose_name =  _("prior treatments data"), help_text="Upload the raster file for management actions. 1 file with a layer for each year.", upload_to = treatment_directory, max_length=100, null=True, blank=True)
 
     objects = MyManager()
 
@@ -207,7 +262,7 @@ class Vector(models.Model):
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
     common_name = models.CharField(verbose_name = _("vector common name"), help_text="What is the common name of the vector?", max_length = 150, blank=True)
     scientific_name = models.CharField(verbose_name = _("vector scientific name"), help_text="What is the scientific name of the vector?", max_length = 150, blank=True)
-    vector_data = models.FileField(verbose_name = _("vector data"), help_text="Upload your vector data as a raster file.",upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True, blank=True)
+    user_file = models.FileField(verbose_name = _("vector data"), help_text="Upload your vector data as a raster file.",upload_to=vector_directory, max_length=100, null = True, blank=True)
     vector_to_host_transmission_rate = models.DecimalField(verbose_name = _("vector to host transmission rate"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null = True)
     vector_to_host_transmission_rate_standard_deviation = models.DecimalField(verbose_name = _("vector to host transmission rate standard deviation"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null=True)
     host_to_vector_transmission_rate = models.DecimalField(verbose_name = _("host to vector transmission rate"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null = True)
@@ -397,7 +452,7 @@ class LethalTemperature(models.Model):
     lethal_type = models.CharField(verbose_name = _("lethal temperature type"), help_text="Is your pest killed by hot or cold temperatures?", choices = LETHAL_TYPE, max_length = 4, default = "COLD", blank=False)
     month = models.PositiveSmallIntegerField(verbose_name = _("month in which lethal temperature occurs"), help_text="What month does your lethal temperature occur?", choices = MONTH, default = 1, blank=False)
     value = models.DecimalField(verbose_name = _("lethal temperature"), help_text="What is the lethal temperature at which pest/pathogen mortality occurs?", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(50)])
-    lethal_temperature_data = models.FileField(verbose_name = _("lethal temperature data"), help_text="Upload your letah temperature data as a raster file (1 file with a layer for each year).", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
+    lethal_temperature_data = models.FileField(verbose_name = _("lethal temperature data"), help_text="Upload your letah temperature data as a raster file (1 file with a layer for each year).", upload_to='documents', max_length=100, null = True)
 
     objects = MyManager()
 
@@ -418,7 +473,7 @@ class Temperature(models.Model):
     method = models.CharField(verbose_name = _("temperature coefficient creation method"), help_text="Choose a method to transform temperature into a coefficient used by the model. Temperature values are transformed into a value between 0 and 1.", max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "RECLASS", blank = False)
-    temperature_data = models.FileField(verbose_name = _("temperature data"), help_text="Upload your temperature data as a raster file (1 file with a layer for each timestep).", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
+    temperature_data = models.FileField(verbose_name = _("temperature data"), help_text="Upload your temperature data as a raster file (1 file with a layer for each timestep).", upload_to='documents', max_length=100, null = True)
 
     objects = MyManager()
 
@@ -439,7 +494,7 @@ class Precipitation(models.Model):
     method = models.CharField(verbose_name = _("precipitation coefficient creation method"), help_text="Choose a method to transform precipitation into a coefficient used by the model. Precipitation values are transformed into a value between 0 and 1.", max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "RECLASS", blank = False)
-    precipitation_data = models.FileField(verbose_name = _("precipitation data"), help_text="Upload your precipitation data as a raster file (1 file with a layer for each timestep).", upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length=100, null = True)
+    precipitation_data = models.FileField(verbose_name = _("precipitation data"), help_text="Upload your precipitation data as a raster file (1 file with a layer for each timestep).", upload_to='documents', max_length=100, null = True)
 
     objects = MyManager()
 
@@ -542,7 +597,7 @@ class PrecipitationPolynomial(models.Model):
 class Treatment(models.Model):
 
     year = models.PositiveSmallIntegerField(verbose_name = _("treatment year"), validators = [MinValueValidator(1900), MaxValueValidator(2200)])
-    treatment_file = models.FileField(verbose_name = _("treatment raster for that year"), upload_to=settings.FILE_PATH_FIELD_DIRECTORY, max_length = 200)
+    treatment_file = models.FileField(verbose_name = _("treatment raster for that year"), upload_to='documents', max_length = 200)
 
     class Meta:
         verbose_name = _("treatment")

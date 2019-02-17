@@ -147,21 +147,21 @@
                         <tr>
                             <th scope="row">Infestation data:</th>
                             <td>
-                                {{ pest.infestation_data|filename }}
+                                {{ pest.initialinfestation.user_file|filename }}
                             </td>
                         </tr>
                         {% endfor %}
                         <tr>
                             <th scope="row">All plant data:</th>
                             <td>
-                                {{ case_study.all_plants|filename }}
+                                {{ case_study.allplantsdata.user_file|filename }}
                             </td>
                         </tr>
                         {% for host in hosts %}
                         <tr>
                             <th scope="row">Host {{ forloop.counter }} data:</th>
                             <td>
-                                {{ host.host_data|filename }}
+                                {{ host.hostdata.user_file|filename }}
                             </td>
                         </tr>
                         {% if host.mortality_on %}
@@ -169,7 +169,7 @@
                         <tr>
                             <th scope="row">Mortality data:</th>
                             <td>
-                                {{ host.mortality.mortality_data|filename }}
+                                {{ host.mortality.user_file|filename }}
                             </td>
                         </tr>
                         {% endif %}
@@ -181,7 +181,7 @@
                         <tr>
                             <th scope="row">Vector data:</th>
                             <td>
-                                {{ pest.vector.vector_data|filename }}
+                                {{ pest.vector.user_file|filename }}
                             </td>
                         </tr>
                         {% endif %}
@@ -189,7 +189,7 @@
                         <tr>
                             <th scope="row">Prior treatment data:</th>
                             <td>
-                                {{ pest.priortreatment.treatment_data|filename }}
+                                {{ pest.priortreatment.user_file|filename }}
                             </td>
                         </tr>
                         {% endif %}                        

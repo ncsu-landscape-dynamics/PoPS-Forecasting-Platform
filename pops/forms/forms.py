@@ -48,12 +48,11 @@ def validate_file_size(self, fields):
 
 class CaseStudyForm(forms.ModelForm):
     fields_required = fields_required_conditionally
-    validate_size = validate_file_size
+
     class Meta:
         model = CaseStudy
         fields = ['name', 'description','number_of_pests','number_of_hosts','start_year','end_year','future_years',
-                'time_step','all_plants']
-        widgets = {'all_plants': forms.FileInput}
+                'time_step']
 
     def __init__(self, *args, **kwargs):
         super(CaseStudyForm, self).__init__(*args, **kwargs)
@@ -67,8 +66,7 @@ class CaseStudyForm(forms.ModelForm):
 
     def clean(self):
         print("VALIDATING CASE STUDY FORM")
-        self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years','all_plants'])
-        self.validate_size(['all_plants'])
+        self.fields_required(['name','number_of_pests','number_of_hosts','start_year','end_year','time_step','future_years'])
         first_year = self.cleaned_data.get("start_year")
         last_year = self.cleaned_data.get("end_year")
         final_sim_year = self.cleaned_data.get("future_years")
@@ -79,28 +77,42 @@ class CaseStudyForm(forms.ModelForm):
             if last_year >= final_sim_year:
                 msg = forms.ValidationError("Final model year must be greater than final calibration year.")
                 self.add_error("future_years", msg)
-        use_treatment = self.cleaned_data.get('use_treatment')
-        if use_treatment:
-            self.fields_required(['treatment_data'])
-            self.validate_size(['treatment_data'])
-        else:
-            self.cleaned_data['treatment_data'] = ''
-
         return self.cleaned_data
 
+class AllPlantsDataForm(forms.ModelForm):
+    fields_required = fields_required_conditionally
+    validate_size = validate_file_size
+
+    class Meta:
+        model = AllPlantsData
+        fields = ['user_file']
+        widgets = {'user_file': forms.FileInput}
+
+    def clean(self):
+        self.fields_required(['user_file'])
+        self.validate_size(['user_file'])
+        return self.cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(AllPlantsDataForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            input_type=self.fields[field].widget.__class__.__name__
+            if input_type != 'CheckboxInput':
+                self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
 
 class HostForm(forms.ModelForm):
     fields_required = fields_required_conditionally
-    validate_size = validate_file_size
+
     class Meta:
         model = Host
-        fields = ['name','score','host_data','mortality_on']
-        widgets = {'host_data': forms.FileInput}
+        fields = ['name','score','mortality_on']
 
     def clean(self):
         print('VALIDATING HOST FORM')
-        self.fields_required(['name','score','host_data'])
-        self.validate_size(['host_data'])
+        self.fields_required(['name','score',])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -113,14 +125,36 @@ class HostForm(forms.ModelForm):
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
 
+class HostDataForm(forms.ModelForm):
+    fields_required = fields_required_conditionally
+    validate_size = validate_file_size
+    class Meta:
+        model = HostData
+        fields = ['user_file']
+        widgets = {'user_file': forms.FileInput}
+
+    def clean(self):
+        self.fields_required(['user_file'])
+        self.validate_size(['user_file'])
+        return self.cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(HostDataForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            input_type=self.fields[field].widget.__class__.__name__
+            if input_type != 'CheckboxInput':
+                self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
 
 class MortalityForm(forms.ModelForm):
     fields_required = fields_required_conditionally
     validate_size = validate_file_size
     class Meta:
         model = Mortality
-        fields = ['method','mortality_data','rate','time_lag']
-        widgets = {'method': forms.RadioSelect(attrs={'display':'inline-block'}),'mortality_data': forms.FileInput}
+        fields = ['method','user_file','rate','time_lag']
+        widgets = {'method': forms.RadioSelect(attrs={'display':'inline-block'}),'user_file': forms.FileInput}
     
     def clean(self):
         self.fields_required(['method'])
@@ -130,8 +164,8 @@ class MortalityForm(forms.ModelForm):
                 print('method true')
                 self.fields_required(['rate','time_lag'])
             else:
-                self.fields_required(['mortality_data'])
-                self.validate_size(['mortality_data'])
+                self.fields_required(['user_file'])
+                self.validate_size(['user_file'])
 
         return self.cleaned_data
 
@@ -150,12 +184,10 @@ class PestForm(forms.ModelForm):
     validate_size = validate_file_size
     class Meta:
         model = Pest
-        fields = ['pest_information','name','infestation_data','model_type','dispersal_type','vector_born','use_treatment']
-        widgets = {'infestation_data': forms.FileInput}     
+        fields = ['pest_information','name','model_type','dispersal_type','vector_born','use_treatment']
     
     def clean(self):
-        self.fields_required(['pest_information','model_type','dispersal_type','infestation_data'])
-        self.validate_size(['infestation_data'])
+        self.fields_required(['pest_information','model_type','dispersal_type'])
         pest_information = self.cleaned_data.get('pest_information')
         if pest_information:
             if pest_information.common_name == "Other":
@@ -176,17 +208,40 @@ class PestForm(forms.ModelForm):
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
 
+class InitialInfestationForm(forms.ModelForm):
+    fields_required = fields_required_conditionally
+    validate_size = validate_file_size
+    class Meta:
+        model = InitialInfestation
+        fields = ['user_file']
+        widgets = {'user_file': forms.FileInput}
+
+    def clean(self):
+        self.fields_required(['user_file'])
+        self.validate_size(['user_file'])
+        return self.cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(InitialInfestationForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            input_type=self.fields[field].widget.__class__.__name__
+            if input_type != 'CheckboxInput':
+                self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
+
 class PriorTreatmentForm(forms.ModelForm):
     fields_required = fields_required_conditionally
     validate_size = validate_file_size
     class Meta:
         model = PriorTreatment
-        fields = ['treatment_data']
-        widgets = {'treatment_data': forms.FileInput}
+        fields = ['user_file']
+        widgets = {'user_file': forms.FileInput}
 
     def clean(self):
-        self.fields_required(['treatment_data'])
-        self.validate_size(['treatment_data'])
+        self.fields_required(['user_file'])
+        self.validate_size(['user_file'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -205,12 +260,12 @@ class VectorForm(forms.ModelForm):
     validate_size = validate_file_size
     class Meta:
         model = Vector
-        fields = ['common_name','scientific_name','vector_data']
-        widgets = {'vector_data': forms.FileInput}
+        fields = ['common_name','scientific_name','user_file']
+        widgets = {'user_file': forms.FileInput}
 
     def clean(self):
-        self.fields_required(['common_name','scientific_name','vector_data'])
-        self.validate_size(['vector_data'])
+        self.fields_required(['common_name','scientific_name','user_file'])
+        self.validate_size(['user_file'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):

@@ -66,9 +66,12 @@ class NewCaseStudyView(TemplateView):
         post_data = request.POST or None
         file_data = request.FILES or None
         cs=None
+        all_plants_data=None
         host=None
+        host_data=None
         mortality=None
         pest=None
+        initial_infestation=None
         vector=None
         prior_treatment=None
         weather=None
@@ -91,7 +94,8 @@ class NewCaseStudyView(TemplateView):
             if mortality:
                 original_datafiles['mortality_data'] = mortality.mortality_data
             pest = get_object_or_404(Pest, case_study=cs)
-            original_datafiles['infestation_data'] = pest.infestation_data
+            initial_infestation = get_object_or_404(InitialInfestation, pest=pest)
+            original_datafiles['infestation_data'] = initial_infestation.data
             vector = Vector.objects.get_or_none(pest=pest)
             prior_treatment = PriorTreatment.objects.get_or_none(pest=pest) 
             if prior_treatment:
@@ -145,9 +149,12 @@ class NewCaseStudyView(TemplateView):
             my_forms['precipitation_reclass_formset'] = PrecipitationReclassFormSet(post_data, queryset=PrecipitationReclass.objects.none(), prefix='precip_reclass')
 
         my_forms['case_study_form'] = CaseStudyForm(post_data, file_data, instance=cs, prefix='cs')
+        my_forms['all_plants_data_form'] = AllPlantsDataForm(post_data, file_data, instance=all_plants_data, prefix='all_plants_data')
         my_forms['host_form'] = HostForm(post_data, file_data, instance=host, prefix='host')
+        my_forms['host_data_form'] = HostDataForm(post_data, file_data, instance=host_data, prefix='host_data')
         my_forms['mortality_form'] = MortalityForm(post_data, file_data, instance=mortality, prefix='mortality')
         my_forms['pest_form'] = PestForm(post_data, file_data, instance=pest, prefix='pest')
+        my_forms['initial_infestation_form'] = InitialInfestationForm(post_data, file_data, instance=initial_infestation, prefix='initial_infestation')
         my_forms['prior_treatment_form'] = PriorTreatmentForm(post_data, file_data, instance=prior_treatment, prefix='prior_treatment')
         my_forms['vector_form'] = VectorForm(post_data, file_data, instance=vector, prefix='vector')
         my_forms['weather_form'] = WeatherForm(post_data, instance=weather, prefix='weather')
@@ -163,7 +170,7 @@ class NewCaseStudyView(TemplateView):
     def validate_forms(self, my_forms):
         required_models={}
         optional_models={}
-        optional_models['new_case_study']=[]
+        optional_models['case_study']=[]
         optional_models['host']=[]
         optional_models['pest']=[]
         optional_models['weather']=[]
@@ -173,6 +180,21 @@ class NewCaseStudyView(TemplateView):
             required_models['new_case_study'] = my_forms['case_study_form'].save(commit=False)
             required_models['new_host'] = my_forms['host_form'].save(commit=False)
             required_models['new_pest'] = my_forms['pest_form'].save(commit=False)
+            if my_forms['host_data_form'].is_valid():
+                required_models['new_host_data'] = my_forms['host_data_form'].save(commit=False)
+                optional_models['host'].append(required_models['new_host_data'])
+            else:
+                success = False
+            if my_forms['all_plants_data_form'].is_valid():
+                required_models['new_all_plants'] = my_forms['all_plants_data_form'].save(commit=False)
+                optional_models['case_study'].append(required_models['new_all_plants'])
+            else:
+                success = False
+            if my_forms['initial_infestation_form'].is_valid():
+                required_models['new_initial_infestation'] = my_forms['initial_infestation_form'].save(commit=False)
+                optional_models['pest'].append(required_models['new_initial_infestation'])
+            else:
+                success = False
             required_models['new_weather'] = my_forms['weather_form'].save(commit=False)
             success=True
             if required_models['new_host'].mortality_on == True:
@@ -279,6 +301,9 @@ class NewCaseStudyView(TemplateView):
         required_models['new_pest'].save()
         required_models['new_weather'].case_study = required_models['new_case_study']
         required_models['new_weather'].save()
+        for model in optional_models['case_study']:
+            model.case_study = required_models['new_case_study']
+            model.save()
         for model in optional_models['host']:
             model.host = required_models['new_host']
             model.save()
