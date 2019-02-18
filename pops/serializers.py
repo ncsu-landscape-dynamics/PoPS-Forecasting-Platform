@@ -60,14 +60,50 @@ class WeatherSerializer(serializers.ModelSerializer):
     precipitation = PrecipitationSerializer()
     class Meta:
         model = Weather
-        fields = ('wind_on','seasonality_on','lethal_temp_on','temp_on','precipitation_on','wind','seasonality','lethaltemperature','temperature','precipitation')
+        fields = ('pk','wind_on','seasonality_on','lethal_temp_on','temp_on','precipitation_on','wind','seasonality','lethaltemperature','temperature','precipitation')
+
+class PestInformationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PestInformation
+        fields = ['common_name']
+
+class VectorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vector
+        fields = ['common_name','scientific_name','user_file','vector_to_host_transmission_rate','vector_to_host_transmission_rate_standard_deviation','host_to_vector_transmission_rate','host_to_vector_transmission_rate_standard_deviation']
+
+class PriorTreatmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PriorTreatment
+        fields = ['user_file']
+
+class InitialInfestationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InitialInfestation
+        fields = ['user_file']
+
+class PestSerializer(serializers.ModelSerializer):
+    pest_information = PestInformationSerializer()
+    vector = VectorSerializer()
+    initialinfestation = InitialInfestationSerializer()
+    priortreatment = PriorTreatmentSerializer()
+    class Meta:
+        model = Pest
+        fields = ['pk','pest_information','name','model_type','dispersal_type','initialinfestation','vector_born','vector','use_treatment','priortreatment']
+        
+class AllPlantsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AllPlantsData
+        fields = ['user_file']
 
 class CaseStudySerializer(serializers.ModelSerializer):
+    allplantsdata = AllPlantsSerializer()
     weather = WeatherSerializer()
+    pest_set = PestSerializer(many=True)
     class Meta:
         model = CaseStudy
         fields = ['name', 'description','number_of_pests','number_of_hosts','start_year','end_year','future_years',
-                'time_step','infestation_data','all_plants','use_treatment','treatment_data','weather']
+                'time_step','allplantsdata','pest_set','weather']
 
 
 
