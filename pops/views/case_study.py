@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, View
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import ModelForm, modelform_factory
 from django.http import HttpResponse, HttpResponseForbidden
 from django.db.models import Q
@@ -16,9 +16,11 @@ import numpy as np
 from ..models import *
 from ..forms import *
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class CaseStudyReview(TemplateView):
 
+class CaseStudyReview(LoginRequiredMixin, TemplateView):
+    login_url = 'login'
     model = CaseStudy
     template_name = 'pops/case_study_review.html'
 
@@ -34,8 +36,8 @@ class CaseStudyReview(TemplateView):
             context['pests'] = pests
             return context
 
-class NewCaseStudyView(TemplateView):
-
+class NewCaseStudyView(LoginRequiredMixin, TemplateView):
+    login_url = 'login'
     template_name = 'pops/create_case_study2.html'
     
     def post(self, request, *args, **kwargs):
@@ -367,16 +369,16 @@ class ApprovedCaseStudyListView(ListView):
         context = super().get_context_data(**kwargs)
         return context
 
-class CreateCaseStudyStart(TemplateView):
-
+class CreateCaseStudyStart(LoginRequiredMixin, TemplateView):
+    login_url = 'login'
     template_name = 'pops/create_case_study_start.html'
 
     def post(self, request, **kwargs):
         case_study_id = request.POST.get('case_study_id')
         return redirect(reverse('case_study_edit', args=(case_study_id,)))
 
-class ApprovedAndUserCaseStudyListView(TemplateView):
-    
+class ApprovedAndUserCaseStudyListView(LoginRequiredMixin, TemplateView):
+    login_url = 'login'
     #paginate_by = 5  # if pagination is desired
     template_name = 'pops/case_study_list.html'
 
@@ -397,8 +399,8 @@ class ApprovedAndUserCaseStudyListView(TemplateView):
 def case_study_submitted(request):
     return render(request, 'pops/case_study_submitted.html',)
 
-class CaseStudyDetailView(DetailView):
-
+class CaseStudyDetailView(LoginRequiredMixin, DetailView):
+    login_url = 'login'
     model = CaseStudy
     template_name = 'pops/case_study_details.html'
     context_object_name = 'case_study'
