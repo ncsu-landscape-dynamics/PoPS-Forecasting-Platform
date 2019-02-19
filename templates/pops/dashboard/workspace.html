@@ -7,63 +7,28 @@
 <div class="container py-2 pb-4">
 <h3>Welcome to your PoPS workspace, {{ user }} </h3>
     <div class="row">
-        <div class="col-lg-5">
-            <div class="panel-container">
-                <h4>My case studies:</h4>
-                {% if user_case_studies %}
-<table class="table table-hover table-dark table-sm ">
-                <thead>
-                <th>Name</th>
-                <th>Date created</th>
-                <th>Status</th>
-                <th></th>
-                </thead>
-
-<tbody>
-        {% for cs in user_case_studies %}
-        <tr>
-        <td>{{ cs.name }}</td>
-        <td>{{ cs.date_created }}</td>
-        <td><em>{{ cs.get_calibration_status_display }}</em></td>
-        <td><a class="btn btn-secondary btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}" role="button">Details</a></td>
-            </tr>
-        {% endfor %}
-
-</tbody>
-</table>
-{% else %}
-    You have no custom case studies yet.
-{% endif %}
-                <a class="btn btn-info btn-lg btn-block" href="{% url 'case_study_list' %}" role="button" style="white-space: normal;"><i
-                        class="fas fa-search"></i> Browse All Case Studies
-                </a>
-                <a class="btn btn-success btn-lg btn-block" href="{% url 'create_case_study' %}" role="button" style="white-space: normal;"><i
-                        class="fas fa-plus-circle"></i> Create New Case Study
-                </a>
-                </div>
-</div>
 
         <div class="col-lg-7">
             <div class="panel-container">
-                <h4>My sessions:</h4>
+                <h4>My recent sessions (4/17):</h4>
                 {% if user_sessions %}
 <table class="table table-hover table-dark table-sm ">
                 <thead>
-                <th>Name</th>
-                <th>Case study</th>
-                <th>Runs</th>
-                <th>Last run</th>
+                <th class="w-25">Name</th>
+                <th class="w-30">Case study</th>
+                <th class="w-5">Runs</th>
+                <th class="w-20">Last run</th>
                 <th></th>
                 </thead>
 
 <tbody>
         {% for session in user_sessions %}
         <tr>
-        <td>{{ session.name }}</td>
+        <td>{{ session.name }} </td>
         <td>{{ session.case_study }}</td>
-        <td>{{ session.created_by }}</td>
+        <td><span class="badge badge-pill badge-light">{{ session.date_created|date:'s' }}</span></td>
         <td>{{ session.date_created }}</td>
-        <td><a class="btn btn-success btn-sm btn-block" href="#" role="button">Go!</a></td>
+        <td><a class="text-info" href="#" role="button"><i class="fas fa-arrow-alt-circle-right"></i></a></td>
             </tr>
         {% endfor %}
 
@@ -72,7 +37,73 @@
 {% else %}
     You have no sessions yet.
 {% endif %}
+
+<div class="row">
+<div class="col-6">
+                <a class="btn btn-secondary  btn-block" href="{% url 'case_study_list' %}" role="button" style="white-space: normal;"><i
+                        class="fas fa-search"></i> View All My Sessions <span class="badge badge-pill badge-light">17</span>
+                </a>
+                </div>
+                <div class="col-6">
+                <a class="btn btn-success  btn-block" href="{% url 'create_case_study' %}" role="button" style="white-space: normal;"><i
+                        class="fas fa-plus-circle"></i> Create New Session
+                </a>
+                </div>
 </div>
+
+</div>
+</div>    
+        <div class="col-lg-5">
+            <div class="panel-container">
+                <h4>My case studies:</h4>
+                {% if user_case_studies %}
+<table class="table table-hover table-dark table-sm ">
+                <thead>
+                <th>Name</th>
+                <th>Date</th>
+                <th></th>
+                </thead>
+
+<tbody>
+        {% for cs in user_case_studies %}
+        <tr>
+        <td>{{ cs.name }} 
+        <a class="text-light" href="{% url 'case_study_review' pk=cs.pk %}" role="button"><i class="fas fa-info-circle"></i></a>
+        </td>
+        <td class="w-25">{{ cs.date_created|date:'M. j, Y'  }}</td>
+        <td>
+                {% if cs.calibration_status == "NO START" %}
+        <span class="badge badge-pill badge-light">Calibration not started</span>
+        {% endif %}
+        {% if cs.calibration_status == "IN PROGRESS" %}
+        <span class="badge badge-pill badge-warning"> Calibrating... </span>
+        {% endif %}
+        {% if cs.calibration_status == "FAILED" %}
+        <span class="badge badge-pill badge-danger">FAILED</span>
+        {% endif %}
+        {% if cs.calibration_status == "SUCCESS" %}
+        <span class="badge badge-pill badge-success"><i class="fas fa-check"></i></span>
+        {% endif %}
+        
+        </td>
+            </tr>
+        {% endfor %}
+
+</tbody>
+</table>
+{% else %}
+    You have no custom case studies yet.
+{% endif %}
+                <a class="btn btn-secondary  btn-block" href="{% url 'case_study_list' %}" role="button" style="white-space: normal;"><i
+                        class="fas fa-search"></i> Browse All Case Studies
+                </a>
+                <a class="btn btn-success  btn-block" href="{% url 'create_case_study' %}" role="button" style="white-space: normal;"><i
+                        class="fas fa-plus-circle"></i> Create New Case Study
+                </a>
+                </div>
+</div>
+
+
 </div>
 
 </div>
