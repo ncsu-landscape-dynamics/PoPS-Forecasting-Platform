@@ -28,19 +28,19 @@ class PrecipitationSerializer(serializers.ModelSerializer):
     precipitationpolynomial=PrecipitationPolynomialSerializer()
     class Meta:
         model = Precipitation
-        fields = ['method','precipitationreclass_set','precipitationpolynomial']
+        fields = ['method','precipitationreclass_set','precipitationpolynomial','precipitation_data']
 
 class TemperatureSerializer(serializers.ModelSerializer):
     temperaturereclass_set=TemperatureReclassSerializer(many=True)
     temperaturepolynomial=TemperaturePolynomialSerializer()
     class Meta:
         model = Temperature
-        fields = ['method','temperaturereclass_set','temperaturepolynomial']
+        fields = ['method','temperaturereclass_set','temperaturepolynomial','temperature_data']
         
 class LethalTemperatureSerializer(serializers.ModelSerializer):
     class Meta:
         model = LethalTemperature
-        fields = ('lethal_type','month','value')
+        fields = ('lethal_type','month','value','lethal_temperature_data')
 
 class SeasonalitySerializer(serializers.ModelSerializer):
     class Meta:
@@ -61,6 +61,43 @@ class WeatherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Weather
         fields = ('pk','wind_on','seasonality_on','lethal_temp_on','temp_on','precipitation_on','wind','seasonality','lethaltemperature','temperature','precipitation')
+
+class HostDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HostData
+        fields = ['user_file']
+
+class MortalitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mortality
+        fields = ['method','user_file','rate','rate_standard_deviation','time_lag','time_lag_standard_deviation']
+
+class HostSerializer(serializers.ModelSerializer):
+    hostdata = HostDataSerializer()
+    mortality = MortalitySerializer()
+    class Meta:
+        model = Host
+        fields = ['pk','name','score','hostdata','mortality_on','mortality']
+
+class InfectedToDiseasedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InfectedToDiseased
+        fields = ['rate','rate_standard_deviation']
+
+class CrypticToInfectedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CrypticToInfected
+        fields = ['rate','rate_standard_deviation']
+
+class LongDistanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LongDistance
+        fields = ['scale','scale_standard_deviation']
+
+class ShortDistanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShortDistance
+        fields = ['scale','scale_standard_deviation','percent_short_distance']
 
 class PestInformationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -87,9 +124,13 @@ class PestSerializer(serializers.ModelSerializer):
     vector = VectorSerializer()
     initialinfestation = InitialInfestationSerializer()
     priortreatment = PriorTreatmentSerializer()
+    shortdistance = ShortDistanceSerializer()
+    longdistance = LongDistanceSerializer()
+    cryptictoinfected = CrypticToInfectedSerializer()
+    infectedtodiseased = InfectedToDiseasedSerializer()
     class Meta:
         model = Pest
-        fields = ['pk','pest_information','name','model_type','dispersal_type','initialinfestation','vector_born','vector','use_treatment','priortreatment']
+        fields = ['pk','pest_information','name','model_type','dispersal_type','initialinfestation','vector_born','vector','use_treatment','priortreatment','shortdistance','longdistance','cryptictoinfected','infectedtodiseased']
         
 class AllPlantsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -100,10 +141,11 @@ class CaseStudySerializer(serializers.ModelSerializer):
     allplantsdata = AllPlantsSerializer()
     weather = WeatherSerializer()
     pest_set = PestSerializer(many=True)
+    host_set = HostSerializer(many=True)
     class Meta:
         model = CaseStudy
         fields = ['name', 'description','number_of_pests','number_of_hosts','start_year','end_year','future_years',
-                'time_step','allplantsdata','pest_set','weather']
+                'time_step','staff_approved','calibration_status','use_external_calibration','calibration','allplantsdata','pest_set','host_set','weather']
 
 
 
