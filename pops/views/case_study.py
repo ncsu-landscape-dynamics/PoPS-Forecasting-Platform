@@ -265,6 +265,8 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
         optional_models['weather']=[]
         optional_models['temperature']=[]
         optional_models['precipitation']=[]
+        success=True
+
         if my_forms['case_study_form'].is_valid() and my_forms['host_form'].is_valid() and my_forms['pest_form'].is_valid() and my_forms['weather_form'].is_valid():
             required_models['new_case_study'] = my_forms['case_study_form'].save(commit=False)
             required_models['new_host'] = my_forms['host_form'].save(commit=False)
@@ -285,7 +287,6 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
             else:
                 success = False
             required_models['new_weather'] = my_forms['weather_form'].save(commit=False)
-            success=True
             if required_models['new_host'].mortality_on == True:
                 if my_forms['mortality_form'].is_valid():
                     required_models['new_mortality'] = my_forms['mortality_form'].save(commit=False)
