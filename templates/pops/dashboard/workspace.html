@@ -10,7 +10,7 @@
 
         <div class="col-lg-7">
             <div class="panel-container">
-                <h4>My recent sessions (4/17):</h4>
+                <h4>My recent sessions (4/{{ user_sessions.count }}):</h4>
                 {% if user_sessions %}
 <table class="table table-hover table-dark table-sm ">
                 <thead>
@@ -41,7 +41,7 @@
 <div class="row">
 <div class="col-6">
                 <a class="btn btn-secondary  btn-block" href="{% url 'case_study_list' %}" role="button" style="white-space: normal;"><i
-                        class="fas fa-search"></i> View All My Sessions <span class="badge badge-pill badge-light">17</span>
+                        class="fas fa-search"></i> View All My Sessions <span class="badge badge-pill badge-light">{{ user_sessions.count }}</span>
                 </a>
                 </div>
                 <div class="col-6">

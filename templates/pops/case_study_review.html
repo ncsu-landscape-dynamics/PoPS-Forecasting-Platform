@@ -203,6 +203,11 @@
 
         <div class="col-lg-7">
             <div class="panel-container">
+                <h4>Description:</h4>
+                <p>{{ case_study.description }}</p>
+            </div>
+
+            <div class="panel-container">
                 <h4>Weather details:</h4>
                 <div class="row no-gutters align-items-center">
                     {% include "pops/toggle_switch_disabled.html" with label="Wind" check_if_true=case_study.weather.wind_on %}
@@ -275,6 +280,7 @@
                                 </tr>
                                 {% endfor %}
                             </tbody>
+
                         </table>
                         {% endif %}
                         {% if case_study.weather.temperature.method == "POLYNOMIAL" %}
@@ -307,10 +313,10 @@
                         {% endif %}                    
                         </div>
                     <div class="col-7">
-                        {% if temp_graph %}
+                        {% if temp_plot %}
                         <h5>Plot preview:</h5>
                         <div style="width:600;height:500">
-                            {{ temp_graph|safe }}
+                            {{ temp_plot }}
                         </div>
                         {% endif %}
                     </div>
@@ -371,10 +377,10 @@
                         {% endif %}
                     </div>
                     <div class="col-7">
-                        {% if precip_graph %}
+                        {% if precip_plot %}
                         <h5>Plot preview:</h5>
                         <div style="width:600;height:500">
-                            {{ precip_graph|safe }}
+                            {{ precip_plot }}
                         </div>
                         {% endif %}
                     </div>
