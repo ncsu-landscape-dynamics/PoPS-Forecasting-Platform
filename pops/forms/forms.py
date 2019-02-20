@@ -543,53 +543,59 @@ class PrecipitationPolynomialForm(forms.ModelForm):
             self.fields_required(['a0','a1','a2','a3','x1','x2','x3'])
         return self.cleaned_data
 
-
+def continuity_check(self):
+    i=0
+    ranges=[]
+    deleted = self.deleted_forms
+    print(deleted)
+    for form in self.forms:
+        if form.cleaned_data and form not in deleted:
+            min_val = form.cleaned_data["min_value"]
+            max_val = form.cleaned_data['max_value']
+            group=(i,min_val,max_val)
+            if min_val != None and max_val != None:
+                ranges.append(group)
+        i += 1
+    continuity = True
+    ranges.sort(key=lambda tup: tup[1])  
+    for i in range(len(ranges)-1):
+        if ranges[i][2] != ranges[i+1][1]:
+            target_max_error=ranges[i][0]
+            target_min_error=ranges[i+1][0]
+            self.forms[target_max_error].add_error("max_value", "No matching min value.")
+            self.forms[target_min_error].add_error("min_value", "No matching max value.")
+            continuity = False
+    if continuity == False:
+        raise forms.ValidationError('Continuity error! Every max value must have a corresponding (and unique) min value for' 
+            ' continuity. Please double check your min and max values.', code='continuity_error')
+                
 class BaseReclassFormSet(forms.BaseModelFormSet):
-    
+    continuity_check = continuity_check
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
     
     def clean(self):
+        super().clean()
         """
         Check reclass formsets for continuity
         """
         if any(self.errors):
             return
-        i=0
-        ranges=[]
-        for form in self.forms:
-            if form.cleaned_data:
-                min_val = form.cleaned_data["min_value"]
-                max_val = form.cleaned_data['max_value']
-                group=(i,min_val,max_val)
-                if min_val != None and max_val != None:
-                    ranges.append(group)
-            i += 1
-        continuity = True
-        ranges.sort(key=lambda tup: tup[1])  
-        for i in range(len(ranges)-1):
-            if ranges[i][2] != ranges[i+1][1]:
-                target_max_error=ranges[i][0]
-                target_min_error=ranges[i+1][0]
-                self.forms[target_max_error].add_error("max_value", "No matching min value.")
-                self.forms[target_min_error].add_error("min_value", "No matching max value.")
-                continuity = False
-        if continuity == False:
-            raise forms.ValidationError('Continuity error! Every max value must have a corresponding (and unique) min value for' 
-                ' continuity. Please double check your min and max values.', code='continuity_error')
+        self.continuity_check()
 
 
-# class CustomInlineFormSet(forms.BaseInlineFormSet):
-#     def clean(self):
-#         super().clean()
-#         # example custom validation across forms in the formset
-#         for form in self.forms:
-#             # your custom formset validation
-#             form.fields_required(['min_value','max_value','reclass'])
-#             min_val = form.cleaned_data.get("min_value")
-#             max_val = form.cleaned_data.get("max_value")
-#             if min_val and max_val:
-#                 if min_val >= max_val:
-#                     msg = forms.ValidationError("Min precip must be less than max precip in each row.")
-#                     form.add_error("min_value", msg)
-#         return self.cleaned_data
+class BaseInlineReclassFormSet(forms.BaseInlineFormSet):
+    continuity_check = continuity_check
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    
+    def clean(self):
+        super().clean()
+        """
+        Check reclass formsets for continuity
+        """
+        if any(self.errors):
+            return
+        self.continuity_check()

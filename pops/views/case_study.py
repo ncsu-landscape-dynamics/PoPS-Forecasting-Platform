@@ -30,11 +30,96 @@ class CaseStudyReview(LoginRequiredMixin, TemplateView):
             case_study = CaseStudy.objects.select_related('weather__wind','weather__seasonality','weather__lethaltemperature','weather__temperature','weather__temperature__temperaturepolynomial','weather__precipitation','weather__precipitation__precipitationpolynomial').get(pk=self.kwargs.get('pk'))
             hosts = Host.objects.select_related('mortality').filter(case_study__pk=self.kwargs.get('pk'))
             pests = Pest.objects.select_related('vector').filter(case_study__pk=self.kwargs.get('pk')).select_related('pest_information')
+            if case_study.weather.temp_on:
+                if case_study.weather.temperature.method == "RECLASS":
+                    context['temp_plot']=self.reclass_graph()
+                if case_study.weather.temperature.method == "POLYNOMIAL":
+                    context['temp_plot']=self.polynomial_graph()
+            if case_study.weather.precipitation_on:
+                if case_study.weather.precipitation.method == "RECLASS":
+                    context['precip_plot']=self.reclass_graph()
+                if case_study.weather.precipitation.method == "POLYNOMIAL":
+                    context['precip_plot']=self.polynomial_graph()
             # Create any data and add it to the context
             context['case_study'] = case_study
             context['hosts'] = hosts
             context['pests'] = pests
             return context
+
+    def reclass_graph(self, **kwargs):
+        return "Reclass plot"
+
+    def polynomial_graph(self, **kwargs):
+        return "Polynomial plot"
+
+        # if case_study.weather.precipitation_on:
+        # if case_study.weather.precipitation.method == "RECLASS":
+        #     for row in case_study.weather.precipitation.precipitationreclass_set.all():
+        #         precip_data.append(go.Scatter(x=[row.min_value, row.max_value], y=[row.reclass, row.reclass],
+        #             marker = dict(
+        #                 size = 10,
+        #                 color = 'black',
+        #                 line = dict(
+        #                     width = 2,
+        #                     color = 'cyan'
+        #                 )
+        #             ),
+        #             line = dict(
+        #                     width = 2,
+        #                     color = 'cyan'
+        #             )
+        #         ))
+        #         precip_data.append(go.Scatter(x=[row.min_value], y=[row.reclass],        
+        #             marker = dict(
+        #                 size = 10,
+        #                 color = 'cyan',
+        #                 line = dict(
+        #                     width = 2,
+        #                     color = 'cyan'
+        #                 )
+        #             ),
+        #         ))
+        # if case_study.weather.precipitation.method == "POLYNOMIAL":
+        #     a0=case_study.weather.precipitation.precipitationpolynomial.a0
+        #     a1=case_study.weather.precipitation.precipitationpolynomial.a1
+        #     a2=case_study.weather.precipitation.precipitationpolynomial.a2
+        #     a3=case_study.weather.precipitation.precipitationpolynomial.a3
+        #     x1=case_study.weather.precipitation.precipitationpolynomial.x1
+        #     x2=case_study.weather.precipitation.precipitationpolynomial.x2
+        #     x3=case_study.weather.precipitation.precipitationpolynomial.x3
+
+        #     N = 100
+        #     random_x = np.linspace(0, 100, 100)
+        #     random_y0 = float(a0) + float(a1)*(random_x+float(x1))+float(a2)*(random_x+float(x2))**2
+
+        #     # Create traces
+        #     precip_data.append(go.Scatter(
+        #         x = random_x,
+        #         y = random_y0,
+        #         mode = 'lines',
+        #         line = dict(
+        #             width = 2,
+        #             color = 'cyan'
+        #         )
+        #     ))
+        # precip_graph=opy.plot({
+        #     "data": precip_data,
+        #     "layout": go.Layout(showlegend= False, 
+        #         xaxis=dict(range=[0, 100],showgrid=False, tickfont=dict(color='white'),title='Precipitation (mm)',titlefont=dict(color='white')), 
+        #         yaxis=dict(range=[0, 1], showgrid=False, tickfont=dict(color='white'),title='Reclass',titlefont=dict(color='white')), 
+        #         width=300, height=200, 
+        #         paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+        #         margin=go.layout.Margin(
+        #             l=50,
+        #             r=10,
+        #             b=40,
+        #             t=20,
+        #             pad=4
+        #             ),
+        #         ),
+        #     }, auto_open=False, output_type='div', config={"displayModeBar": False}
+        # )
+        # context['precip_graph'] = precip_graph
 
 class NewCaseStudyView(LoginRequiredMixin, TemplateView):
     login_url = 'login'
@@ -89,21 +174,23 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
         if pk:
             # Create any data and add it to the context
             cs = CaseStudy.objects.select_related('weather__wind','weather__seasonality','weather__lethaltemperature','weather__temperature','weather__temperature__temperaturepolynomial','weather__precipitation','weather__precipitation__precipitationpolynomial').get(pk=pk)
-            original_datafiles['all_plants_data'] = cs.all_plants
+            all_plants_data = cs.allplantsdata
+            original_datafiles['all_plants_data'] = all_plants_data.user_file
             host = get_object_or_404(Host, case_study=cs)
-            original_datafiles['host_data'] = host.host_data
+            host_data = host.hostdata
+            original_datafiles['host_data'] = host_data.user_file
             mortality = Mortality.objects.get_or_none(host=host)   
             if mortality:
-                original_datafiles['mortality_data'] = mortality.mortality_data
+                original_datafiles['mortality_data'] = mortality.user_file
             pest = get_object_or_404(Pest, case_study=cs)
-            initial_infestation = get_object_or_404(InitialInfestation, pest=pest)
-            original_datafiles['infestation_data'] = initial_infestation.data
+            initial_infestation = pest.initialinfestation
+            original_datafiles['infestation_data'] = initial_infestation.user_file
             vector = Vector.objects.get_or_none(pest=pest)
             prior_treatment = PriorTreatment.objects.get_or_none(pest=pest) 
             if prior_treatment:
-                original_datafiles['treatment_data'] = prior_treatment.treatment_data
+                original_datafiles['treatment_data'] = prior_treatment.user_file
             if vector:
-                original_datafiles['vector_data'] = vector.vector_data
+                original_datafiles['vector_data'] = vector.user_file
             weather = cs.weather
 
             try:
@@ -140,14 +227,14 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
             # my_forms['temperature_reclass_formset'] = TemperatureReclassFormSet(post_data, queryset=temperature_reclass, prefix='temp_reclass')
             # PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, min_num=2, validate_min=True, extra=1)
             # my_forms['precipitation_reclass_formset'] = PrecipitationReclassFormSet(post_data, queryset=precipitation_reclass, prefix='precip_reclass')
-            TemperatureReclassFormSet = forms.inlineformset_factory(Temperature, TemperatureReclass, form=TemperatureReclassForm, min_num=2, validate_min=True, extra=1)
+            TemperatureReclassFormSet = forms.inlineformset_factory(Temperature, TemperatureReclass, form=TemperatureReclassForm, formset=BaseInlineReclassFormSet, min_num=2, validate_min=True, extra=1)
             my_forms['temperature_reclass_formset'] = TemperatureReclassFormSet(post_data, instance=temperature, prefix='temp_reclass')
-            PrecipitationReclassFormSet = forms.inlineformset_factory(Precipitation, PrecipitationReclass, form=PrecipitationReclassForm, min_num=2, validate_min=True, extra=1)
+            PrecipitationReclassFormSet = forms.inlineformset_factory(Precipitation, PrecipitationReclass, form=PrecipitationReclassForm, formset=BaseInlineReclassFormSet, min_num=2, validate_min=True, extra=1)
             my_forms['precipitation_reclass_formset'] = PrecipitationReclassFormSet(post_data, instance=precipitation, prefix='precip_reclass')
         else:
-            TemperatureReclassFormSet = forms.modelformset_factory(TemperatureReclass, form=TemperatureReclassForm, formset=BaseReclassFormSet, min_num=2, extra=1)
+            TemperatureReclassFormSet = forms.modelformset_factory(TemperatureReclass, form=TemperatureReclassForm, formset=BaseReclassFormSet, can_delete=True, min_num=2, extra=1)
             my_forms['temperature_reclass_formset'] = TemperatureReclassFormSet(post_data, queryset=TemperatureReclass.objects.none(), prefix='temp_reclass')
-            PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, formset=BaseReclassFormSet, min_num=2, extra=1)
+            PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, formset=BaseReclassFormSet, can_delete=True, min_num=2, extra=1)
             my_forms['precipitation_reclass_formset'] = PrecipitationReclassFormSet(post_data, queryset=PrecipitationReclass.objects.none(), prefix='precip_reclass')
 
         my_forms['case_study_form'] = CaseStudyForm(post_data, file_data, instance=cs, prefix='cs')
@@ -258,7 +345,7 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
                         else:
                             success = False
                             print("Temp reclass formset form is INVALID")
-                            print(my_forms['temperature_reclass_formset'])
+                            #print(my_forms['temperature_reclass_formset'])
  
                 else:
                     success = False
