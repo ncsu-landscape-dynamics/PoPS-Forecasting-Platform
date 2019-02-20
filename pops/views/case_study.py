@@ -145,9 +145,9 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
             PrecipitationReclassFormSet = forms.inlineformset_factory(Precipitation, PrecipitationReclass, form=PrecipitationReclassForm, min_num=2, validate_min=True, extra=1)
             my_forms['precipitation_reclass_formset'] = PrecipitationReclassFormSet(post_data, instance=precipitation, prefix='precip_reclass')
         else:
-            TemperatureReclassFormSet = forms.modelformset_factory(TemperatureReclass, form=TemperatureReclassForm, min_num=2, extra=1)
+            TemperatureReclassFormSet = forms.modelformset_factory(TemperatureReclass, form=TemperatureReclassForm, formset=BaseReclassFormSet, min_num=2, extra=1)
             my_forms['temperature_reclass_formset'] = TemperatureReclassFormSet(post_data, queryset=TemperatureReclass.objects.none(), prefix='temp_reclass')
-            PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, min_num=2, extra=1)
+            PrecipitationReclassFormSet = forms.modelformset_factory(PrecipitationReclass, form=PrecipitationReclassForm, formset=BaseReclassFormSet, min_num=2, extra=1)
             my_forms['precipitation_reclass_formset'] = PrecipitationReclassFormSet(post_data, queryset=PrecipitationReclass.objects.none(), prefix='precip_reclass')
 
         my_forms['case_study_form'] = CaseStudyForm(post_data, file_data, instance=cs, prefix='cs')
