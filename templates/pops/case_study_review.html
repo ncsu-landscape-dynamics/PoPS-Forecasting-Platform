@@ -2,6 +2,7 @@
 {% load static %}
 {% block page_styles %}
 <link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}
 {% load filename %}
 
@@ -259,70 +260,99 @@
                 </div>
             </div>
 
-            {% if case_study.weather.temp_on %}
-            <div class="panel-container">
-                <div class="row">
-                    <div class="col-5">
-                        {% if case_study.weather.temperature.method == "RECLASS" %}
-                        <h5>Temperature reclass</h5>
-                        <table class="table table-hover table-dark table-sm table-bordered">
-                            <thead>
-                                <th>Min (&#8451)</th>
-                                <th>Max (&#8451)</th>
-                                <th>Reclass</th>
-                            </thead>
-                            <tbody>
-                                {% for row in case_study.weather.temperature.temperaturereclass_set.all %}
-                                <tr>
-                                    <td>{{ row.min_value}}</td>
-                                    <td> {{row.max_value}}</td>
-                                    <td> {{row.reclass}}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
+<style type="text/css" media="screen">
+    .table-wrapper-scroll-y {
+        display: block;
+        max-height: 10em;
+        overflow-y: auto;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+    .bodycontainer { max-height: 100px; width: 100%; margin: 0; overflow-y: auto; -ms-overflow-style: -ms-autohiding-scrollbar;}
+    .table-scrollable { margin: 0; padding: 0; }
+</style>
 
-                        </table>
-                        {% endif %}
-                        {% if case_study.weather.temperature.method == "POLYNOMIAL" %}
-                        <h5>Temperature polynomial</h5>
-                        {% if case_study.weather.temperature.temperaturepolynomial.degree == 1 %}
-                        <div class="">
-                            <div>Coefficient = {{ case_study.weather.temperature.temperaturepolynomial.a0 }} </div>
-                            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a1 }}
-                            (P+{{ case_study.weather.temperature.temperaturepolynomial.x1 }}) </div>
-                        </div>
-                        {% elif case_study.weather.temperature.temperaturepolynomial.degree == 2 %}
-                        <div class="">
-                            <div>Coefficient = {{ case_study.weather.temperature.temperaturepolynomial.a0 }} </div>
-                            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a1 }}
-                            (P+{{ case_study.weather.temperature.temperaturepolynomial.x1 }}) </div>
-                            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a2 }}
-                            (P+{{ case_study.weather.temperature.temperaturepolynomial.x2 }})<sup>2</sup></div>
-                        </div>
-                        {% else %}
-                        <div class="">
-                            <div>Coefficient = {{ case_study.weather.temperature.temperaturepolynomial.a0 }} </div>
-                            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a1 }}
-                            (P+{{ case_study.weather.temperature.temperaturepolynomial.x1 }}) </div>
-                            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a2 }}
-                            (P+{{ case_study.weather.temperature.temperaturepolynomial.x2 }})<sup>2</sup></div>
-                            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a3 }}
-                            (P+{{ case_study.weather.temperature.temperaturepolynomial.x3 }})<sup>3</sup></div>
-                        </div>
-                        {% endif %}
-                        {% endif %}                    
-                        </div>
-                    <div class="col-7">
-                        {% if temp_plot %}
-                        <h5>Plot preview:</h5>
-                        <div style="width:600;height:500">
-                            {{ temp_plot }}
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
+{% if case_study.weather.temp_on %}
+<div class="panel-container">
+    {% if case_study.weather.temperature.method == "RECLASS" %}
+
+    <div class="row justify-content-center">
+        <div class="col">
+            <h5>Temperature reclass</h5>
+            <div class="px-4">
+                <small class="text-secondary">Any values not specified in the reclass table will be reclassed to zero
+                    (shown
+                    in <span class="text-danger">red</span> in the figure below).</small>
             </div>
-            {% endif %}
+        </div>
+        <div class="col-6">
+            <table class="table table-sm table-dark table-scrollable text-center ">
+                <thead>
+                    <th width="30%">Min (&#8451)</th>
+                    <th width="30%">Max (&#8451)</th>
+                    <th width="35%">Reclass</th>
+                </thead>
+            </table>
+
+            <div class="bodycontainer">
+                <table class="table table-scrollable table-hover table-dark table-sm table-bordered text-right ">
+                    <tbody>
+                        {% for row in case_study.weather.temperature.temperaturereclass_set.all %}
+                        <tr>
+                            <td class="pr-3" width="33%">{{ row.min_value}}</td>
+                            <td class="pr-3" width="33%"> {{row.max_value}}</td>
+                            <td class="pr-3" width="33%"> {{row.reclass}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-12 mt-2">
+            <div id="temp_reclass_plot" style="max-height:400px;">
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if case_study.weather.temperature.method == "POLYNOMIAL" %}
+    <div class="row ">
+        <div class="col">
+        <h5>Temperature polynomial</h5>
+        </div>
+        {% if case_study.weather.temperature.temperaturepolynomial.degree == 1 %}
+        <div class="col">
+            <div>Coefficient = {{ case_study.weather.temperature.temperaturepolynomial.a0 }} </div>
+            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a1 }}
+                (P+{{ case_study.weather.temperature.temperaturepolynomial.x1 }}) </div>
+        </div>
+        {% elif case_study.weather.temperature.temperaturepolynomial.degree == 2 %}
+        <div class="col-12">
+            Coefficient = {{ case_study.weather.temperature.temperaturepolynomial.a0 }} 
+            + {{ case_study.weather.temperature.temperaturepolynomial.a1 }}
+                (P+{{ case_study.weather.temperature.temperaturepolynomial.x1 }})
+            + {{ case_study.weather.temperature.temperaturepolynomial.a2 }}
+                (P+{{ case_study.weather.temperature.temperaturepolynomial.x2 }})<sup>2</sup>
+        </div>
+        {% else %}
+        <div class="">
+            <div>Coefficient = {{ case_study.weather.temperature.temperaturepolynomial.a0 }} </div>
+            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a1 }}
+                (P+{{ case_study.weather.temperature.temperaturepolynomial.x1 }}) </div>
+            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a2 }}
+                (P+{{ case_study.weather.temperature.temperaturepolynomial.x2 }})<sup>2</sup></div>
+            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a3 }}
+                (P+{{ case_study.weather.temperature.temperaturepolynomial.x3 }})<sup>3</sup></div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+            <div class="col-12 mt-2">
+            <div id="temp_polynomial_plot" style="max-height:400px;">
+            </div>
+        </div>
+
+</div>
+
+{% endif %}
 
             {% if case_study.weather.precipitation_on %}
             <div class="panel-container">
@@ -377,12 +407,9 @@
                         {% endif %}
                     </div>
                     <div class="col-7">
-                        {% if precip_plot %}
                         <h5>Plot preview:</h5>
-                        <div style="width:600;height:500">
-                            {{ precip_plot }}
+                        <div id="precip_plot" style="width:300px;height:300px;">
                         </div>
-                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -403,4 +430,132 @@
 
 </div>
 
+
+<script>
+
+var data = [];
+{% for row in case_study.weather.temperature.temperaturereclass_set.all %}
+{% if forloop.first %}
+ var trace = {
+  x: [-50, {{row.min_value}}],
+  y: [0,0],
+  mode: 'lines+markers',
+  type: 'scatter',
+  marker: {
+        size: 8,
+        color: 'red',
+        line: {
+            width: 1,
+            color:'red',
+        }
+    },
+line: {
+    color:'red',
+    width: 2,
+},
+};
+data.push(trace);
+
+{% endif %}
+{% if forloop.last %}
+ var trace = {
+  x: [{{row.max_value}},50],
+  y: [0,0],
+  mode: 'lines+markers',
+  type: 'scatter',
+  marker: {
+        size: 8,
+        color: ['#16181b','red'],
+        line: {
+            width: 1,
+            color:'red',
+        }
+    },
+line: {
+    color:'red',
+    width: 2,
+},
+};
+data.push(trace);
+{% endif %}
+ var trace = {
+  x: [{{row.min_value}}, {{row.max_value}}],
+  y: [{{row.reclass}},{{row.reclass}}],
+  mode: 'lines+markers',
+  type: 'scatter',
+  marker: {
+        size: 8,
+        color: ['#16181b','cyan'],
+        line: {
+            width: 1,
+            color:'cyan',
+        }
+    },
+line: {
+    color:'cyan',
+    width: 2,
+},
+
+};
+data.push(trace);
+{% endfor %}
+
+var axis_template={
+    showgrid:true,
+    zeroline:true,
+    gridcolor: '#16181b',
+    gridwidth: 1,
+    zerolinecolor: '#969696',
+    zerolinewidth: 2,
+    //linecolor: 'black',
+    //mirror: true,
+    //linewidth: 1,
+    nticks:20,
+    titlefont: {
+      family: 'Arial, sans-serif',
+      size: 14,
+      color: '#909294'
+    },
+    showticklabels: true,
+    tickangle: 'auto',
+    tickfont: {
+      family: 'Arial, sans-serif',
+      size: 12,
+      color: '#909294'
+    },
+ 
+};
+var xaxis ={title: 'Temperature (&deg;C)', range: [-51, 51]};
+var yaxis={title: 'Reclass', range: [-0.02, 1.02]};
+var layout={
+    showlegend:false,
+    paper_bgcolor:'rgba(0,0,0,0)',
+    plot_bgcolor:'rgba(0,0,0,0)',//'#16181b',
+    margin: {
+        l: 50,
+        r: 20,
+        b: 40,
+        t: 50,
+        pad: 4
+    },
+    title: {
+    text:'Reclass preview:',
+    font: {
+      family: 'Arial, sans-serif',
+      color:'white',
+      size: 20
+    },
+    xref: 'paper',
+    x: 0,
+    },
+    xaxis: $.extend({}, axis_template, xaxis),
+    yaxis: $.extend({}, axis_template, yaxis),
+};
+
+Plotly.newPlot('temp_reclass_plot', data, layout, {responsive: true});
+
+
+
+
+</script>
 {% endblock %}
