@@ -9,6 +9,7 @@
 
 {% block content %}
 
+
 <div class="container py-2 pb-4">
 
     <h2 class="text-center">Review Case Study</h2>
@@ -42,7 +43,9 @@
     <div class="row">
         <div class="col-lg-5">
             <div class="panel-container">
-                <h4>Case study details:</h4>
+                <h4>{{ case_study.name }}</h4>
+                <p><strong>Description:</strong> {{ case_study.description }}</p>
+
                 <table class="table table-hover table-dark table-sm">
                     <tbody>
                         <tr>
@@ -204,11 +207,6 @@
 
         <div class="col-lg-7">
             <div class="panel-container">
-                <h4>Description:</h4>
-                <p>{{ case_study.description }}</p>
-            </div>
-
-            <div class="panel-container">
                 <h4>Weather details:</h4>
                 <div class="row no-gutters align-items-center">
                     {% include "pops/toggle_switch_disabled.html" with label="Wind" check_if_true=case_study.weather.wind_on %}
@@ -260,16 +258,7 @@
                 </div>
             </div>
 
-<style type="text/css" media="screen">
-    .table-wrapper-scroll-y {
-        display: block;
-        max-height: 10em;
-        overflow-y: auto;
-        -ms-overflow-style: -ms-autohiding-scrollbar;
-    }
-    .bodycontainer { max-height: 100px; width: 100%; margin: 0; overflow-y: auto; -ms-overflow-style: -ms-autohiding-scrollbar;}
-    .table-scrollable { margin: 0; padding: 0; }
-</style>
+
 
 {% if case_study.weather.temp_on %}
 <div class="panel-container">
@@ -277,15 +266,15 @@
 
     <div class="row justify-content-center">
         <div class="col">
-            <h5>Temperature reclass</h5>
+            <h4>Temperature reclass</h4>
             <div class="px-4">
-                <small class="text-secondary">Any values not specified in the reclass table will be reclassed to zero
+                <small class="text-secondary">Note: Any values not specified in the reclass table will be reclassed to zero
                     (shown
                     in <span class="text-danger">red</span> in the figure below).</small>
             </div>
         </div>
         <div class="col-6">
-            <table class="table table-sm table-dark table-scrollable text-center ">
+            <table class="table table-sm table-dark table-scrollable text-center small">
                 <thead>
                     <th width="30%">Min (&#8451)</th>
                     <th width="30%">Max (&#8451)</th>
@@ -294,7 +283,7 @@
             </table>
 
             <div class="bodycontainer">
-                <table class="table table-scrollable table-hover table-dark table-sm table-bordered text-right ">
+                <table class="table table-scrollable table-hover table-dark table-sm table-bordered text-right small">
                     <tbody>
                         {% for row in case_study.weather.temperature.temperaturereclass_set.all %}
                         <tr>
@@ -308,112 +297,207 @@
             </div>
         </div>
         <div class="col-12 mt-2">
-            <div id="temp_reclass_plot" style="max-height:400px;">
+            <div id="temp_reclass_plot" style="max-height:300px;">
             </div>
         </div>
     </div>
     {% endif %}
     {% if case_study.weather.temperature.method == "POLYNOMIAL" %}
-    <div class="row ">
-        <div class="col">
-        <h5>Temperature polynomial</h5>
+    <div class="row justify-content-between">
+        <div class="col-xs-10 col-lg-6 pb-2">
+        <h4>Temperature polynomial</h4>
         </div>
         {% if case_study.weather.temperature.temperaturepolynomial.degree == 1 %}
-        <div class="col">
-            <div>Coefficient = {{ case_study.weather.temperature.temperaturepolynomial.a0 }} </div>
-            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a1 }}
-                (P+{{ case_study.weather.temperature.temperaturepolynomial.x1 }}) </div>
+        <div class="col-10 col-lg-6 text-secondary " style="font-size: 0.8em; font-family:'Lucida Console', Monaco, monospace">
+        <table class="">
+        <tbody class="">
+        <tr>
+        <td class="text-right">Reclass =</td><td class="text-right">{{ case_study.weather.temperature.temperaturepolynomial.a0 }}</td>
+        </td>
+        </tr>
+        <tr>
+        <td class="text-right">+</td><td class="text-right">{{ case_study.weather.temperature.temperaturepolynomial.a1 }}
+        </td><td class="">(T + {{ case_study.weather.temperature.temperaturepolynomial.x1 }})</td>
+        </tr>
+        </tbody>
+        </table>
         </div>
         {% elif case_study.weather.temperature.temperaturepolynomial.degree == 2 %}
-        <div class="col-12">
-            Coefficient = {{ case_study.weather.temperature.temperaturepolynomial.a0 }} 
-            + {{ case_study.weather.temperature.temperaturepolynomial.a1 }}
-                (P+{{ case_study.weather.temperature.temperaturepolynomial.x1 }})
-            + {{ case_study.weather.temperature.temperaturepolynomial.a2 }}
-                (P+{{ case_study.weather.temperature.temperaturepolynomial.x2 }})<sup>2</sup>
+        <div class="col-10 col-lg-6 text-secondary " style="font-size: 0.8em; font-family:'Lucida Console', Monaco, monospace">
+        <table class="">
+        <tbody class="">
+        <tr>
+        <td class="text-right">Reclass =</td><td class="text-right">{{ case_study.weather.temperature.temperaturepolynomial.a0 }}</td>
+        </td>
+        </tr>
+        <tr>
+        <td class="text-right">+</td><td class="text-right">{{ case_study.weather.temperature.temperaturepolynomial.a1 }}
+        </td><td class="">(T + {{ case_study.weather.temperature.temperaturepolynomial.x1 }})</td>
+        </tr>
+        <tr>
+        <td class="text-right">+</td><td class="text-right">{{ case_study.weather.temperature.temperaturepolynomial.a2 }}
+                </td><td>(T + {{ case_study.weather.temperature.temperaturepolynomial.x2 }})<sup>2</sup></td>
+        </tr>
+        </tbody>
+        </table>
         </div>
         {% else %}
-        <div class="">
-            <div>Coefficient = {{ case_study.weather.temperature.temperaturepolynomial.a0 }} </div>
-            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a1 }}
-                (P+{{ case_study.weather.temperature.temperaturepolynomial.x1 }}) </div>
-            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a2 }}
-                (P+{{ case_study.weather.temperature.temperaturepolynomial.x2 }})<sup>2</sup></div>
-            <div class="offset-2">+ {{ case_study.weather.temperature.temperaturepolynomial.a3 }}
-                (P+{{ case_study.weather.temperature.temperaturepolynomial.x3 }})<sup>3</sup></div>
+        <div class="col-10 col-lg-6 text-secondary " style="font-size: 0.8em; font-family:'Lucida Console', Monaco, monospace">
+        <table class="">
+        <tbody class="">
+        <tr>
+        <td class="text-right">Reclass =</td><td class="text-right">{{ case_study.weather.temperature.temperaturepolynomial.a0 }}</td>
+        </td>
+        </tr>
+        <tr>
+        <td class="text-right">+</td><td class="text-right">{{ case_study.weather.temperature.temperaturepolynomial.a1 }}
+        </td><td class="">(T + {{ case_study.weather.temperature.temperaturepolynomial.x1 }})</td>
+        </tr>
+        <tr>
+        <td class="text-right">+</td><td class="text-right">{{ case_study.weather.temperature.temperaturepolynomial.a2 }}
+                </td><td>(T + {{ case_study.weather.temperature.temperaturepolynomial.x2 }})<sup>2</sup></td>
+        </tr>
+        <tr>
+        <td class="text-right">+</td><td class="text-right">{{ case_study.weather.temperature.temperaturepolynomial.a3 }}
+                </td><td>(T + {{ case_study.weather.temperature.temperaturepolynomial.x3 }})<sup>3</sup></td>
+        </tr>
+        </tbody>
+        </table>
         </div>
         {% endif %}
-    </div>
-    {% endif %}
-            <div class="col-12 mt-2">
-            <div id="temp_polynomial_plot" style="max-height:400px;">
+                <div class="col-12 mt-2">
+            <div id="temp_polynomial_plot" style="max-height:300px;">
             </div>
         </div>
+                    <div class="col ml-4 px-4">
+                <small class="text-secondary">Note: Negative values will be reclassed to zero, values 
+                greater than 1 will be reclassed to 1.</small>
+            </div>
 
+    </div>
+    {% endif %}
 </div>
-
 {% endif %}
 
-            {% if case_study.weather.precipitation_on %}
-            <div class="panel-container">
-                <div class="row">
-                    <div class="col-5">
-                        {% if case_study.weather.precipitation.method == "RECLASS" %}
-                        <h5>Precipitation reclass</h5>
-                        <table class="table table-hover table-dark table-sm table-bordered">
-                            <thead>
-                                <th>Min (mm)</th>
-                                <th>Max (mm)</th>
-                                <th>Reclass</th>
-                            </thead>
-                            <tbody>
-                                {% for row in case_study.weather.precipitation.precipitationreclass_set.all %}
-                                <tr>
-                                    <td>{{ row.min_value}}</td>
-                                    <td> {{row.max_value}}</td>
-                                    <td> {{row.reclass}}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% endif %}
-                        {% if case_study.weather.precipitation.method == "POLYNOMIAL" %}
-                        <h5>Precipitation polynomial</h5>
-                        {% if case_study.weather.precipitation.precipitationpolynomial.degree == 1 %}
-                        <div class="">
-                            <div>Coefficient = {{ case_study.weather.precipitation.precipitationpolynomial.a0 }} </div>
-                            <div class="offset-2">+ {{ case_study.weather.precipitation.precipitationpolynomial.a1 }}
-                            (P+{{ case_study.weather.precipitation.precipitationpolynomial.x1 }}) </div>
-                        </div>
-                        {% elif case_study.weather.precipitation.precipitationpolynomial.degree == 2 %}
-                        <div class="">
-                            <div>Coefficient = {{ case_study.weather.precipitation.precipitationpolynomial.a0 }} </div>
-                            <div class="offset-2">+ {{ case_study.weather.precipitation.precipitationpolynomial.a1 }}
-                            (P+{{ case_study.weather.precipitation.precipitationpolynomial.x1 }}) </div>
-                            <div class="offset-2">+ {{ case_study.weather.precipitation.precipitationpolynomial.a2 }}
-                            (P+{{ case_study.weather.precipitation.precipitationpolynomial.x2 }})<sup>2</sup></div>
-                        </div>
-                        {% else %}
-                        <div class="">
-                            <div>Coefficient = {{ case_study.weather.precipitation.precipitationpolynomial.a0 }} </div>
-                            <div class="offset-2">+ {{ case_study.weather.precipitation.precipitationpolynomial.a1 }}
-                            (P+{{ case_study.weather.precipitation.precipitationpolynomial.x1 }}) </div>
-                            <div class="offset-2">+ {{ case_study.weather.precipitation.precipitationpolynomial.a2 }}
-                            (P+{{ case_study.weather.precipitation.precipitationpolynomial.x2 }})<sup>2</sup></div>
-                            <div class="offset-2">+ {{ case_study.weather.precipitation.precipitationpolynomial.a3 }}
-                            (P+{{ case_study.weather.precipitation.precipitationpolynomial.x3 }})<sup>3</sup></div>
-                        </div>
-                        {% endif %}
-                        {% endif %}
-                    </div>
-                    <div class="col-7">
-                        <h5>Plot preview:</h5>
-                        <div id="precip_plot" style="width:300px;height:300px;">
-                        </div>
-                    </div>
-                </div>
+{% if case_study.weather.precipitation_on %}
+<div class="panel-container">
+    {% if case_study.weather.precipitation.method == "RECLASS" %}
+
+    <div class="row justify-content-center">
+        <div class="col">
+            <h4>Precipitation reclass</h4>
+            <div class="px-4">
+                <small class="text-secondary">Note: Any values not specified in the reclass table will be reclassed to zero
+                    (shown
+                    in <span class="text-danger">red</span> in the figure below).</small>
             </div>
-            {% endif %}
+        </div>
+        <div class="col-6">
+            <table class="table table-sm table-dark table-scrollable text-center small">
+                <thead>
+                    <th width="30%">Min (mm)</th>
+                    <th width="30%">Max (mm)</th>
+                    <th width="35%">Reclass</th>
+                </thead>
+            </table>
+
+            <div class="bodycontainer">
+                <table class="table table-scrollable table-hover table-dark table-sm table-bordered text-right small">
+                    <tbody>
+                        {% for row in case_study.weather.precipitation.precipitationreclass_set.all %}
+                        <tr>
+                            <td class="pr-3" width="33%">{{ row.min_value}}</td>
+                            <td class="pr-3" width="33%"> {{row.max_value}}</td>
+                            <td class="pr-3" width="33%"> {{row.reclass}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-12 mt-2">
+            <div id="precip_reclass_plot" style="max-height:300px;">
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if case_study.weather.precipitation.method == "POLYNOMIAL" %}
+    <div class="row justify-content-between">
+        <div class="col-xs-10 col-lg-6 pb-2">
+        <h4>Precipitation polynomial</h4>
+        </div>
+        {% if case_study.weather.precipitation.precipitationpolynomial.degree == 1 %}
+        <div class="col-10 col-lg-6 text-secondary " style="font-size: 0.8em; font-family:'Lucida Console', Monaco, monospace">
+        <table class="">
+        <tbody class="">
+        <tr>
+        <td class="text-right">Reclass =</td><td class="text-right">{{ case_study.weather.precipitation.precipitationpolynomial.a0 }}</td>
+        </td>
+        </tr>
+        <tr>
+        <td class="text-right">+</td><td class="text-right">{{ case_study.weather.precipitation.precipitationpolynomial.a1 }}
+        </td><td class="">(P + {{ case_study.weather.precipitation.precipitationpolynomial.x1 }})</td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        {% elif case_study.weather.precipitation.precipitationpolynomial.degree == 2 %}
+        <div class="col-10 col-lg-6 text-secondary " style="font-size: 0.8em; font-family:'Lucida Console', Monaco, monospace">
+        <table class="">
+        <tbody class="">
+        <tr>
+        <td class="text-right">Reclass =</td><td class="text-right">{{ case_study.weather.precipitation.precipitationpolynomial.a0 }}</td>
+        </td>
+        </tr>
+        <tr>
+        <td class="text-right">+</td><td class="text-right">{{ case_study.weather.precipitation.precipitationpolynomial.a1 }}
+        </td><td class="">(P + {{ case_study.weather.precipitation.precipitationpolynomial.x1 }})</td>
+        </tr>
+        <tr>
+        <td class="text-right">+</td><td class="text-right">{{ case_study.weather.precipitation.precipitationpolynomial.a2 }}
+                </td><td>(P + {{ case_study.weather.precipitation.precipitationpolynomial.x2 }})<sup>2</sup></td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        {% else %}
+        <div class="col-10 col-lg-6 text-secondary " style="font-size: 0.8em; font-family:'Lucida Console', Monaco, monospace">
+        <table class="">
+        <tbody class="">
+        <tr>
+        <td class="text-right">Reclass =</td><td class="text-right">{{ case_study.weather.precipitation.precipitationpolynomial.a0 }}</td>
+        </td>
+        </tr>
+        <tr>
+        <td class="text-right">+</td><td class="text-right">{{ case_study.weather.precipitation.precipitationpolynomial.a1 }}
+        </td><td class="">(P + {{ case_study.weather.precipitation.precipitationpolynomial.x1 }})</td>
+        </tr>
+        <tr>
+        <td class="text-right">+</td><td class="text-right">{{ case_study.weather.precipitation.precipitationpolynomial.a2 }}
+                </td><td>(P + {{ case_study.weather.precipitation.precipitationpolynomial.x2 }})<sup>2</sup></td>
+        </tr>
+        <tr>
+        <td class="text-right">+</td><td class="text-right">{{ case_study.weather.precipitation.precipitationpolynomial.a3 }}
+                </td><td>(P + {{ case_study.weather.precipitation.precipitationpolynomial.x3 }})<sup>3</sup></td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+                {% endif %}
+                <div class="col-12 mt-2">
+            <div id="precip_polynomial_plot" style="max-height:300px;">
+            </div>
+        </div>
+                    <div class="col ml-4 px-4">
+                <small class="text-secondary">Note: Negative values will be reclassed to zero, values 
+                greater than 1 will be reclassed to 1.</small>
+            </div>
+
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
             <div class="row justify-content-end pb-4">
                 <div class="col-auto">
                     <div class="d-inline text-center p-2">
@@ -430,132 +514,77 @@
 
 </div>
 
-
+<script src="{% static 'js/case_study/review_plots.js' %}"></script>
 <script>
+//PLOTTING TEMPERATURE
+// POLYNOMIAL
+{% if case_study.weather.temperature.method == "POLYNOMIAL" %}
+var a0 = {{ case_study.weather.temperature.temperaturepolynomial.a0 }} 
+var a1 = {{ case_study.weather.temperature.temperaturepolynomial.a1 }}
+var x1 = {{ case_study.weather.temperature.temperaturepolynomial.x1 }}
+var a2 = {{ case_study.weather.temperature.temperaturepolynomial.a2|default_if_none:0 }}
+var x2 = {{ case_study.weather.temperature.temperaturepolynomial.x2|default_if_none:0 }}
+var a3 = {{ case_study.weather.temperature.temperaturepolynomial.a3|default_if_none:0 }}
+var x3 = {{ case_study.weather.temperature.temperaturepolynomial.x3|default_if_none:0 }}
 
-var data = [];
-{% for row in case_study.weather.temperature.temperaturereclass_set.all %}
-{% if forloop.first %}
- var trace = {
-  x: [-50, {{row.min_value}}],
-  y: [0,0],
-  mode: 'lines+markers',
-  type: 'scatter',
-  marker: {
-        size: 8,
-        color: 'red',
-        line: {
-            width: 1,
-            color:'red',
-        }
-    },
-line: {
-    color:'red',
-    width: 2,
-},
-};
-data.push(trace);
-
+polynomial_plot(div_id="temp_polynomial_plot",x_range=[-50,50],x_label='Temperature (&deg;C)',a0=a0,a1=a1,x1=x1,a2=a2,x2=x2,a3=a3,x3=x3);
 {% endif %}
-{% if forloop.last %}
- var trace = {
-  x: [{{row.max_value}},50],
-  y: [0,0],
-  mode: 'lines+markers',
-  type: 'scatter',
-  marker: {
-        size: 8,
-        color: ['#16181b','red'],
-        line: {
-            width: 1,
-            color:'red',
-        }
-    },
-line: {
-    color:'red',
-    width: 2,
-},
-};
-data.push(trace);
+
+//RECLASS
+{% if case_study.weather.temperature.method == "RECLASS" %}
+    var data = [];
+    var x_range=[-50, 50];
+    var x_label='Temperature (&deg;C)';
+    {% for row in case_study.weather.temperature.temperaturereclass_set.all %}
+        {% if forloop.first %}
+            trace=reclass_plot(min=x_range[0],max={{row.min_value}},reclass=0,color='red')
+            data.push(trace);
+        {% endif %}
+        {% if forloop.last %}
+            trace=reclass_plot(min={{row.max_value}},max=x_range[1],reclass=0,color='red')
+            data.push(trace);
+        {% endif %}
+        trace=reclass_plot(min={{row.min_value}},max={{row.max_value}},reclass={{row.reclass}},color='cyan')
+        data.push(trace);
+    {% endfor %}
+    var layout = dark_layout(x_label=x_label,x_range=[x_range[0]-1,x_range[1]+1])
+    Plotly.newPlot('temp_reclass_plot', data, layout, {responsive: true});
 {% endif %}
- var trace = {
-  x: [{{row.min_value}}, {{row.max_value}}],
-  y: [{{row.reclass}},{{row.reclass}}],
-  mode: 'lines+markers',
-  type: 'scatter',
-  marker: {
-        size: 8,
-        color: ['#16181b','cyan'],
-        line: {
-            width: 1,
-            color:'cyan',
-        }
-    },
-line: {
-    color:'cyan',
-    width: 2,
-},
 
-};
-data.push(trace);
-{% endfor %}
+//PLOTTING PRECIPITATION
+// POLYNOMIAL
+{% if case_study.weather.precipitation.method == "POLYNOMIAL" %}
+var a0 = {{ case_study.weather.precipitation.precipitationpolynomial.a0 }} 
+var a1 = {{ case_study.weather.precipitation.precipitationpolynomial.a1 }}
+var x1 = {{ case_study.weather.precipitation.precipitationpolynomial.x1 }}
+var a2 = {{ case_study.weather.precipitation.precipitationpolynomial.a2|default_if_none:0 }}
+var x2 = {{ case_study.weather.precipitation.precipitationpolynomial.x2|default_if_none:0 }}
+var a3 = {{ case_study.weather.precipitation.precipitationpolynomial.a3|default_if_none:0 }}
+var x3 = {{ case_study.weather.precipitation.precipitationpolynomial.x3|default_if_none:0 }}
 
-var axis_template={
-    showgrid:true,
-    zeroline:true,
-    gridcolor: '#16181b',
-    gridwidth: 1,
-    zerolinecolor: '#969696',
-    zerolinewidth: 2,
-    //linecolor: 'black',
-    //mirror: true,
-    //linewidth: 1,
-    nticks:20,
-    titlefont: {
-      family: 'Arial, sans-serif',
-      size: 14,
-      color: '#909294'
-    },
-    showticklabels: true,
-    tickangle: 'auto',
-    tickfont: {
-      family: 'Arial, sans-serif',
-      size: 12,
-      color: '#909294'
-    },
- 
-};
-var xaxis ={title: 'Temperature (&deg;C)', range: [-51, 51]};
-var yaxis={title: 'Reclass', range: [-0.02, 1.02]};
-var layout={
-    showlegend:false,
-    paper_bgcolor:'rgba(0,0,0,0)',
-    plot_bgcolor:'rgba(0,0,0,0)',//'#16181b',
-    margin: {
-        l: 50,
-        r: 20,
-        b: 40,
-        t: 50,
-        pad: 4
-    },
-    title: {
-    text:'Reclass preview:',
-    font: {
-      family: 'Arial, sans-serif',
-      color:'white',
-      size: 20
-    },
-    xref: 'paper',
-    x: 0,
-    },
-    xaxis: $.extend({}, axis_template, xaxis),
-    yaxis: $.extend({}, axis_template, yaxis),
-};
+polynomial_plot(div_id="precip_polynomial_plot",x_range=[0,100],x_label='Precipitation (mm)',a0=a0,a1=a1,x1=x1,a2=a2,x2=x2,a3=a3,x3=x3);
+{% endif %}
 
-Plotly.newPlot('temp_reclass_plot', data, layout, {responsive: true});
-
-
-
+//RECLASS
+{% if case_study.weather.precipitation.method == "RECLASS" %}
+    var data = [];
+    var x_range=[0, 100];
+    var x_label='Precipitation (mm)';
+    {% for row in case_study.weather.precipitation.precipitationreclass_set.all %}
+        {% if forloop.first %}
+            trace=reclass_plot(min=x_range[0],max={{row.min_value}},reclass=0,color='red')
+            data.push(trace);
+        {% endif %}
+        {% if forloop.last %}
+            trace=reclass_plot(min={{row.max_value}},max=x_range[1],reclass=0,color='red')
+            data.push(trace);
+        {% endif %}
+        trace=reclass_plot(min={{row.min_value}},max={{row.max_value}},reclass={{row.reclass}},color='cyan')
+        data.push(trace);
+    {% endfor %}
+    var layout = dark_layout(x_label=x_label,x_range=[x_range[0]-1,x_range[1]+1])
+    Plotly.newPlot('precip_reclass_plot', data, layout, {responsive: true});
+{% endif %}
 
 </script>
 {% endblock %}
