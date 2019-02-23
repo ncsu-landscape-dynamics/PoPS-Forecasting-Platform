@@ -248,7 +248,7 @@
               {% include "pops/include/reclass_formset.html" with formset=temperature_reclass_formset %}
             </div>
             <div class="p-1" id="temp_polynomial_form_visibility">
-              {% include "pops/include/polynomial_form.html" with form=temperature_polynomial_form %}
+              {% include "pops/include/polynomial_form.html" with equation_variable="T" form=temperature_polynomial_form %}
               <button class="button button-info" type="button" onclick="temp_poly_plot()">Preview polynomial</button>
             <div id="temp_polynomial_plot" style="max-height:300px; "></div>
 
@@ -299,7 +299,7 @@
               {% include "pops/include/reclass_formset.html" with formset=precipitation_reclass_formset %}
             </div>
             <div class="p-1" id="precip_polynomial_form_visibility">
-              {% include "pops/include/polynomial_form.html" with form=precipitation_polynomial_form %}
+              {% include "pops/include/polynomial_form.html" with equation_variable="P" form=precipitation_polynomial_form %}
               <button class="button button-info" type="button" onclick="precip_poly_plot()">Preview polynomial</button>
             <div id="precip_polynomial_plot" style="max-height:300px; "></div>
             </div>
