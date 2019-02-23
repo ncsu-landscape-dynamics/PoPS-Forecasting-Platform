@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
 <script src="{% static 'js/case_study/form_visibility.js' %}"></script>
 <script src="{% static 'js/case_study/jquery.formset.js' %}"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -248,6 +249,9 @@
             </div>
             <div class="p-1" id="temp_polynomial_form_visibility">
               {% include "pops/include/polynomial_form.html" with form=temperature_polynomial_form %}
+              <button class="button button-info" type="button" onclick="temp_poly_plot()">Preview polynomial</button>
+            <div id="temp_polynomial_plot" style="max-height:300px; "></div>
+
             </div>
           </div>
           <!--Temperature visibility javascript (hides form based on toggle)-->
@@ -296,6 +300,8 @@
             </div>
             <div class="p-1" id="precip_polynomial_form_visibility">
               {% include "pops/include/polynomial_form.html" with form=precipitation_polynomial_form %}
+              <button class="button button-info" type="button" onclick="precip_poly_plot()">Preview polynomial</button>
+            <div id="precip_polynomial_plot" style="max-height:300px; "></div>
             </div>
           </div>
           <!--Precipitation visibility javascript (hides form based on toggle)-->
@@ -331,23 +337,76 @@
           <div class="text-center">
             <span>Note: You will be able to review your case study on the next page before submitting for calibration.</span>
           </div>
-
         </div>
       </div>
-
   </form>
   <!--End form-->
-
 </div>
 <!--End main container-->
 
 <!--Script to make tooltips appear on hover-->
+<script src="{% static 'js/case_study/review_plots.js' %}"></script>
+
 <script>
   $(document).ready(function () {
     $("body").tooltip({
       selector: '[data-toggle=tooltip]'
     });
   });
+
+function myFunction() {
+  var x = document.getElementById("frm1");
+  var text = "";
+  var i;
+  for (i = 0; i < x.length ;i++) {
+    text += x.elements[i].value + "<br>";
+  }
+  document.getElementById("demo").innerHTML = text;
+}
+
+function temp_poly_plot() {
+    var a0 = document.getElementById("id_temperature_polynomial-a0").value;
+    var a1 = document.getElementById("id_temperature_polynomial-a1").value;
+    var x1 = document.getElementById("id_temperature_polynomial-x1").value;
+    var a2 = document.getElementById("id_temperature_polynomial-a2").value;
+    var x2 = document.getElementById("id_temperature_polynomial-x2").value;
+    var a3 = document.getElementById("id_temperature_polynomial-a3").value;
+    var x3 = document.getElementById("id_temperature_polynomial-x3").value;
+      if ($('#{{ temperature_polynomial_form.degree.0.id_for_label }}').is(':checked')){
+        a2 = 0;
+        x2 = 0;
+        a3 = 0;
+        x3 = 0;
+      }
+      if ($('#{{ temperature_polynomial_form.degree.1.id_for_label }}').is(':checked')){
+        a3 = 0;
+        x3 = 0;
+      }
+    return polynomial_plot(div_id="temp_polynomial_plot",x_range=[-50,50],x_label='Temperature (C)',a0=Number(a0),a1=Number(a1),x1=Number(x1),a2=Number(a2),x2=Number(x2),a3=Number(a3),x3=Number(x3));
+}
+
+function precip_poly_plot() {
+    var a0 = document.getElementById("id_precipitation_polynomial-a0").value;
+    var a1 = document.getElementById("id_precipitation_polynomial-a1").value;
+    var x1 = document.getElementById("id_precipitation_polynomial-x1").value;
+    var a2 = document.getElementById("id_precipitation_polynomial-a2").value;
+    var x2 = document.getElementById("id_precipitation_polynomial-x2").value;
+    var a3 = document.getElementById("id_precipitation_polynomial-a3").value;
+    var x3 = document.getElementById("id_precipitation_polynomial-x3").value;
+      if ($('#{{ precipitation_polynomial_form.degree.0.id_for_label }}').is(':checked')){
+        a2 = 0;
+        x2 = 0;
+        a3 = 0;
+        x3 = 0;
+      }
+      if ($('#{{ precipitation_polynomial_form.degree.1.id_for_label }}').is(':checked')){
+        a3 = 0;
+        x3 = 0;
+      }
+    return polynomial_plot(div_id="precip_polynomial_plot",x_range=[0,100],x_label='Precipitation (mm)',a0=Number(a0),a1=Number(a1),x1=Number(x1),a2=Number(a2),x2=Number(x2),a3=Number(a3),x3=Number(x3));
+}
+
+
 </script>
 {% endblock %}
 
