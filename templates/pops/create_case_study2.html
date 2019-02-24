@@ -8,6 +8,154 @@
 <script src="{% static 'js/case_study/form_visibility.js' %}"></script>
 <script src="{% static 'js/case_study/jquery.formset.js' %}"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="{% static 'js/case_study/review_plots.js' %}"></script>
+
+<script>
+function temp_poly_plot() {
+    var a0 = document.getElementById("id_temperature_polynomial-a0").value;
+    var a1 = document.getElementById("id_temperature_polynomial-a1").value;
+    var x1 = document.getElementById("id_temperature_polynomial-x1").value;
+    var a2 = document.getElementById("id_temperature_polynomial-a2").value;
+    var x2 = document.getElementById("id_temperature_polynomial-x2").value;
+    var a3 = document.getElementById("id_temperature_polynomial-a3").value;
+    var x3 = document.getElementById("id_temperature_polynomial-x3").value;
+      if ($('#{{ temperature_polynomial_form.degree.0.id_for_label }}').is(':checked')){
+        a2 = 0;
+        x2 = 0;
+        a3 = 0;
+        x3 = 0;
+      }
+      if ($('#{{ temperature_polynomial_form.degree.1.id_for_label }}').is(':checked')){
+        a3 = 0;
+        x3 = 0;
+      }
+    return polynomial_plot(div_id="temp_polynomial_plot",x_range=[-50,50],x_label='Temperature (C)',a0=Number(a0),a1=Number(a1),x1=Number(x1),a2=Number(a2),x2=Number(x2),a3=Number(a3),x3=Number(x3));
+}
+
+function precip_poly_plot() {
+    var a0 = document.getElementById("id_precipitation_polynomial-a0").value;
+    var a1 = document.getElementById("id_precipitation_polynomial-a1").value;
+    var x1 = document.getElementById("id_precipitation_polynomial-x1").value;
+    var a2 = document.getElementById("id_precipitation_polynomial-a2").value;
+    var x2 = document.getElementById("id_precipitation_polynomial-x2").value;
+    var a3 = document.getElementById("id_precipitation_polynomial-a3").value;
+    var x3 = document.getElementById("id_precipitation_polynomial-x3").value;
+      if ($('#{{ precipitation_polynomial_form.degree.0.id_for_label }}').is(':checked')){
+        a2 = 0;
+        x2 = 0;
+        a3 = 0;
+        x3 = 0;
+      }
+      if ($('#{{ precipitation_polynomial_form.degree.1.id_for_label }}').is(':checked')){
+        a3 = 0;
+        x3 = 0;
+      }
+    return polynomial_plot(div_id="precip_polynomial_plot",x_range=[0,100],x_label='Precipitation (mm)',a0=Number(a0),a1=Number(a1),x1=Number(x1),a2=Number(a2),x2=Number(x2),a3=Number(a3),x3=Number(x3));
+}
+
+
+function temp_reclass_plot() {
+  var data = [];
+  var x_range=[-50, 50];
+  var x_label='Temperature (&deg;C)';
+  rows = $("#temp_reclass_form_visibility").children("div.temp_reclass");
+  var min_field =0;
+  var max_field = 0;
+  var reclass_field = 0;
+  var smallest_min_value = x_range[1];
+  var largest_max_value = x_range[0];
+  var reclass_value = 0;
+  for (i = 0; i < rows.length; i++) {
+    values = $(rows[i]).children("div").children("input");
+    if (values.is(':visible')) {
+      min_field = values[0];
+      max_field = values[1];
+      reclass_field = values[2];
+      min_value = min_field.value;
+      if (min_value != '' && min_value < smallest_min_value) {
+        smallest_min_value = min_value;
+      }
+      max_value = max_field.value;
+      if (max_value != '' && max_value > largest_max_value) {
+        largest_max_value = max_value;
+      }
+      reclass_value = reclass_field.value;
+      if (max_value < min_value) {
+        $(min_field).css("background-color", "yellow");
+        $(max_field).css("background-color", "yellow");
+      } else {
+        $(min_field).css("background-color", "white");
+        $(max_field).css("background-color", "white");
+      }
+      if (reclass_value > 1 || reclass_value < 0) {
+        $(reclass_field).css("background-color", "yellow");
+      } else {
+        $(reclass_field).css("background-color", "white");
+      }
+      if (min_value && max_value && reclass_value) {
+        trace = reclass_plot(min = min_value, max = max_value, reclass = reclass_value, color = 'cyan');
+        data.push(trace);
+      }
+    } else {}
+  }
+      trace=reclass_plot(min=x_range[0],max=smallest_min_value,reclass=0,color='red');  
+      data.push(trace);
+      trace=reclass_plot(min=largest_max_value,max=x_range[1],reclass=0,color='red');  
+      data.push(trace);
+    var layout = dark_layout(x_label=x_label,x_range=[x_range[0]-1,x_range[1]+1])
+    return Plotly.newPlot('temp_reclass_plot', data, layout, {responsive: true});}
+
+function precip_reclass_plot() {
+  var data = [];
+  var x_range=[0, 100];
+  var x_label='Precipitation (mm)';
+  rows = $("#precip_reclass_form_visibility").children("div.precip_reclass");
+  var min_field =0;
+  var max_field = 0;
+  var reclass_field = 0;
+  var smallest_min_value = x_range[1];
+  var largest_max_value = x_range[0];
+  var reclass_value = 0;
+  for (i = 0; i < rows.length; i++) {
+    values = $(rows[i]).children("div").children("input");
+    if (values.is(':visible')) {
+      min_field = values[0];
+      max_field = values[1];
+      reclass_field = values[2];
+      min_value = min_field.value;
+      if (min_value != '' && min_value < smallest_min_value) {
+        smallest_min_value = min_value;
+      }
+      max_value = max_field.value;
+      if (max_value != '' && max_value > largest_max_value) {
+        largest_max_value = max_value;
+      }
+      reclass_value = reclass_field.value;
+      if (max_value < min_value) {
+        $(min_field).css("background-color", "yellow");
+        $(max_field).css("background-color", "yellow");
+      } else {
+        $(min_field).css("background-color", "white");
+        $(max_field).css("background-color", "white");
+      }
+      if (reclass_value > 1 || reclass_value < 0) {
+        $(reclass_field).css("background-color", "yellow");
+      } else {
+        $(reclass_field).css("background-color", "white");
+      }
+      if (min_value && max_value && reclass_value) {
+        trace = reclass_plot(min = min_value, max = max_value, reclass = reclass_value, color = 'cyan');
+        data.push(trace);
+      }
+    } else {}
+  }
+      trace=reclass_plot(min=x_range[0],max=smallest_min_value,reclass=0,color='red');  
+      data.push(trace);
+      trace=reclass_plot(min=largest_max_value,max=x_range[1],reclass=0,color='red');  
+      data.push(trace);
+    var layout = dark_layout(x_label=x_label,x_range=[x_range[0]-1,x_range[1]+1])
+    return Plotly.newPlot('precip_reclass_plot', data, layout, {responsive: true});}
+</script>
 {% endblock %}
 
 {% block content %}
@@ -246,12 +394,12 @@
                 <div class="col-3 px-1"><strong>Coefficient</strong></div>
               </div>
               {% include "pops/include/reclass_formset.html" with formset=temperature_reclass_formset %}
+
+            <div id="temp_reclass_plot" style="max-height:300px; "></div>
             </div>
             <div class="p-1" id="temp_polynomial_form_visibility">
               {% include "pops/include/polynomial_form.html" with equation_variable="T" form=temperature_polynomial_form %}
-              <button class="button button-info" type="button" onclick="temp_poly_plot()">Preview polynomial</button>
             <div id="temp_polynomial_plot" style="max-height:300px; "></div>
-
             </div>
           </div>
           <!--Temperature visibility javascript (hides form based on toggle)-->
@@ -264,6 +412,10 @@
               addCssClass: 'btn btn-secondary',
               deleteCssClass: 'text-light'
             });
+            //Initial plots on page load
+            $(temp_reclass_plot());
+            $(temp_poly_plot());
+            //Toggle visibility
             toggleVisibilityOnOff('#{{ weather_form.temp_on.id_for_label }}','#temp_form_visibility')
             $(document).ready(function () {
               $('input').on('click',function () {
@@ -297,10 +449,11 @@
                 <div class="col-3 px-1"><strong>Coefficient</strong></div>
               </div>
               {% include "pops/include/reclass_formset.html" with formset=precipitation_reclass_formset %}
+            <div id="precip_reclass_plot" style="max-height:300px; "></div>
+            </div>
             </div>
             <div class="p-1" id="precip_polynomial_form_visibility">
               {% include "pops/include/polynomial_form.html" with equation_variable="P" form=precipitation_polynomial_form %}
-              <button class="button button-info" type="button" onclick="precip_poly_plot()">Preview polynomial</button>
             <div id="precip_polynomial_plot" style="max-height:300px; "></div>
             </div>
           </div>
@@ -314,6 +467,10 @@
               addCssClass: 'btn btn-secondary',
               deleteCssClass: 'text-light'
             });
+            //Initital plots
+            $(precip_reclass_plot());
+            $(precip_poly_plot());
+            //toggle visibility
             toggleVisibilityOnOff('#{{ weather_form.precipitation_on.id_for_label }}','#precip_form_visibility')
             $(document).ready(function () {
               $('input').on('click',function () {
@@ -345,7 +502,6 @@
 <!--End main container-->
 
 <!--Script to make tooltips appear on hover-->
-<script src="{% static 'js/case_study/review_plots.js' %}"></script>
 
 <script>
   $(document).ready(function () {
@@ -354,64 +510,35 @@
     });
   });
 
-function myFunction() {
-  var x = document.getElementById("frm1");
-  var text = "";
-  var i;
-  for (i = 0; i < x.length ;i++) {
-    text += x.elements[i].value + "<br>";
-  }
-  document.getElementById("demo").innerHTML = text;
-}
-
-function temp_poly_plot() {
-    var a0 = document.getElementById("id_temperature_polynomial-a0").value;
-    var a1 = document.getElementById("id_temperature_polynomial-a1").value;
-    var x1 = document.getElementById("id_temperature_polynomial-x1").value;
-    var a2 = document.getElementById("id_temperature_polynomial-a2").value;
-    var x2 = document.getElementById("id_temperature_polynomial-x2").value;
-    var a3 = document.getElementById("id_temperature_polynomial-a3").value;
-    var x3 = document.getElementById("id_temperature_polynomial-x3").value;
-      if ($('#{{ temperature_polynomial_form.degree.0.id_for_label }}').is(':checked')){
-        a2 = 0;
-        x2 = 0;
-        a3 = 0;
-        x3 = 0;
-      }
-      if ($('#{{ temperature_polynomial_form.degree.1.id_for_label }}').is(':checked')){
-        a3 = 0;
-        x3 = 0;
-      }
-    return polynomial_plot(div_id="temp_polynomial_plot",x_range=[-50,50],x_label='Temperature (C)',a0=Number(a0),a1=Number(a1),x1=Number(x1),a2=Number(a2),x2=Number(x2),a3=Number(a3),x3=Number(x3));
-}
-
-function precip_poly_plot() {
-    var a0 = document.getElementById("id_precipitation_polynomial-a0").value;
-    var a1 = document.getElementById("id_precipitation_polynomial-a1").value;
-    var x1 = document.getElementById("id_precipitation_polynomial-x1").value;
-    var a2 = document.getElementById("id_precipitation_polynomial-a2").value;
-    var x2 = document.getElementById("id_precipitation_polynomial-x2").value;
-    var a3 = document.getElementById("id_precipitation_polynomial-a3").value;
-    var x3 = document.getElementById("id_precipitation_polynomial-x3").value;
-      if ($('#{{ precipitation_polynomial_form.degree.0.id_for_label }}').is(':checked')){
-        a2 = 0;
-        x2 = 0;
-        a3 = 0;
-        x3 = 0;
-      }
-      if ($('#{{ precipitation_polynomial_form.degree.1.id_for_label }}').is(':checked')){
-        a3 = 0;
-        x3 = 0;
-      }
-    return polynomial_plot(div_id="precip_polynomial_plot",x_range=[0,100],x_label='Precipitation (mm)',a0=Number(a0),a1=Number(a1),x1=Number(x1),a2=Number(a2),x2=Number(x2),a3=Number(a3),x3=Number(x3));
-}
 
 
 </script>
 {% endblock %}
 
 {% block scripts %}
-<!--Scripts to add/remove reclass rows to temp/precip forms-->
 <script>
+//Dynamically update Preview Plots
+$("div#temp_reclass_form_visibility *").click(function(){
+  $(temp_reclass_plot());
+});
+$("div#temp_reclass_form_visibility input").blur(function(){
+  $(temp_reclass_plot());
+});
+
+$("div#temp_polynomial_form_visibility input").blur(function(){
+  $(temp_poly_plot());
+});
+$("div#precip_reclass_form_visibility *").click(function(){
+  $(precip_reclass_plot());
+});
+$("div#precip_reclass_form_visibility input").blur(function(){
+  $(precip_reclass_plot());
+});
+$("div#precip_polynomial_form_visibility input").blur(function(){
+  $(precip_poly_plot());
+});
+
+
+
 </script>
 {% endblock %}
