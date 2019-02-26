@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'crispy_forms',
+    'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,8 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'users.apps.UsersConfig',
-    'crispy_forms',
-    'widget_tweaks',
     'pops.apps.PopsConfig',
     'debug_toolbar',
 ]
@@ -140,7 +140,7 @@ AUTH_USER_MODEL = 'users.CustomUser' # new
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 CASE_STUDY_UPLOAD_FILE_TYPES=['image/tiff']
 CASE_STUDY_UPLOAD_FILE_MAX_SIZE=10240 #Max file size in Bytes (multiply MB by 1024*1024 to get bytes)
