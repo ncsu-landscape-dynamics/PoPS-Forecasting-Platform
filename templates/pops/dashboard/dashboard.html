@@ -184,13 +184,21 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                 </ul>
                 <div class="tab-content pb-3" id="pills-tabContent">
                     <div class="tab-pane show active" id="pills-map" role="tabpanel" aria-labelledby="pills-map-tab">
-                        <div class="row px-1" style='height:500px'>
-                            <div id="map" class="col-8 pl-0 "></div>
+                        <div class="row px-1" style='height:540px'>
+                        <div id="map-container" class="col-8 pl-0 ">
+                        <div id="calculation-box">
+                            <p>Management area: <strong id="polygon-info">0.0</strong> m<sup>2</sup></p>
+                            </div>
+                            <div id="map" style='height:500px' ></div>
+                            </div>
                             <div id="" class="col-4 pl-2 ">
                                 {% comment %} <div id="Money spent" class="text-right " style="font-size: 2em; line-height: 80%;">$4.75
                                     mil</div>
                                 <div class="text-right text-muted ">in management</div> {% endcomment %}
+                                <div id="gauge-plots" class="row">
                                 <div id="money" class="" style="width:180px; height:160px"></div>
+                                <div id="efficiency" class="" style="width:180px; height:160px"></div>
+                                </div>
                                 <div id="side_plot1" class="" style='height:150px'></div>
                                 <div id="side_plot2" class="" style='height:150px'></div>
                             </div>
@@ -202,16 +210,59 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                         </div>
                     </div>
                 </div>
-                <script>
-                    mapboxgl.accessToken =
-                        'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
-                    const map = new mapboxgl.Map({
-                        container: 'map',
-                        style: 'mapbox://styles/shankj687/cjsjg9q5c259f1gr28jy09rkc',
-                        center: [-71.020000, 42.362400],
-                        zoom: 10.0
-                    });
-                </script>
+<style>
+#calculation-box {
+height: 2em;
+width: 40em;
+text-align: left;
+}
+ 
+
+</style>
+ 
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css' type='text/css'/>
+ 
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
+/* eslint-disable */
+var map = new mapboxgl.Map({
+container: 'map', // container id
+style: 'mapbox://styles/mapbox/satellite-v9', //hosted style id
+center: [-91.874, 42.760], // starting position
+zoom: 12 // starting zoom
+});
+ 
+var draw = new MapboxDraw({
+displayControlsDefault: false,
+controls: {
+polygon: true,
+trash: true
+}
+});
+map.addControl(draw);
+ 
+map.on('draw.create', updateArea);
+map.on('draw.delete', updateArea);
+map.on('draw.update', updateArea);
+ 
+function updateArea(e) {
+var data = draw.getAll();
+var answer = document.getElementById('polygon-info');
+if (data.features.length > 0) {
+var area = turf.area(data);
+// restrict to area to 2 decimal points
+var rounded_area = Math.round(area*100)/100;
+answer.innerHTML = rounded_area;
+} else {
+answer.innerHTML = '';
+if (e.type !== 'draw.delete') alert("Use the draw tools to draw a polygon!");
+}
+}
+ 
+</script>
+
                 <div id="run-preview-container" class="row flex-nowrap ml-1">
                     {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot1" run_title="Run1" infected=2 area=20 money=19 a=10000 b=15000 %}
                     {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot2" run_title="Run2" infected=4 area=40 money=10 a=70000 b=20000%}
@@ -470,7 +521,8 @@ var layout = {
 return Plotly.newPlot(div_id, data, layout,{displayModeBar: false, responsive: true});
 }
 
-gauge_plot("money", 39.10, 120)
+gauge_plot("money", 39.10, 120);
+gauge_plot("efficiency", 100, 120);
 
 function detail_plot() {
         var trace1 = {
