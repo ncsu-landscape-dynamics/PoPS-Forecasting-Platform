@@ -73,16 +73,16 @@
         <td class="w-25">{{ cs.date_created|date:'M. j, Y'  }}</td>
         <td>
                 {% if cs.calibration_status == "NO START" %}
-        <span class="badge badge-pill badge-light">Calibration not started</span>
+        <i class="fas fa-question-circle text-light" data-toggle="tooltip" data-placement="top" title="Calibration not started. Click info for more details."></i>
         {% endif %}
         {% if cs.calibration_status == "IN PROGRESS" %}
-        <span class="badge badge-pill badge-warning"> Calibrating... </span>
+        <i class="fas fa-spinner text-warning" data-toggle="tooltip" data-placement="top" title="Calibration in progress. Click info for more details."></i>
         {% endif %}
         {% if cs.calibration_status == "FAILED" %}
-        <span class="badge badge-pill badge-danger">FAILED</span>
+        <i class="fas fa-times-circle text-danger" data-toggle="tooltip" data-placement="top" title="Calibration FAILED. Click info for more details."></i>
         {% endif %}
         {% if cs.calibration_status == "SUCCESS" %}
-        <span class="badge badge-pill badge-success"><i class="fas fa-check"></i></span>
+        <i class="fas fa-check text-success" data-toggle="tooltip" data-placement="top" title="Calibration successful. Click info for more details."></i>
         {% endif %}
         
         </td>
@@ -109,4 +109,13 @@
 </div>
 
 </div>
+{% endblock %}
+{% block scripts %}
+<script>
+  $(document).ready(function () {
+    $("body").tooltip({
+      selector: '[data-toggle=tooltip]'
+    });
+  });
+  </script>
 {% endblock %}

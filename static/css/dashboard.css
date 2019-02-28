@@ -8,6 +8,23 @@ div.panel-container{
 
   }
   
+div#run-preview-container {
+  overflow-x: auto;
+  width:100%;
+  }
+
+  div#run-preview-container a {
+    background-color: #0b0d0e;
+    border-width: 4px;
+    border-style: outset;
+    border-color: #212529;
+    }
+
+    div#run-preview-container a:hover {
+      background-color: #070909;
+      border-style: inset;
+    }
+  
 .table-xtra-condensed > thead > tr > th,
 .table-xtra-condensed > tbody > tr > th,
 .table-xtra-condensed > tfoot > tr > th,
