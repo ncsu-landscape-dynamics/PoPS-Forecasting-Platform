@@ -11,10 +11,12 @@ from .tokens import account_activation_token
 from django.contrib.auth import login, authenticate
 from .forms import CustomUserCreationForm
 from .models import CustomUser
+#from google.appengine.api import mail
+
 
 def my_account(request):
     return render(request, 'accounts/my_account.html',)
-
+ 
 # sign_up creates the User Sign Up view using the CustomUserCreationForm created in
 # users/forms.py. 
 def sign_up(request):
@@ -31,7 +33,7 @@ def sign_up(request):
             # confirmed via email)
             user = form.save(commit=False)
             #set is_active to false
-            user.is_active = False
+            user.is_active = True # THIS SHOULD BE FALSE IN PRODUCTION!!
             #save the inactive user data
             user.save()
             #grab the domain name of our site to use in our email link
@@ -58,7 +60,7 @@ def sign_up(request):
                 'token': account_activation_token.make_token(user),
             })
             #email the user using their provided email address
-            user.email_user(subject, message)
+            #user.email_user(subject, message)
             #redirect user to account_activation_sent view
             return redirect('account_activation_sent')
     #If the request method is not a POST (i.e. the user hasn't submitted data yet)
