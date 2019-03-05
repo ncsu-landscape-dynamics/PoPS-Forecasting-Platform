@@ -1,0 +1,107 @@
+#side-bar a.nav-link, #side-bar-filler {
+  padding:0.5;
+  color:#a0a8bd;
+  font-size: 1.5em;
+  height: 60px;
+  background-color: #0b0d0e;
+  border-width: 3px;
+  border-style: outset;
+  border-color: #212529;
+  flex: 0 1 auto;
+
+}
+
+#side-bar a.nav-link.active {
+  color:white;
+  background-color: #070909;
+  border-style: inset;
+
+}
+
+#side-bar a.nav-link:hover {
+  color:white;
+  background-color: #070909;
+  border-style: inset;
+}
+
+#side-bar-filler {
+height:100%;
+}
+
+#map.large_map {
+  height: calc(100vh - 60px);
+  max-height: calc(800px - 60px)
+}
+
+#map.small_map {
+  height: calc(50vh - 60px);
+  max-height: calc(800px - 60px)
+}
+
+#run-title, #run-preview-description {
+  font-size: 1.2em;
+  height: 60px;
+  padding: 0.5em;
+  background-color: #0b0d0e;
+  border-width: 3px;
+  border-style: outset;
+  border-color: #212529;
+  flex: 0 1 auto;
+}
+#run-preview-description {
+  height: 100%;
+}
+
+#side-plots {
+  background-color: #0b0d0e;
+  border-width: 3px;
+  border-style: outset;
+  border-color: #212529;
+  height: calc(100vh - 60px);
+  max-height: calc(800px - 60px)
+
+}
+
+#side-bar {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+.box .row {
+  border: 1px dotted grey;
+}
+
+.box .row.header {
+  flex: 0 1 auto;
+  /* The above is shorthand for:
+  flex-grow: 0,
+  flex-shrink: 1,
+  flex-basis: auto
+  */
+}
+
+.box .row.content {
+  flex: 1 1 auto;
+}
+
+.box .row.footer {
+  flex: 0 1 40px;
+}
+
+div#run-preview-container {
+  overflow-x: auto;
+  width:100%;
+  }
+
+  div#run-preview-container a {
+    background-color: #0b0d0e;
+    border-width: 3px;
+    border-style: outset;
+    border-color: #212529;
+    }
+
+    div#run-preview-container a:hover {
+      background-color: #070909;
+      border-style: inset;
+    }

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+        {% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}"> 
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">  <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}">
+    <script src="{% static 'js/jquery.slim.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+  
+  {% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/dashboard_layout.css' %}">
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    function run_comparison_plot(run_comparison_div,run_name,infected, area, money,a,b) {
+
+max_infected=4;
+max_area=70;
+max_money=19;
+max_a=10000;
+max_b=20000;
+var trace1 = {
+  x: ['# Infected'],
+  y: [infected],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  marker: {
+    color: ['#2598b8'],
+    opacity: 1,
+  }
+}; 
+var trace2 = {
+  x: ['Area infected'],
+  y: [area],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y2',
+  marker: {
+    color: ['#5fc2c2'],
+    opacity: 1,
+  }
+}; 
+var trace3 = {
+  x: ['Money'],
+  y: [money],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y3',
+  marker: {
+    color: ['#7ba83d'],
+    opacity: 1,
+  }
+}; 
+var trace4 = {
+  x: ['Apples'],
+  y: [a],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y4',
+  marker: {
+    color: ['#9e8adb'],
+    opacity: 1,
+  }
+}; 
+var trace5 = {
+  x: ['Grapes'],
+  y: [b],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y5',
+  marker: {
+    color: ['#8e6dad'],
+    opacity: 1,
+  }
+}; 
+var data = [trace1,trace2,trace3,trace4,trace5];
+
+    var axis_template={
+        showgrid:false,
+        zeroline:false,
+        showticklabels: false,
+    };
+
+var xaxis ={
+    tickfont: {
+      size: 9,
+      color: 'white',
+      },
+      title: run_name,
+      titlefont: {
+      size: 12,
+      color: 'white',
+      },
+};
+var yaxis = {
+        range: [0,max_infected],
+  };
+var yaxis2= {
+  ticksuffix:' Ha',
+  overlaying: 'y',
+  range: [0,max_area],
+  };
+var yaxis3= {
+  tickprefix:'$',
+  overlaying: 'y',
+  range: [0,max_money],
+  };
+var yaxis4= {
+  overlaying: 'y',
+  range: [0,max_a],
+  };
+var yaxis5= {
+  overlaying: 'y',
+  range: [0,max_b],
+  };
+ 
+
+var layout = {
+    xaxis: $.extend({}, axis_template, xaxis),
+    yaxis: $.extend({}, axis_template, yaxis),
+    yaxis2: $.extend({}, axis_template, yaxis2),
+    yaxis3: $.extend({}, axis_template, yaxis3),
+    yaxis4: $.extend({}, axis_template, yaxis4),
+    yaxis5: $.extend({}, axis_template, yaxis5),
+        showlegend:false,
+        paper_bgcolor:'rgba(0,0,0,0)',
+        plot_bgcolor:'rgba(0,0,0,0)',//'#16181b',
+        margin: {
+            l: 10,
+            r: 10,
+            b: 40,
+            t: 20,
+            pad: 0
+        },
+        bargap: 0.1,
+        barmode: 'group',
+
+    };
+
+
+
+return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, responsive: true});
+
+};
+</script>
+
+{% endblock %}
+  <title>PoPS</title>
+</head>
+
+<body class="text-light">
+
+{% block content %}
+<style>
+</style>
+
+<div class=" container-fluid p-0 ">
+
+  <nav class="navbar navbar-dark pl-0">
+      <div class="container-fluid ">
+        <a href="{% url 'landing_page' %}" class="navbar-brand d-none d-inline-block">
+          <img src="{% static 'images/PoPSlogo_simple.svg' %}" style="width: 80px;" class="d-inline-block align-middle " alt="Pest or Pathogen Spread Simulation">
+        </a>
+        <span class="navbar-text d-none d-md-inline-block mr-auto text-bottom" style="font-size:1.4em;"> 
+            Session: My session name <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
+            <span class="text-muted " style="font-size:0.6em;">
+            Spotted Lanternfly in Pennsylvania <a href="#"><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
+            </span>
+
+        </span>
+<div class="dropdown show ml-auto">
+  <a class="btn dropdown-toggle text-light" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Menu
+  </a>
+
+  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+    <a class="dropdown-item" href="#">Action</a>
+    <a class="dropdown-item" href="#">Another action</a>
+    <a class="dropdown-item" href="#">Something else here</a>
+  </div>
+</div>
+
+    
+
+      
+      </div>
+   
+    </nav>
+    
+
+            
+                {% comment %} <div class="row p-2 no-gutters">
+        <div class="col-xs-12 col-md-12">
+            <div style="">
+            <div style="font-size:1.5em;">
+            Session: My session name <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
+            </div>
+            <div class="text-muted">
+            Spotted Lanternfly in Pennsylvania <a href="#"><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
+            </div>
+            </div>
+        </div>
+    </div> {% endcomment %}
+    <div class="row no-gutters">
+        <div id="side-bar-container" class="col-auto text-center ">
+        <div class="nav " id="side-bar" role="tablist" aria-orientation="vertical">
+  <a class="nav-link" id="new-tab" data-toggle="pill" title="Create new run" data-placement="right" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true"><i class="align-middle fas fa-plus-circle"></i></a>
+  <a class="nav-link active" id="map-view-tab" data-toggle="pill" title="View map results for selected run" data-placement="right" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i class="align-middle fas fa-globe-americas"></i></a>
+  <a class="nav-link" id="chart-view-tab" data-toggle="pill" title="View detailed analytics for selected run" data-placement="right" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class=" align-middle fas fa-chart-bar"></i></a>
+  <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" title="Session summary" data-placement="right" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="align-midd far fa-list-alt"></i></a>
+  <a class="nav-link align-middle" id="v-pills-settings-tab" data-toggle="pill" title="Compare two runs" data-placement="right" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">vs</a>
+  <a class="nav-link" id="report-tab" data-toggle="pill" title="Generate report" data-placement="right" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="align-middle fas fa-file-pdf"></i></a>
+  <div class="" id="side-bar-filler"> </div>
+</div>
+
+{% comment %} <div class="tab-content" id="v-pills-tabContent">
+  <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">...</div>
+  <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">...</div>
+  <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
+  <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
+</div> {% endcomment %}
+
+            {% comment %} <a class="text-secondary" href="3"><div class="px-2"><i class="fas fa-plus-circle"></i></div></a>
+            <a class="text-secondary" href="3"><div class="px-2"><i class="fas fa-plus-circle"></i></div></a>
+            <div class="px-2"><i class="fas fa-globe-americas"></i></div>
+            <div class="px-2"><i class="far fa-chart-bar"></i></div>
+            <div class="px-2"><i class="fas fa-chart-area"></i></div>
+            <div class="px-2"><i class="fas fa-balance-scale"></i></div>
+            <div class="px-2"><strong>vs</strong></div>
+            <div class="px-2"><i class="fas fa-file-pdf"></i></div>
+            <div class="px-2"><i class="fas fa-info"></i></div> {% endcomment %}
+            
+        </div>
+
+        <div id="map-view" class="col">
+        <div class="row no-gutters">
+                <div class="col-12 d-flex flex-column" >
+            <div id="run-title">
+            Run: My run name <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
+            <button id="trig" class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
+            </div>
+            </div>
+<div id="map-container" class="col-md-9">
+            <div id="map" class="large_map"></div>
+</div>
+
+        <div id="side-plots" class="d-none d-md-block col-md-3">
+            <div style="">
+            <h4>
+            Details
+            </h4>
+            <span>Management area: <strong id="polygon-info">0.0</strong> km<sup>2</sup></span>
+                                <div id="gauge-plots" class="row">
+                                <div id="money" class="" style="width:180px; height:160px"></div>
+                                </div>
+                                <div id="side_plot1" class="" style='height:150px'></div>
+                                <div id="side_plot2" class="" style='height:150px'></div>
+            </div>
+        </div>
+
+        </div>
+
+                
+                </div>
+                
+    </div>
+<div id="run-preview-description" class="row">
+<div class="col">
+<div class="">
+Runs in this session:
+</div>
+<div class="d-inline">
+Show: 
+</div>
+<div class="d-inline" id="run_preview_options" style="font-size:0.8em;">
+<div class="form-check form-check-inline">
+  <input checked class="form-check-input" type="checkbox" id="infected_number_on_off" value="infected_number">
+  <label class="form-check-label" for="infected_number_on_off"># Infected</label>
+</div>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="checkbox" id="infected_area_on_off" value="infected_area">
+  <label class="form-check-label" for="infected_area_on_off">Area Infected</label>
+</div>
+<div class="form-check form-check-inline">
+  <input checked class="form-check-input" type="checkbox" id="money_on_off" value="money" >
+  <label class="form-check-label" for="money_on_off">Management Cost ($)</label>
+</div>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="checkbox" id="apples_on_off" value="apples" >
+  <label class="form-check-label" for="apples_on_off">Apples</label>
+</div>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="checkbox" id="grapes_on_off" value="grapes" >
+  <label class="form-check-label" for="grapes_on_off">Grapes</label>
+</div>
+</div>
+</div>
+<div class="col-auto">
+<select id="sort_runs_by" class="custom-select custom-select-sm">
+  <option selected>Sort runs by:</option>
+  <option value="1">Most recent</option>
+  <option value="2">Number infected</option>
+  <option value="3">Area infected</option>
+  <option value="4">Money spent</option>
+</select>
+
+</div>
+</div>
+                    <div id="run-preview-container" class="row flex-nowrap ml-1">
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot1" run_title="Run1" infected=2 area=20 money=19 a=10000 b=15000 %}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot2" run_title="Run2" infected=4 area=40 money=10 a=70000 b=20000%}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot3" run_title="My favorite run" infected=2 area=20 money=17 a=5000 b=10000 %}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot4" run_title="Management extending beyond current boundaries" infected=2 area=20 money=19 a=10000 b=15000%}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot5" run_title="Run1" infected=2 area=20 money=5 a=2000 b=5000%}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot6" run_title="Run1" infected=5 area=60 money=29 a=1500 b=1000%}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot7" run_title="My favorite run" infected=2 area=20 money=19 a=3000 b=2000%}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot8" run_title="Management extending beyond current boundaries" infected=2 area=20 money=19 a=10000 b=15000%}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot9" run_title="Run1" infected=2 area=20 money=5 a=10000 b=1000 %}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot10" run_title="Run1" infected=5 area=60 money=29 a=1000 b=15000 %}
+                </div>
+
+    <div class="col-12 mt-2">
+        <div class="panel-container">
+        Shannon's color palette (these squares won't be in the final version ;) )
+                <div id="color-palette" class="row flex-nowrap">
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#9e8adb">#9e8adb</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#ae85d4">#ae85d4</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#2598b8">#2598b8</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#41b7cc">#41b7cc</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#5fc2c2">#5fc2c2</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#8fccc0">#8fccc0</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#5fc782">#5fc782</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#9acc54">#9acc54</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#f5a61d">#f5a61d</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#f55949">#f55949</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#0000">#0000</div>
+            </div>
+                <div id="color-palette" class="row flex-nowrap">
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#8372b5">#8372b5</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#8e6dad">#8e6dad</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#1d7891">#1d7891</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#3294a6">#3294a6</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#4c9c9c">#4c9c9c</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#62a396">#62a396</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#4da169">#4da169</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#7ba83d">#7ba83d</div>
+            </div>
+                <div id="color-palette" class="row flex-nowrap">
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#676b73">#676b73</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#a0a8bd">#a0a8bd</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#f0f1f5">#f0f1f5</div>
+            </div>
+        </div>
+    </div> 
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(function () {
+  $('[data-toggle="pill"]').tooltip({trigger : 'hover'})
+})
+
+function CheckValue(toggle_id) {
+    if ($(toggle_id).is(':checked')){
+        console.log('Checked');}
+      else {console.log('Unchecked');}   
+}
+
+$( "input" ).on( "click blur", function() {
+CheckValue('#money_on_off');
+});
+
+</script>
+
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css' type='text/css'/>
+ 
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
+/* eslint-disable */
+var map = new mapboxgl.Map({
+container: 'map', // container id
+style: 'mapbox://styles/mapbox/satellite-v9', //hosted style id
+center: [-77.194527, 41.203323], // initial map center in [lon, lat]
+zoom: 8 // starting zoom
+});
+ 
+var draw = new MapboxDraw({
+displayControlsDefault: true,
+controls: {
+polygon: true,
+trash: true
+}
+});
+map.addControl(draw);
+ 
+map.on('draw.create', updateArea);
+map.on('draw.delete', updateArea);
+map.on('draw.update', updateArea);
+ 
+function updateArea(e) {
+var data = draw.getAll();
+var answer = document.getElementById('polygon-info');
+if (data.features.length > 0) {
+var area = turf.area(data)/1000000; //area in km^2
+// restrict to area to 2 decimal points
+var rounded_area = Math.round(area*100)/100;
+var cost = rounded_area/100;
+answer.innerHTML = rounded_area;
+gauge_plot("money", cost, 120);
+} else {
+answer.innerHTML = '';
+if (e.type !== 'draw.delete') alert("Use the draw tools to draw a polygon!");
+}
+}
+ 
+
+function round(value, decimals) {
+  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}
+
+function gauge_plot(div_id, amount, max_amount) {
+
+var max_level = max_amount;
+var level = amount;
+
+if (level>=max_level){
+  main_color="#f55949";
+  drawn_level=max_level;
+  var overbudget = level-max_level;
+  warning_msg="Budget exceeded by:<br>$" + round(overbudget,2) + " million";
+  warning_color="#f55949";
+} else {
+  main_color="#7ba83d";
+  drawn_level=level;
+  warning_msg='spent on<br>management';
+  warning_color='grey';
+};
+var data = [
+  { values: [drawn_level,(0.98*max_level-drawn_level),(max_level/50), (max_level/3)],
+  rotation: -135,
+   direction: "clockwise",
+  sort: false,
+  textinfo: 'text',
+  textposition:'inside',
+  marker: {colors:[main_color, '#676b73','#f55949', 'rgba(255, 255, 255, 0)']},
+  labels: ['Money spent in <br> this run:<br>$' + level + ' million', '','Budget: $' + max_level + ' million',''],
+  hoverinfo: 'label',
+  hole: 0.8,
+  type: 'pie',
+  showlegend: false
+}];
+
+var layout = {
+  annotations: [{
+    xref: 'paper',
+    yref: 'paper',
+    x: 0.5,
+    xanchor: 'middle',
+    y: 0.5,
+    yanchor: 'middle',
+    text: '$' + round(level,1),
+    font: {
+        family: 'Helvetica',
+        size: 30,
+        color: '#ffffff'
+      },
+      align: 'center',
+
+    showarrow: false,
+  },
+  {
+    xref: 'paper',
+    yref: 'paper',
+    x: 0.5,
+    xanchor: 'center',
+    y: 0.3,
+    yanchor: 'middle',
+    text: 'million',
+    font: {
+        family: 'Helvetica',
+        size: 20,
+        color: '#ffffff'
+      },
+      align: 'center',
+
+    showarrow: false,
+  },
+ {
+    xref: 'paper',
+    yref: 'paper',
+    x: 0.5,
+    xanchor: 'center',
+    y: 0.0,
+    yanchor: 'middle',
+    text: warning_msg,
+    font: {
+        family: 'Helvetica',
+        size: 14,
+        color: warning_color,
+      },
+      align: 'center',
+
+    showarrow: false,
+  }
+
+               ],
+              paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
+              margin: {
+                l: 30,
+                r: 30,
+                b: 20,
+                t: 20,
+                pad: 10
+            },
+
+
+  
+  title: {
+    text:'',
+    font:{
+      color:'white',
+    },      
+         },
+  
+  
+  xaxis: {zeroline:false, showticklabels:false,
+             showgrid: false, },
+  yaxis: {zeroline:false, showticklabels:false,
+             showgrid: false, }
+};
+
+return Plotly.newPlot(div_id, data, layout,{displayModeBar: false, responsive: true});
+}
+
+gauge_plot("money", 0, 120);
+
+    function side_plot(myDiv, title, x, y1, y2, color) {
+        var trace1 = {
+            x: x,
+            y: y1,
+            name: 'No management',
+            marker: {
+                color: 'grey'
+            },
+            fill: 'tozeroy',
+            type: 'scatter'
+        };
+
+        var trace2 = {
+            x: x,
+            y: y2,
+            name: 'Current run',
+            marker: {
+                color: color
+            },
+            fill: 'tozeroy',
+            type: 'scatter'
+        };
+
+        var data = [trace1, trace2];
+
+
+        var layout = {
+            xaxis: {
+                tickfont: {
+                    size: 12,
+                    color: 'rgb(107, 107, 107)'
+                }
+            },
+            yaxis: {
+                showticklabels: false,
+                title: title,
+                titlefont: {
+                    size: 12,
+                    color: 'white',
+                },
+
+                tickfont: {
+                    size: 12,
+                    color: 'rgb(107, 107, 107)'
+                }
+            },
+            showlegend: false,
+            paper_bgcolor: '#0b0d0e',
+            plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
+            margin: {
+                l: 30,
+                r: 20,
+                b: 25,
+                t: 10,
+                pad: 0
+            },
+        };
+
+        return Plotly.newPlot(myDiv, data, layout, {
+            displayModeBar: false,
+            responsive: true
+        });
+    };
+
+    var x = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
+    var y1 = [20, 40, 100, 300, 700, 1000];
+    var y2 = [20, 30, 50, 100, 300, 400];
+    $(side_plot("side_plot1", '# infected', x, y1, y2, '#2598b8'));
+    $(side_plot("side_plot2", 'Area infected', x, y1, y2, '#5fc2c2'));
+
+
+$('#trig').on('click', function () {
+    var bounds = map.getBounds();
+    $('#map-container').toggleClass('col-md-9 col-md-12');
+    $('#side-plots').toggleClass('d-md-block d-md-none');
+    //$('#map').toggleClass( 'large_map small_map' );
+    map.resize();
+    //map.fitBounds(bounds);
+    $(this).text($(this).text() == 'Hide Details' ? 'Show Details' : 'Hide Details');
+});
+
+
+
+</script>
+{% endblock %}
+
+</body>
+</html>

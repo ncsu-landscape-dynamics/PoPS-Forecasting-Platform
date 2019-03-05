@@ -185,6 +185,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                 <div class="tab-content pb-3" id="pills-tabContent">
                     <div class="tab-pane show active" id="pills-map" role="tabpanel" aria-labelledby="pills-map-tab">
                         <div class="row px-1" style='height:540px'>
+
                         <div id="map-container" class="col-8 pl-0 ">
                         <div id="calculation-box">
                             <p>Management area: <strong id="polygon-info">0.0</strong> m<sup>2</sup></p>
@@ -230,8 +231,8 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6e
 var map = new mapboxgl.Map({
 container: 'map', // container id
 style: 'mapbox://styles/mapbox/satellite-v9', //hosted style id
-center: [-91.874, 42.760], // starting position
-zoom: 12 // starting zoom
+center: [-77.194527, 41.203323], // initial map center in [lon, lat]
+zoom: 8 // starting zoom
 });
  
 var draw = new MapboxDraw({
@@ -261,6 +262,39 @@ if (e.type !== 'draw.delete') alert("Use the draw tools to draw a polygon!");
 }
 }
  
+map.on('load', function() {
+  map.addLayer({
+    id: 'collisions',
+    type: 'circle',
+    source: {
+      type: 'geojson',
+      data: './collisions1601.geojson' // replace this with the url of your own geojson
+    },
+    paint: {
+      'circle-radius': [
+        'interpolate',
+        ['linear'],
+        ['number', ['get', 'Casualty']],
+        0, 4,
+        5, 24
+      ],
+      'circle-color': [
+        'interpolate',
+        ['linear'],
+        ['number', ['get', 'Casualty']],
+        0, '#2DC4B2',
+        1, '#3BB3C3',
+        2, '#669EC4',
+        3, '#8B88B6',
+        4, '#A2719B',
+        5, '#AA5E79'
+      ],
+      'circle-opacity': 0.8
+    }
+  }, 'admin-2-boundaries-dispute');
+});
+
+
 </script>
 
                 <div id="run-preview-container" class="row flex-nowrap ml-1">
