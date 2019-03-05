@@ -33,8 +33,8 @@ height:100%;
   max-height: calc(800px - 60px)
 }
 
-#map.small_map {
-  height: calc(50vh - 60px);
+#map2 {
+  height: calc(40vh - 60px);
   max-height: calc(800px - 60px)
 }
 
