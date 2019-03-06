@@ -225,19 +225,19 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
     <div class="row no-gutters">
       <div id="side-bar-container" class="col-auto text-center ">
         <div class="nav " id="side-bar" role="tablist" aria-orientation="vertical">
-          <a class="nav-link" id="new-tab" data-toggle="pill" title="Create new run" data-placement="right" href="#v-pills-home"
+          <a class="nav-link active" id="new-tab" data-toggle="pill" title="Create new run" data-placement="right" href="#v-pills-new"
             role="tab" aria-controls="v-pills-home" aria-selected="true"><i class="align-middle fas fa-plus-circle"></i></a>
-          <a class="nav-link active" id="map-view-tab" data-toggle="pill" title="View map results for selected run"
+          <a class="nav-link " id="map-view-tab" data-toggle="pill" title="View map results for selected run"
             data-placement="right" href="#v-pills-map-view" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i
               class="align-middle fas fa-globe-americas"></i></a>
           <a class="nav-link" id="chart-view-tab" data-toggle="pill" title="View detailed analytics for selected run"
             data-placement="right" href="#v-pills-chart-view" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i
               class=" align-middle fas fa-chart-bar"></i></a>
-          <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" title="Session summary" data-placement="right"
+          <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" title="Session summary (Coming soon!)" data-placement="right"
             href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="align-midd far fa-list-alt"></i></a>
-          <a class="nav-link align-middle" id="v-pills-settings-tab" data-toggle="pill" title="Compare two runs"
+          <a class="nav-link align-middle" id="v-pills-settings-tab" data-toggle="pill" title="Compare two runs (Coming soon!)"
             data-placement="right" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">vs</a>
-          <a class="nav-link" id="report-tab" data-toggle="pill" title="Generate report" data-placement="right" href="#v-pills-messages"
+          <a class="nav-link" id="report-tab" data-toggle="pill" title="Generate report (Coming soon!)" data-placement="right" href="#v-pills-messages"
             role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="align-middle fas fa-file-pdf"></i></a>
           <div class="" id="side-bar-filler"> </div>
         </div>
@@ -251,30 +251,58 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
       </div> {% endcomment %}
       <div id="" class="col">
         <div class="tab-content" id="v-pills-tabContent">
-          <div id="v-pills-map-view" class="tab-pane fade show active no-gutters" role="tabpanel">
+          <div id="v-pills-new" class="tab-pane fade show active no-gutters" role="tabpanel">
             <div class="row no-gutters">
               <div class="col-12 d-flex flex-column">
                 <div id="run-title">
                   Run: My run name <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
-                  <button id="trig" class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
+                  <button id="submit-run" class="btn btn-success d-md-inline ml-4">Run PoPS Model</button>
+                  <button id="show-hide-new-view" class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
                 </div>
               </div>
-              <div id="map-container" class="col-md-9">
+              <div id="map-container-new-view" class="col-md-9">
                 <div id="map" class="large_map"></div>
               </div>
 
-              <div id="side-plots" class="d-none d-md-block col-md-3 px-1">
-                <div style="">
+              <div id="run-details" class="d-none d-md-block col-md-3 p-1">
                   <h4>
-                    Details
+                    New Run:
                   </h4>
-                  <span>Management area: <strong id="polygon-info">0.0</strong> km<sup>2</sup></span>
-                  <div id="gauge-plots" class="row">
-                    <div id="money" class="" style="width:180px; height:160px"></div>
+                  <small>Use the polygon tool to draw management areas.</small>
+                  <div class="pt-1">Management area: <strong id="polygon-info">0.0</strong> km<sup>2</sup></div>
+                  <div id="gauge-plots" class="row no-gutters">
+                    <div id="money-new" class="col" style="width:180px; height:160px"></div>
+                  </div>
+                  <div id="case-study-details" class="">
+                  Case study parameters than can be edited:
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div id="v-pills-map-view" class="tab-pane fade show  no-gutters" role="tabpanel">
+            <div class="row no-gutters">
+              <div class="col-12 d-flex flex-column">
+                <div id="run-title">
+                  Run: My run name <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
+                  <button id="show-hide-map-view" class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
+                </div>
+              </div>
+              <div id="map-container-map-view" class="col-md-9">
+                <div id="map2" class="large_map"></div>
+              </div>
+
+              <div id="side-plots" class="d-none d-md-block col-md-3 p-1">
+                  <h4>
+                    Run Summary:
+                  </h4>
+                  <div><a href="#" id="analysis-details">View more detailed analysis</a></div>
+                  <div class="py-2">Management area: <strong id="polygon-info">425.1</strong> km<sup>2</sup></div>
+                  <div id="gauge-plots" class="row no-gutters">
+                    <div id="money-review" class="col" style="width:180px; height:160px"></div>
                   </div>
                   <div id="side_plot1" class="" style='height:150px'></div>
                   <div id="side_plot2" class="" style='height:150px'></div>
-                </div>
+                  <button id="modify-run" class="btn btn-block btn-secondary mt-4">Create new PoPS Run based on this run</button>
               </div>
             </div>
           </div>
@@ -285,23 +313,34 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   Run: My run name <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
                 </div>
               </div>
-              <div id="map-container" class="col-md-3">
-                <div id="map2" class="small_map"></div>
-              </div>
 
-              <div id="side-plots" class="d-none d-md-block col-md-9">
+              <div id="" class="col-md-3 p-1">
                 <div style="">
                   <h4>
                     Details
                   </h4>
-                  <span>Management area: <strong id="polygon-info">0.0</strong> km<sup>2</sup></span>
-                  <div id="gauge-plots" class="row">
-                    <div id="money" class="" style="width:180px; height:160px"></div>
+                                  <div id="map3" class="small_map"></div>
+
+                  <span>Management area: <strong id="polygon-info">425.1</strong> km<sup>2</sup></span>
+                  <div id="gauge-plots" class="row no-gutters">
+                    <div id="money-chart-view" class="" style="width:180px; height:160px"></div>
                   </div>
-                  <div id="side_plot1" class="" style='height:150px'></div>
-                  <div id="side_plot2" class="" style='height:150px'></div>
                 </div>
               </div>
+              <div id="" class="col-md-5">
+
+                  <div id="main_plot1" class="" style='height:250px; '></div>
+                  <div id="main_plot2" class="" style='height:250px; '></div>
+              </div>
+                            <div id="" class="col-md-4">
+                           <h4> More analysis/plots...</h4>
+                           <div class="p-2">The plots on the left are just demo plots with fake data
+                           to demonstrate what we *might* put here. Note that additional information
+                           is available when you hover over data points.</div>
+                           <div class="p-2">We are currently using plotly.js plotting library to 
+                           generate plots. Check out the options at: <a href="https://plot.ly/javascript/">https://plot.ly/javascript/</a></div>
+              </div>
+
             </div>
                       </div>
 
@@ -310,6 +349,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
       </div>
 
     </div>
+    <div class="col">
     <div id="run-preview-description" class="row">
       <div class="col">
         <div class="">
@@ -324,7 +364,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
             <label class="form-check-label" for="infected_number_on_off"># Infected</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="infected_area_on_off" value="infected_area">
+            <input checked class="form-check-input" type="checkbox" id="infected_area_on_off" value="infected_area">
             <label class="form-check-label" for="infected_area_on_off">Area Infected</label>
           </div>
           <div class="form-check form-check-inline">
@@ -332,14 +372,16 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
             <label class="form-check-label" for="money_on_off">Management Cost ($)</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="apples_on_off" value="apples">
+            <input checked class="form-check-input" type="checkbox" id="apples_on_off" value="apples">
             <label class="form-check-label" for="apples_on_off">Apples</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="grapes_on_off" value="grapes">
+            <input checked class="form-check-input" type="checkbox" id="grapes_on_off" value="grapes">
             <label class="form-check-label" for="grapes_on_off">Grapes</label>
           </div>
         </div>
+        <div class="text-muted" style="font-size:0.7em;">Note: In production, clicking on the runs shown below will take you to a detailed view
+        of that run. Also, the data can be selected and sorted for comparison. That functionality has not yet been implemented.</div>
       </div>
       <div class="col-auto">
         <select id="sort_runs_by" class="custom-select custom-select-sm">
@@ -352,7 +394,8 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
 
       </div>
     </div>
-    <div id="run-preview-container" class="row flex-nowrap ml-1">
+    </div>
+    <div id="run-preview-container" class="row no-gutters flex-nowrap">
       {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot1" run_title="Run1" infected=2 area=20 money=19 a=10000 b=15000 %}
       {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot2" run_title="Run2" infected=4 area=40 money=10 a=70000 b=20000%}
       {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot3" run_title="My favorite run" infected=2 area=20 money=17 a=5000 b=10000 %}
@@ -364,7 +407,10 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
       {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot9" run_title="Run1" infected=2 area=20 money=5 a=10000 b=1000 %}
       {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot10" run_title="Run1" infected=5 area=60 money=29 a=1000 b=15000 %}
     </div>
-
+</div>
+<div>
+more content...
+</div>
     {% comment %} <div class="col-12 mt-2">
       <div class="panel-container">
         Shannon's color palette (these squares won't be in the final version ;) )
@@ -431,25 +477,325 @@ CheckValue('#money_on_off');
     /* eslint-disable */
     var map = new mapboxgl.Map({
       container: 'map', // container id
-      style: 'mapbox://styles/mapbox/satellite-v9', //hosted style id
-      center: [-77.194527, 41.203323], // initial map center in [lon, lat]
-      zoom: 8 // starting zoom
+      style: 'mapbox://styles/mapbox/light-v10', //hosted style id
+      center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
+      zoom: 7 // starting zoom
     });
-
     var map2 = new mapboxgl.Map({
       container: 'map2', // container id
-      style: 'mapbox://styles/mapbox/satellite-v9', //hosted style id
-      center: [-77.194527, 41.203323], // initial map center in [lon, lat]
-      zoom: 8 // starting zoom
+      style: 'mapbox://styles/mapbox/light-v10', //hosted style id
+      center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
+      zoom: 7 // starting zoom
     });
 
+    var map3 = new mapboxgl.Map({
+      container: 'map3', // container id
+      style: 'mapbox://styles/mapbox/light-v10', //hosted style id
+      center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
+      zoom: 6 // starting zoom
+    });
+
+map.on('load', function() {
+  map.addSource('infection', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': './static/map_data/infection_0_2019.geojson'
+  });
+  /*here we are adding a source, then a layer based on that that source*/
+
+map.addLayer({
+                            "id": 'infection_layer',
+                            "type": 'fill',
+                            "source": 'infection',
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'layer.1'],
+                            0, '#009CB0',
+                            0.1, '#00C49D',
+                            0.2, '#00D793',
+                            0.3, '#00FF80',
+                            0.4, '#24DA80',
+                            0.5, '#48B680',
+                            0.6, '#6D9180',
+                            0.7, '#916D80',
+                            0.8, '#B64880',
+                            0.9, '#DA2480',
+                            1, '#ff0000'
+                            ],
+                            'fill-opacity': 0.5
+                            }
+                            }, 'waterway-label');
+
+
+});
+
+map2.on('load', function() {
+  map2.addSource('infection', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': './static/map_data/infection_0_2019.geojson'
+  });
+  /*here we are adding a source, then a layer based on that that source*/
+
+map2.addLayer({
+                            "id": 'infection_layer',
+                            "type": 'fill',
+                            "source": 'infection',
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'layer.1'],
+                            0, '#009CB0',
+                            0.1, '#00C49D',
+                            0.2, '#00D793',
+                            0.3, '#00FF80',
+                            0.4, '#24DA80',
+                            0.5, '#48B680',
+                            0.6, '#6D9180',
+                            0.7, '#916D80',
+                            0.8, '#B64880',
+                            0.9, '#DA2480',
+                            1, '#ff0000'
+                            ],
+                            'fill-opacity': 0.5
+                            }
+                            }, 'waterway-label');
+
+
+                        map2.addLayer({
+                          'id': 'management_line',
+                          'type': 'line',
+                          'source': {
+                          'type': 'geojson',
+                          'data': {
+                          'type': 'Feature',
+                          'geometry': {
+                          'type': 'Polygon',
+                          'coordinates': [[[-76.49533170441632, 40.1039152196177],
+                          [-74.69533170441632, 39.8039152196177],
+                          [-74.89533170441632, 40.5039152196177],
+                          [-75.89533170441632, 41.0039152196177],
+                          [-76.89533170441632, 40.5039152196177],],
+                          ]
+                          }
+                          }
+                          },
+                          'layout': {},
+                          'paint': {
+                          'line-color': 'rgba(255, 0, 0, 1)',
+                          'line-width': 4
+
+                          }
+                          });
+                        map2.addLayer({
+                          'id': 'management_fill',
+                          'type': 'fill',
+                          'source': {
+                          'type': 'geojson',
+                          'data': {
+                          'type': 'Feature',
+                          'geometry': {
+                          'type': 'Polygon',
+                          'coordinates': [[[-76.49533170441632, 40.1039152196177],
+                          [-74.69533170441632, 39.8039152196177],
+                          [-74.89533170441632, 40.5039152196177],
+                          [-75.89533170441632, 41.0039152196177],
+                          [-76.89533170441632, 40.5039152196177],],
+                          ]
+                          }
+                          }
+                          },
+                          'layout': {},
+                          'paint': {
+                          'fill-color': 'rgba(255, 0, 0, 1)',
+                            'fill-opacity': 0.1,
+                          }
+                          });
+
+});
+
+
+
+
+map3.on('load', function() {
+  map3.addSource('infection', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': './static/map_data/infection_0_2019.geojson'
+  });
+  /*here we are adding a source, then a layer based on that that source*/
+
+map3.addLayer({
+                            "id": 'infection_layer',
+                            "type": 'fill',
+                            "source": 'infection',
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'layer.1'],
+                            0, '#009CB0',
+                            0.1, '#00C49D',
+                            0.2, '#00D793',
+                            0.3, '#00FF80',
+                            0.4, '#24DA80',
+                            0.5, '#48B680',
+                            0.6, '#6D9180',
+                            0.7, '#916D80',
+                            0.8, '#B64880',
+                            0.9, '#DA2480',
+                            1, '#ff0000'
+                            ],
+                            'fill-opacity': 0.5
+                            }
+                            }, 'waterway-label');
+
+                        map3.addLayer({
+                          'id': 'management_area',
+                          'type': 'line',
+                          'source': {
+                          'type': 'geojson',
+                          'data': {
+                          'type': 'Feature',
+                          'geometry': {
+                          'type': 'Polygon',
+                          'coordinates': [[[-76.89533170441632, 39.5039152196177],
+                          [-74.29533170441632, 39.5039152196177],
+                          [-74.89533170441632, 41.5039152196177],
+                          [-75.89533170441632, 41.0039152196177],
+                          [-76.89533170441632, 40.5039152196177],],
+                          ]
+                          }
+                          }
+                          },
+                          'layout': {},
+                          'paint': {
+                          'line-color': 'rgba(255, 0, 0, 1)',
+                          'line-width': 4
+
+                          }
+                          });
+});
+
+
+
+
     var draw = new MapboxDraw({
-      displayControlsDefault: true,
+      displayControlsDefault: false,
       controls: {
         polygon: true,
         trash: true
+      }, 
+  styles: [
+    // ACTIVE (being drawn)
+    // line stroke
+    {
+        "id": "gl-draw-line",
+        "type": "line",
+        "filter": ["all", ["==", "$type", "LineString"], ["!=", "mode", "static"]],
+        "layout": {
+          "line-cap": "round",
+          "line-join": "round"
+        },
+        "paint": {
+          "line-color": "red",
+          "line-dasharray": [0.2, 2],
+          "line-width": 3
+        }
+    },
+    // polygon fill
+    {
+      "id": "gl-draw-polygon-fill",
+      "type": "fill",
+      "filter": ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
+      "paint": {
+        "fill-color": "#D20C0C",
+        "fill-outline-color": "#D20C0C",
+        "fill-opacity": 0.1
       }
-    });
+    },
+    // polygon outline stroke
+    // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
+    {
+      "id": "gl-draw-polygon-stroke-active",
+      "type": "line",
+      "filter": ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#D20C0C",
+        "line-width": 3
+      }
+    },
+    // vertex point halos
+    {
+      "id": "gl-draw-polygon-and-line-vertex-halo-active",
+      "type": "circle",
+      "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
+      "paint": {
+        "circle-radius": 7,
+        "circle-color": "#FFF"
+      }
+    },
+    // vertex points
+    {
+      "id": "gl-draw-polygon-and-line-vertex-active",
+      "type": "circle",
+      "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
+      "paint": {
+        "circle-radius": 5,
+        "circle-color": "#D20C0C",
+      }
+    },
+
+    // INACTIVE (static, already drawn)
+    // line stroke
+    {
+        "id": "gl-draw-line-static",
+        "type": "line",
+        "filter": ["all", ["==", "$type", "LineString"], ["==", "mode", "static"]],
+        "layout": {
+          "line-cap": "round",
+          "line-join": "round"
+        },
+        "paint": {
+          "line-color": "#000",
+          "line-width": 3
+        }
+    },
+    // polygon fill
+    {
+      "id": "gl-draw-polygon-fill-static",
+      "type": "fill",
+      "filter": ["all", ["==", "$type", "Polygon"], ["==", "mode", "static"]],
+      "paint": {
+        "fill-color": "#000",
+        "fill-outline-color": "#000",
+        "fill-opacity": 0.1
+      }
+    },
+    // polygon outline
+    {
+      "id": "gl-draw-polygon-stroke-static",
+      "type": "line",
+      "filter": ["all", ["==", "$type", "Polygon"], ["==", "mode", "static"]],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#000",
+        "line-width": 3
+      }
+    }
+  ]
+});
+
     map.addControl(draw);
 
     map.on('draw.create', updateArea);
@@ -465,7 +811,8 @@ CheckValue('#money_on_off');
         var rounded_area = Math.round(area * 100) / 100;
         var cost = rounded_area / 100;
         answer.innerHTML = rounded_area;
-        gauge_plot("money", cost, 120);
+        console.log(map.getCenter())
+        gauge_plot("money-new", cost, 120);
       } else {
         answer.innerHTML = '';
         if (e.type !== 'draw.delete') alert("Use the draw tools to draw a polygon!");
@@ -605,12 +952,19 @@ CheckValue('#money_on_off');
       });
     }
 
-    gauge_plot("money", 0, 120);
+    gauge_plot("money-new", 0, 120);
+    gauge_plot("money-review", 57.8, 120);
+    gauge_plot("money-chart-view", 57.8, 120);
 
-    function side_plot(myDiv, title, x, y1, y2, color) {
+    function side_plot(myDiv, title, x, y1, y2, color, error_bar=true) {
       var trace1 = {
         x: x,
         y: y1,
+        error_y: {
+      type: 'percent',
+      value: 20,
+      visible: error_bar,
+    },
         name: 'No management',
         marker: {
           color: 'grey'
@@ -622,6 +976,12 @@ CheckValue('#money_on_off');
       var trace2 = {
         x: x,
         y: y2,
+    error_y: {
+      type: 'percent',
+      value: 30,
+      visible: error_bar,
+    },
+
         name: 'Current run',
         marker: {
           color: color
@@ -674,29 +1034,55 @@ CheckValue('#money_on_off');
     var x = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
     var y1 = [20, 40, 100, 300, 700, 1000];
     var y2 = [20, 30, 50, 100, 300, 400];
-    $(side_plot("side_plot1", '# infected', x, y1, y2, '#2598b8'));
-    $(side_plot("side_plot2", 'Area infected', x, y1, y2, '#5fc2c2'));
+    $(side_plot("side_plot1", '# infected', x, y1, y2, '#2598b8', error_bar=false));
+    $(side_plot("side_plot2", 'Area infected', x, y1, y2, '#5fc2c2',error_bar=false));
+    $(side_plot("main_plot1", '# infected', x, y1, y2, '#2598b8',error_bar=false));
+    $(side_plot("main_plot2", 'Area infected', x, y1, y2, '#5fc2c2',error_bar=false));
 
-
-    $('#trig').on('click', function () {
+    $('#show-hide-new-view').on('click', function () {
       var bounds = map.getBounds();
-      $('#map-container').toggleClass('col-md-9 col-md-12');
-      $('#side-plots').toggleClass('d-md-block d-md-none');
+      $('#map-container-new-view').toggleClass('col-md-9 col-md-12');
+      $('#run-details').toggleClass('d-md-block d-md-none');
       //$('#map').toggleClass( 'large_map small_map' );
       map.resize();
       //map.fitBounds(bounds);
       $(this).text($(this).text() == 'Hide Details' ? 'Show Details' : 'Hide Details');
     });
 
-        $('#map-view-tab').on('shown.bs.tab', function () {
+    $('#show-hide-map-view').on('click', function () {
+      var bounds = map.getBounds();
+      $('#map-container-map-view').toggleClass('col-md-9 col-md-12');
+      $('#side-plots').toggleClass('d-md-block d-md-none');
+      //$('#map').toggleClass( 'large_map small_map' );
+      map2.resize();
+      //map.fitBounds(bounds);
+      $(this).text($(this).text() == 'Hide Details' ? 'Show Details' : 'Hide Details');
+    });
+
+        $('#new-tab').on('shown.bs.tab', function () {
         map.resize();
+    });
+        $('#map-view-tab').on('shown.bs.tab', function () {
+        map2.resize();
+    $(side_plot("side_plot1", '# infected', x, y1, y2, '#2598b8',error_bar=false));
+    $(side_plot("side_plot2", 'Area infected', x, y1, y2, '#5fc2c2',error_bar=false));
     });
 
       $('#chart-view-tab').on('shown.bs.tab', function () {
-        map2.resize();
+        map3.resize();
+    $(side_plot("main_plot1", '# infected', x, y1, y2, '#2598b8'));
+    $(side_plot("main_plot2", 'Area infected', x, y1, y2, '#5fc2c2'));
     });
 
-
+$( "#submit-run" ).click(function() {
+  $( "#map-view-tab" ).trigger( "click" );
+});
+$( "#modify-run" ).click(function() {
+  $( "#new-tab" ).trigger( "click" );
+});
+$( "#analysis-details" ).click(function() {
+  $( "#chart-view-tab" ).trigger( "click" );
+});
   </script>
   {% endblock %}
 
