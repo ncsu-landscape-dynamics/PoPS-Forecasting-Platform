@@ -8,8 +8,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import ModelForm, modelform_factory
 from django.http import HttpResponse, HttpResponseForbidden
 from django.db.models import Q
-import plotly.offline as opy
-import plotly.graph_objs as go
 
 import numpy as np
 
@@ -30,96 +28,15 @@ class CaseStudyReview(LoginRequiredMixin, TemplateView):
             case_study = CaseStudy.objects.select_related('weather__wind','weather__seasonality','weather__lethaltemperature','weather__temperature','weather__temperature__temperaturepolynomial','weather__precipitation','weather__precipitation__precipitationpolynomial').get(pk=self.kwargs.get('pk'))
             hosts = Host.objects.select_related('mortality').filter(case_study__pk=self.kwargs.get('pk'))
             pests = Pest.objects.select_related('vector').filter(case_study__pk=self.kwargs.get('pk')).select_related('pest_information')
-            if case_study.weather.temp_on:
-                if case_study.weather.temperature.method == "RECLASS":
-                    context['temp_plot']=self.reclass_graph()
-                if case_study.weather.temperature.method == "POLYNOMIAL":
-                    context['temp_plot']=self.polynomial_graph()
-            if case_study.weather.precipitation_on:
-                if case_study.weather.precipitation.method == "RECLASS":
-                    context['precip_plot']=self.reclass_graph()
-                if case_study.weather.precipitation.method == "POLYNOMIAL":
-                    context['precip_plot']=self.polynomial_graph()
+
             # Create any data and add it to the context
             context['case_study'] = case_study
             context['hosts'] = hosts
             context['pests'] = pests
             return context
 
-    def reclass_graph(self, **kwargs):
-        return "Reclass plot"
 
-    def polynomial_graph(self, **kwargs):
-        return "Polynomial plot"
 
-        # if case_study.weather.precipitation_on:
-        # if case_study.weather.precipitation.method == "RECLASS":
-        #     for row in case_study.weather.precipitation.precipitationreclass_set.all():
-        #         precip_data.append(go.Scatter(x=[row.min_value, row.max_value], y=[row.reclass, row.reclass],
-        #             marker = dict(
-        #                 size = 10,
-        #                 color = 'black',
-        #                 line = dict(
-        #                     width = 2,
-        #                     color = 'cyan'
-        #                 )
-        #             ),
-        #             line = dict(
-        #                     width = 2,
-        #                     color = 'cyan'
-        #             )
-        #         ))
-        #         precip_data.append(go.Scatter(x=[row.min_value], y=[row.reclass],        
-        #             marker = dict(
-        #                 size = 10,
-        #                 color = 'cyan',
-        #                 line = dict(
-        #                     width = 2,
-        #                     color = 'cyan'
-        #                 )
-        #             ),
-        #         ))
-        # if case_study.weather.precipitation.method == "POLYNOMIAL":
-        #     a0=case_study.weather.precipitation.precipitationpolynomial.a0
-        #     a1=case_study.weather.precipitation.precipitationpolynomial.a1
-        #     a2=case_study.weather.precipitation.precipitationpolynomial.a2
-        #     a3=case_study.weather.precipitation.precipitationpolynomial.a3
-        #     x1=case_study.weather.precipitation.precipitationpolynomial.x1
-        #     x2=case_study.weather.precipitation.precipitationpolynomial.x2
-        #     x3=case_study.weather.precipitation.precipitationpolynomial.x3
-
-        #     N = 100
-        #     random_x = np.linspace(0, 100, 100)
-        #     random_y0 = float(a0) + float(a1)*(random_x+float(x1))+float(a2)*(random_x+float(x2))**2
-
-        #     # Create traces
-        #     precip_data.append(go.Scatter(
-        #         x = random_x,
-        #         y = random_y0,
-        #         mode = 'lines',
-        #         line = dict(
-        #             width = 2,
-        #             color = 'cyan'
-        #         )
-        #     ))
-        # precip_graph=opy.plot({
-        #     "data": precip_data,
-        #     "layout": go.Layout(showlegend= False, 
-        #         xaxis=dict(range=[0, 100],showgrid=False, tickfont=dict(color='white'),title='Precipitation (mm)',titlefont=dict(color='white')), 
-        #         yaxis=dict(range=[0, 1], showgrid=False, tickfont=dict(color='white'),title='Reclass',titlefont=dict(color='white')), 
-        #         width=300, height=200, 
-        #         paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-        #         margin=go.layout.Margin(
-        #             l=50,
-        #             r=10,
-        #             b=40,
-        #             t=20,
-        #             pad=4
-        #             ),
-        #         ),
-        #     }, auto_open=False, output_type='div', config={"displayModeBar": False}
-        # )
-        # context['precip_graph'] = precip_graph
 
 class NewCaseStudyView(LoginRequiredMixin, TemplateView):
     login_url = 'login'

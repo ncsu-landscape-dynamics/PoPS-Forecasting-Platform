@@ -28,7 +28,7 @@
         <td>{{ session.case_study }}</td>
         <td><span class="badge badge-pill badge-light">{{ session.date_created|date:'s' }}</span></td>
         <td>{{ session.date_created }}</td>
-        <td><a class="text-info" href="#" role="button"><i class="fas fa-arrow-alt-circle-right"></i></a></td>
+        <td><a class="text-info" href="{% url 'dashboard' pk=1 %}" role="button"><i class="fas fa-arrow-alt-circle-right" data-toggle="tooltip" data-placement="top" title="Go to session."></i></a></td>
             </tr>
         {% endfor %}
 
