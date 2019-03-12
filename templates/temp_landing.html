@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}">
+  <script src="{% static 'js/jquery.slim.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/dashboard_layout.css' %}">
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+
+
+  <title>PoPS</title>
+</head>
+
+<body class="text-light" style="background-color:#0b0d0e">
+
+<div class="jumbotron jumbotron-fluid mb-0 py-4" style="background-color:#0b0d0e">
+  <div class="container text-center">
+    <h1 class="display-4">Welcome to the future home of PoPS</h1>
+    <p class="lead">The pest or pathogen spread model</p>
+</div>
+</div>
+
+
+  <div class=" container-fluid p-0 ">
+<div id="map" style="height:500px;">
+</div>
+<small class="text-muted">Simulated results showing Spotted Lanternfly spread in Pennsylvania.</small>
+
+<div class="container p-4 text-center">
+<p class="lead">Our modeling platform comes with all of the necessary tools to go from initial data 
+to modeling results quickly and easily.
+While we finish constructing the easy-to-use PoPS interface, you may go ahead and start
+using PoPS by downloading the PoPS R-package. </p>  
+    <p class="lead">
+      <a class="btn btn-warning btn-lg" href="{% url 'login' %}" role="button">Download R-package</a>
+    </p>
+    <div>
+      <img class="rounded-circle" src="{% static 'images/PoPS_Logo-02.svg' %}" alt="Generic placeholder image" width="150px">
+    </div>
+</div>
+
+
+</div>
+
+  <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
+    type='text/css' />
+
+  <script>
+    mapboxgl.accessToken =
+      'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
+    /* eslint-disable */
+    var map = new mapboxgl.Map({
+      container: 'map', // container id
+      style: 'mapbox://styles/mapbox/dark-v9',
+      center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
+      zoom: 7, // starting zoom
+      pitch: 60,
+    });
+
+
+function rotateCamera(timestamp) {
+// clamp the rotation between 0 -360 degrees
+// Divide timestamp by 100 to slow rotation to ~10 degrees / sec
+map.rotateTo((timestamp / 200) % 360, {duration: 0});
+// Request the next frame of the animation.
+requestAnimationFrame(rotateCamera);
+}
+
+map.on('load', function() {
+  map.addSource('infection', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': '{% static "map_data/infection_0_2019.geojson" %}'
+  });
+  /*here we are adding a source, then a layer based on that that source*/
+
+
+map.addLayer({
+                            "id": 'infection_extrusion_layer',
+                            "type": 'fill-extrusion',
+                            "source": 'infection',
+                            'paint': {
+                            'fill-extrusion-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'layer.1'],
+                            0, '#009CB0',
+                            0.1, '#00C49D',
+                            0.2, '#00D793',
+                            0.3, '#00FF80',
+                            0.4, '#24DA80',
+                            0.5, '#48B680',
+                            0.6, '#6D9180',
+                            0.7, '#916D80',
+                            0.8, '#B64880',
+                            0.9, '#DA2480',
+                            1, '#ff0000'
+                            ],
+                            'fill-extrusion-height':
+                            ['*', ['number', ['get', 'layer.1'], 0], 10000],
+
+                            'fill-extrusion-opacity': 0.6
+                            }
+                            }, );
+
+rotateCamera(0);
+
+});
+</script>
+</body>
+
+</html>

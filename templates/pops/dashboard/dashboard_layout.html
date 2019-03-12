@@ -477,9 +477,10 @@ CheckValue('#money_on_off');
     /* eslint-disable */
     var map = new mapboxgl.Map({
       container: 'map', // container id
-      style: 'mapbox://styles/mapbox/light-v10', //hosted style id
+      style: 'mapbox://styles/mapbox/dark-v9',
       center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
-      zoom: 7 // starting zoom
+      zoom: 7, // starting zoom
+      pitch: 60,
     });
     var map2 = new mapboxgl.Map({
       container: 'map2', // container id
@@ -492,18 +493,27 @@ CheckValue('#money_on_off');
       container: 'map3', // container id
       style: 'mapbox://styles/mapbox/light-v10', //hosted style id
       center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
-      zoom: 6 // starting zoom
+      zoom: 6, // starting zoom
+
     });
+
+function rotateCamera(timestamp) {
+// clamp the rotation between 0 -360 degrees
+// Divide timestamp by 100 to slow rotation to ~10 degrees / sec
+map.rotateTo((timestamp / 200) % 360, {duration: 0});
+// Request the next frame of the animation.
+requestAnimationFrame(rotateCamera);
+}
 
 map.on('load', function() {
   map.addSource('infection', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': './static/map_data/infection_0_2019.geojson'
+    'data': '{% static "map_data/infection_0_2019.geojson" %}'
   });
   /*here we are adding a source, then a layer based on that that source*/
 
-map.addLayer({
+{% comment %} map.addLayer({
                             "id": 'infection_layer',
                             "type": 'fill',
                             "source": 'infection',
@@ -526,7 +536,38 @@ map.addLayer({
                             ],
                             'fill-opacity': 0.5
                             }
-                            }, 'waterway-label');
+                            }, 'waterway-label'); {% endcomment %}
+map.addLayer({
+                            "id": 'infection_extrusion_layer',
+                            "type": 'fill-extrusion',
+                            "source": 'infection',
+                            'paint': {
+                            'fill-extrusion-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'layer.1'],
+                            0, '#009CB0',
+                            0.1, '#00C49D',
+                            0.2, '#00D793',
+                            0.3, '#00FF80',
+                            0.4, '#24DA80',
+                            0.5, '#48B680',
+                            0.6, '#6D9180',
+                            0.7, '#916D80',
+                            0.8, '#B64880',
+                            0.9, '#DA2480',
+                            1, '#ff0000'
+                            ],
+                            'fill-extrusion-height':
+                            ['*', ['number', ['get', 'layer.1'], 0], 10000],
+
+                            'fill-extrusion-opacity': 0.6
+                            }
+                            }, );
+
+rotateCamera(0);
+
+
 
 
 });
@@ -535,7 +576,7 @@ map2.on('load', function() {
   map2.addSource('infection', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': './static/map_data/infection_0_2019.geojson'
+    'data': '{% static "map_data/infection_0_2019.geojson" %}'
   });
   /*here we are adding a source, then a layer based on that that source*/
 
@@ -624,7 +665,7 @@ map3.on('load', function() {
   map3.addSource('infection', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': './static/map_data/infection_0_2019.geojson'
+    'data': '{% static "map_data/infection_0_2019.geojson" %}'
   });
   /*here we are adding a source, then a layer based on that that source*/
 
@@ -662,9 +703,9 @@ map3.addLayer({
                           'type': 'Feature',
                           'geometry': {
                           'type': 'Polygon',
-                          'coordinates': [[[-76.89533170441632, 39.5039152196177],
-                          [-74.29533170441632, 39.5039152196177],
-                          [-74.89533170441632, 41.5039152196177],
+                          'coordinates': [[[-76.49533170441632, 40.1039152196177],
+                          [-74.69533170441632, 39.8039152196177],
+                          [-74.89533170441632, 40.5039152196177],
                           [-75.89533170441632, 41.0039152196177],
                           [-76.89533170441632, 40.5039152196177],],
                           ]
