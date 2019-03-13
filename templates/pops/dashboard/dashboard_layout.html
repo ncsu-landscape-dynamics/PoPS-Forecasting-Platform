@@ -477,10 +477,9 @@ CheckValue('#money_on_off');
     /* eslint-disable */
     var map = new mapboxgl.Map({
       container: 'map', // container id
-      style: 'mapbox://styles/mapbox/dark-v9',
+      style: 'mapbox://styles/mapbox/light-v10', //hosted style id
       center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
-      zoom: 7, // starting zoom
-      pitch: 60,
+      zoom: 7 // starting zoom
     });
     var map2 = new mapboxgl.Map({
       container: 'map2', // container id
@@ -497,13 +496,6 @@ CheckValue('#money_on_off');
 
     });
 
-function rotateCamera(timestamp) {
-// clamp the rotation between 0 -360 degrees
-// Divide timestamp by 100 to slow rotation to ~10 degrees / sec
-map.rotateTo((timestamp / 200) % 360, {duration: 0});
-// Request the next frame of the animation.
-requestAnimationFrame(rotateCamera);
-}
 
 map.on('load', function() {
   map.addSource('infection', {
@@ -513,7 +505,7 @@ map.on('load', function() {
   });
   /*here we are adding a source, then a layer based on that that source*/
 
-{% comment %} map.addLayer({
+map.addLayer({
                             "id": 'infection_layer',
                             "type": 'fill',
                             "source": 'infection',
@@ -536,36 +528,7 @@ map.on('load', function() {
                             ],
                             'fill-opacity': 0.5
                             }
-                            }, 'waterway-label'); {% endcomment %}
-map.addLayer({
-                            "id": 'infection_extrusion_layer',
-                            "type": 'fill-extrusion',
-                            "source": 'infection',
-                            'paint': {
-                            'fill-extrusion-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'layer.1'],
-                            0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
-                            ],
-                            'fill-extrusion-height':
-                            ['*', ['number', ['get', 'layer.1'], 0], 10000],
-
-                            'fill-extrusion-opacity': 0.6
-                            }
-                            }, );
-
-rotateCamera(0);
+                            }, 'waterway-label'); 
 
 
 
