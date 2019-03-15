@@ -1,39 +1,106 @@
 {% extends 'base.html' %}
+        {% load static %}
+  {% block page_styles %}
+  <link rel="stylesheet" href="{% static 'css/faqs.css' %}">
+  {% endblock %}
 
 {% block content %}
+<!--Use the include tag for FAQ formatting. Note: Each question must have a unique
+id (this is to control the JS collapse). If questions have the same id, then they won't 
+open/close appropriately.-->
+<section class="accordion-section clearfix mt-3" aria-label="Question Accordions">
+  <div class="container">
+  
+	  <h2 class="text-center">Frequently Asked Questions </h2>
+	  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+	  <h4 class="">General </h4>
+          {% include "include/faq_entry_open.html" with question="What is PoPS?" id="id_1" %}
+          <p>PoPS (the Pest or Pathogen Spread model) is a robust geospatial 
+          modeling platform to predict the spread of pests or pathogens over a landscape.
+          In simpler terms, PoPS allows a user to model how a pest (insect) or pathogen (disease)
+          will spread across a landscape over time. </p>
 
-<div class="container py-4">
-<div class="row justify-content-center">
-<div class="col-xs-12 col-md-10">
-<h2 class="text-center">Frequently Asked Questions</h2>
+          <p>For example, PoPS has been used to predict the spread of Spotted Lanternfly (invasive insect) across Pennsylvania
+          and Sudden Oak Death (invasive pathogen) through California.</p>
+          
+          <p>The platform comes with all of the 
+          necessary tools to go from initial pest/pathogen data to modeling results quickly and easily.</p>
+          {% include "include/faq_entry_close.html" %}
 
-{% regroup faqs by topic as topic_list %}
+          {% include "include/faq_entry_open.html" with question="How can I use PoPS?" id="how" %}
+          PoPS is freely available in two forms:
+          <ol>
+          <li>Easy-to-use web-based interface. On this site, you can calibrate and validate a new case study
+          and then run various management and weather scenarios to predict the spread of your pest or
+          pathogen.</li>
+          <li>R-package: If you want more control and the ability to edit or add to the PoPS source code, then
+          you will want to use the PoPS R-package.  </li>
+          </ol>
+          {% include "include/faq_entry_close.html" %}
 
-<div class="accordion text-light py-4" id="accordionExample">
-{% for topic in topic_list %}
-<div class="card">
-    <div class="card-header" style="background-color:#0f7c7c;">
-        <button class="btn btn-link btn-lg text-white collapsed" type="button" data-toggle="collapse" data-target="#{{ topic.grouper.slug }}" aria-expanded="false" aria-controls="{{ topic.grouper.slug }}">
-          <span class="icon-bar"></span>
-          <h4>{{ topic.grouper }}</h4>
-        </button>
+          {% include "include/faq_entry_open.html" with question="I don't have any initial data for a new pest that was just discovered. Can I still use PoPS?" id="no_data" %}
+          <p>The short answer is "no". <strong>A machine learning model is only as good as 
+          the data it is learning from.</strong> If you have bad data, you'll have a bad model.
+          If you don't have any data, the model can not draw any meaningful conclusions.</p>
+          <p>With that said, the long answer is "maybe, depending on the situation". </p>
+          <ul>
+          <li>Is this an invasive pest from another country? If there is data on spread in another location,
+          you may be able to make informed decisions about spread rates, weather depedence, etc.</li>
+          <li>Is your system similar to another pest/pathogen that we DO have information about? You 
+          may be able to use the calibrated model from an existing system for a new/pest pathogen.</li>
+          </ul>
+          <p>Keep in mind: the more assumptions you make, the less accurate the model.</p>
+          {% include "include/faq_entry_close.html" %}
+
+          {% include "include/faq_entry_open.html" with question="How can a single model work for so many systems?" id="generalized" %}
+          <p>Excellent question! We're glad you asked, because this is what makes PoPS such a 
+          powerful tool.</p>
+          <p>At their core, all geospatial distribution models are essentially the same...</p>
+          {% include "include/faq_entry_close.html" %}
+
+          {% include "include/faq_entry_open.html" with question="Who created PoPS?" id="id_2" %}
+          PoPS was developed at North Carolina State University.
+          {% include "include/faq_entry_close.html" %}
+
+          {% include "include/faq_entry_open.html" with question="Why should I use PoPS?" id="id_3" %}
+          PoPS is a modeling framework.
+          {% include "include/faq_entry_close.html" %}
+
+          {% include "include/faq_entry_open.html" with question="I used PoPS for my study. How do I cite PoPS in publications or presentations?" id="cite" %}
+          We request that you cite *** in any publications and presentations. Please also use the PoPS logo (here)
+          in your presentations to help spread awareness.
+          {% include "include/faq_entry_close.html" %}
+
+	  <h4 class="">Case studies </h4>
+          {% include "include/faq_entry_open.html" with question="What is a case study?" id="cs1" %}
+          A case study is a calibrated and validated PoPS model for a specific pest/pathogen and
+          extent (geographic region and resolution). After a case study is created, it can be used
+          to run the model with various management or weather scenarios to predict pest/pathogen
+          spread.
+          {% include "include/faq_entry_close.html" %}
+
+          {% include "include/faq_entry_open.html" with question="How can I create a new case study?" id="cs2" %}
+A
+          {% include "include/faq_entry_close.html" %}
+
+	  <h4 class="">Dashboard </h4>
+          {% include "include/faq_entry_open.html" with question="What is the dashboard?" id="db1" %}
+          The PoPS Dashboard is where you can run the PoPS model with management scenarios.
+          {% include "include/faq_entry_close.html" %}
+
+	  <h4 class="">PoPS Model</h4>
+          {% include "include/faq_entry_open.html" with question="How does the actual PoPS model code work?" id="id_1" %}
+          <p>PoPS (the Pest or Pathogen Spread model) is a robust geospatial 
+          modeling platform to predict the spread of pests or pathogens over a landscape.
+          In simpler terms, PoPS allows a user to model how a pest (insect) or pathogen (disease)
+          will spread across a landscape over time. </p>
+          <p>There are multiple steps involved in PoPS. Here we will focus on the backend (i.e. code)
+          and we will describe how to use the website/dashboard here.</p>
+          <p></p>
+
+
+          {% include "include/faq_entry_close.html" %}
+          
     </div>
-    <div id="{{ topic.grouper.slug }}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-      <div class="card-body text-light" style="background-color:#262626;">
-      <ol>
-        {% for faq in topic.list %}
-          <h5><li>{{ faq.question_text }} </li></h5>
-          <p>{{ faq.answer }} </p>
-        {% endfor %}
-        </ol>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-
-</div>
-
-</div>
-</div>
-</div>
+</section>
 {% endblock %}
