@@ -1,12 +1,41 @@
 
+ html {
+  height: 100%;
+  box-sizing: border-box;
+}
  body {
     background-color:#212529;
+    position: relative;
+  margin: 0;
+  padding-bottom: 6rem;
+  min-height: 100%;
   }
   
-  nav, .dropdown-menu, .dropdown-menu a, .dropdown-menu a:hover {
+  nav, .page-footer, .dropdown-menu, .dropdown-menu a, .dropdown-menu a:hover {
     background-color:#0b0d0e;
     color:lightgray;
   }
+
+  .page-footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  .page-footer, .page-footer a {
+    font-size:1rem;
+    color: grey;
+  }
+
+  .page-footer a:hover{
+    color:white;
+  }
+
+.footer-copyright {
+  font-sie:0.8rem;
+}
+
 
   .dropdown-menu a:hover {
 

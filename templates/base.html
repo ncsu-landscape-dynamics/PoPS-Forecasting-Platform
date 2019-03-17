@@ -44,6 +44,7 @@
                   <a class="dropdown-item " href="{% url 'about' %}">About</a>
                   <a class="dropdown-item " href="{% url 'FAQs' %}">FAQs</a>
                   <a class="dropdown-item " href="{% url 'tutorials' %}">Tutorials</a>
+                  <a class="dropdown-item " href="{% url 'team' %}">Team</a>
                 </div>
               </li>
               <li class="nav-item ">
@@ -93,6 +94,50 @@
     {% block content %}
     {% endblock %}
 
+<!-- Footer -->
+<footer class="page-footer pt-2">
+
+    <!-- Footer Links -->
+    <div class="container-fluid text-center">
+
+      <!-- Grid row -->
+      <div class="row">
+
+        <!-- Grid column -->
+<div class="col">
+<a href="{% url 'team' %}">Team</a>
+</div>
+<div class="col">
+<a class="" href="#">Publications</a>
+</div>
+<div class="col">
+  <a class="" href="{% url 'terms_and_conditions' %}">Terms and Conditions</a> 
+</div>
+<div class="col">
+<a class="" href="{% url 'privacy_policy' %}">Privacy Policy</a>
+</div>
+<div class="col">
+<a class="" href="{% url 'FAQs' %}">FAQs</a>
+</div>
+<div class="col">
+<a class="" href="#">Contact</a>
+</div>
+
+
+      </div>
+      <!-- Grid row -->
+
+    </div>
+    <!-- Footer Links -->
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">© 2018 Copyright:
+      <a href="https://popsmodel.org"> popsmodel.org</a>
+    </div>
+    <!-- Copyright -->
+
+  </footer>
+  <!-- Footer -->
 
     <script>
     $("#menu-toggle").click(function(e) {
