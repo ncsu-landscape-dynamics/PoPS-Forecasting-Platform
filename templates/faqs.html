@@ -8,10 +8,14 @@
 <!--Use the include tag for FAQ formatting. Note: Each question must have a unique
 id (this is to control the JS collapse). If questions have the same id, then they won't 
 open/close appropriately.-->
+
+  <div id="header" class="container-fluid p-4 text-center" style="background-color:black;">
+    <h1 class="display-4">Frequently Asked Questions</h1>
+</div>
+
 <section class="accordion-section clearfix mt-3" aria-label="Question Accordions">
   <div class="container">
   
-	  <h2 class="text-center">Frequently Asked Questions </h2>
 	  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 	  <h4 class="">General </h4>
           {% include "include/faq_entry_open.html" with question="What is PoPS?" id="id_1" %}

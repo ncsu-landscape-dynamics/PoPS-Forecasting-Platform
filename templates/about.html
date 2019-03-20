@@ -14,7 +14,7 @@
 
   <div id="description" class="container-fluid p-4 ">
 <div class="row">
-<div class="col-6">
+<div class="col-md-6">
 <h2>What is PoPS?</h2>
     <p >PoPS is a framework for modeling the spread of pests or pathogens across a landscape.
     We created PoPS because we want to help decision-makers, researchers, and students
@@ -28,8 +28,9 @@
       <li>Compare scenarios to make management decisions</li>
     </ul>
     </p>
-    </div>
-    <div class="col-6">
+<p class="text-right"><a class="text-light" href="#">Read more <i class="text-light fas fa-arrow-right"></i></a></p>    
+</div>
+    <div class="col-md-6">
     <div id="map">
 </div>
 <small class="text-muted">Simulated results showing Spotted Lanternfly spread in Pennsylvania.</small>
@@ -40,11 +41,12 @@
 
   <div id="how" class="container-fluid p-4 ">
 <div class="row">
-<div class="col-6">
-    <img class='img-fluid w-100'  src="{% static 'images/PoPS_Dashboard_Example.png' %}" alt="PoPS is easy to use." >
-
+<div class="col-md-6 ">
+<div class="text-center">
+    <img class='img-fluid w-100'  style="max-width:500px" src="{% static 'images/PoPS_Dashboard_Example.png' %}" alt="PoPS is easy to use." >
+</div>
     </div>
-    <div class="col-6">
+    <div class="col-md-6">
 <h2>How do I use PoPS?</h2>
     <p >Our modeling platform comes with all of the necessary tools to go from initial data to 
     modeling results quickly and easily (<strong>NO programming experience required!</strong>):</p>
@@ -65,7 +67,7 @@
 
   <div class="container-fluid ">
 <div class="row">
-<div id="who" class="col-6 p-4">
+<div id="who" class="col-md-6 p-4">
 <h2>Who is using PoPS?</h2>
     <p >PoPS has been successfully used by university researchers and
     government analysts to model both pests and pathogens.
@@ -79,24 +81,29 @@
     </ul>
 
     </div>
-    <div id="examples" class="col-6 p-4">
+    <div id="examples" class="col-md-6 p-4">
     <h2>What can PoPS model?</h2>
-    <div class="row">
-    <div class="col">
-    <p >PoPS can be used to model most pests or pathogens. Read the FAQs to find out if 
-    PoPS is right for your model system.
-    </p>
-    <p >
+        <p >
     PoPS has been used to model:
     <ul >
       <li>Spotted Lanternfly in Pennsylvania</li>
       <li>Sudden Oak Death in California</li>
       <li>More</li>
     </ul> 
+    </p>
+    <div class="row">
+    <div class="col">
+    <p >PoPS can be used to model most pests or pathogens. Read the <a class="text-light" href="{% url 'FAQs' %}">FAQs</a>
+ to find out if 
+    PoPS is right for your model system.
+    </p>
+
     </div>
     <div class="col">
-          <img src="{% static 'images/lanternfly.jpg' %}" alt="Generic placeholder image">
-    </div>
+    <div class="text-center">
+    <img src="{% static 'images/lanternfly.jpg' %}"class="rounded-circle" alt="Spotted Lanternfly">
+</div>
+   </div>
     </div>   
     </div>
     </div>
