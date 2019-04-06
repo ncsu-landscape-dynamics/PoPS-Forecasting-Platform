@@ -9,8 +9,8 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
-    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}">
   <script src="{% static 'js/jquery.slim.min.js' %}"></script>
   <script src="{% static 'js/popper.min.js' %}"></script>
@@ -21,6 +21,7 @@
 
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/dashboard_layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/about.css' %}">
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
 
@@ -28,42 +29,143 @@
   <title>PoPS</title>
 </head>
 
-<body class="text-light" style="background-color:#0b0d0e">
+<body id="temp-page" class="text-light" style="background-color:#0b0d0e">
 
-<div class="jumbotron jumbotron-fluid mb-0 py-4" style="background-color:#0b0d0e">
-  <div class="container text-center">
-    <h1 class="display-4">Welcome to the future home of PoPS</h1>
-    <p class="lead">The pest or pathogen spread model</p>
-</div>
-</div>
-
-
-  <div class=" container-fluid p-0 ">
-<div id="map" style="height:500px;">
-</div>
-<small class="text-muted">Simulated results showing Spotted Lanternfly spread in Pennsylvania.</small>
-
-<div class="container p-4 text-center">
-<p class="lead">Our modeling platform comes with all of the necessary tools to go from initial data 
-to modeling results quickly and easily.
-While we finish constructing the easy-to-use PoPS interface, you may go ahead and start
-using PoPS by downloading the PoPS R-package. </p>  
-    <p class="lead">
-      <a class="btn btn-warning btn-lg" href="{% url 'login' %}" role="button">Download R-package</a>
-    </p>
-    <div>
-      <img class="rounded-circle" src="{% static 'images/PoPS_Logo-02.svg' %}" alt="Generic placeholder image" width="150px">
+  <div class="jumbotron jumbotron-fluid mb-0 py-4" style="background-color:#0b0d0e">
+    <div class="container text-center">
+      <h1 class="display-3">Welcome to</h1>
+      <img class="rounded-circle" src="{% static 'images/PoPS_AnimatedLogo_TransparentBackground.gif' %}"
+        alt="Generic placeholder image" width="240">
+      <p class="lead">Modeling pest and pathogen spread just got easy.</p>
+      <p class="lead">
+        <a class="btn btn-warning btn-lg" href="https://github.com/ncsu-landscape-dynamics/rpops" role="button"><i
+            class="fab fa-github"></i> Get the R-package!</a>
+      </p>
     </div>
+  </div>
+
+
+  <div id="description" class="container-fluid p-4 ">
+    <div class="row">
+      <div class="col-md-6">
+        <h2>What is PoPS?</h2>
+        <p>PoPS (the Pest or Pathogen Spread Model) is a framework for modeling the spread of pests or pathogens across
+          a landscape.
+          We created PoPS because we want to help decision-makers, researchers, and students
+          create geospatial distribution models.
+        </p>
+        <p>
+          With PoPS you can quickly and easily:
+          <ul>
+            <li>Calibrate and validate your model</li>
+            <li>Run management or weather scenarios</li>
+            <li>Compare scenarios to make management decisions</li>
+          </ul>
+        </p>
+      </div>
+      <div class="col-md-6">
+        <div id="map">
+        </div>
+        <small class="text-muted">Simulated results showing Spotted Lanternfly spread in Pennsylvania.</small>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="how" class="container-fluid p-4 ">
+    <div class="row">
+      <div class="col-md-6 ">
+        <div class="text-center">
+          <img class='img-fluid w-100' style="max-width:500px" src="{% static 'images/PoPS_Dashboard_Example.png' %}"
+            alt="PoPS is easy to use.">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h2>Easy to use web-based PoPS interface coming soon!</h2>
+        <p>We want to create a modeling framework that anyone can use.
+          We are currently developing an easy-to-use interface
+          with all of the necessary tools to go from initial data to
+          modeling results quickly and easily (<strong>NO programming experience required!</strong>).:</p>
+        <p>With the interface, you will be able to:</p>
+        <ul>
+          <li>Create your own case study (i.e. model) or explore the already calibrated and validated case studies.</li>
+          <li>Run management scenarios using the easy to use PoPS interface.</li>
+          <li>Easily compare management interventions across studies.</li>
+        </ul>
+        <p class="pt-2" style="font-size:0.8em"> <i class="fab fa-github"></i> <strong>Experienced coder?
+          </strong>Install the PoPS R-package to run PoPS on your
+          own machine with more customizations and command-line control. <a
+            href="https://github.com/ncsu-landscape-dynamics/rpops"><i class="text-light fas fa-arrow-right"></i></a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid ">
+    <div class="row">
+      <div id="who" class="col-md-6 p-4">
+        <h2>Who is using PoPS?</h2>
+        <p>PoPS has been successfully used by university researchers and
+          government analysts to model both pests and pathogens.
+        </p>
+        <p>
+          PoPS has been used by:
+          <ul>
+            <li><img src="{% static 'images/ncstate-brick-4x1-red.png' %}" alt="Generic placeholder image" width=200>
+            </li>
+            <li>USDA (Animal and Plant Health Inspection Service)</li>
+          </ul>
+
+      </div>
+      <div id="examples" class="col-md-6 p-4">
+        <h2>What can PoPS model?</h2>
+        <p>
+          PoPS has been used to model:
+          <ul>
+            <li>Spotted Lanternfly in Pennsylvania</li>
+            <li>Sudden Oak Death in California</li>
+          </ul>
+        </p>
+        <div class="row">
+          <div class="col">
+            <p>PoPS can be used to model most pests or pathogens.
+            </p>
+
+          </div>
+          <div class="col">
+            <div class="text-center">
+              <img src="{% static 'images/lanternfly.jpg' %}" class="rounded-circle" alt="Spotted Lanternfly">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="description" class="container-fluid p-4 ">
+        <div class="row justify-content-center">
+          <div class="col-sm-12 col-md-10 col-lg-8">
+            <h2 class="text-center">How can I use PoPS?</h2>
+            <p>Right now, you can visit the PoPS Github page to get instructions
+            for using PoPS R-package (requires coding experience). </p>
+            <p class="text-center">
+                    <a class=" btn btn-warning btn-lg text-center" href="https://github.com/ncsu-landscape-dynamics/rpops" role="button"><i
+            class="fab fa-github"></i> Get the R-package</a>
+</p>
+<p>You can also stay up-to-date on PoPS related news and the dashboard by joining Google group.
+</p>
+            <p class="py-3"><strong>Questions?</strong> Email the PoPS lead developer, Chris Jones at cmjone25@ncsu.edu.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="funding" class="container-fluid p-4 text-center ">
+<h2 class="text-center">Thank you for the support we've received!</h2>
+<p class="px-4">The PoPS team would like to acknowledge the grant and funding agencies that have supported our mission:</p>
+            <div class="text-center">
+              <img src="{% static 'images/funding.svg' %}" height="100" alt="PoPS Funding">
+            </div>
 </div>
-
-
-</div>
-
-  <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
-  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
-  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
-    type='text/css' />
-
   <script>
     mapboxgl.accessToken =
       'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
@@ -77,55 +179,56 @@ using PoPS by downloading the PoPS R-package. </p>
     });
 
 
-function rotateCamera(timestamp) {
-// clamp the rotation between 0 -360 degrees
-// Divide timestamp by 100 to slow rotation to ~10 degrees / sec
-map.rotateTo((timestamp / 200) % 360, {duration: 0});
-// Request the next frame of the animation.
-requestAnimationFrame(rotateCamera);
-}
+    function rotateCamera(timestamp) {
+      // clamp the rotation between 0 -360 degrees
+      // Divide timestamp by 100 to slow rotation to ~10 degrees / sec
+      map.rotateTo((timestamp / 200) % 360, {
+        duration: 0
+      });
+      // Request the next frame of the animation.
+      requestAnimationFrame(rotateCamera);
+    }
 
-map.on('load', function() {
-  map.addSource('infection', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/infection_0_2019.geojson" %}'
-  });
-  /*here we are adding a source, then a layer based on that that source*/
+    map.on('load', function () {
+      map.addSource('infection', {
+        'type': 'geojson',
+        /*many types of data can be added, such as geojson, vector tiles or raster data*/
+        'data': '{% static "map_data/infection_0_2019.geojson" %}'
+      });
+      /*here we are adding a source, then a layer based on that that source*/
 
 
-map.addLayer({
-                            "id": 'infection_extrusion_layer',
-                            "type": 'fill-extrusion',
-                            "source": 'infection',
-                            'paint': {
-                            'fill-extrusion-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'layer.1'],
-                            0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
-                            ],
-                            'fill-extrusion-height':
-                            ['*', ['number', ['get', 'layer.1'], 0], 10000],
+      map.addLayer({
+        "id": 'infection_extrusion_layer',
+        "type": 'fill-extrusion',
+        "source": 'infection',
+        'paint': {
+          'fill-extrusion-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'layer.1'],
+            0, '#009CB0',
+            0.1, '#00C49D',
+            0.2, '#00D793',
+            0.3, '#00FF80',
+            0.4, '#24DA80',
+            0.5, '#48B680',
+            0.6, '#6D9180',
+            0.7, '#916D80',
+            0.8, '#B64880',
+            0.9, '#DA2480',
+            1, '#ff0000'
+          ],
+          'fill-extrusion-height': ['*', ['number', ['get', 'layer.1'], 0], 10000],
 
-                            'fill-extrusion-opacity': 0.6
-                            }
-                            }, );
+          'fill-extrusion-opacity': 0.6
+        }
+      }, );
 
-rotateCamera(0);
+      rotateCamera(0);
 
-});
-</script>
+    });
+  </script>
 </body>
 
 </html>
