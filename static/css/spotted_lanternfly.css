@@ -1,0 +1,28 @@
+#budget {
+    background-color: #0b0d0e;
+
+  }
+
+#budget label.btn, #management-area label.btn, #efficiency label.btn {
+    padding:0.5;
+    color:white;
+    background-color: grey;
+    border-width: 3px;
+    border-color: #212529;
+
+  }
+
+#budget label.btn.active {
+    background-color: #5fc782;
+    border-color: #5fc782;
+}
+
+#management-area label.btn.active {
+    background-color: #f5a61d;
+    border-color: #f5a61d;
+}
+#efficiency label.btn.active {
+    background-color: #f55949;
+    border-color: #f55949;
+}
+
