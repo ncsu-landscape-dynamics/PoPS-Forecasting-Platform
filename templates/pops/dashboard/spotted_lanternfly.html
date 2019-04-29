@@ -27,6 +27,15 @@
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script>
+
+  var management_id = 'None';
+var budget_id = "None";
+var efficiency_id = 'None';
+var year_id = '2018';
+var visibility_2018 = 'none';
+var visibility_2019 = 'none';
+var visibility_2020 = 'none';
+
     function run_comparison_plot(run_comparison_div,run_name,infected, area, money,a,b) {
 
 max_infected=4;
@@ -493,24 +502,30 @@ CheckValue('#money_on_off');
 
     });
 
+function addLayers() {
+  var visibility_2018 = 'none';
+var visibility_2019 = 'none';
+var visibility_2020 = 'none';
 
-map.on('load', function() {
-  map.addSource('infection', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/management_2019.geojson" %}'
-  });
-    map.addSource('perimeter_zone', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/slf_aphis_treatment.geojson" %}'
-  });
-  /*here we are adding a source, then a layer based on that that source*/
+if (year_id == '2018') {
+  visibility_2018='visible';
+  console.log(visibility_2018);
+};
+if (year_id == '2019') {
+  visibility_2019='visible';
+};
+if (year_id == '2020') {
+  visibility_2020='visible';
+};
 
+console.log(visibility_2018)
 map.addLayer({
-                            "id": 'infection_layer',
+                            "id": '2018',
                             "type": 'fill',
-                            "source": 'infection',
+                            "source": '2018',
+                            "layout": {
+                              'visibility':visibility_2018,
+                            },
                             'paint': {
                             'fill-color': [
                             'interpolate',
@@ -531,8 +546,84 @@ map.addLayer({
                             'fill-opacity': 0.5
                             }
                             }, 'waterway-label'); 
-
-      map.addLayer({
+map.addLayer({
+                            "id": '2019',
+                            "type": 'fill',
+                            "source": '2019',
+                            "layout": {
+                              'visibility':visibility_2019,
+                            },
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'layer.1'],
+                            0, '#009CB0',
+                            0.1, '#00C49D',
+                            0.2, '#00D793',
+                            0.3, '#00FF80',
+                            0.4, '#24DA80',
+                            0.5, '#48B680',
+                            0.6, '#6D9180',
+                            0.7, '#916D80',
+                            0.8, '#B64880',
+                            0.9, '#DA2480',
+                            1, '#ff0000'
+                            ],
+                            'fill-opacity': 0.5
+                            }
+                            }, 'waterway-label'); 
+map.addLayer({
+                            "id": '2020',
+                            "type": 'fill',
+                            "source": '2020',
+                            "layout": {
+                              'visibility':visibility_2020,
+                            },
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'layer.1'],
+                            0, '#009CB0',
+                            0.1, '#00C49D',
+                            0.2, '#00D793',
+                            0.3, '#00FF80',
+                            0.4, '#24DA80',
+                            0.5, '#48B680',
+                            0.6, '#6D9180',
+                            0.7, '#916D80',
+                            0.8, '#B64880',
+                            0.9, '#DA2480',
+                            1, '#ff0000'
+                            ],
+                            'fill-opacity': 0.5
+                            }
+                            }, 'waterway-label'); 
+};
+map.on('load', function() {
+  map.addSource('2018', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': '{% static "map_data/management_2018.geojson" %}'
+  });
+  map.addSource('2019', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': '{% static "map_data/management_2019.geojson" %}'
+  });
+  map.addSource('2020', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': '{% static "map_data/management_2020.geojson" %}'
+  });
+    map.addSource('perimeter_zone', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': '{% static "map_data/slf_aphis_treatment.geojson" %}'
+  });
+  /*here we are adding a source, then a layer based on that that source*/
+    map.addLayer({
                             "id": 'perimeter_zone_layer',
                             "type": 'fill',
                             "source": 'perimeter_zone',
@@ -546,6 +637,9 @@ map.addLayer({
                             'fill-opacity': 0.5
                             }
                             }, 'waterway-label'); 
+
+
+addLayers();
                             
   });
 
@@ -1081,10 +1175,6 @@ $( "#analysis-details" ).click(function() {
 });
   </script>
   <script>
-var management_id = 'None';
-var budget_id = "None";
-var efficiency_id = 'None';
-var year_id = '2018';
 
       function makeplot() {
  	Plotly.d3.csv('{% static "map_data/area_infected.csv" %}', function(data){ processData(data) } );
@@ -1156,17 +1246,79 @@ function updateData(allRows) {
   console.log('Year', year, 'Mean', mean, 'SD', standard_deviation);
 };
 
+function updateLayers(){
+      var raster2018 = '{% static "map_data/" %}'+'management_'+ year_id + '.geojson';
+      var raster2018 = '{% static "map_data/" %}'+'management_2018.geojson';
+      var raster2019 = '{% static "map_data/" %}'+'management_2019.geojson';
+      var raster2020 = '{% static "map_data/" %}'+'management_2020.geojson';
+                        // update the map
+                        // change the overlay
+                        if (map.getLayer("2018")) {
+                            map.removeLayer("2018");
+                        };
+                        if (map.getSource("2018")) {
+                            map.removeSource("2018");
+                        };
+                        if (map.getLayer("2019")) {
+                            map.removeLayer("2019");
+                        };
+                        if (map.getSource("2019")) {
+                            map.removeSource("2019");
+                        };
+                        if (map.getLayer("2020")) {
+                            map.removeLayer("2020");
+                        };
+                        if (map.getSource("2020")) {
+                            map.removeSource("2020");
+                        };
+
+  map.addSource('2018', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': raster2018
+  });
+  map.addSource('2019', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': raster2019
+  });
+  map.addSource('2020', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': raster2020
+  });
+  /*here we are adding a source, then a layer based on that that source*/
+
+addLayers();
+
+};
 
 $( "#management-area label" ).click(function() {
         management_id = $(this).find('input').val();
         management_name=$(this).text();
       console.log(management_id);
+      if (management_id != 'None' && budget_id != "None" && efficiency_id != 'None') {
+        $("#management-area-value").text(management_name);
+      $("#budget-value").text(budget_name);
+      $("#efficiency-value").text(efficiency_id);
+adjustPlot();
+updateLayers();
+};
 });
+
 $( "#budget label" ).click(function() {
         budget_id = $(this).find('input').val();
         budget_name=$(this).text();
       console.log(budget_id);
+      if (management_id != 'None' && budget_id != "None" && efficiency_id != 'None') {
+        $("#management-area-value").text(management_name);
+      $("#budget-value").text(budget_name);
+      $("#efficiency-value").text(efficiency_id);
+adjustPlot();
+updateLayers();
+};
 });
+
 $( "#efficiency" ).click(function() {
         efficiency_id = $(this).find('input').val();
       console.log(efficiency_id);
@@ -1176,6 +1328,7 @@ if (management_id != 'None' && budget_id != "None" && efficiency_id != 'None') {
       $("#budget-value").text(budget_name);
       $("#efficiency-value").text(efficiency_id);
 adjustPlot();
+updateLayers();
 };
 });
 
@@ -1184,47 +1337,11 @@ $( "#year" ).change(function() {
       console.log(year_id);
       $("#year-value").text(year_id);
 
-      var rasterSource = '{% static "map_data/" %}'+'management_'+ year_id + '.geojson';
-                        // update the map
-                        // change the overlay
-                        if (map.getLayer("infection_layer")) {
-                            map.removeLayer("infection_layer");
-                        };
-                        if (map.getSource("infection")) {
-                            map.removeSource("infection");
-                        };
+      map.setLayoutProperty('2018','visibility','none');
+      map.setLayoutProperty('2019','visibility','none');
+      map.setLayoutProperty('2020','visibility','none');
+      map.setLayoutProperty(year_id,'visibility','visible');
 
-  map.addSource('infection', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    "data": rasterSource,
-  });
-  /*here we are adding a source, then a layer based on that that source*/
-
-map.addLayer({
-                            "id": 'infection_layer',
-                            "type": 'fill',
-                            "source": 'infection',
-                            'paint': {
-                            'fill-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'layer.1'],
-                            0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
-                            ],
-                            'fill-opacity': 0.5
-                            }
-                            }, 'waterway-label'); 
 
 });
 
