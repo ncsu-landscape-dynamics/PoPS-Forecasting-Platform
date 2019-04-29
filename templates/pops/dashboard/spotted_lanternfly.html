@@ -256,9 +256,9 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
             <div class="row no-gutters">
               <div class="col-12 d-flex flex-column">
                 <div id="run-title">
-                <span id="management-area-value">Perimeter</span>, 
-<span id="budget-value">$6 million</span> with
-<span id="efficiency-value">100</span>% efficiency
+                <span id="management-area-value">NO MANAGEMENT</span>, 
+<span id="budget-value"></span> with
+<span id="efficiency-value">0</span>% efficiency
 (<span id="year-value">2018</span>)
 
                   <button id="show-hide-new-view" class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
@@ -271,39 +271,40 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
               <div id="run-details" class="d-none d-md-block col-md-5 p-1">
                   <h5>Management area:</h5>
 <div id="management-area" class="btn-group btn-group-toggle" data-toggle="buttons">
-  <label id="perimeter-button" class="btn btn-secondary active">
-    <input type="radio" value="perimeter" name="options" id="perimeter-button" autocomplete="off" checked> Perimeter
+  <label id="perimeter-button" class="btn btn-secondary ">
+    <input type="radio" value="SLF Perimeter" name="options" id="perimeter-button" autocomplete="off" checked> SLF Perimeter
   </label>
   <label class="btn btn-secondary">
-    <input type="radio" value="burks" name="options" id="burks-button" autocomplete="off">Burks County
+    <input type="radio" value="Berks County" name="options" id="berks-button" autocomplete="off">Berks County
   </label>
   <label class="btn btn-secondary">
-    <input type="radio" value="both" name="options" id="both-button" autocomplete="off"> Perimeter + Burks County
+    <input type="radio" value="Berks County and SLF Perimeter" name="options" id="both-button" autocomplete="off"> Berks County and SLF Perimeter
   </label>
 </div>
                   <h5 class="pt-4">Budget:</h5>
 <div id="budget" class="btn-group btn-group-toggle" data-toggle="buttons">
-  <label class="btn btn-secondary active">
-    <input type="radio" value="6" name="options" id="6-button" autocomplete="off" checked> $6 million
+  <label class="btn btn-secondary ">
+    <input type="radio" value="$6 million" name="options" id="6-button" autocomplete="off" checked> $6 million
   </label>
   <label class="btn btn-secondary">
-    <input type="radio" value="12" name="options" id="12-button" autocomplete="off"> $12 million
+    <input type="radio" value="$12 million" name="options" id="12-button" autocomplete="off"> $12 million
   </label>
   <label class="btn btn-secondary">
-    <input type="radio" value="18" name="options" id="18-button" autocomplete="off"> $18 million
+    <input type="radio" value="$18 million" name="options" id="18-button" autocomplete="off"> $18 million
   </label>
 </div>
 
 <div id="efficiency" class="pt-4 range range-info">
-            <h5>Efficiency: <output id="displayEfficiency">100</output>%</h5>
-            <input class="custom-range px-2" type="range" name="range" min="0" max="100" step="10" value="100" onchange="displayEfficiency.value=value">
+            <h5>Efficiency: <output id="displayEfficiency">0</output>%</h5>
+            <input class="custom-range px-2" type="range" name="range" min="0" max="100" step="10" value="0" onchange="displayEfficiency.value=value">
           </div>
 
 <div id="year" class="pt-4 range range-info">
             <h5>Year: <output id="displayYear">2018</output></h5>
-            <input class="custom-range px-2" type="range" name="range" min="2018" max="2022" step="1" value="2018" onchange="displayYear.value=value">
+            <input class="custom-range px-2" type="range" name="range" min="2018" max="2020" step="1" value="2018" onchange="displayYear.value=value">
           </div>
-
+<h5 class="pt-4">Output:</h5>
+                  <div id="side_plot1" class="" style='height:250px'></div>
 
               </div>
             </div>
@@ -329,7 +330,6 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   <div id="gauge-plots" class="row no-gutters">
                     <div id="money-review" class="col" style="width:180px; height:160px"></div>
                   </div>
-                  <div id="side_plot1" class="" style='height:150px'></div>
                   <div id="side_plot2" class="" style='height:150px'></div>
                   <button id="modify-run" class="btn btn-block btn-secondary mt-4">Create new PoPS Run based on this run</button>
               </div>
@@ -498,7 +498,12 @@ map.on('load', function() {
   map.addSource('infection', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/infection_0_2019.geojson" %}'
+    'data': '{% static "map_data/management_2019.geojson" %}'
+  });
+    map.addSource('perimeter_zone', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': '{% static "map_data/slf_aphis_treatment.geojson" %}'
   });
   /*here we are adding a source, then a layer based on that that source*/
 
@@ -527,10 +532,22 @@ map.addLayer({
                             }
                             }, 'waterway-label'); 
 
-
-
-
-});
+      map.addLayer({
+                            "id": 'perimeter_zone_layer',
+                            "type": 'fill',
+                            "source": 'perimeter_zone',
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'Dis_KB'],
+                            1, '#ff0000'
+                            ],
+                            'fill-opacity': 0.5
+                            }
+                            }, 'waterway-label'); 
+                            
+  });
 
 map2.on('load', function() {
   map2.addSource('infection', {
@@ -978,13 +995,14 @@ map3.addLayer({
 
       var layout = {
         xaxis: {
+          dtick: 1,
           tickfont: {
-            size: 12,
-            color: 'rgb(107, 107, 107)'
+            size: 14,
+            color: 'rgb(107, 107, 107)',
           }
         },
         yaxis: {
-          showticklabels: false,
+          showticklabels: true,
           title: title,
           titlefont: {
             size: 12,
@@ -1000,7 +1018,7 @@ map3.addLayer({
         paper_bgcolor: '#0b0d0e',
         plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
         margin: {
-          l: 30,
+          l: 50,
           r: 20,
           b: 25,
           t: 10,
@@ -1014,13 +1032,7 @@ map3.addLayer({
       });
     };
 
-    var x = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
-    var y1 = [20, 40, 100, 300, 700, 1000];
-    var y2 = [20, 30, 50, 100, 300, 400];
-    $(side_plot("side_plot1", '# infected', x, y1, y2, '#2598b8', error_bar=false));
-    $(side_plot("side_plot2", 'Area infected', x, y1, y2, '#5fc2c2',error_bar=false));
-    $(side_plot("main_plot1", '# infected', x, y1, y2, '#2598b8',error_bar=false));
-    $(side_plot("main_plot2", 'Area infected', x, y1, y2, '#5fc2c2',error_bar=false));
+
 
     $('#show-hide-new-view').on('click', function () {
       var bounds = map.getBounds();
@@ -1042,8 +1054,9 @@ map3.addLayer({
       $(this).text($(this).text() == 'Hide Details' ? 'Show Details' : 'Hide Details');
     });
 
-        $('#new-tab').on('shown.bs.tab', function () {
+    $('#new-tab').on('shown.bs.tab', function () {
         map.resize();
+    $(side_plot("side_plot1", '# infected', x, y1, y2, '#2598b8',error_bar=false));
     });
         $('#map-view-tab').on('shown.bs.tab', function () {
         map2.resize();
@@ -1068,34 +1081,110 @@ $( "#analysis-details" ).click(function() {
 });
   </script>
   <script>
-var management_id = 'burks';
-var budget_id = '6';
-var efficiency_id = '100';
+var management_id = 'None';
+var budget_id = "None";
+var efficiency_id = 'None';
 var year_id = '2018';
+
+      function makeplot() {
+ 	Plotly.d3.csv('{% static "map_data/area_infected.csv" %}', function(data){ processData(data) } );
+};
+	
+function processData(allRows) {
+var result = allRows.filter(function(row) {
+  return (row.location == management_id && row.efficacy == efficiency_id && row.amount == budget_id);
+});
+var area = result[0].mean;
+var year = [], mean = [], standard_deviation = [];
+
+for (var i=0; i<result.length; i++) {
+    row = result[i];
+    year.push( row['year'] );
+    mean.push( row['mean'] );
+    standard_deviation.push( row['sd'] );
+  }
+    var x = year;
+    var y1 = mean;
+    var y2 = [0,0,0];
+    $(side_plot("side_plot1", 'Area Infected', x, y1, y2, '#2598b8', error_bar=false));
+  console.log( 'Year',year, 'Mean',mean, 'SD',standard_deviation );
+ 
+  console.log(result)
+    console.log(area)
+};
+
+
+   makeplot();
+
+      function adjustPlot() {
+ 	Plotly.d3.csv('{% static "map_data/area_infected.csv" %}', function(data){ updateData(data) } );
+};
+	
+function updateData(allRows) {
+  var nomanage = allRows.filter(function (row) {
+    return (row.location == "None" && row.efficacy == "None" && row.amount == "None");
+  });
+  var year1 = [],
+    mean1 = [],
+    standard_deviation1 = [];
+
+  for (var i = 0; i <
+    nomanage.length; i++) {
+    row = nomanage[i];
+    year1.push(row['year']);
+    mean1.push(row['mean']);
+    standard_deviation1.push(row['sd']);
+  }
+
+  var result = allRows.filter(function (row) {
+    return (row.location == management_id && row.efficacy == efficiency_id && row.amount == budget_id);
+  });
+  var year = [],
+    mean = [],
+    standard_deviation = [];
+
+  for (var i = 0; i < result.length; i++) {
+    row = result[i];
+    year.push(row['year']);
+    mean.push(row['mean']);
+    standard_deviation.push(row['sd']);
+  }
+  var x = year;
+  var y1 = mean1;
+  var y2 = mean;
+    $(side_plot("side_plot1", 'Area Infected', x, y1, y2, '#2598b8', error_bar=false));
+  console.log('Year', year, 'Mean', mean, 'SD', standard_deviation);
+};
+
 
 $( "#management-area label" ).click(function() {
         management_id = $(this).find('input').val();
         management_name=$(this).text();
       console.log(management_id);
-      $("#management-area-value").text(management_name);
 });
 $( "#budget label" ).click(function() {
         budget_id = $(this).find('input').val();
         budget_name=$(this).text();
       console.log(budget_id);
-      $("#budget-value").text(budget_name);
 });
 $( "#efficiency" ).click(function() {
         efficiency_id = $(this).find('input').val();
       console.log(efficiency_id);
+
+if (management_id != 'None' && budget_id != "None" && efficiency_id != 'None') {
+        $("#management-area-value").text(management_name);
+      $("#budget-value").text(budget_name);
       $("#efficiency-value").text(efficiency_id);
+adjustPlot();
+};
 });
+
 $( "#year" ).change(function() {
         year_id = $(this).find('input').val();
       console.log(year_id);
       $("#year-value").text(year_id);
 
-      var rasterSource = '{% static "map_data/" %}'+'infection_0_'+ year_id + '.geojson';
+      var rasterSource = '{% static "map_data/" %}'+'management_'+ year_id + '.geojson';
                         // update the map
                         // change the overlay
                         if (map.getLayer("infection_layer")) {
@@ -1138,6 +1227,8 @@ map.addLayer({
                             }, 'waterway-label'); 
 
 });
+
+
 
 </script>
 
