@@ -270,6 +270,8 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
 <span id="efficiency-value">0</span>% efficiency
 (<span id="year-value">2018</span>)
 
+
+
                   <button id="show-hide-new-view" class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
                 </div>
               </div>
@@ -277,8 +279,27 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                 <div id="map" class="large_map"></div>
               </div>
 
+
               <div id="run-details" class="d-none d-md-block col-md-5 p-1">
-                  <h5>Management area:</h5>
+              <div id="legend-container">
+              <h5 >Probability of infection:</h5>
+              <div class="legend-color" style="background-color:#009CB0"></div>
+              <div class="legend-color" style="background-color:#00C49D"></div>
+              <div class="legend-color" style="background-color:#00D793"></div>
+              <div class="legend-color" style="background-color:#00FF80"></div>
+              <div class="legend-color" style="background-color:#24DA80"></div>
+              <div class="legend-color" style="background-color:#48B680"></div>
+              <div class="legend-color" style="background-color:#6D9180"></div>
+              <div class="legend-color" style="background-color:#916D80"></div>
+              <div class="legend-color" style="background-color:#B64880"></div>
+              <div class="legend-color" style="background-color:#DA2480"></div>
+              <div class="legend-color" style="background-color:#ff0000"></div>
+              <div style="clear: left;">
+              <p class="legend-label" style="float:left; margin-right:170px;">0%</p>
+              <p class="legend-label">100%</p>
+</div>
+</div>
+                  <h5 >Management area:</h5>
 <div id="management-area" class="btn-group btn-group-toggle" data-toggle="buttons">
   <label id="perimeter-button" class="btn btn-secondary ">
     <input type="radio" value="SLF Perimeter" name="options" id="perimeter-button" autocomplete="off" checked> SLF Perimeter
@@ -304,8 +325,8 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
 </div>
 
 <div id="efficiency" class="pt-4 range range-info">
-            <h5>Efficiency: <output id="displayEfficiency">0</output>%</h5>
-            <input class="custom-range px-2" type="range" name="range" min="0" max="100" step="10" value="0" onchange="displayEfficiency.value=value">
+            <h5>Efficiency: <output id="displayEfficiency">--</output>%</h5>
+            <input class="custom-range px-2" type="range" name="range" min="50" max="100" step="10" value="0" onchange="displayEfficiency.value=value">
           </div>
 
 <div id="year" class="pt-4 range range-info">
@@ -313,7 +334,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
             <input class="custom-range px-2" type="range" name="range" min="2018" max="2020" step="1" value="2018" onchange="displayYear.value=value">
           </div>
 <h5 class="pt-4">Output:</h5>
-                  <div id="side_plot1" class="" style='height:250px'></div>
+                  <div id="side_plot1" class="" style='height:200px'></div>
 
               </div>
             </div>

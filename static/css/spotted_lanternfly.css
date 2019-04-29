@@ -26,3 +26,16 @@
     border-color: #f55949;
 }
 
+#legend-container{
+}
+.legend-color {
+  height: 10px;
+  width: 20px;
+  float:left;
+}
+
+.legend-label {
+font-size:0.8em;
+}
+
+
