@@ -469,7 +469,7 @@ map.addLayer({
                             'fill-color': [
                             'interpolate',
                             ['linear'],
-                            ['get', 'layer.1'],
+                            ['get', 'layer.2'],
                             0, '#009CB0',
                             0.1, '#00C49D',
                             0.2, '#00D793',
@@ -496,7 +496,7 @@ map.addLayer({
                             'fill-color': [
                             'interpolate',
                             ['linear'],
-                            ['get', 'layer.1'],
+                            ['get', 'layer.3'],
                             0, '#009CB0',
                             0.1, '#00C49D',
                             0.2, '#00D793',
@@ -544,9 +544,9 @@ map.on('load', function() {
                             'interpolate',
                             ['linear'],
                             ['get', 'Dis_KB'],
-                            1, '#ff0000'
+                            1, 'grey'
                             ],
-                            'fill-opacity': 0.5
+                            'fill-opacity': 0.3
                             }
                             }, 'waterway-label'); 
 
@@ -1006,8 +1006,8 @@ $( "#management-area label" ).click(function() {
         management_name=$(this).text();
       console.log(management_id);
       if (management_id != 'None' && budget_id != "None" && efficiency_id != 'None') {
-        $("#management-area-value").text(management_name);
-      $("#budget-value").text(budget_name);
+        $("#management-area-value").text(management_id);
+      $("#budget-value").text(budget_id);
       $("#efficiency-value").text(efficiency_id);
 adjustPlot();
 updateLayers();
@@ -1019,8 +1019,8 @@ $( "#budget label" ).click(function() {
         budget_name=$(this).text();
       console.log(budget_id);
       if (management_id != 'None' && budget_id != "None" && efficiency_id != 'None') {
-        $("#management-area-value").text(management_name);
-      $("#budget-value").text(budget_name);
+        $("#management-area-value").text(management_id);
+      $("#budget-value").text(budget_id);
       $("#efficiency-value").text(efficiency_id);
 adjustPlot();
 updateLayers();
