@@ -235,10 +235,10 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
     <div class="row no-gutters">
       <div id="side-bar-container" class="col-auto text-center ">
         <div class="nav " id="side-bar" role="tablist" aria-orientation="vertical">
-          <a class="nav-link active" id="new-tab" data-toggle="pill" title="Create new run" data-placement="right" href="#v-pills-new"
+          <a class="nav-link " id="map-view-tab" data-toggle="pill" title="Create new run" data-placement="right" href="#v-pills-map-view"
             role="tab" aria-controls="v-pills-home" aria-selected="true"><i class="align-middle fas fa-plus-circle"></i></a>
-          <a class="nav-link " id="map-view-tab" data-toggle="pill" title="View map results for selected run"
-            data-placement="right" href="#v-pills-map-view" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i
+          <a class="nav-link active" id="new-tab" data-toggle="pill" title="View map results for selected run"
+            data-placement="right" href="#v-pills-new" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i
               class="align-middle fas fa-globe-americas"></i></a>
           <a class="nav-link" id="chart-view-tab" data-toggle="pill" title="View detailed analytics for selected run"
             data-placement="right" href="#v-pills-chart-view" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i
@@ -318,16 +318,13 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
               </div>
             </div>
           </div>
-          <div id="v-pills-map-view" class="tab-pane fade show  no-gutters" role="tabpanel">
+          <div id="v-pills-new" class="tab-pane fade show  no-gutters" role="tabpanel">
             <div class="row no-gutters">
               <div class="col-12 d-flex flex-column">
                 <div id="run-title">
                   Run: Spotted Lanternfly with Management in Central Infection Region <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
                   <button id="show-hide-map-view" class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
                 </div>
-              </div>
-              <div id="map-container-map-view" class="col-md-9">
-                <div id="map2" class="large_map"></div>
               </div>
 
               <div id="side-plots" class="d-none d-md-block col-md-3 p-1">
@@ -348,26 +345,14 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
             <div class="row no-gutters" style="background-color: #0b0d0e;">
               <div class="col-12 d-flex flex-column">
                 <div id="run-title">
-                  Run: My run name <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
+<h4>Details</h4>                
                 </div>
               </div>
 
-              <div id="" class="col-md-3 p-1">
-                <div style="">
-                  <h4>
-                    Details
-                  </h4>
-                                  <div id="map3" class="small_map"></div>
 
-                  <span>Management area: <strong id="polygon-info">425.1</strong> km<sup>2</sup></span>
-                  <div id="gauge-plots" class="row no-gutters">
-                    <div id="money-chart-view" class="" style="width:180px; height:160px"></div>
-                  </div>
-                </div>
-              </div>
-              <div id="" class="col-md-5">
+              <div id="" class="col-md-8">
 
-                  <div id="main_plot1" class="" style='height:250px; '></div>
+                  <div id="main_plot1" class="" style='height:550px; '></div>
                   <div id="main_plot2" class="" style='height:250px; '></div>
               </div>
                             <div id="" class="col-md-4">
@@ -387,68 +372,8 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
       </div>
 
     </div>
-    <div class="col">
-    <div id="run-preview-description" class="row">
-      <div class="col">
-        <div class="">
-          Runs in this session:
-        </div>
-        <div class="d-inline">
-          Show:
-        </div>
-        <div class="d-inline" id="run_preview_options" style="font-size:0.8em;">
-          <div class="form-check form-check-inline">
-            <input checked class="form-check-input" type="checkbox" id="infected_number_on_off" value="infected_number">
-            <label class="form-check-label" for="infected_number_on_off"># Infected</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input checked class="form-check-input" type="checkbox" id="infected_area_on_off" value="infected_area">
-            <label class="form-check-label" for="infected_area_on_off">Area Infected</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input checked class="form-check-input" type="checkbox" id="money_on_off" value="money">
-            <label class="form-check-label" for="money_on_off">Management Cost ($)</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input checked class="form-check-input" type="checkbox" id="apples_on_off" value="apples">
-            <label class="form-check-label" for="apples_on_off">Apples</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input checked class="form-check-input" type="checkbox" id="grapes_on_off" value="grapes">
-            <label class="form-check-label" for="grapes_on_off">Grapes</label>
-          </div>
-        </div>
-        <div class="text-muted" style="font-size:0.7em;">Note: In production, clicking on the runs shown below will take you to a detailed view
-        of that run. Also, the data can be selected and sorted for comparison. That functionality has not yet been implemented.</div>
-      </div>
-      <div class="col-auto">
-        <select id="sort_runs_by" class="custom-select custom-select-sm">
-          <option selected>Sort runs by:</option>
-          <option value="1">Most recent</option>
-          <option value="2">Number infected</option>
-          <option value="3">Area infected</option>
-          <option value="4">Money spent</option>
-        </select>
 
       </div>
-    </div>
-    </div>
-    <div id="run-preview-container" class="row no-gutters flex-nowrap">
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot1" run_title="Run1" infected=2 area=20 money=19 a=10000 b=15000 %}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot2" run_title="Run2" infected=4 area=40 money=10 a=70000 b=20000%}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot3" run_title="My favorite run" infected=2 area=20 money=17 a=5000 b=10000 %}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot4" run_title="Management extending beyond current boundaries" infected=2 area=20 money=19 a=10000 b=15000%}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot5" run_title="Run1" infected=2 area=20 money=5 a=2000 b=5000%}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot6" run_title="Run1" infected=5 area=60 money=29 a=1500 b=1000%}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot7" run_title="My favorite run" infected=2 area=20 money=19 a=3000 b=2000%}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot8" run_title="Management extending beyond current boundaries" infected=2 area=20 money=19 a=10000 b=15000%}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot9" run_title="Run1" infected=2 area=20 money=5 a=10000 b=1000 %}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot10" run_title="Run1" infected=5 area=60 money=29 a=1000 b=15000 %}
-    </div>
-</div>
-<div>
-more content...
-</div>
 
 
   </div>
@@ -487,20 +412,7 @@ CheckValue('#money_on_off');
       center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
       zoom: 7 // starting zoom
     });
-    var map2 = new mapboxgl.Map({
-      container: 'map2', // container id
-      style: 'mapbox://styles/mapbox/light-v10', //hosted style id
-      center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
-      zoom: 7 // starting zoom
-    });
 
-    var map3 = new mapboxgl.Map({
-      container: 'map3', // container id
-      style: 'mapbox://styles/mapbox/light-v10', //hosted style id
-      center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
-      zoom: 6, // starting zoom
-
-    });
 
 function addLayers() {
   var visibility_2018 = 'none';
@@ -605,17 +517,17 @@ map.on('load', function() {
   map.addSource('2018', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/management_2018.geojson" %}'
+    'data': '{% static "map_data/no_management_2018.geojson" %}'
   });
   map.addSource('2019', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/management_2019.geojson" %}'
+    'data': '{% static "map_data/no_management_2019.geojson" %}'
   });
   map.addSource('2020', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/management_2020.geojson" %}'
+    'data': '{% static "map_data/no_management_2020.geojson" %}'
   });
     map.addSource('perimeter_zone', {
     'type': 'geojson',
@@ -643,412 +555,15 @@ addLayers();
                             
   });
 
-map2.on('load', function() {
-  map2.addSource('infection', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/infection_0_2019.geojson" %}'
-  });
-  /*here we are adding a source, then a layer based on that that source*/
-
-map2.addLayer({
-                            "id": 'infection_layer',
-                            "type": 'fill',
-                            "source": 'infection',
-                            'paint': {
-                            'fill-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'layer.1'],
-                            0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
-                            ],
-                            'fill-opacity': 0.5
-                            }
-                            }, 'waterway-label');
-
-
-                        map2.addLayer({
-                          'id': 'management_line',
-                          'type': 'line',
-                          'source': {
-                          'type': 'geojson',
-                          'data': {
-                          'type': 'Feature',
-                          'geometry': {
-                          'type': 'Polygon',
-                          'coordinates': [[[-76.49533170441632, 40.1039152196177],
-                          [-74.69533170441632, 39.8039152196177],
-                          [-74.89533170441632, 40.5039152196177],
-                          [-75.89533170441632, 41.0039152196177],
-                          [-76.89533170441632, 40.5039152196177],],
-                          ]
-                          }
-                          }
-                          },
-                          'layout': {},
-                          'paint': {
-                          'line-color': 'rgba(255, 0, 0, 1)',
-                          'line-width': 4
-
-                          }
-                          });
-                        map2.addLayer({
-                          'id': 'management_fill',
-                          'type': 'fill',
-                          'source': {
-                          'type': 'geojson',
-                          'data': {
-                          'type': 'Feature',
-                          'geometry': {
-                          'type': 'Polygon',
-                          'coordinates': [[[-76.49533170441632, 40.1039152196177],
-                          [-74.69533170441632, 39.8039152196177],
-                          [-74.89533170441632, 40.5039152196177],
-                          [-75.89533170441632, 41.0039152196177],
-                          [-76.89533170441632, 40.5039152196177],],
-                          ]
-                          }
-                          }
-                          },
-                          'layout': {},
-                          'paint': {
-                          'fill-color': 'rgba(255, 0, 0, 1)',
-                            'fill-opacity': 0.1,
-                          }
-                          });
-
-});
-
-
-
-
-map3.on('load', function() {
-  map3.addSource('infection', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/infection_0_2019.geojson" %}'
-  });
-  /*here we are adding a source, then a layer based on that that source*/
-
-map3.addLayer({
-                            "id": 'infection_layer',
-                            "type": 'fill',
-                            "source": 'infection',
-                            'paint': {
-                            'fill-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'layer.1'],
-                            0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
-                            ],
-                            'fill-opacity': 0.5
-                            }
-                            }, 'waterway-label');
-
-                        map3.addLayer({
-                          'id': 'management_area',
-                          'type': 'line',
-                          'source': {
-                          'type': 'geojson',
-                          'data': {
-                          'type': 'Feature',
-                          'geometry': {
-                          'type': 'Polygon',
-                          'coordinates': [[[-76.49533170441632, 40.1039152196177],
-                          [-74.69533170441632, 39.8039152196177],
-                          [-74.89533170441632, 40.5039152196177],
-                          [-75.89533170441632, 41.0039152196177],
-                          [-76.89533170441632, 40.5039152196177],],
-                          ]
-                          }
-                          }
-                          },
-                          'layout': {},
-                          'paint': {
-                          'line-color': 'rgba(255, 0, 0, 1)',
-                          'line-width': 4
-
-                          }
-                          });
-});
-
-
-
-
-    var draw = new MapboxDraw({
-      displayControlsDefault: false,
-      controls: {
-        polygon: true,
-        trash: true
-      }, 
-  styles: [
-    // ACTIVE (being drawn)
-    // line stroke
-    {
-        "id": "gl-draw-line",
-        "type": "line",
-        "filter": ["all", ["==", "$type", "LineString"], ["!=", "mode", "static"]],
-        "layout": {
-          "line-cap": "round",
-          "line-join": "round"
-        },
-        "paint": {
-          "line-color": "red",
-          "line-dasharray": [0.2, 2],
-          "line-width": 3
-        }
-    },
-    // polygon fill
-    {
-      "id": "gl-draw-polygon-fill",
-      "type": "fill",
-      "filter": ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
-      "paint": {
-        "fill-color": "#D20C0C",
-        "fill-outline-color": "#D20C0C",
-        "fill-opacity": 0.1
-      }
-    },
-    // polygon outline stroke
-    // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
-    {
-      "id": "gl-draw-polygon-stroke-active",
-      "type": "line",
-      "filter": ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
-      "layout": {
-        "line-cap": "round",
-        "line-join": "round"
-      },
-      "paint": {
-        "line-color": "#D20C0C",
-        "line-width": 3
-      }
-    },
-    // vertex point halos
-    {
-      "id": "gl-draw-polygon-and-line-vertex-halo-active",
-      "type": "circle",
-      "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
-      "paint": {
-        "circle-radius": 7,
-        "circle-color": "#FFF"
-      }
-    },
-    // vertex points
-    {
-      "id": "gl-draw-polygon-and-line-vertex-active",
-      "type": "circle",
-      "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
-      "paint": {
-        "circle-radius": 5,
-        "circle-color": "#D20C0C",
-      }
-    },
-
-    // INACTIVE (static, already drawn)
-    // line stroke
-    {
-        "id": "gl-draw-line-static",
-        "type": "line",
-        "filter": ["all", ["==", "$type", "LineString"], ["==", "mode", "static"]],
-        "layout": {
-          "line-cap": "round",
-          "line-join": "round"
-        },
-        "paint": {
-          "line-color": "#000",
-          "line-width": 3
-        }
-    },
-    // polygon fill
-    {
-      "id": "gl-draw-polygon-fill-static",
-      "type": "fill",
-      "filter": ["all", ["==", "$type", "Polygon"], ["==", "mode", "static"]],
-      "paint": {
-        "fill-color": "#000",
-        "fill-outline-color": "#000",
-        "fill-opacity": 0.1
-      }
-    },
-    // polygon outline
-    {
-      "id": "gl-draw-polygon-stroke-static",
-      "type": "line",
-      "filter": ["all", ["==", "$type", "Polygon"], ["==", "mode", "static"]],
-      "layout": {
-        "line-cap": "round",
-        "line-join": "round"
-      },
-      "paint": {
-        "line-color": "#000",
-        "line-width": 3
-      }
-    }
-  ]
-});
-
-    map.addControl(draw);
 
 
 
 
 
 
-    function round(value, decimals) {
-      return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
-    }
-
-    function gauge_plot(div_id, amount, max_amount) {
-
-      var max_level = max_amount;
-      var level = amount;
-
-      if (level >= max_level) {
-        main_color = "#f55949";
-        drawn_level = max_level;
-        var overbudget = level - max_level;
-        warning_msg = "Budget exceeded by:<br>$" + round(overbudget, 2) + " million";
-        warning_color = "#f55949";
-      } else {
-        main_color = "#7ba83d";
-        drawn_level = level;
-        warning_msg = 'spent on<br>management';
-        warning_color = 'grey';
-      };
-      var data = [{
-        values: [drawn_level, (0.98 * max_level - drawn_level), (max_level / 50), (max_level / 3)],
-        rotation: -135,
-        direction: "clockwise",
-        sort: false,
-        textinfo: 'text',
-        textposition: 'inside',
-        marker: {
-          colors: [main_color, '#676b73', '#f55949', 'rgba(255, 255, 255, 0)']
-        },
-        labels: ['Money spent in <br> this run:<br>$' + level + ' million', '', 'Budget: $' + max_level +
-          ' million', ''
-        ],
-        hoverinfo: 'label',
-        hole: 0.8,
-        type: 'pie',
-        showlegend: false
-      }];
-
-      var layout = {
-        annotations: [{
-            xref: 'paper',
-            yref: 'paper',
-            x: 0.5,
-            xanchor: 'middle',
-            y: 0.5,
-            yanchor: 'middle',
-            text: '$' + round(level, 1),
-            font: {
-              family: 'Helvetica',
-              size: 30,
-              color: '#ffffff'
-            },
-            align: 'center',
-
-            showarrow: false,
-          },
-          {
-            xref: 'paper',
-            yref: 'paper',
-            x: 0.5,
-            xanchor: 'center',
-            y: 0.3,
-            yanchor: 'middle',
-            text: 'million',
-            font: {
-              family: 'Helvetica',
-              size: 20,
-              color: '#ffffff'
-            },
-            align: 'center',
-
-            showarrow: false,
-          },
-          {
-            xref: 'paper',
-            yref: 'paper',
-            x: 0.5,
-            xanchor: 'center',
-            y: 0.0,
-            yanchor: 'middle',
-            text: warning_msg,
-            font: {
-              family: 'Helvetica',
-              size: 14,
-              color: warning_color,
-            },
-            align: 'center',
-
-            showarrow: false,
-          }
-
-        ],
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
-        margin: {
-          l: 30,
-          r: 30,
-          b: 20,
-          t: 20,
-          pad: 10
-        },
 
 
 
-        title: {
-          text: '',
-          font: {
-            color: 'white',
-          },
-        },
-
-
-        xaxis: {
-          zeroline: false,
-          showticklabels: false,
-          showgrid: false,
-        },
-        yaxis: {
-          zeroline: false,
-          showticklabels: false,
-          showgrid: false,
-        }
-      };
-
-      return Plotly.newPlot(div_id, data, layout, {
-        displayModeBar: false,
-        responsive: true
-      });
-    }
-
-    gauge_plot("money-review", 57.8, 120);
-    gauge_plot("money-chart-view", 57.8, 120);
 
     function side_plot(myDiv, title, x, y1, y2, color, error_bar=true) {
       var trace1 = {
@@ -1126,6 +641,121 @@ map3.addLayer({
       });
     };
 
+  function main_plot(myDiv, title, x, y1, y2, y3, standard_deviation_6,standard_deviation_12,standard_deviation_18, no_management, error_bar=true) {
+var trace1 = {
+  x: x,
+  y: y1,
+  error_y: {
+    type: 'data',
+    array: standard_deviation_6,
+    visible: true
+  },
+  name: '$6 million',
+  type: 'bar'
+};
+
+var trace2 = {
+  x: x,
+  y: y2,
+    error_y: {
+    type: 'data',
+    array: standard_deviation_12,
+    visible: true
+  },
+  name: '$12 million',
+  type: 'bar'
+};
+
+var trace3 = {
+  x: x,
+  y: y3,
+  error_y: {
+    type: 'data',
+    array: standard_deviation_18,
+    visible: true
+  },  name: '$18 million',
+  type: 'bar'
+};
+
+var data = [trace1, trace2, trace3];
+      var layout = {
+        shapes: [
+    {
+        type: 'line',
+        xref: 'paper',
+        x0: 0,
+        y0: no_management,
+        x1: 1,
+        y1: no_management,
+        line:{
+            color: 'rgb(255, 0, 0)',
+            width: 2,
+            dash:'dot'
+        }
+    }
+    ],
+    annotations: [
+    {
+      x: 0.5,
+      y: no_management,
+      xref: 'paper',
+      yref: 'y',
+      font: {
+            color: 'rgb(255, 0, 0)',
+          size: 12
+        },
+      text: 'No management',
+      showarrow: true,
+      arrowhead: 1,
+      ax: 0,
+      ay: -10
+    }
+  ],
+        xaxis: {
+          dtick: 1,
+          tickfont: {
+            size: 14,
+            color: 'white',
+          }
+        },
+        yaxis: {
+          barmode: 'group',
+          showticklabels: true,
+          title: title,
+          titlefont: {
+            size: 16,
+            color: 'white',
+          },
+
+          tickfont: {
+            size: 12,
+            color: 'white',
+          }
+        },
+        showlegend: true,
+        legend: {
+          traceorder: 'normal',
+          font: {
+            family: 'sans-serif',
+            size: 12,
+            color: 'white'
+          },
+          borderwidth: 2
+        },
+        paper_bgcolor: '#0b0d0e',
+        plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
+        margin: {
+          l: 80,
+          r: 20,
+          b: 50,
+          t: 60,
+          pad: 0
+        },
+      };
+
+Plotly.newPlot(myDiv, data, layout);
+
+    };
 
 
     $('#show-hide-new-view').on('click', function () {
@@ -1143,25 +773,18 @@ map3.addLayer({
       $('#map-container-map-view').toggleClass('col-md-9 col-md-12');
       $('#side-plots').toggleClass('d-md-block d-md-none');
       //$('#map').toggleClass( 'large_map small_map' );
-      map2.resize();
       //map.fitBounds(bounds);
       $(this).text($(this).text() == 'Hide Details' ? 'Show Details' : 'Hide Details');
     });
 
     $('#new-tab').on('shown.bs.tab', function () {
         map.resize();
-    $(side_plot("side_plot1", '# infected', x, y1, y2, '#2598b8',error_bar=false));
     });
         $('#map-view-tab').on('shown.bs.tab', function () {
-        map2.resize();
-    $(side_plot("side_plot1", '# infected', x, y1, y2, '#2598b8',error_bar=false));
-    $(side_plot("side_plot2", 'Area infected', x, y1, y2, '#5fc2c2',error_bar=false));
     });
 
       $('#chart-view-tab').on('shown.bs.tab', function () {
-        map3.resize();
-    $(side_plot("main_plot1", '# infected', x, y1, y2, '#2598b8'));
-    $(side_plot("main_plot2", 'Area infected', x, y1, y2, '#5fc2c2'));
+        overallPlot();
     });
 
 $( "#submit-run" ).click(function() {
@@ -1225,10 +848,11 @@ function updateData(allRows) {
     mean1.push(row['mean']);
     standard_deviation1.push(row['sd']);
   }
-
+console.log('updateData loop location:', management_id, 'efficacy:', efficiency_id,'budget',budget_id)
   var result = allRows.filter(function (row) {
     return (row.location == management_id && row.efficacy == efficiency_id && row.amount == budget_id);
   });
+  console.log('result',result)
   var year = [],
     mean = [],
     standard_deviation = [];
@@ -1246,11 +870,95 @@ function updateData(allRows) {
   console.log('Year', year, 'Mean', mean, 'SD', standard_deviation);
 };
 
+function overallPlot() {
+ 	Plotly.d3.csv('{% static "map_data/area_infected.csv" %}', function(data){ overallData(data) } );
+};
+	
+function overallData(allRows) {
+  var year_value="2020";
+  var efficiency_value="100";
+  var amount_6 = [];
+  var amount_12 = [];
+  var amount_18 = [];
+  var no_management = [];
+  var mean = [];
+  var year = [];
+  var standard_deviation_6 = [];
+  var standard_deviation_12 = [];
+  var standard_deviation_18 = [];
+  var no_manage_row = [];
+  var no_management_row = [];
+  var location = ["SLF Perimeter","Berks County", "Berks County and SLF Perimeter"];
+  
+    var no_management_row = allRows.filter(function (row) {
+    return (row.location == "None" && row.amount == "None" && row.efficacy == 'None' && row.year == year_value);
+  });
+      no_manage_row = no_management_row[0];
+console.log('No management', no_manage_row)
+    var result = allRows.filter(function (row) {
+    return (row.location == "None" && row.amount == "None" && row.efficacy == efficiency_value && row.year == year_value);
+  });
+
+no_management = no_manage_row['mean'];
+
+  var year = [],
+    mean = [],
+    standard_deviation = [];
+
+  for (var i = 0; i < location.length; i++) {
+    
+  var result = allRows.filter(function (row) {
+    return (row.location == location[i] && row.amount == "$6 million" && row.efficacy == efficiency_value && row.year == year_value);
+  });
+    row = result[0];
+    amount_6.push(row['mean']);
+    standard_deviation_6.push(row['sd']);
+  var result = allRows.filter(function (row) {
+    return (row.location == location[i] && row.amount == "$12 million" && row.efficacy == efficiency_value && row.year == year_value);
+  });
+    row = result[0];
+    amount_12.push(row['mean']);
+    standard_deviation_12.push(row['sd']);
+  var result = allRows.filter(function (row) {
+    return (row.location == location[i] && row.amount == "$18 million" && row.efficacy == efficiency_value && row.year == year_value);
+  });
+    row = result[0];
+    amount_18.push(row['mean']);
+    standard_deviation_18.push(row['sd']);
+  }
+    $(main_plot("main_plot1", 'Area Infected', location, amount_6, amount_12, amount_18, standard_deviation_6,standard_deviation_12,standard_deviation_18,no_management, error_bar=false));
+  console.log('Year', year, 'Mean', mean, 'SD', standard_deviation);
+};
+
+overallPlot();
 function updateLayers(){
-      var raster2018 = '{% static "map_data/" %}'+'management_'+ year_id + '.geojson';
-      var raster2018 = '{% static "map_data/" %}'+'management_2018.geojson';
-      var raster2019 = '{% static "map_data/" %}'+'management_2019.geojson';
-      var raster2020 = '{% static "map_data/" %}'+'management_2020.geojson';
+  if (management_id == "SLF Perimeter") {
+    management_name = "perimeter";
+  };
+  if (management_id == "Berks County") {
+    management_name = "berks";
+  };
+  if (management_id == "Berks County and SLF Perimeter") {
+    management_name = "berks_perimeter";
+  };
+  if (budget_id == "$6 million") {
+  budget_name = "6"
+  };
+
+  if (budget_id == "$12 million") {
+  budget_name = "12"
+  };
+  if (budget_id == "$18 million") {
+  budget_name = "18"
+  };
+
+      var raster2018 = '{% static "map_data/" %}'+ management_name + '_' + budget_name + '_'+ efficiency_id + '_2018.geojson';
+      var raster2019 = '{% static "map_data/" %}'+ management_name + '_' + budget_name + '_'+ efficiency_id + '_2019.geojson';
+      var raster2020 = '{% static "map_data/" %}'+ management_name + '_' + budget_name + '_'+ efficiency_id + '_2020.geojson';
+      console.log(raster2018)
+      console.log(raster2019)
+      console.log(raster2020)
+                       
                         // update the map
                         // change the overlay
                         if (map.getLayer("2018")) {
@@ -1324,8 +1032,8 @@ $( "#efficiency" ).click(function() {
       console.log(efficiency_id);
 
 if (management_id != 'None' && budget_id != "None" && efficiency_id != 'None') {
-        $("#management-area-value").text(management_name);
-      $("#budget-value").text(budget_name);
+        $("#management-area-value").text(management_id);
+      $("#budget-value").text(budget_id);
       $("#efficiency-value").text(efficiency_id);
 adjustPlot();
 updateLayers();

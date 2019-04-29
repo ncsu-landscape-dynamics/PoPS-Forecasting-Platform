@@ -1,0 +1,166 @@
+"","location","amount","efficacy","year","mean","sd"
+"1","None","None","None",2018,1697,38
+"3","Berks County and SLF Perimeter","$12 million","100",2018,951,28
+"5","Berks County and SLF Perimeter","$12 million","50",2018,1138,32
+"7","Berks County and SLF Perimeter","$12 million","60",2018,1104,31
+"9","Berks County and SLF Perimeter","$12 million","70",2018,1078,31
+"11","Berks County and SLF Perimeter","$12 million","80",2018,1017,27
+"13","Berks County and SLF Perimeter","$12 million","90",2018,978,27
+"15","Berks County and SLF Perimeter","$18 million","100",2018,876,28
+"17","Berks County and SLF Perimeter","$18 million","50",2018,1072,30
+"19","Berks County and SLF Perimeter","$18 million","60",2018,1030,28
+"21","Berks County and SLF Perimeter","$18 million","70",2018,1008,24
+"23","Berks County and SLF Perimeter","$18 million","80",2018,939,29
+"25","Berks County and SLF Perimeter","$18 million","90",2018,893,29
+"27","Berks County and SLF Perimeter","$6 million","100",2018,1081,33
+"29","Berks County and SLF Perimeter","$6 million","50",2018,1248,34
+"31","Berks County and SLF Perimeter","$6 million","60",2018,1227,33
+"33","Berks County and SLF Perimeter","$6 million","70",2018,1200,32
+"35","Berks County and SLF Perimeter","$6 million","80",2018,1154,30
+"37","Berks County and SLF Perimeter","$6 million","90",2018,1108,31
+"39","Berks County","$12 million","100",2018,1015,28
+"41","Berks County","$12 million","50",2018,1189,29
+"43","Berks County","$12 million","60",2018,1156,34
+"45","Berks County","$12 million","70",2018,1128,31
+"47","Berks County","$12 million","80",2018,1082,33
+"49","Berks County","$12 million","90",2018,1042,33
+"51","Berks County","$18 million","100",2018,981,26
+"53","Berks County","$18 million","50",2018,1136,35
+"55","Berks County","$18 million","60",2018,1102,27
+"57","Berks County","$18 million","70",2018,1079,31
+"59","Berks County","$18 million","80",2018,1030,29
+"61","Berks County","$18 million","90",2018,1003,27
+"63","Berks County","$6 million","100",2018,1144,36
+"65","Berks County","$6 million","50",2018,1311,32
+"67","Berks County","$6 million","60",2018,1278,31
+"69","Berks County","$6 million","70",2018,1260,34
+"71","Berks County","$6 million","80",2018,1211,34
+"73","Berks County","$6 million","90",2018,1170,33
+"75","SLF Perimeter","$12 million","100",2018,1546,36
+"77","SLF Perimeter","$12 million","50",2018,1563,33
+"79","SLF Perimeter","$12 million","60",2018,1560,38
+"81","SLF Perimeter","$12 million","70",2018,1568,37
+"83","SLF Perimeter","$12 million","80",2018,1553,32
+"85","SLF Perimeter","$12 million","90",2018,1545,33
+"87","SLF Perimeter","$18 million","100",2018,1522,33
+"89","SLF Perimeter","$18 million","50",2018,1552,31
+"91","SLF Perimeter","$18 million","60",2018,1542,34
+"93","SLF Perimeter","$18 million","70",2018,1540,30
+"95","SLF Perimeter","$18 million","80",2018,1535,33
+"97","SLF Perimeter","$18 million","90",2018,1524,30
+"99","SLF Perimeter","$6 million","100",2018,1573,34
+"101","SLF Perimeter","$6 million","50",2018,1593,37
+"103","SLF Perimeter","$6 million","60",2018,1594,35
+"105","SLF Perimeter","$6 million","70",2018,1594,30
+"107","SLF Perimeter","$6 million","80",2018,1580,35
+"109","SLF Perimeter","$6 million","90",2018,1580,37
+"111","None","None","None",2019,4886,89
+"113","Berks County and SLF Perimeter","$12 million","100",2019,2991,88
+"115","Berks County and SLF Perimeter","$12 million","50",2019,3488,91
+"117","Berks County and SLF Perimeter","$12 million","60",2019,3396,76
+"119","Berks County and SLF Perimeter","$12 million","70",2019,3307,80
+"121","Berks County and SLF Perimeter","$12 million","80",2019,3178,82
+"123","Berks County and SLF Perimeter","$12 million","90",2019,3090,78
+"125","Berks County and SLF Perimeter","$18 million","100",2019,2738,73
+"127","Berks County and SLF Perimeter","$18 million","50",2019,3285,84
+"129","Berks County and SLF Perimeter","$18 million","60",2019,3177,94
+"131","Berks County and SLF Perimeter","$18 million","70",2019,3088,81
+"133","Berks County and SLF Perimeter","$18 million","80",2019,2921,86
+"135","Berks County and SLF Perimeter","$18 million","90",2019,2809,74
+"137","Berks County and SLF Perimeter","$6 million","100",2019,3477,94
+"139","Berks County and SLF Perimeter","$6 million","50",2019,3854,89
+"141","Berks County and SLF Perimeter","$6 million","60",2019,3800,93
+"143","Berks County and SLF Perimeter","$6 million","70",2019,3755,88
+"145","Berks County and SLF Perimeter","$6 million","80",2019,3659,91
+"147","Berks County and SLF Perimeter","$6 million","90",2019,3577,83
+"149","Berks County","$12 million","100",2019,3295,86
+"151","Berks County","$12 million","50",2019,3763,98
+"153","Berks County","$12 million","60",2019,3691,99
+"155","Berks County","$12 million","70",2019,3587,92
+"157","Berks County","$12 million","80",2019,3479,88
+"159","Berks County","$12 million","90",2019,3370,85
+"161","Berks County","$18 million","100",2019,3146,78
+"163","Berks County","$18 million","50",2019,3581,94
+"165","Berks County","$18 million","60",2019,3481,79
+"167","Berks County","$18 million","70",2019,3380,93
+"169","Berks County","$18 million","80",2019,3262,75
+"171","Berks County","$18 million","90",2019,3209,83
+"173","Berks County","$6 million","100",2019,3754,93
+"175","Berks County","$6 million","50",2019,4195,93
+"177","Berks County","$6 million","60",2019,4116,90
+"179","Berks County","$6 million","70",2019,4063,94
+"181","Berks County","$6 million","80",2019,3968,105
+"183","Berks County","$6 million","90",2019,3878,87
+"185","SLF Perimeter","$12 million","100",2019,4220,81
+"187","SLF Perimeter","$12 million","50",2019,4302,78
+"189","SLF Perimeter","$12 million","60",2019,4294,84
+"191","SLF Perimeter","$12 million","70",2019,4286,88
+"193","SLF Perimeter","$12 million","80",2019,4249,91
+"195","SLF Perimeter","$12 million","90",2019,4241,86
+"197","SLF Perimeter","$18 million","100",2019,4128,86
+"199","SLF Perimeter","$18 million","50",2019,4234,79
+"201","SLF Perimeter","$18 million","60",2019,4204,87
+"203","SLF Perimeter","$18 million","70",2019,4186,70
+"205","SLF Perimeter","$18 million","80",2019,4167,78
+"207","SLF Perimeter","$18 million","90",2019,4150,68
+"209","SLF Perimeter","$6 million","100",2019,4414,96
+"211","SLF Perimeter","$6 million","50",2019,4477,96
+"213","SLF Perimeter","$6 million","60",2019,4471,86
+"215","SLF Perimeter","$6 million","70",2019,4467,72
+"217","SLF Perimeter","$6 million","80",2019,4438,93
+"219","SLF Perimeter","$6 million","90",2019,4431,84
+"221","None","None","None",2020,9332,234
+"223","Berks County and SLF Perimeter","$12 million","100",2020,6351,220
+"225","Berks County and SLF Perimeter","$12 million","50",2020,7304,240
+"227","Berks County and SLF Perimeter","$12 million","60",2020,7137,200
+"229","Berks County and SLF Perimeter","$12 million","70",2020,7003,211
+"231","Berks County and SLF Perimeter","$12 million","80",2020,6804,199
+"233","Berks County and SLF Perimeter","$12 million","90",2020,6617,197
+"235","Berks County and SLF Perimeter","$18 million","100",2020,5787,184
+"237","Berks County and SLF Perimeter","$18 million","50",2020,6885,205
+"239","Berks County and SLF Perimeter","$18 million","60",2020,6697,233
+"241","Berks County and SLF Perimeter","$18 million","70",2020,6502,219
+"243","Berks County and SLF Perimeter","$18 million","80",2020,6239,205
+"245","Berks County and SLF Perimeter","$18 million","90",2020,6017,180
+"247","Berks County and SLF Perimeter","$6 million","100",2020,7207,228
+"249","Berks County and SLF Perimeter","$6 million","50",2020,7824,223
+"251","Berks County and SLF Perimeter","$6 million","60",2020,7710,217
+"253","Berks County and SLF Perimeter","$6 million","70",2020,7658,218
+"255","Berks County and SLF Perimeter","$6 million","80",2020,7530,245
+"257","Berks County and SLF Perimeter","$6 million","90",2020,7451,219
+"259","Berks County","$12 million","100",2020,7027,200
+"261","Berks County","$12 million","50",2020,7972,249
+"263","Berks County","$12 million","60",2020,7840,240
+"265","Berks County","$12 million","70",2020,7633,234
+"267","Berks County","$12 million","80",2020,7445,213
+"269","Berks County","$12 million","90",2020,7225,220
+"271","Berks County","$18 million","100",2020,6662,195
+"273","Berks County","$18 million","50",2020,7577,218
+"275","Berks County","$18 million","60",2020,7353,204
+"277","Berks County","$18 million","70",2020,7191,262
+"279","Berks County","$18 million","80",2020,6909,190
+"281","Berks County","$18 million","90",2020,6797,209
+"283","Berks County","$6 million","100",2020,7876,228
+"285","Berks County","$6 million","50",2020,8604,220
+"287","Berks County","$6 million","60",2020,8496,212
+"289","Berks County","$6 million","70",2020,8448,227
+"291","Berks County","$6 million","80",2020,8344,264
+"293","Berks County","$6 million","90",2020,8187,210
+"295","SLF Perimeter","$12 million","100",2020,7771,218
+"297","SLF Perimeter","$12 million","50",2020,8140,220
+"299","SLF Perimeter","$12 million","60",2020,8050,204
+"301","SLF Perimeter","$12 million","70",2020,8009,240
+"303","SLF Perimeter","$12 million","80",2020,7912,249
+"305","SLF Perimeter","$12 million","90",2020,7854,224
+"307","SLF Perimeter","$18 million","100",2020,7430,220
+"309","SLF Perimeter","$18 million","50",2020,7886,217
+"311","SLF Perimeter","$18 million","60",2020,7816,239
+"313","SLF Perimeter","$18 million","70",2020,7704,217
+"315","SLF Perimeter","$18 million","80",2020,7623,235
+"317","SLF Perimeter","$18 million","90",2020,7565,200
+"319","SLF Perimeter","$6 million","100",2020,8275,233
+"321","SLF Perimeter","$6 million","50",2020,8468,231
+"323","SLF Perimeter","$6 million","60",2020,8442,234
+"325","SLF Perimeter","$6 million","70",2020,8477,204
+"327","SLF Perimeter","$6 million","80",2020,8358,226
+"329","SLF Perimeter","$6 million","90",2020,8339,219
