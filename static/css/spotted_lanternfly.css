@@ -26,7 +26,11 @@
     border-color: #f55949;
 }
 
-#legend-container{
+#legend-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+
 }
 .legend-color {
   height: 10px;
