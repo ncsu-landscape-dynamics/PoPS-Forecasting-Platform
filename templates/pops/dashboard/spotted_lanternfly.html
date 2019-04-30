@@ -31,6 +31,8 @@
   var management_id = 'None';
 var budget_id = "None";
 var efficiency_id = 'None';
+  var efficiency_chart='100';
+
 var year_id = '2018';
 var visibility_2018 = 'none';
 var visibility_2019 = 'none';
@@ -366,24 +368,23 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
             <div class="row no-gutters" style="background-color: #0b0d0e;">
               <div class="col-12 d-flex flex-column">
                 <div id="run-title">
-<h4>Details</h4>                
+<h4>Details</h4>  
                 </div>
               </div>
 
 
-              <div id="" class="col-md-8">
+              <div id="" class="col-12">
 
-                  <div id="main_plot1" class="" style='height:550px; '></div>
-                  <div id="main_plot2" class="" style='height:250px; '></div>
+          
+          <div id="main_plot1" class="" style='height:500px '></div>
               </div>
-                            <div id="" class="col-md-4">
-                           <h4> More analysis/plots...</h4>
-                           <div class="p-2">The plots on the left are just demo plots with fake data
-                           to demonstrate what we *might* put here. Note that additional information
-                           is available when you hover over data points.</div>
-                           <div class="p-2">We are currently using plotly.js plotting library to 
-                           generate plots. Check out the options at: <a href="https://plot.ly/javascript/">https://plot.ly/javascript/</a></div>
-              </div>
+<div class="col-3 px-4">
+<div id="efficiency-chart" class="pt-4 range range-info">
+            <h5>Efficiency: <output id="displayEfficiency2">100</output>%</h5>
+            <input class="custom-range px-2" type="range" name="range" min="50" max="100" step="10" value="100" onchange="displayEfficiency2.value=value">
+          </div>
+
+</div>
 
             </div>
                       </div>
@@ -429,7 +430,7 @@ CheckValue('#money_on_off');
     /* eslint-disable */
     var map = new mapboxgl.Map({
       container: 'map', // container id
-      style: 'mapbox://styles/mapbox/light-v10', //hosted style id
+      style: 'mapbox://styles/mapbox/dark-v10', //hosted style id
       center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
       zoom: 7 // starting zoom
     });
@@ -565,9 +566,9 @@ map.on('load', function() {
                             'interpolate',
                             ['linear'],
                             ['get', 'Dis_KB'],
-                            1, 'grey'
+                            1, '#fda704'
                             ],
-                            'fill-opacity': 0.3
+                            'fill-opacity': 0.2
                             }
                             }, 'waterway-label'); 
 
@@ -671,6 +672,13 @@ var trace1 = {
     array: standard_deviation_6,
     visible: true
   },
+  marker: {
+    color: '#3294a6',
+        line: {
+      color: 'white',
+      width: 1
+    }},
+
   name: '$6 million',
   type: 'bar'
 };
@@ -683,6 +691,12 @@ var trace2 = {
     array: standard_deviation_12,
     visible: true
   },
+  marker: {
+    color: '#7ba83d',
+        line: {
+      color: 'white',
+      width: 1
+    }},
   name: '$12 million',
   type: 'bar'
 };
@@ -694,7 +708,15 @@ var trace3 = {
     type: 'data',
     array: standard_deviation_18,
     visible: true
-  },  name: '$18 million',
+  },  
+  marker: {
+    color: '#ae85d4',
+    line: {
+      color: 'white',
+      width: 1
+    }
+},
+  name: '$18 million',
   type: 'bar'
 };
 
@@ -709,7 +731,7 @@ var data = [trace1, trace2, trace3];
         x1: 1,
         y1: no_management,
         line:{
-            color: 'rgb(255, 0, 0)',
+            color: 'grey',
             width: 2,
             dash:'dot'
         }
@@ -722,8 +744,8 @@ var data = [trace1, trace2, trace3];
       xref: 'paper',
       yref: 'y',
       font: {
-            color: 'rgb(255, 0, 0)',
-          size: 12
+            color: 'grey',
+          size: 14
         },
       text: 'No management',
       showarrow: true,
@@ -758,7 +780,7 @@ var data = [trace1, trace2, trace3];
           traceorder: 'normal',
           font: {
             family: 'sans-serif',
-            size: 12,
+            size: 16,
             color: 'white'
           },
           borderwidth: 2
@@ -772,6 +794,7 @@ var data = [trace1, trace2, trace3];
           t: 60,
           pad: 0
         },
+        
       };
 
 Plotly.newPlot(myDiv, data, layout);
@@ -897,7 +920,7 @@ function overallPlot() {
 	
 function overallData(allRows) {
   var year_value="2020";
-  var efficiency_value="100";
+  var efficiency_value=efficiency_chart;
   var amount_6 = [];
   var amount_12 = [];
   var amount_18 = [];
@@ -1059,6 +1082,12 @@ if (management_id != 'None' && budget_id != "None" && efficiency_id != 'None') {
 adjustPlot();
 updateLayers();
 };
+});
+
+$( "#efficiency-chart" ).click(function() {
+        efficiency_chart = $(this).find('input').val();
+      console.log(efficiency_chart);
+      overallPlot();
 });
 
 $( "#year" ).change(function() {
