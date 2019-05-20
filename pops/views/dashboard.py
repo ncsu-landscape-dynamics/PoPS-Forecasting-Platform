@@ -16,7 +16,7 @@ class WorkspaceView(TemplateView):
             return context
 
 class DashboardView(TemplateView):
-    template_name = 'pops/dashboard/dashboard_layout.html'
+    template_name = 'pops/dashboard/APHIS_June2019.html'
 
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
@@ -27,4 +27,5 @@ class DashboardView(TemplateView):
                 session = None
             context['session'] = session
             return context
+
 
