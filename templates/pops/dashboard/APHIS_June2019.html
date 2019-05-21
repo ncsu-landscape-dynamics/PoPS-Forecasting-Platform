@@ -308,16 +308,28 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   <div class="row">
                   <div class="form-group col-6">
   <label for="id_budget">Budget ($US)</label>
-  <div class="input-group ">
-    <input type="number" name="budget" value="1000000" min="0" data-toggle="tooltip" data-placement="top" title="Allowed budget" data-container="body" class="form-control" id="id_budget">
+
+<div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text">$</span>
   </div>
-  
+    <input type="number" name="budget" value="10" min="0" data-toggle="tooltip" data-placement="top" title="Allowed budget" data-container="body" class="form-control" id="id_budget">
+  <div class="input-group-append">
+    <span class="input-group-text">million</span>
+  </div>
+</div>
 </div>
 <div class="form-group col-6">
   <label for="id_cost-per-hectare">Cost per hectare ($US)</label>
-  <div class="input-group ">
-    <input type="number" name="cost-per-hectare" value="1000" min="0" data-toggle="tooltip" data-placement="top" title="Cost per hectare" data-container="body" class="form-control" id="id_cost-per-hectare">
+<div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text">$</span>
   </div>
+    <input type="number" name="cost-per-hectare" value="1000" min="0" data-toggle="tooltip" data-placement="top" title="Cost per hectare" data-container="body" class="form-control" id="id_cost-per-hectare">
+  <div class="input-group-append">
+    <span class="input-group-text">.00</span>
+  </div>
+</div>  
   
 </div>
 
@@ -1036,7 +1048,7 @@ map3.addLayer({
     function updateArea(e) {
       var data = draw.getAll();
       var answer = document.getElementById('polygon-info');
-      var budget = $( "input#id_budget" ).val()/1000000;
+      var budget = $( "input#id_budget" ).val();
       var cost_per_hectare = $( "input#id_cost-per-hectare" ).val()/1000000;
 
       console.log(budget);
