@@ -614,7 +614,7 @@ class Session(models.Model):
         null = True, on_delete = models.SET_NULL)
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     name = models.CharField(verbose_name = _("session name"), max_length=150)
-    description = models.TextField(verbose_name = _("session description"), max_length = 300, blank=True, null=True, help_text="Give your case study a description.")
+    description = models.TextField(verbose_name = _("session description"), max_length = 300, blank=True, null=True, help_text="Give your session a description.")
 
     class Meta:
         verbose_name = _("session")
@@ -627,7 +627,7 @@ class Run(models.Model):
 
     session = models.ForeignKey(Session, verbose_name = _("session id"), on_delete = models.CASCADE)
     name = models.CharField(verbose_name = _("run name"), max_length = 150)
-    description = models.TextField(verbose_name = _("run description"), max_length = 300, blank=True, null=True, help_text="Give your case study a description.")
+    description = models.TextField(verbose_name = _("run description"), max_length = 300, blank=True, null=True, help_text="Give your run a description.")
     random_seed = models.PositiveIntegerField(verbose_name = _("random seed"), default = None, null = True, validators = [MinValueValidator(1)])
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     STATUS_CHOICES = (
@@ -645,7 +645,6 @@ class Run(models.Model):
         ("BAD", "Poor spread conditions"),
         ("AVERAGE", "Average spread conditions"),
         ("GOOD", "Optimal spread conditions"),
-        ("SUCCESS", "Successful"),
     )
     weather = models.CharField(verbose_name = _("weather"), help_text="", max_length = 20,
                     choices = WEATHER_CHOICES,
