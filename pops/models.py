@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator 
 from django.core.exceptions import ObjectDoesNotExist 
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, JSONField
 import os
 
 from users.models import CustomUser
@@ -614,6 +614,7 @@ class Session(models.Model):
         null = True, on_delete = models.SET_NULL)
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     name = models.CharField(verbose_name = _("session name"), max_length=150)
+    description = models.TextField(verbose_name = _("session description"), max_length = 300, blank=True, null=True, help_text="Give your case study a description.")
 
     class Meta:
         verbose_name = _("session")
@@ -626,7 +627,36 @@ class Run(models.Model):
 
     session = models.ForeignKey(Session, verbose_name = _("session id"), on_delete = models.CASCADE)
     name = models.CharField(verbose_name = _("run name"), max_length = 150)
+    description = models.TextField(verbose_name = _("run description"), max_length = 300, blank=True, null=True, help_text="Give your case study a description.")
     random_seed = models.PositiveIntegerField(verbose_name = _("random seed"), default = None, null = True, validators = [MinValueValidator(1)])
+    date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
+    STATUS_CHOICES = (
+        ("PENDING", "Pending"),
+        ("IN PROGRESS", "In progress"),
+        ("FAILED", "Failed"),
+        ("SUCCESS", "Successful"),
+    )
+    status = models.CharField(verbose_name = _("run status"), help_text="", max_length = 20,
+                    choices = STATUS_CHOICES,
+                    default = "PENDING", blank=True)
+    reproductive_rate = models.DecimalField(verbose_name = _("reproductive rate"), help_text="Reproductive rate of pest/pathogen", max_digits = 3, decimal_places = 2, blank=True, null=True, default = 0)
+    distance_scale = models.DecimalField(verbose_name = _("distance scale"), max_digits = 5, decimal_places = 1)
+    WEATHER_CHOICES = (
+        ("BAD", "Poor spread conditions"),
+        ("AVERAGE", "Average spread conditions"),
+        ("GOOD", "Optimal spread conditions"),
+        ("SUCCESS", "Successful"),
+    )
+    weather = models.CharField(verbose_name = _("weather"), help_text="", max_length = 20,
+                    choices = WEATHER_CHOICES,
+                    default = "AVERAGE", blank=True)
+    budget = models.PositiveIntegerField(verbose_name = _("budget"), default = 10, null = True, validators = [MinValueValidator(1)])
+    cost_per_hectare = models.PositiveIntegerField(verbose_name = _("cost per hectare"), default = 1000, null = True, validators = [MinValueValidator(1)])
+    efficacy = models.PositiveSmallIntegerField(verbose_name = _("efficacy"), help_text="", blank=True, default = 100, validators = [MinValueValidator(1), MaxValueValidator(100)])
+    final_year = models.PositiveIntegerField(verbose_name = _("final run year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
+    management_polygons = JSONField()
+
+
 
     class Meta:
         verbose_name = _("run")
@@ -635,24 +665,15 @@ class Run(models.Model):
     def __str__(self):
         return self.name
 
-class InputChange(models.Model):
-
-    run = models.ForeignKey(Run, verbose_name = _("run id"), on_delete = models.CASCADE)
-    name = models.CharField(verbose_name = _("parameter name"), max_length = 150)
-    value = models.DecimalField(verbose_name = _("parameter value"), max_digits = 5, decimal_places = 2)
-
-    class Meta:
-        verbose_name = _("input change")
-        verbose_name_plural = _("input changes")
-
-    def __str__(self):
-        return self.name
 
 class Output(models.Model):
 
     run = models.ForeignKey(Run, verbose_name = _("run id"), on_delete = models.CASCADE)
-    name = models.CharField(verbose_name = _("output variable name"), max_length = 150)
-    # data = MatrixField(verbose_name = _("output data"), datatype = 'float')
+    number_infected = models.IntegerField(verbose_name = _("number_infected"), default = 0, null = True, validators = [MinValueValidator(0)])
+    infected_area = models.DecimalField(verbose_name = _("infected_area"), help_text="Overall infected area from the run.", blank=True, max_digits = 10, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
+    years = models.PositiveIntegerField(verbose_name = _("years"), default = 2020, null = True, validators = [MinValueValidator(2018)])
+    spread_map = JSONField()
+
 
     class Meta:
         verbose_name = _("output")
