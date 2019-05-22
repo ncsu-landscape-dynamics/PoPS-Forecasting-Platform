@@ -668,10 +668,11 @@ class Run(models.Model):
 class Output(models.Model):
 
     run = models.ForeignKey(Run, verbose_name = _("run id"), on_delete = models.CASCADE)
+    date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     number_infected = models.IntegerField(verbose_name = _("number_infected"), default = 0, null = True, validators = [MinValueValidator(0)])
     infected_area = models.DecimalField(verbose_name = _("infected_area"), help_text="Overall infected area from the run.", blank=True, max_digits = 10, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
-    years = models.PositiveIntegerField(verbose_name = _("years"), default = 2020, null = True, validators = [MinValueValidator(2018)])
-    spread_map = JSONField()
+    years = models.PositiveIntegerField(verbose_name = _("year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
+    spread_map = JSONField(null = True)
 
 
     class Meta:

@@ -147,5 +147,15 @@ class CaseStudySerializer(serializers.ModelSerializer):
         fields = ['name', 'description','number_of_pests','number_of_hosts','start_year','end_year','future_years',
                 'time_step','staff_approved','calibration_status','use_external_calibration','calibration','allplantsdata','pest_set','host_set','weather']
 
+class OutputSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Output
+        fields = '__all__'
 
+class RunSerializer(serializers.ModelSerializer):
+    output_set = OutputSerializer(many=True)
 
+    class Meta:
+        model = Run
+        fields = ['session','name','description','random_seed','status','reproductive_rate','distance_scale',
+        'weather','budget','cost_per_hectare','efficacy','final_year','management_polygons','output_set']

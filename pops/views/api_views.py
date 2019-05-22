@@ -22,5 +22,10 @@ class CaseStudyViewSet(viewsets.ModelViewSet):
     serializer_class = CaseStudySerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-
-
+class RunViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows runs to be viewed or edited.
+    """
+    queryset = Run.objects.prefetch_related().all()
+    serializer_class = RunSerializer
+    permission_classes = (permissions.AllowAny,)

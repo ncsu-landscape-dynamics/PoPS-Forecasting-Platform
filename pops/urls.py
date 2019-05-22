@@ -7,6 +7,7 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register('case_study', views.CaseStudyViewSet)
+router.register('run', views.RunViewSet)
 
 
 urlpatterns = [
