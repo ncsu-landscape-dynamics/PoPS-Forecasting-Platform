@@ -639,7 +639,7 @@ class Run(models.Model):
     status = models.CharField(verbose_name = _("run status"), help_text="", max_length = 20,
                     choices = STATUS_CHOICES,
                     default = "PENDING", blank=True)
-    reproductive_rate = models.DecimalField(verbose_name = _("reproductive rate"), help_text="Reproductive rate of pest/pathogen", max_digits = 3, decimal_places = 2, blank=True, null=True, default = 0)
+    reproductive_rate = models.DecimalField(verbose_name = _("reproductive rate"), help_text="Reproductive rate of pest/pathogen", max_digits = 6, decimal_places = 2, blank=True, null=True, default = 0)
     distance_scale = models.DecimalField(verbose_name = _("distance scale"), max_digits = 5, decimal_places = 1)
     WEATHER_CHOICES = (
         ("BAD", "Poor spread conditions"),

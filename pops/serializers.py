@@ -52,6 +52,16 @@ class WindSerializer(serializers.ModelSerializer):
         model = Wind
         fields = ('wind_direction','kappa')
 
+class TemperatureData(serializers.ModelSerializer):
+    class Meta:
+        model = Temperature
+        fields = ('temperature_data')
+
+class PrecipitationData(serializers.ModelSerializer):
+    class Meta:
+        model = Precipitation
+        fields = ('precipitation_data')
+
 class WeatherSerializer(serializers.ModelSerializer):
     wind = WindSerializer()
     seasonality = WindSerializer()
@@ -152,10 +162,14 @@ class OutputSerializer(serializers.ModelSerializer):
         model = Output
         fields = '__all__'
 
-class RunSerializer(serializers.ModelSerializer):
-    output_set = OutputSerializer(many=True)
+class SessionSerializer(serializers.ModelSerializer):
+    casestudy = CaseStudySerializer()
 
     class Meta:
+        model = Session
+        fields = '__all__'
+
+class RunSerializer(serializers.ModelSerializer):
+    class Meta:
         model = Run
-        fields = ['session','name','description','random_seed','status','reproductive_rate','distance_scale',
-        'weather','budget','cost_per_hectare','efficacy','final_year','management_polygons','output_set']
+        fields = '__all__'

@@ -29,3 +29,12 @@ class RunViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.prefetch_related().all()
     serializer_class = RunSerializer
     permission_classes = (permissions.AllowAny,)
+
+
+class OutputViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows output to be viewed or edited.
+    """
+    queryset = Output.objects.prefetch_related().all()
+    serializer_class = OutputSerializer
+    permission_classes = (permissions.AllowAny,)
