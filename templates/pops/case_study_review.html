@@ -153,6 +153,18 @@
                             <td>
                                 {{ pest.initialinfestation.user_file|filename }}
                             </td>
+                        </tr>                        
+                        <tr>
+                            <th scope="row">Calibration data:</th>
+                            <td>
+                                {{ pest.calibrationinfestation.user_file|filename }}
+                            </td>
+                        </tr>                        
+                        <tr>
+                            <th scope="row">Validation data:</th>
+                            <td>
+                                {{ pest.validationinfestation.user_file|filename }}
+                            </td>
                         </tr>
                         {% endfor %}
                         <tr>
