@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CaseStudy, Host, Mortality, PestInformation, Pest, Vector, ShortDistance, LongDistance, CrypticToInfected, InfectedToDiseased, Weather, Wind, Seasonality, LethalTemperature, Temperature, Precipitation, TemperatureReclass, PrecipitationReclass, TemperaturePolynomial, PrecipitationPolynomial, Session, Run, Output
+from .models import CaseStudy, Host, Mortality, PestInformation, Pest, Vector, ShortDistance, LongDistance, CrypticToInfected, InfectedToDiseased, Weather, Wind, Seasonality, LethalTemperature, Temperature, Precipitation, TemperatureReclass, PrecipitationReclass, TemperaturePolynomial, PrecipitationPolynomial, Session, Run, Output, CalibrationInfestation, ValidationInfestation, InitialInfestation
 
 class CaseStudyAdmin(admin.ModelAdmin):
     list_display = ('name', 'number_of_pests', 'number_of_hosts', 'start_year', 'end_year', 'time_step', 'created_by', 'date_created')
@@ -51,3 +51,7 @@ admin.site.register(PrecipitationPolynomial)
 admin.site.register(Session,SessionAdmin)
 admin.site.register(Run)
 admin.site.register(Output)
+admin.site.register(CalibrationInfestation)
+admin.site.register(ValidationInfestation)
+admin.site.register(InitialInfestation)
+

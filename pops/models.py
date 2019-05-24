@@ -29,6 +29,12 @@ def mortality_directory(instance, filename):
 def initial_infestation_directory(instance, filename):
     return 'case_studies/{0}/pests/{1}/initial_infestation/{2}'.format(instance.pest.case_study.id, instance.pest.id, filename)
 
+def validation_infestation_directory(instance, filename):
+    return 'case_studies/{0}/pests/{1}/validation_infestation/{2}'.format(instance.pest.case_study.id, instance.pest.id, filename)
+
+def calibration_infestation_directory(instance, filename):
+    return 'case_studies/{0}/pests/{1}/calibration_infestation/{2}'.format(instance.pest.case_study.id, instance.pest.id, filename)
+
 def vector_directory(instance, filename):
     return 'case_studies/{0}/pests/{1}/vector/{2}'.format(instance.pest.case_study.id, instance.pest.id, filename)
 
@@ -242,7 +248,35 @@ class InitialInfestation(models.Model):
 
     def __str__(self):
         return self.pest
-        
+
+class CalibrationInfestation(models.Model):
+
+    pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
+    user_file = models.FileField(verbose_name = _("calibration infestation data"), help_text="Upload your calibration infestation/infection data as a raster file (1 file with a layer for each year). At least 3 years are needed for calibration and validation ", blank=True, upload_to=validation_infestation_directory, max_length=100)
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("calibration_infestation_data")
+        verbose_name_plural = _("calibration_infestation_datas")
+
+    def __str__(self):
+        return self.pest
+
+class ValidationInfestation(models.Model):
+
+    pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
+    user_file = models.FileField(verbose_name = _("validation infestation data"), help_text="Upload your validation infestation/infection data as a raster file (1 file with a layer for each year). At least 3 years are needed for calibration and validation ", blank=True, upload_to=calibration_infestation_directory, max_length=100)
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("validation_infestation_data")
+        verbose_name_plural = _("validation_infestation_datas")
+
+    def __str__(self):
+        return self.pest
+
 class PriorTreatment(models.Model):
 
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)

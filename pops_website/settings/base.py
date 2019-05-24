@@ -143,7 +143,7 @@ LOGOUT_REDIRECT_URL = '/'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 CASE_STUDY_UPLOAD_FILE_TYPES=['image/tiff']
-CASE_STUDY_UPLOAD_FILE_MAX_SIZE=10240 #Max file size in Bytes (multiply MB by 1024*1024 to get bytes)
+CASE_STUDY_UPLOAD_FILE_MAX_SIZE=512000 #Max file size in Bytes (multiply KB by 1024, or MB by 1024*1024 to get bytes)
 
 INTERNAL_IPS=['127.0.0.1']
 
