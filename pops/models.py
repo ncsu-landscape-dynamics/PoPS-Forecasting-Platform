@@ -241,7 +241,7 @@ class InitialInfestation(models.Model):
     user_file = models.FileField(verbose_name = _("initial infestation data"), help_text="Upload your initial infestation/infection data as a raster file (1 file with a layer for each year). At least 3 years are needed for calibration and validation ", blank=True, upload_to=initial_infestation_directory, max_length=100)
 
     objects = MyManager()
-
+ 
     class Meta:
         verbose_name = _("initial_infestation_data")
         verbose_name_plural = _("initial_infestation_datas")

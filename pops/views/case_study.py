@@ -76,12 +76,14 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
         mortality=None
         pest=None
         initial_infestation=None
+        calibration_infestation=None
+        validation_infestation=None
         vector=None
         prior_treatment=None
         weather=None
         wind=None
         seasonality=None
-        lethal_temp=None
+        lethal_temp=None 
         temperature=None
         precipitation=None
         temperature_polynomial=None
@@ -102,6 +104,10 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
             pest = get_object_or_404(Pest, case_study=cs)
             initial_infestation = pest.initialinfestation
             original_datafiles['infestation_data'] = initial_infestation.user_file
+            calibration_infestation = pest.calibrationinfestation
+            original_datafiles['calibration_data'] = calibration_infestation.user_file
+            validation_infestation = pest.validationinfestation
+            original_datafiles['validation_data'] = validation_infestation.user_file
             vector = Vector.objects.get_or_none(pest=pest)
             prior_treatment = PriorTreatment.objects.get_or_none(pest=pest) 
             if prior_treatment:
@@ -161,6 +167,8 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
         my_forms['mortality_form'] = MortalityForm(post_data, file_data, instance=mortality, prefix='mortality')
         my_forms['pest_form'] = PestForm(post_data, file_data, instance=pest, prefix='pest')
         my_forms['initial_infestation_form'] = InitialInfestationForm(post_data, file_data, instance=initial_infestation, prefix='initial_infestation')
+        my_forms['calibration_infestation_form'] = CalibrationInfestationForm(post_data, file_data, instance=calibration_infestation, prefix='calibration_infestation')
+        my_forms['validation_infestation_form'] = ValidationInfestationForm(post_data, file_data, instance=validation_infestation, prefix='validation_infestation')
         my_forms['prior_treatment_form'] = PriorTreatmentForm(post_data, file_data, instance=prior_treatment, prefix='prior_treatment')
         my_forms['vector_form'] = VectorForm(post_data, file_data, instance=vector, prefix='vector')
         my_forms['weather_form'] = WeatherForm(post_data, instance=weather, prefix='weather')
@@ -201,6 +209,16 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
             if my_forms['initial_infestation_form'].is_valid():
                 required_models['new_initial_infestation'] = my_forms['initial_infestation_form'].save(commit=False)
                 optional_models['pest'].append(required_models['new_initial_infestation'])
+            else:
+                success = False            
+            if my_forms['calibration_infestation_form'].is_valid():
+                required_models['new_calibration_infestation'] = my_forms['calibration_infestation_form'].save(commit=False)
+                optional_models['pest'].append(required_models['new_calibration_infestation'])
+            else:
+                success = False            
+            if my_forms['validation_infestation_form'].is_valid():
+                required_models['new_validation_infestation'] = my_forms['validation_infestation_form'].save(commit=False)
+                optional_models['pest'].append(required_models['new_validation_infestation'])
             else:
                 success = False
             required_models['new_weather'] = my_forms['weather_form'].save(commit=False)

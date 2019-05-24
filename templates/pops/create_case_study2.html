@@ -289,6 +289,8 @@ function precip_reclass_plot() {
             {% include "pops/include/form_field.html" with field=pest_form.dispersal_type form_class="col-6"%}
           </div>
             {% include "pops/include/form_file_upload_field.html" with form=initial_infestation_form field=initial_infestation_form.user_file|attr:"class:form-control-file" form_class="" current_value=infestation_data %}
+            {% include "pops/include/form_file_upload_field.html" with form=calibration_infestation_form field=calibration_infestation_form.user_file|attr:"class:form-control-file" form_class="" current_value=calibration_data %}
+            {% include "pops/include/form_file_upload_field.html" with form=validation_infestation_form field=validation_infestation_form.user_file|attr:"class:form-control-file" form_class="" current_value=validation_data %}
           {% include "pops/include/toggle_switch.html" with field=pest_form.vector_born %}
 
           {% for hidden in vector_form.hidden_fields %}

@@ -216,13 +216,59 @@ class InitialInfestationForm(forms.ModelForm):
         fields = ['user_file']
         widgets = {'user_file': forms.FileInput}
 
-    def clean(self):
+    def clean(self): 
         self.fields_required(['user_file'])
         self.validate_size(['user_file'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
         super(InitialInfestationForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            input_type=self.fields[field].widget.__class__.__name__
+            if input_type != 'CheckboxInput':
+                self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
+
+class CalibrationInfestationForm(forms.ModelForm):
+    fields_required = fields_required_conditionally
+    validate_size = validate_file_size
+    class Meta:
+        model = CalibrationInfestation
+        fields = ['user_file']
+        widgets = {'user_file': forms.FileInput}
+
+    def clean(self): 
+        self.fields_required(['user_file'])
+        self.validate_size(['user_file'])
+        return self.cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(CalibrationInfestationForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            input_type=self.fields[field].widget.__class__.__name__
+            if input_type != 'CheckboxInput':
+                self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
+
+class ValidationInfestationForm(forms.ModelForm):
+    fields_required = fields_required_conditionally
+    validate_size = validate_file_size
+    class Meta:
+        model = ValidationInfestation
+        fields = ['user_file']
+        widgets = {'user_file': forms.FileInput}
+
+    def clean(self): 
+        self.fields_required(['user_file'])
+        self.validate_size(['user_file'])
+        return self.cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(ValidationInfestationForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             help_text = self.fields[field].help_text
             input_type=self.fields[field].widget.__class__.__name__
