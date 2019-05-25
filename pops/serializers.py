@@ -64,7 +64,7 @@ class PrecipitationData(serializers.ModelSerializer):
 
 class WeatherSerializer(serializers.ModelSerializer):
     wind = WindSerializer()
-    seasonality = WindSerializer()
+    seasonality = SeasonalitySerializer()
     lethaltemperature = LethalTemperatureSerializer()
     temperature = TemperatureSerializer()
     precipitation = PrecipitationSerializer()
