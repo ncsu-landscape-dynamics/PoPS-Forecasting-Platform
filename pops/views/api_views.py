@@ -20,7 +20,7 @@ class CaseStudyViewSet(viewsets.ModelViewSet):
             'weather__lethaltemperature','weather__temperature','weather__temperature__temperaturepolynomial',
             'weather__precipitation', 'weather__precipitation__precipitationpolynomial').all()
     serializer_class = CaseStudySerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.AllowAny,)
 
 class RunViewSet(viewsets.ModelViewSet):
     """
