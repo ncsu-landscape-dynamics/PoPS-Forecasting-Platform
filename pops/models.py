@@ -41,6 +41,15 @@ def vector_directory(instance, filename):
 def treatment_directory(instance, filename):
     return 'case_studies/{0}/pests/{1}/prior_treatment/{2}'.format(instance.pest.case_study.id, instance.pest.id, filename)
 
+def temperature_directory(instance, filename):
+    return 'case_studies/{0}/temperature_data/{1}'.format(instance.weather.case_study.id, filename)
+
+def precipitation_directory(instance, filename):
+    return 'case_studies/{0}/precipitation_data/{1}'.format(instance.weather.case_study.id, filename)
+
+def lethal_temperature_directory(instance, filename):
+    return 'case_studies/{0}/lethal_temperature_data/{1}'.format(instance.weather.case_study.id, filename)
+
 
 # Django automatically creates a primary key for each model and we are not overwriting this default behavior in any of our models.
 class CaseStudy(models.Model):
@@ -486,7 +495,7 @@ class LethalTemperature(models.Model):
     lethal_type = models.CharField(verbose_name = _("lethal temperature type"), help_text="Is your pest killed by hot or cold temperatures?", choices = LETHAL_TYPE, max_length = 4, default = "COLD", blank=False)
     month = models.PositiveSmallIntegerField(verbose_name = _("month in which lethal temperature occurs"), help_text="What month does your lethal temperature occur?", choices = MONTH, default = 1, blank=False)
     value = models.DecimalField(verbose_name = _("lethal temperature"), help_text="What is the lethal temperature at which pest/pathogen mortality occurs?", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(50)])
-    lethal_temperature_data = models.FileField(verbose_name = _("lethal temperature data"), help_text="Upload your letah temperature data as a raster file (1 file with a layer for each year).", upload_to='documents', max_length=100, null = True)
+    lethal_temperature_data = models.FileField(verbose_name = _("lethal temperature data"), help_text="Upload your letah temperature data as a raster file (1 file with a layer for each year).", upload_to=lethal_temperature_directory, max_length=100, null = True)
 
     objects = MyManager()
 
@@ -507,7 +516,7 @@ class Temperature(models.Model):
     method = models.CharField(verbose_name = _("temperature coefficient creation method"), help_text="Choose a method to transform temperature into a coefficient used by the model. Temperature values are transformed into a value between 0 and 1.", max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "RECLASS", blank = False)
-    temperature_data = models.FileField(verbose_name = _("temperature data"), help_text="Upload your temperature data as a raster file (1 file with a layer for each timestep).", upload_to='documents', max_length=100, null = True)
+    temperature_data = models.FileField(verbose_name = _("temperature data"), help_text="Upload your temperature data as a raster file (1 file with a layer for each timestep).", upload_to=temperature_directory, max_length=100, null = True)
 
     objects = MyManager()
 
@@ -528,7 +537,7 @@ class Precipitation(models.Model):
     method = models.CharField(verbose_name = _("precipitation coefficient creation method"), help_text="Choose a method to transform precipitation into a coefficient used by the model. Precipitation values are transformed into a value between 0 and 1.", max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "RECLASS", blank = False)
-    precipitation_data = models.FileField(verbose_name = _("precipitation data"), help_text="Upload your precipitation data as a raster file (1 file with a layer for each timestep).", upload_to='documents', max_length=100, null = True)
+    precipitation_data = models.FileField(verbose_name = _("precipitation data"), help_text="Upload your precipitation data as a raster file (1 file with a layer for each timestep).", upload_to=precipitation_directory, max_length=100, null = True)
 
     objects = MyManager()
 

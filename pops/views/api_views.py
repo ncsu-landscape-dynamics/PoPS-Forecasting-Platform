@@ -38,3 +38,27 @@ class OutputViewSet(viewsets.ModelViewSet):
     queryset = Output.objects.prefetch_related().all()
     serializer_class = OutputSerializer
     permission_classes = (permissions.AllowAny,)
+
+class TemperatureDataViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows output to be viewed or edited.
+    """
+    queryset = Temperature.objects.prefetch_related().all()
+    serializer_class = TemperatureDataSerializer
+    permission_classes = (permissions.AllowAny,)
+
+class LethalTemperatureDataViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows output to be viewed or edited.
+    """
+    queryset = LethalTemperature.objects.prefetch_related().all()
+    serializer_class = LethalTemperatureDataSerializer
+    permission_classes = (permissions.AllowAny,)
+
+class PrecipitationDataViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows output to be viewed or edited.
+    """
+    queryset = Precipitation.objects.prefetch_related().all()
+    serializer_class = PrecipitationDataSerializer
+    permission_classes = (permissions.AllowAny,)

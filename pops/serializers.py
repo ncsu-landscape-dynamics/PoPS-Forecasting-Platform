@@ -52,15 +52,10 @@ class WindSerializer(serializers.ModelSerializer):
         model = Wind
         fields = ('wind_direction','kappa')
 
-class TemperatureData(serializers.ModelSerializer):
+class TemperatureDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Temperature
-        fields = ('temperature_data')
-
-class PrecipitationData(serializers.ModelSerializer):
-    class Meta:
-        model = Precipitation
-        fields = ('precipitation_data')
+        fields = '__all__'
 
 class WeatherSerializer(serializers.ModelSerializer):
     wind = WindSerializer()
@@ -172,4 +167,19 @@ class SessionSerializer(serializers.ModelSerializer):
 class RunSerializer(serializers.ModelSerializer):
     class Meta:
         model = Run
+        fields = '__all__'
+
+class TemperatureDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Temperature
+        fields = '__all__'
+
+class LethalTemperatureDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LethalTemperature
+        fields = '__all__'
+
+class PrecipitationDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Precipitation
         fields = '__all__'
