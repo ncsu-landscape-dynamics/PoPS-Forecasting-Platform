@@ -652,11 +652,11 @@ class Treatment(models.Model):
 
 class Session(models.Model):
 
-    case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study"), on_delete = models.CASCADE)
+    case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study"), help_text="Select a case study for this session.", on_delete = models.CASCADE)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name = _('created by'), editable = False,
         null = True, on_delete = models.SET_NULL)
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
-    name = models.CharField(verbose_name = _("session name"), max_length=150)
+    name = models.CharField(verbose_name = _("session name"), max_length=150, help_text="Give your session a descriptive name.")
     description = models.TextField(verbose_name = _("session description"), max_length = 300, blank=True, null=True, help_text="Give your session a description.")
 
     class Meta:

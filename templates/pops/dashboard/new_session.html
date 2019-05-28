@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <!--Page title-->
+  <h2 class="text-center">New PoPS Session:</h2>
+  <!--Start of form-->
+  <form method="post" enctype="multipart/form-data" class="form-horizontal">
+    <div class="row justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-6">
+      <form method="post">{% csrf_token %}
+            {% include "pops/include/form_field.html" with field=form.name form_class="col-12" %}
+            {% include "pops/include/form_field.html" with field=form.case_study form_class="col-12" %}
+            {% include "pops/include/form_field.html" with field=form.description form_class="col-12" %}
+          <div class="text-center py-2">
+            <button class="btn btn-info btn-lg" type="submit">Next</button>
+          </div>
+          <div class="text-center">
+            <span>Note: </span>
+          </div></form>
+
+
+</div>
+
+      </div>
+      </form>
+
+
+
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+  $(document).ready(function () {
+    $("body").tooltip({
+      selector: '[data-toggle=tooltip]'
+    });
+  });
+  </script>
+{% endblock %}

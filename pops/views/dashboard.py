@@ -1,10 +1,24 @@
-from django.views.generic import ListView, DetailView, TemplateView, CreateView, View
+from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, View
 from ..models import *
+from ..forms import *
 
+
+class NewSessionView(CreateView):
+    template_name = 'pops/dashboard/new_session.html'
+    form_class = SessionForm
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        # obj = form.instance or self.object
+        return reverse("dashboard", kwargs={'pk': self.object.pk})
 
 class WorkspaceView(TemplateView):
     template_name = 'pops/dashboard/workspace.html'
-
 
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context

@@ -15,7 +15,7 @@ router.register('precipitation_data', views.PrecipitationDataViewSet)
 
 
 urlpatterns = [
-    path('plot', TemplateView.as_view(template_name="pops/dashboard/parameter_selector.html"), name='plot'),
+    path('new_session', views.NewSessionView.as_view(), name='new_session'),
     path('case_study/help', TemplateView.as_view(template_name="pops/case_study_instructions.html"), name='case_study_help'),
     path('dashboard_layout', TemplateView.as_view(template_name="pops/dashboard/dashboard_layout.html")),
     path('spotted_lanternfly', TemplateView.as_view(template_name="pops/dashboard/spotted_lanternfly.html")),
