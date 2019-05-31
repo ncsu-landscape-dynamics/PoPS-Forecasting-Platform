@@ -160,3 +160,14 @@ div#run-preview-container {
     background-color: #5fc782;
     border-color: #5fc782;
 }
+
+input#id_name {
+  width:50%; 
+  border-radius: 4px; 
+  border: 3px solid #555;
+  background-color: #212529; 
+  color: white;
+}
+
+input#id_name:focus {
+}

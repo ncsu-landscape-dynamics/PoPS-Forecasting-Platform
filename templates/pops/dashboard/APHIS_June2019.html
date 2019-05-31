@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
     crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}">
-  <script src="{% static 'js/jquery.slim.min.js' %}"></script>
+  <script src="{% static 'js/jquery.min.js' %}"></script>
   <script src="{% static 'js/popper.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -252,16 +252,19 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
       <div id="" class="col">
         <div class="tab-content" id="v-pills-tabContent">
           <div id="v-pills-new" class="tab-pane fade show active no-gutters" role="tabpanel">
+            <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
+
             <div class="row no-gutters">
               <div class="col-12 d-flex flex-column">
                 <div id="run-title">
-                  Run: Spotted Lanternfly with Management in Central Infection Region <a href="#"><i
-                      style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
-                  <button id="submit-run" class="btn btn-success d-md-inline ml-4">Run PoPS Model</button>
+                Run name: <input id="id_name" required type="text" value="My run name" name="name">
+                  <button id="submit-run-button" type="submit" class="btn btn-success float-right d-none d-md-inline ml-4">Run PoPS Model</button>
                   <button id="show-hide-new-view" class="btn btn-dark float-right d-none d-md-inline">Hide
                     Details</button>
                 </div>
               </div>
+{{ form.session.as_hidden }}
+<input type="hidden" value="0" name="management_polygons" cols="40" rows="10" class="form-control" id="id_management_polygons">
               <div id="map-container-new-view" class="col-md-10">
                 <div id="map" class="large_map"></div>
                 <div id="legend-container" class="pb-0">
@@ -305,36 +308,43 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
         </button>
       </div>
       <div class="modal-body">
-                  <div class="row">
-                  <div class="form-group col-6">
-  <label for="id_budget">Budget ($US)</label>
+        <div class="row">
+            {% include "pops/include/form_field.html" with field=form.description form_class="col-12" %}
+          <div class="form-group col-6">
+            <label for="id_budget">Budget ($US)</label>
 
-<div class="input-group">
-  <div class="input-group-prepend">
-    <span class="input-group-text">$</span>
-  </div>
-    <input type="number" name="budget" value="10" min="0" data-toggle="tooltip" data-placement="top" title="Allowed budget" data-container="body" class="form-control" id="id_budget">
-  <div class="input-group-append">
-    <span class="input-group-text">million</span>
-  </div>
-</div>
-</div>
-<div class="form-group col-6">
-  <label for="id_cost-per-hectare">Cost per hectare ($US)</label>
-<div class="input-group">
-  <div class="input-group-prepend">
-    <span class="input-group-text">$</span>
-  </div>
-    <input type="number" name="cost-per-hectare" value="1000" min="0" data-toggle="tooltip" data-placement="top" title="Cost per hectare" data-container="body" class="form-control" id="id_cost-per-hectare">
-  <div class="input-group-append">
-    <span class="input-group-text">.00</span>
-  </div>
-</div>  
-  
-</div>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <input type="number" name="budget" value="10" min="0" data-toggle="tooltip" data-placement="top"
+                title="Allowed budget" data-container="body" class="form-control" id="id_budget">
+              <div class="input-group-append">
+                <span class="input-group-text">million</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-6">
+            <label for="id_cost_per_hectare">Cost per hectare ($US)</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <input type="number" name="cost_per_hectare" value="1000" min="0" data-toggle="tooltip"
+                data-placement="top" title="Cost per hectare" data-container="body" class="form-control"
+                id="id_cost_per_hectare">
+              <div class="input-group-append">
+                <span class="input-group-text">.00</span>
+              </div>
+            </div>
 
-                  </div>
-                        </div>
+          </div>
+
+            {% include "pops/include/form_field.html" with field=form.final_year form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
+        {% include "pops/include/form_field.html" with field=form.weather form_class="col-12" %}
+        </div>
+      </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Save and Close</button>
       </div>
@@ -357,31 +367,18 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
 
                   <div id="case-study-details" class="">
 <div id="efficiency" class="pt-2 range range-info">
-            <strong>Efficiency: <output id="displayEfficiency">100</output>%</strong>
-            <input class="custom-range px-4" type="range" name="range" min="50" max="100" step="10" value="100" onchange="displayEfficiency.value=value">
+            <strong>Efficacy: <output id="displayEfficiency">100</output>%</strong>
+            <input id="id_efficacy" class="custom-range px-4" type="range" name="efficacy" min="50" max="100" step="10" value="100" onchange="displayEfficiency.value=value">
           </div>
 
 
-                            
-
-                                      <strong class="pt-2">Weather:</strong>
-<div id="budget" class="btn-group btn-group-toggle" data-toggle="buttons">
-  <label class="btn btn-secondary btn-small">
-    <input type="radio" value="$6 million" name="options" id="6-button" autocomplete="off"> Bad
-  </label>
-  <label class="btn btn-secondary btn-small active">
-    <input type="radio" value="$12 million" name="options" id="12-button" autocomplete="off" checked> Average
-  </label>
-  <label class="btn btn-secondary btn-small">
-    <input type="radio" value="$18 million" name="options" id="18-button" autocomplete="off"> Good
-  </label>
-</div>
+                          
 
 <div id="reproductive-rate-container" class="parameter-selector-plot pt-2" style="width:200px">
   <strong class="py-0">Reproductive rate: <output id="displayRate">13</output></strong>
   <div id="reproductive_rate_plot" style="height:100px; width:200px;"></div>
   <div id="reproductive-rate-slider" class="pt-0 range range-info text-light">
-    <input style="" class="custom-range " type="range" name="range" min="10" max="18" step="1" value="13"
+    <input id="id_reproductive_rate" style="" class="custom-range " type="range" name="reproductive_rate" min="10" max="18" step="1" value="13"
       onchange="displayRate.value=value">
   </div>
 </div>
@@ -389,7 +386,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
   <strong class="py-0">Dispersal scale: <output id="displayDispersalScale">45</output></strong>
   <div id="dispersal_scale_plot" style="height:100px; width:200px;"></div>
   <div id="dispersal-scale-slider" class="pt-0 range range-info text-light">
-    <input style="" class="custom-range " type="range" name="range" min="25" max="65" step="5" value="45"
+    <input id="id_distance_scale" style="" class="custom-range " type="range" name="distance_scale" min="25" max="65" step="5" value="45"
       onchange="displayDispersalScale.value=value">
   </div>
 </div>
@@ -399,6 +396,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
             </div>
           </div>
 
+</form>
 
 <script>
 $( "#dispersal-scale-container" ).click(function() {
@@ -778,7 +776,7 @@ map2.on('load', function() {
   map2.addSource('infection', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/infection_0_2019.geojson" %}'
+    'data': {{ output.spread_map |safe }}
   });
   /*here we are adding a source, then a layer based on that that source*/
 
@@ -790,7 +788,7 @@ map2.addLayer({
                             'fill-color': [
                             'interpolate',
                             ['linear'],
-                            ['get', 'layer.1'],
+                            ['get', 'tree_of_heaven_0.50'],
                             0, '#009CB0',
                             0.1, '#00C49D',
                             0.2, '#00D793',
@@ -1047,9 +1045,19 @@ map3.addLayer({
 
     function updateArea(e) {
       var data = draw.getAll();
+      console.log(data);
+      if (data.features.length > 0) {
+                  // Stringify the GeoJson
+                  var convertedData = JSON.stringify(data);
+
+                  // Create export
+       $('#id_management_polygons').val(convertedData);
+              } else {
+       $('#id_management_polygons').val(0);
+              }
       var answer = document.getElementById('polygon-info');
       var budget = $( "input#id_budget" ).val();
-      var cost_per_hectare = $( "input#id_cost-per-hectare" ).val()/1000000;
+      var cost_per_hectare = $( "input#id_cost_per_hectare" ).val()/1000000;
 
       console.log(budget);
       if (data.features.length > 0) {
@@ -1321,7 +1329,7 @@ map3.addLayer({
     $(side_plot("main_plot2", 'Area infected', x, y1, y2, '#5fc2c2'));
     });
 
-$( "#submit-run" ).click(function() {
+$( "#submit-run-button" ).click(function() {
   $( "#map-view-tab" ).trigger( "click" );
 });
 $( "#modify-run" ).click(function() {
@@ -1331,9 +1339,65 @@ $( "#analysis-details" ).click(function() {
   $( "#chart-view-tab" ).trigger( "click" );
 });
 
-$( "input#id_budget, input#id_cost-per-hectare" ).on( "click blur", function() {
+$( "input#id_budget, input#id_cost_per_hectare" ).on( "click blur", function() {
 updateArea();
 });
+
+$("input#id_name").on("change", function () {
+  var run_name = $("input#id_name").val();
+  $('#run-title-display').html(run_name);
+  // cancel the default action of the link by returning false
+  return false;
+});
+
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+            // Only send the token to relative URLs i.e. locally.
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    }
+});
+
+    $("#submit-run").on('submit', function () {
+      event.preventDefault();
+      console.log("form submitted!") // sanity check
+      var form = $(this).closest("form");
+      $.ajax({
+        url: form.attr("submit-run-url"),
+        data: form.serialize(),
+        type : "POST", // http method
+        success: function (data) {
+          alert('It worked');
+          console.log(data.pk);
+        },
+                // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+      });
+
+    });
+
+
   </script>
   {% endblock %}
 

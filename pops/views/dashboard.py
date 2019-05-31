@@ -65,16 +65,34 @@ class AjaxableResponseMixin:
         if self.request.is_ajax():
             data = {
                 'pk': self.object.pk,
+                'session': self.kwargs.get('pk')
             }
             return JsonResponse(data)
         else:
             return response
  
 class AJAXTestView(AjaxableResponseMixin, CreateView):
-    template_name = 'pops/dashboard/AJAX_test.html'
+    template_name = 'pops/dashboard/APHIS_June2019.html'
     form_class = RunForm
     success_url = 'new_session'
 
+    def get_initial(self):
+            # call super if needed
+            return {'session': self.kwargs.get('pk')}
 
+    def get_context_data(self, **kwargs):
+            # Call the base implementation first to get the context
+            context = super(AJAXTestView, self).get_context_data(**kwargs)
+            try:
+                session = Session.objects.get(pk=self.kwargs.get('pk'))
+            except:
+                session = None
+            try:
+                output = Output.objects.get(pk=15)
+            except:
+                output = None
+            context['session'] = session
+            context['output'] = output
+            return context
 
 

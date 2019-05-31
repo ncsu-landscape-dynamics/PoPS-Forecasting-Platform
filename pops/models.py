@@ -669,9 +669,9 @@ class Session(models.Model):
 class Run(models.Model):
 
     session = models.ForeignKey(Session, verbose_name = _("session id"), on_delete = models.CASCADE)
-    name = models.CharField(verbose_name = _("run name"), max_length = 150)
-    description = models.TextField(verbose_name = _("run description"), max_length = 300, blank=True, null=True, help_text="Give your run a description.")
-    random_seed = models.PositiveIntegerField(verbose_name = _("random seed"), default = None, null = True, validators = [MinValueValidator(1)])
+    name = models.CharField(verbose_name = _("run name"), max_length = 45)
+    description = models.TextField(verbose_name = _("run description"), default="Give your run a description.", max_length = 300, blank=True, null=True, help_text="Give your run a description.")
+    random_seed = models.PositiveIntegerField(verbose_name = _("random seed"), default = 33, null = True, validators = [MinValueValidator(1)])
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     STATUS_CHOICES = (
         ("PENDING", "Pending"),
@@ -723,4 +723,4 @@ class Output(models.Model):
         verbose_name_plural = _("outputs")
 
     def __str__(self):
-        return self.name
+        return self.run
