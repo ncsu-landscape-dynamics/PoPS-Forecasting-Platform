@@ -97,3 +97,25 @@ class SessionForm(forms.ModelForm):
             if help_text != '':
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
 
+class RunForm(forms.ModelForm):
+    fields_required = fields_required_conditionally
+    class Meta:
+        model = Run
+        fields = ['session','name','description','random_seed','status','reproductive_rate','distance_scale',
+        'weather','budget','cost_per_hectare','efficacy','final_year','management_polygons']
+    
+    def clean(self):
+        self.fields_required(['name','description'])
+
+        return self.cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(RunForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            input_type=self.fields[field].widget.__class__.__name__
+            if input_type != 'CheckboxInput':
+                self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
+

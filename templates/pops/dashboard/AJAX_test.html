@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %} 
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+
+  {% load static %}
+  {% block page_styles %}
+  <link rel="stylesheet" href="{% static 'css/dashboard_layout.css' %}">
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script>
+    function run_comparison_plot(run_comparison_div,run_name,infected, area, money,a,b) {
+
+max_infected=4;
+max_area=70;
+max_money=19;
+max_a=10000;
+max_b=20000;
+var trace1 = {
+  x: ['# Infected'],
+  y: [infected],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  marker: {
+    color: ['#2598b8'],
+    opacity: 1,
+  }
+}; 
+var trace2 = {
+  x: ['Area infected'],
+  y: [area],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y2',
+  marker: {
+    color: ['#5fc2c2'],
+    opacity: 1,
+  }
+}; 
+var trace3 = {
+  x: ['Money'],
+  y: [money],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y3',
+  marker: {
+    color: ['#7ba83d'],
+    opacity: 1,
+  }
+}; 
+var trace4 = {
+  x: ['Apples'],
+  y: [a],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y4',
+  marker: {
+    color: ['#9e8adb'],
+    opacity: 1,
+  }
+}; 
+var trace5 = {
+  x: ['Grapes'],
+  y: [b],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y5',
+  marker: {
+    color: ['#8e6dad'],
+    opacity: 1,
+  }
+}; 
+var data = [trace1,trace2,trace3,trace4,trace5];
+
+    var axis_template={
+        showgrid:false,
+        zeroline:false,
+        showticklabels: false,
+    };
+
+var xaxis ={
+    tickfont: {
+      size: 9,
+      color: 'white',
+      },
+      title: run_name,
+      titlefont: {
+      size: 12,
+      color: 'white',
+      },
+};
+var yaxis = {
+        range: [0,max_infected],
+  };
+var yaxis2= {
+  ticksuffix:' Ha',
+  overlaying: 'y',
+  range: [0,max_area],
+  };
+var yaxis3= {
+  tickprefix:'$',
+  overlaying: 'y',
+  range: [0,max_money],
+  };
+var yaxis4= {
+  overlaying: 'y',
+  range: [0,max_a],
+  };
+var yaxis5= {
+  overlaying: 'y',
+  range: [0,max_b],
+  };
+ 
+
+var layout = {
+    xaxis: $.extend({}, axis_template, xaxis),
+    yaxis: $.extend({}, axis_template, yaxis),
+    yaxis2: $.extend({}, axis_template, yaxis2),
+    yaxis3: $.extend({}, axis_template, yaxis3),
+    yaxis4: $.extend({}, axis_template, yaxis4),
+    yaxis5: $.extend({}, axis_template, yaxis5),
+        showlegend:false,
+        paper_bgcolor:'rgba(0,0,0,0)',
+        plot_bgcolor:'rgba(0,0,0,0)',//'#16181b',
+        margin: {
+            l: 10,
+            r: 10,
+            b: 40,
+            t: 20,
+            pad: 0
+        },
+        bargap: 0.1,
+        barmode: 'group',
+
+    };
+
+
+
+return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, responsive: true});
+
+};
+</script>
+
+  {% endblock %}
+  <title>PoPS</title>
+</head>
+
+<body class="text-light">
+
+  {% block content %}
+  <style>
+  </style>
+
+  <div class=" container-fluid p-0 ">
+
+    <nav class="navbar navbar-dark pl-0">
+      <div class="container-fluid ">
+        <a href="{% url 'landing_page' %}" class="navbar-brand d-none d-inline-block">
+          <img src="{% static 'images/PoPSlogo_simple.svg' %}" style="width: 80px;" class="d-inline-block align-middle "
+            alt="Pest or Pathogen Spread Simulation">
+        </a>
+        <span class="navbar-text d-none d-md-inline-block mr-auto text-bottom" style="font-size:1.4em;">
+          {{ session.name }} <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
+          <span class="text-muted " style="font-size:0.6em;">
+            {{ session.case_study }} <a href="#"><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
+          </span>
+
+        </span>
+        <div class="dropdown show ml-auto">
+          <a class="btn dropdown-toggle text-light" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Menu
+          </a>
+
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </div>
+
+
+
+
+      </div>
+
+    </nav>
+
+
+
+    {% comment %} <div class="row p-2 no-gutters">
+      <div class="col-xs-12 col-md-12">
+        <div style="">
+          <div style="font-size:1.5em;">
+            Session: My session name <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
+          </div>
+          <div class="text-muted">
+            Spotted Lanternfly in Pennsylvania <a href="#"><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
+          </div>
+        </div>
+      </div>
+    </div> {% endcomment %}
+    <div class="row no-gutters">
+      <div id="side-bar-container" class="col-auto text-center ">
+        <div class="nav " id="side-bar" role="tablist" aria-orientation="vertical">
+          <a class="nav-link active" id="new-tab" data-toggle="pill" title="Create new run" data-placement="right" href="#v-pills-new"
+            role="tab" aria-controls="v-pills-home" aria-selected="true"><i class="align-middle fas fa-plus-circle"></i></a>
+          <a class="nav-link " id="map-view-tab" data-toggle="pill" title="View map results for selected run"
+            data-placement="right" href="#v-pills-map-view" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i
+              class="align-middle fas fa-globe-americas"></i></a>
+          <a class="nav-link" id="chart-view-tab" data-toggle="pill" title="View detailed analytics for selected run"
+            data-placement="right" href="#v-pills-chart-view" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i
+              class=" align-middle fas fa-chart-bar"></i></a>
+          <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" title="Session summary (Coming soon!)" data-placement="right"
+            href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="align-midd far fa-list-alt"></i></a>
+          <a class="nav-link align-middle" id="v-pills-settings-tab" data-toggle="pill" title="Compare two runs (Coming soon!)"
+            data-placement="right" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">vs</a>
+          <a class="nav-link" id="report-tab" data-toggle="pill" title="Generate report (Coming soon!)" data-placement="right" href="#v-pills-messages"
+            role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="align-middle fas fa-file-pdf"></i></a>
+          <div class="" id="side-bar-filler"> </div>
+        </div>
+
+      </div>
+      {% comment %} <div class="tab-content" id="v-pills-tabContent">
+        <div class="tab-pane fade show active" id="v-pills-map-view" role="tabpanel" aria-labelledby="v-pills-home-tab">...</div>
+        <div class="tab-pane fade" id="v-pills-chart-view" role="tabpanel" aria-labelledby="v-pills-profile-tab">...</div>
+        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
+        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
+      </div> {% endcomment %}
+      <div id="" class="col">
+
+<div>
+      <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
+
+            {% include "pops/include/form_field.html" with field=form.session form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.name form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.description form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.status form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.reproductive_rate form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.distance_scale form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.weather form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.budget form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.cost_per_hectare form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.efficacy form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.final_year form_class="col-6" %}
+            {% include "pops/include/form_field.html" with field=form.management_polygons form_class="col-6" %}
+                      <div class="text-center py-2">
+            <button class="btn btn-info btn-lg" type="submit">Go</button>
+          </div>
+</form>
+</div>
+
+
+  </div>
+  {% endblock %}
+
+  {% block scripts %}
+  
+  <script>
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+            // Only send the token to relative URLs i.e. locally.
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    }
+});
+
+    $("#submit-run").on('submit', function () {
+      event.preventDefault();
+      console.log("form submitted!") // sanity check
+      var form = $(this).closest("form");
+      $.ajax({
+        url: form.attr("submit-run-url"),
+        data: form.serialize(),
+        type : "POST", // http method
+        success: function (data) {
+          alert('It worked');
+          console.log(data.pk)
+        },
+                // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+      });
+
+    });
+  </script>
+{% comment %}
+
+<script>
+
+
+$('#submit-run').on('submit', function(event){
+    event.preventDefault();
+    console.log("form submitted!")  // sanity check
+    create_post();
+});
+
+function create_post() {
+    console.log("create post is working!") // sanity check
+    $.ajax({
+        url : "save_run_data", // the endpoint
+        type : "POST", // http method
+        data : { the_post : $('#id_name').val() }, // data sent with the post request
+
+        // handle a successful response
+        success : function(json) {
+            $('#id_name').val(''); // remove the value from the input
+            console.log(json); // log the returned json to the console
+            console.log("success"); // another sanity check
+        },
+
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+    });
+};
+
+
+</script>
+{% endcomment %}
+  {% endblock %}
+
+</body>
+
+</html>

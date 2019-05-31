@@ -15,6 +15,8 @@ router.register('precipitation_data', views.PrecipitationDataViewSet)
 
 
 urlpatterns = [
+    path('ajax', views.AJAXTestView.as_view(), name='ajax'),
+    path('save_run_data', views.AJAXTestView.as_view(), name='save_run_data'),
     path('new_session', views.NewSessionView.as_view(), name='new_session'),
     path('case_study/help', TemplateView.as_view(template_name="pops/case_study_instructions.html"), name='case_study_help'),
     path('dashboard_layout', TemplateView.as_view(template_name="pops/dashboard/dashboard_layout.html")),

@@ -696,7 +696,7 @@ class Run(models.Model):
     cost_per_hectare = models.PositiveIntegerField(verbose_name = _("cost per hectare"), default = 1000, null = True, validators = [MinValueValidator(1)])
     efficacy = models.PositiveSmallIntegerField(verbose_name = _("efficacy"), help_text="", blank=True, default = 100, validators = [MinValueValidator(1), MaxValueValidator(100)])
     final_year = models.PositiveIntegerField(verbose_name = _("final run year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
-    management_polygons = JSONField()
+    management_polygons = JSONField(null = True, blank = True)
 
 
 
