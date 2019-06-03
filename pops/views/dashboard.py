@@ -1,4 +1,6 @@
 from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, View
+from django.shortcuts import render, get_object_or_404
+
 from django.http import JsonResponse, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -94,5 +96,17 @@ class AJAXTestView(AjaxableResponseMixin, CreateView):
             context['session'] = session
             context['output'] = output
             return context
+
+def get_output_view(request):
+    instance = get_object_or_404(Output, pk=99)
+ 
+    data = {
+        'number_infected': instance.number_infected, 
+        'year': instance.years, 
+        'spread_map': instance.spread_map, 
+    }
+
+    return JsonResponse(data)
+
 
 

@@ -259,13 +259,13 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                 <div id="run-title">
                 Run name: <input id="id_name" required type="text" value="My run name" name="name">
                   <button id="submit-run-button" type="submit" class="btn btn-success float-right d-none d-md-inline ml-4">Run PoPS Model</button>
-                  <button id="show-hide-new-view" class="btn btn-dark float-right d-none d-md-inline">Hide
-                    Details</button>
-                </div>
+                  <button id="show-hide-new-view" type="button" class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
+                  <button id="get-data-button" type="button" class="btn btn-dark float-right d-none d-md-inline">Output    </button>            
+                  </div>
               </div>
 {{ form.session.as_hidden }}
 <input type="hidden" value="0" name="management_polygons" cols="40" rows="10" class="form-control" id="id_management_polygons">
-              <div id="map-container-new-view" class="col-md-10">
+              <div id="map-container-new-view" class="col-md-9">
                 <div id="map" class="large_map"></div>
                 <div id="legend-container" class="pb-0">
                   <h5>Probability of infection:</h5>
@@ -294,7 +294,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
 
 
               </div>
-              <div id="run-details" class="d-none d-md-block col-md-2 p-1">
+              <div id="run-details" class="d-none d-md-block col-md-3 p-1">
 
 
 <!-- Modal -->
@@ -526,6 +526,11 @@ mode: 'markers',
               </div>
               <div id="map-container-map-view" class="col-md-9">
                 <div id="map2" class="large_map"></div>
+                <div id="year-slider2" class="pt-0 range range-info">
+                  <h5 class="py-0">Year: <output id="displayYear">2018</output></h5>
+                  <input class="custom-range px-2 py-0" type="range" name="range" min="2018" max="2020" step="1" value="2018"
+                    onchange="displayYear.value=value">
+                </div>
               </div>
 
               <div id="side-plots" class="d-none d-md-block col-md-3 p-1">
@@ -588,38 +593,9 @@ mode: 'markers',
     </div>
     <div class="col">
     <div id="run-preview-description" class="row">
-      <div class="col">
-        <div class="">
-          Runs in this session:
-        </div>
-        <div class="d-inline">
-          Show:
-        </div>
-        <div class="d-inline" id="run_preview_options" style="font-size:0.8em;">
-          <div class="form-check form-check-inline">
-            <input checked class="form-check-input" type="checkbox" id="infected_number_on_off" value="infected_number">
-            <label class="form-check-label" for="infected_number_on_off"># Infected</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input checked class="form-check-input" type="checkbox" id="infected_area_on_off" value="infected_area">
-            <label class="form-check-label" for="infected_area_on_off">Area Infected</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input checked class="form-check-input" type="checkbox" id="money_on_off" value="money">
-            <label class="form-check-label" for="money_on_off">Management Cost ($)</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input checked class="form-check-input" type="checkbox" id="apples_on_off" value="apples">
-            <label class="form-check-label" for="apples_on_off">Apples</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input checked class="form-check-input" type="checkbox" id="grapes_on_off" value="grapes">
-            <label class="form-check-label" for="grapes_on_off">Grapes</label>
-          </div>
-        </div>
-        <div class="text-muted" style="font-size:0.7em;">Note: In production, clicking on the runs shown below will take you to a detailed view
-        of that run. Also, the data can be selected and sorted for comparison. That functionality has not yet been implemented.</div>
-      </div>
+    <div class="col">
+    Other runs in this session:
+    </div>
       <div class="col-auto">
         <select id="sort_runs_by" class="custom-select custom-select-sm">
           <option selected>Sort runs by:</option>
@@ -734,18 +710,72 @@ CheckValue('#money_on_off');
     });
 
 
-map.on('load', function() {
-  map.addSource('infection', {
+var year_id = '0';
+
+
+function newLayer(map_data,year) {
+
+  map.addSource(year, {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/infection_0_2019.geojson" %}'
+    'data': map_data
   });
-  /*here we are adding a source, then a layer based on that that source*/
 
 map.addLayer({
-                            "id": 'infection_layer',
+                            "id": year,
                             "type": 'fill',
-                            "source": 'infection',
+                            "source": year,
+                            "layout": {
+                              'visibility':'visible',
+                            },
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'tree_of_heaven_0.50'],
+                            0, '#009CB0',
+                            0.1, '#00C49D',
+                            0.2, '#00D793',
+                            0.3, '#00FF80',
+                            0.4, '#24DA80',
+                            0.5, '#48B680',
+                            0.6, '#6D9180',
+                            0.7, '#916D80',
+                            0.8, '#B64880',
+                            0.9, '#DA2480',
+                            1, '#ff0000'
+                            ],
+                            'fill-opacity': 0.5
+                            }
+                            }, 'waterway-label'); 
+
+};
+
+function addLayers() {
+  var year_id='2018';
+  var visibility_2018 = 'none';
+var visibility_2019 = 'none';
+var visibility_2020 = 'none';
+
+if (year_id == '2018') {
+  visibility_2018='visible';
+  console.log(visibility_2018);
+};
+if (year_id == '2019') {
+  visibility_2019='visible';
+};
+if (year_id == '2020') {
+  visibility_2020='visible';
+};
+
+console.log(visibility_2018)
+map.addLayer({
+                            "id": '2018',
+                            "type": 'fill',
+                            "source": '2018',
+                            "layout": {
+                              'visibility':visibility_2018,
+                            },
                             'paint': {
                             'fill-color': [
                             'interpolate',
@@ -766,11 +796,102 @@ map.addLayer({
                             'fill-opacity': 0.5
                             }
                             }, 'waterway-label'); 
+map.addLayer({
+                            "id": '2019',
+                            "type": 'fill',
+                            "source": '2019',
+                            "layout": {
+                              'visibility':visibility_2019,
+                            },
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'layer.2'],
+                            0, '#009CB0',
+                            0.1, '#00C49D',
+                            0.2, '#00D793',
+                            0.3, '#00FF80',
+                            0.4, '#24DA80',
+                            0.5, '#48B680',
+                            0.6, '#6D9180',
+                            0.7, '#916D80',
+                            0.8, '#B64880',
+                            0.9, '#DA2480',
+                            1, '#ff0000'
+                            ],
+                            'fill-opacity': 0.5
+                            }
+                            }, 'waterway-label'); 
+map.addLayer({
+                            "id": '2020',
+                            "type": 'fill',
+                            "source": '2020',
+                            "layout": {
+                              'visibility':visibility_2020,
+                            },
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'layer.3'],
+                            0, '#009CB0',
+                            0.1, '#00C49D',
+                            0.2, '#00D793',
+                            0.3, '#00FF80',
+                            0.4, '#24DA80',
+                            0.5, '#48B680',
+                            0.6, '#6D9180',
+                            0.7, '#916D80',
+                            0.8, '#B64880',
+                            0.9, '#DA2480',
+                            1, '#ff0000'
+                            ],
+                            'fill-opacity': 0.5
+                            }
+                            }, 'waterway-label'); 
+};
+map.on('load', function() {
+  map.addSource('2018', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': '{% static "map_data/no_management_2018.geojson" %}'
+  });
+  map.addSource('2019', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': '{% static "map_data/no_management_2019.geojson" %}'
+  });
+  map.addSource('2020', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': '{% static "map_data/no_management_2020.geojson" %}'
+  });
+    map.addSource('perimeter_zone', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': '{% static "map_data/slf_aphis_treatment.geojson" %}'
+  });
+  /*here we are adding a source, then a layer based on that that source*/
+    map.addLayer({
+                            "id": 'perimeter_zone_layer',
+                            "type": 'fill',
+                            "source": 'perimeter_zone',
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'Dis_KB'],
+                            1, '#fda704'
+                            ],
+                            'fill-opacity': 0.2
+                            }
+                            }, 'waterway-label'); 
 
 
-
-
-});
+addLayers();
+                            
+  });
 
 map2.on('load', function() {
   map2.addSource('infection', {
@@ -1343,11 +1464,66 @@ $( "input#id_budget, input#id_cost_per_hectare" ).on( "click blur", function() {
 updateArea();
 });
 
-$("input#id_name").on("change", function () {
-  var run_name = $("input#id_name").val();
-  $('#run-title-display').html(run_name);
-  // cancel the default action of the link by returning false
-  return false;
+function updateLayers(){
+
+      var raster2018 = '{% static "map_data/" %}'+ "perimeter" + '_' + '6' + '_'+ '100' + '_2018.geojson';
+      var raster2019 = '{% static "map_data/" %}'+ "perimeter" + '_' + '6' + '_'+ '100' + '_2019.geojson';
+      var raster2020 = '{% static "map_data/" %}'+ "perimeter" + '_' + '6' + '_'+ '100' + '_2020.geojson';
+      console.log(raster2018)
+      console.log(raster2019)
+      console.log(raster2020)
+                       
+                        // update the map
+                        // change the overlay
+                        if (map.getLayer("2018")) {
+                            map.removeLayer("2018");
+                        };
+                        if (map.getSource("2018")) {
+                            map.removeSource("2018");
+                        };
+                        if (map.getLayer("2019")) {
+                            map.removeLayer("2019");
+                        };
+                        if (map.getSource("2019")) {
+                            map.removeSource("2019");
+                        };
+                        if (map.getLayer("2020")) {
+                            map.removeLayer("2020");
+                        };
+                        if (map.getSource("2020")) {
+                            map.removeSource("2020");
+                        };
+
+  map.addSource('2018', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': raster2018
+  });
+  map.addSource('2019', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': raster2019
+  });
+  map.addSource('2020', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': raster2020
+  });
+  /*here we are adding a source, then a layer based on that that source*/
+
+addLayers();
+
+};
+
+$( "#year-slider" ).change(function() {
+        year_id = $(this).find('input').val();
+      console.log(year_id);
+      $("#year-value").text(year_id);
+
+      map.setLayoutProperty('2018','visibility','none');
+      map.setLayoutProperty('2019','visibility','none');
+      map.setLayoutProperty('2020','visibility','none');
+      map.setLayoutProperty(year_id,'visibility','visible');
 });
 
   function getCookie(name) {
@@ -1384,7 +1560,8 @@ $.ajaxSetup({
         data: form.serialize(),
         type : "POST", // http method
         success: function (data) {
-          alert('It worked');
+          console.log('Data successfully posted!');
+          console.log('New run id:');
           console.log(data.pk);
         },
                 // handle a non-successful response
@@ -1395,7 +1572,41 @@ $.ajaxSetup({
         }
       });
 
+
+
     });
+
+$( "#get-data-button" ).click(function() {
+      $.ajax({
+        url: "{% url 'get_output' %}",
+          dataType: "json",
+          success: function (data) {
+            console.log('Sanity check: New data retrieved.');
+       var year = data.year.toString();
+       var map_data = data.spread_map;
+       console.log(map_data);
+       console.log(typeof map_data);
+                        if (map.getLayer(year)) {
+                            map.removeLayer(year);
+                        };
+                        if (map.getSource(year)) {
+                            map.removeSource(year);
+                        };                        
+                        if (map.getLayer('2018')) {
+                            map.removeLayer('2018');
+                        };
+                        if (map.getSource('2018')) {
+                            map.removeSource('2018');
+                        };
+          //newLayer('{% static "map_data/infection_0_2019.geojson" %}', year);
+          newLayer(map_data, year);
+          },
+          error: function (xhr) {
+            alert(xhr.statusText)
+          }
+        
+      });
+  });
 
 
   </script>
