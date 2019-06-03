@@ -98,15 +98,26 @@ class AJAXTestView(AjaxableResponseMixin, CreateView):
             return context
 
 def get_output_view(request):
-    instance = get_object_or_404(Output, pk=99)
+    run_id = request.GET.get('new_run_id', None)
  
-    data = {
-        'number_infected': instance.number_infected, 
-        'year': instance.years, 
-        'spread_map': instance.spread_map, 
+    outputs = Output.objects.filter(run_id = 48)
+    run = Run.objects.get(pk=run_id)
+    data = {"run_inputs": {
+        "name": run.name, 
+        "primary_key": run.pk,
+        "description": run.description,
+        "date_created":run.date_created,
+        "status":run.status,
+        "random_seed": run.random_seed,
+        "reproductive_rate": run.reproductive_rate,
+        "distance_scale": run.distance_scale,
+        "weather": run.weather,
+        "budget": run.budget,
+        "cost_per_hectare": run.cost_per_hectare,
+        "efficacy": run.efficacy,
+        "final_year": run.final_year,
+        "management_polygons": run.management_polygons,
+        },
+    "results": list(outputs.values("date_created","id","number_infected", "infected_area", "years", "spread_map"))
     }
-
     return JsonResponse(data)
-
-
-

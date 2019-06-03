@@ -254,151 +254,253 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
           <div id="v-pills-new" class="tab-pane fade show active no-gutters" role="tabpanel">
             <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
 
-            <div class="row no-gutters">
-              <div class="col-12 d-flex flex-column">
-                <div id="run-title">
-                Run name: <input id="id_name" required type="text" value="My run name" name="name">
-                  <button id="submit-run-button" type="submit" class="btn btn-success float-right d-none d-md-inline ml-4">Run PoPS Model</button>
-                  <button id="show-hide-new-view" type="button" class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
-                  <button id="get-data-button" type="button" class="btn btn-dark float-right d-none d-md-inline">Output    </button>            
+              <div class="row no-gutters">
+                <div class="col-12 d-flex flex-column">
+                  <div id="run-title">
+                    Run name: <input id="id_name" required type="text" value="My run name" name="name">
+                    <button id="submit-run-button" type="submit"
+                      class="btn btn-success float-right d-none d-md-inline ml-4">Run PoPS Model</button>
+                    <button id="show-hide-new-view" type="button"
+                      class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
+                    <button id="get-data-button" type="button" data-run=""
+                      class="btn btn-dark float-right d-none d-md-inline">Output </button>
                   </div>
-              </div>
-{{ form.session.as_hidden }}
-<input type="hidden" value="0" name="management_polygons" cols="40" rows="10" class="form-control" id="id_management_polygons">
-              <div id="map-container-new-view" class="col-md-9">
-                <div id="map" class="large_map"></div>
-                <div id="legend-container" class="pb-0">
-                  <h5>Probability of infection:</h5>
-                  <div class="legend-color" style="background-color:#009CB0"></div>
-                  <div class="legend-color" style="background-color:#00C49D"></div>
-                  <div class="legend-color" style="background-color:#00D793"></div>
-                  <div class="legend-color" style="background-color:#00FF80"></div>
-                  <div class="legend-color" style="background-color:#24DA80"></div>
-                  <div class="legend-color" style="background-color:#48B680"></div>
-                  <div class="legend-color" style="background-color:#6D9180"></div>
-                  <div class="legend-color" style="background-color:#916D80"></div>
-                  <div class="legend-color" style="background-color:#B64880"></div>
-                  <div class="legend-color" style="background-color:#DA2480"></div>
-                  <div class="legend-color" style="background-color:#ff0000"></div>
-                  <div style="clear: left;">
-                    <p class="legend-label" style="float:left; margin-right:170px;">0%</p>
-                    <p class="legend-label">100%</p>
+                </div>
+                {{ form.session.as_hidden }}
+                <input type="hidden" value="0" name="management_polygons" cols="40" rows="10" class="form-control"
+                  id="id_management_polygons">
+                <div id="map-container-new-view" class="col-md-9">
+                  <div id="map" class="large_map"></div>
+                  <div id="legend-container" class="pb-0">
+                    <h5>Probability of infection:</h5>
+                    <div class="legend-color" style="background-color:#009CB0"></div>
+                    <div class="legend-color" style="background-color:#00C49D"></div>
+                    <div class="legend-color" style="background-color:#00D793"></div>
+                    <div class="legend-color" style="background-color:#00FF80"></div>
+                    <div class="legend-color" style="background-color:#24DA80"></div>
+                    <div class="legend-color" style="background-color:#48B680"></div>
+                    <div class="legend-color" style="background-color:#6D9180"></div>
+                    <div class="legend-color" style="background-color:#916D80"></div>
+                    <div class="legend-color" style="background-color:#B64880"></div>
+                    <div class="legend-color" style="background-color:#DA2480"></div>
+                    <div class="legend-color" style="background-color:#ff0000"></div>
+                    <div style="clear: left;">
+                      <p class="legend-label" style="float:left; margin-right:170px;">0%</p>
+                      <p class="legend-label">100%</p>
+                    </div>
+
+                  </div>
+                  <div id="year-slider" class="pt-0 range range-info">
+                    <h5 class="py-0">Year: <output id="displayYear">2018</output></h5>
+                    <input class="custom-range px-2 py-0" type="range" name="range" min="2018" max="2018" step="1"
+                      value="2018" onchange="displayYear.value=value">
+                  </div>
+                  <div id="status-indicator-shading">
+                  </div>
+                  <div id="status-indicator" class="text-center">
+                  <img class="rounded-circle" src="{% static 'images/PoPS_AnimatedLogo_TransparentBackground.gif' %}" alt="Generic placeholder image" width="180">
+                  <div>
+                  Pending...
+                  </div>
                   </div>
 
                 </div>
-                <div id="year-slider" class="pt-0 range range-info">
-                  <h5 class="py-0">Year: <output id="displayYear">2018</output></h5>
-                  <input class="custom-range px-2 py-0" type="range" name="range" min="2018" max="2020" step="1" value="2018"
-                    onchange="displayYear.value=value">
-                </div>
+                <div id="side-panel" class="d-none d-md-block col-md-3 p-1">
+                <div id="run-details">
+                  <!-- Modal -->
+                  <div class="modal fade" id="editInputParameters" tabindex="-1" role="dialog" aria-labelledby="editInputParameters"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">Edit Run Parameters</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="row">
+                            {% include "pops/include/form_field.html" with field=form.description form_class="col-12" %}
+                            <div class="form-group col-6">
+                              <label for="id_budget">Budget ($US)</label>
 
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input type="number" name="budget" value="10" min="0" data-toggle="tooltip"
+                                  data-placement="top" title="Allowed budget" data-container="body" class="form-control"
+                                  id="id_budget">
+                                <div class="input-group-append">
+                                  <span class="input-group-text">million</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-6">
+                              <label for="id_cost_per_hectare">Cost per hectare ($US)</label>
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input type="number" name="cost_per_hectare" value="1000" min="0" data-toggle="tooltip"
+                                  data-placement="top" title="Cost per hectare" data-container="body"
+                                  class="form-control" id="id_cost_per_hectare">
+                                <div class="input-group-append">
+                                  <span class="input-group-text">.00</span>
+                                </div>
+                              </div>
 
-              </div>
-              <div id="run-details" class="d-none d-md-block col-md-3 p-1">
+                            </div>
 
-
-<!-- Modal -->
-<div class="modal fade" id="editBudget" tabindex="-1" role="dialog" aria-labelledby="editBudget" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Edit Run Parameters</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-            {% include "pops/include/form_field.html" with field=form.description form_class="col-12" %}
-          <div class="form-group col-6">
-            <label for="id_budget">Budget ($US)</label>
-
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">$</span>
-              </div>
-              <input type="number" name="budget" value="10" min="0" data-toggle="tooltip" data-placement="top"
-                title="Allowed budget" data-container="body" class="form-control" id="id_budget">
-              <div class="input-group-append">
-                <span class="input-group-text">million</span>
-              </div>
-            </div>
-          </div>
-          <div class="form-group col-6">
-            <label for="id_cost_per_hectare">Cost per hectare ($US)</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">$</span>
-              </div>
-              <input type="number" name="cost_per_hectare" value="1000" min="0" data-toggle="tooltip"
-                data-placement="top" title="Cost per hectare" data-container="body" class="form-control"
-                id="id_cost_per_hectare">
-              <div class="input-group-append">
-                <span class="input-group-text">.00</span>
-              </div>
-            </div>
-
-          </div>
-
-            {% include "pops/include/form_field.html" with field=form.final_year form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
-        {% include "pops/include/form_field.html" with field=form.weather form_class="col-12" %}
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Save and Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+                            {% include "pops/include/form_field.html" with field=form.final_year form_class="col-6" %}
+                            {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
+                            {% include "pops/include/form_field.html" with field=form.weather form_class="col-12" %}
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Save and Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <h5 class="py-0">
-                      <!-- Button trigger modal -->
-                    Parameters<a class="btn" data-toggle="modal" data-target="#editBudget" href="#"><i style="font-size:0.6em" class="fas fa-pencil-alt align-top text-light"></i></a>
-                    </h5>
-                    <strong class="py-0">Management:</strong>
-                    <div style="height:35px; line-height: 1em;">
-      <small id="polygon-info" >Use the polygon tool to draw management areas.</small>
-</div>
+                    <!-- Button trigger modal -->
+                    Parameters<a class="btn" data-toggle="modal" data-target="#editInputParameters" href="#"><i
+                        style="font-size:0.6em" class="fas fa-pencil-alt align-top text-light"></i></a>
+                  </h5>
+                  <strong class="py-0">Management:</strong>
+                  <div style="height:35px; line-height: 1em;">
+                    <small id="polygon-info">Use the polygon tool to draw management areas.</small>
+                  </div>
                   <div id="gauge-plots" class="row no-gutters pt-2">
-                                      <div id="money-new" class="col py-0" style="width:180px; height:140px"></div>
+                    <div id="money-new" class="col py-0" style="width:180px; height:140px"></div>
 
                   </div>
 
 
                   <div id="case-study-details" class="">
-<div id="efficiency" class="pt-2 range range-info">
-            <strong>Efficacy: <output id="displayEfficiency">100</output>%</strong>
-            <input id="id_efficacy" class="custom-range px-4" type="range" name="efficacy" min="50" max="100" step="10" value="100" onchange="displayEfficiency.value=value">
-          </div>
+                    <div id="efficiency" class="pt-2 range range-info">
+                      <strong>Efficacy: <output id="displayEfficiency">100</output>%</strong>
+                      <input id="id_efficacy" class="custom-range px-4" type="range" name="efficacy" min="50" max="100"
+                        step="10" value="100" onchange="displayEfficiency.value=value">
+                    </div>
 
 
-                          
 
-<div id="reproductive-rate-container" class="parameter-selector-plot pt-2" style="width:200px">
-  <strong class="py-0">Reproductive rate: <output id="displayRate">13</output></strong>
-  <div id="reproductive_rate_plot" style="height:100px; width:200px;"></div>
-  <div id="reproductive-rate-slider" class="pt-0 range range-info text-light">
-    <input id="id_reproductive_rate" style="" class="custom-range " type="range" name="reproductive_rate" min="10" max="18" step="1" value="13"
-      onchange="displayRate.value=value">
-  </div>
-</div>
-<div id="dispersal-scale-container" class="parameter-selector-plot pt-2" style="width:200px">
-  <strong class="py-0">Dispersal scale: <output id="displayDispersalScale">45</output></strong>
-  <div id="dispersal_scale_plot" style="height:100px; width:200px;"></div>
-  <div id="dispersal-scale-slider" class="pt-0 range range-info text-light">
-    <input id="id_distance_scale" style="" class="custom-range " type="range" name="distance_scale" min="25" max="65" step="5" value="45"
-      onchange="displayDispersalScale.value=value">
-  </div>
-</div>
 
-                            </div>
+                    <div id="reproductive-rate-container" class="parameter-selector-plot pt-2" style="width:200px">
+                      <strong class="py-0">Reproductive rate: <output id="displayRate">13</output></strong>
+                      <div id="reproductive_rate_plot" style="height:100px; width:200px;"></div>
+                      <div id="reproductive-rate-slider" class="pt-0 range range-info text-light">
+                        <input id="id_reproductive_rate" style="" class="custom-range " type="range"
+                          name="reproductive_rate" min="10" max="18" step="1" value="13"
+                          onchange="displayRate.value=value">
+                      </div>
+                    </div>
+                    <div id="dispersal-scale-container" class="parameter-selector-plot pt-2" style="width:200px">
+                      <strong class="py-0">Dispersal scale: <output id="displayDispersalScale">45</output></strong>
+                      <div id="dispersal_scale_plot" style="height:100px; width:200px;"></div>
+                      <div id="dispersal-scale-slider" class="pt-0 range range-info text-light">
+                        <input id="id_distance_scale" style="" class="custom-range " type="range" name="distance_scale"
+                          min="25" max="65" step="5" value="45" onchange="displayDispersalScale.value=value">
+                      </div>
+                    </div>
+
+                  </div>
+                </div>                
+                <div id="run-output-details">
+                  <h5 class="py-0">
+                    <!-- Button trigger modal -->
+                    Run details<a class="btn" data-toggle="modal" data-target="#viewParameters" href="#"><i
+                        style="font-size:0.6em" class="fas fa-pencil-alt align-top text-light"></i></a>
+                  </h5>               
+
+
+                                  <!-- Modal -->
+                  <div class="modal fade" id="viewParameters" tabindex="-1" role="dialog" aria-labelledby="viewParameters"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">Run details</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <div id="input_run_name">
+                          Run: <span></span>
+                          </div>
+                          <div id="input_run_pk">
+                          Run primary key: <span></span>
+                          </div>
+                          <div id="input_description">
+                          Description: <span></span>
+                          </div>
+                          <div id="input_reproductive_rate">
+                          Reproductive rate: <span></span>
+                          </div>
+                          <div id="input_distance_scale">
+                          Distance Scale: <span></span>
+                          </div>
+                          <div id="input_efficacy">
+                          Efficacy: <span></span>
+                          </div>
+                          <div id="input_date_created">
+                          Date: <span></span>
+                          </div>
+                          <div id="input_weather">
+                          Weather: <span></span>
+                          </div>
+                          <div id="input_budget">
+                          Budget: <span></span>
+                          </div>
+                          <div id="input_cost_per_hectare">
+                          Cost per hectare: <span></span>
+                          </div>
+                          <div id="status">
+                          Status: <span></span>
+                          </div>
+                          <div id="input_random_seed">
+                          Random Seed: <span></span>
+                          </div>
+                          <div id="input_final_year">
+                          Final year: <span></span>
+                          </div>
+                          <div id="input_management">
+                          Management polygons: <span></span>
+                          </div>
+                          <div id="output_years">
+                          Years: <span></span>
+                          </div>                
+                          <div id="output_area">
+                          Area infected: <span></span>
+                          </div>
+                          <div id="output_number">
+                          Number infected: <span></span>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                </div>
+                </div>
               </div>
-            </div>
           </div>
 
-</form>
+          </form>
 
 <script>
+
+$( "#run-output-details" ).hide();
+$( "#status-indicator" ).hide();
+$( "#status-indicator-shading" ).hide();
+
 $( "#dispersal-scale-container" ).click(function() {
         dispersal_scale = $(this).find('input').val();
       console.log(dispersal_scale);
@@ -726,13 +828,13 @@ map.addLayer({
                             "type": 'fill',
                             "source": year,
                             "layout": {
-                              'visibility':'visible',
+                              'visibility':'none',
                             },
                             'paint': {
                             'fill-color': [
                             'interpolate',
                             ['linear'],
-                            ['get', 'tree_of_heaven_0.50'],
+                            ['get', 'outputs'],
                             0, '#009CB0',
                             0.1, '#00C49D',
                             0.2, '#00D793',
@@ -754,21 +856,13 @@ map.addLayer({
 function addLayers() {
   var year_id='2018';
   var visibility_2018 = 'none';
-var visibility_2019 = 'none';
-var visibility_2020 = 'none';
+
 
 if (year_id == '2018') {
   visibility_2018='visible';
   console.log(visibility_2018);
 };
-if (year_id == '2019') {
-  visibility_2019='visible';
-};
-if (year_id == '2020') {
-  visibility_2020='visible';
-};
 
-console.log(visibility_2018)
 map.addLayer({
                             "id": '2018',
                             "type": 'fill',
@@ -796,76 +890,14 @@ map.addLayer({
                             'fill-opacity': 0.5
                             }
                             }, 'waterway-label'); 
-map.addLayer({
-                            "id": '2019',
-                            "type": 'fill',
-                            "source": '2019',
-                            "layout": {
-                              'visibility':visibility_2019,
-                            },
-                            'paint': {
-                            'fill-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'layer.2'],
-                            0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
-                            ],
-                            'fill-opacity': 0.5
-                            }
-                            }, 'waterway-label'); 
-map.addLayer({
-                            "id": '2020',
-                            "type": 'fill',
-                            "source": '2020',
-                            "layout": {
-                              'visibility':visibility_2020,
-                            },
-                            'paint': {
-                            'fill-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'layer.3'],
-                            0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
-                            ],
-                            'fill-opacity': 0.5
-                            }
-                            }, 'waterway-label'); 
+
 };
+
 map.on('load', function() {
   map.addSource('2018', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
     'data': '{% static "map_data/no_management_2018.geojson" %}'
-  });
-  map.addSource('2019', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/no_management_2019.geojson" %}'
-  });
-  map.addSource('2020', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/no_management_2020.geojson" %}'
   });
     map.addSource('perimeter_zone', {
     'type': 'geojson',
@@ -1418,7 +1450,7 @@ map3.addLayer({
     $('#show-hide-new-view').on('click', function () {
       var bounds = map.getBounds();
       $('#map-container-new-view').toggleClass('col-md-9 col-md-12');
-      $('#run-details').toggleClass('d-md-block d-md-none');
+      $('#side-panel').toggleClass('d-md-block d-md-none');
       //$('#map').toggleClass( 'large_map small_map' );
       map.resize();
       //map.fitBounds(bounds);
@@ -1450,9 +1482,7 @@ map3.addLayer({
     $(side_plot("main_plot2", 'Area infected', x, y1, y2, '#5fc2c2'));
     });
 
-$( "#submit-run-button" ).click(function() {
-  $( "#map-view-tab" ).trigger( "click" );
-});
+
 $( "#modify-run" ).click(function() {
   $( "#new-tab" ).trigger( "click" );
 });
@@ -1523,6 +1553,7 @@ $( "#year-slider" ).change(function() {
       map.setLayoutProperty('2018','visibility','none');
       map.setLayoutProperty('2019','visibility','none');
       map.setLayoutProperty('2020','visibility','none');
+      map.setLayoutProperty('2021','visibility','none');
       map.setLayoutProperty(year_id,'visibility','visible');
 });
 
@@ -1554,6 +1585,8 @@ $.ajaxSetup({
     $("#submit-run").on('submit', function () {
       event.preventDefault();
       console.log("form submitted!") // sanity check
+      $("#submit-run-button").attr("disabled", true);
+
       var form = $(this).closest("form");
       $.ajax({
         url: form.attr("submit-run-url"),
@@ -1562,6 +1595,8 @@ $.ajaxSetup({
         success: function (data) {
           console.log('Data successfully posted!');
           console.log('New run id:');
+          var new_run_id = data.pk;
+                  $("#get-data-button").attr('data-run',new_run_id);
           console.log(data.pk);
         },
                 // handle a non-successful response
@@ -1571,36 +1606,69 @@ $.ajaxSetup({
             console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
       });
-
-
-
+      $("input#id_name").prop('disabled', true);
+      map.removeControl(draw);
+      $( "#run-details" ).hide();
+      $( "#run-output-details" ).show();
+      $( "#status-indicator" ).show();
+      $( "#status-indicator-shading" ).show();
     });
 
 $( "#get-data-button" ).click(function() {
+var new_run_id = $('#get-data-button').attr('data-run');
+ console.log(new_run_id)
       $.ajax({
         url: "{% url 'get_output' %}",
           dataType: "json",
+          data: {
+          'new_run_id': new_run_id
+          },
           success: function (data) {
             console.log('Sanity check: New data retrieved.');
-       var year = data.year.toString();
-       var map_data = data.spread_map;
-       console.log(map_data);
-       console.log(typeof map_data);
+            console.log(data);
+            var year_list = [], infected_area_list = [], infected_number_list = [];
+            for (var i=0; i<data.results.length; i++) {
+                  var year = data.results[i].years.toString();
+                  var map_data = data.results[i].spread_map;
+                  year_list.push( data.results[i].years );
+                  infected_area_list.push( data.results[i].infected_area );
+                  infected_number_list.push( data.results[i].number_infected );
+
+                  console.log(data.results[i].spread_map);
+                  console.log(data.results[i].years);
+
                         if (map.getLayer(year)) {
                             map.removeLayer(year);
                         };
                         if (map.getSource(year)) {
                             map.removeSource(year);
-                        };                        
-                        if (map.getLayer('2018')) {
-                            map.removeLayer('2018');
-                        };
-                        if (map.getSource('2018')) {
-                            map.removeSource('2018');
-                        };
+                        };                       
           //newLayer('{% static "map_data/infection_0_2019.geojson" %}', year);
-          newLayer(map_data, year);
+                  newLayer(map_data, year);
+                  $("#year-slider input").attr('max',year);
+            }
+                  $('#input_run_name span').text(data.run_inputs.name);
+                  $('#input_run_pk span').text(data.run_inputs.primary_key);
+                  $('input#id_name').val(data.run_inputs.name);
+                  $('#input_description span').text(data.run_inputs.description);
+                  $('#input_reproductive_rate span').text(data.run_inputs.reproductive_rate);
+                  $('#input_distance_scale span').text(data.run_inputs.distance_scale);
+                  $('#input_efficacy span').text(data.run_inputs.efficacy);
+                  $('#input_date_created span').text(data.run_inputs.date_created);
+                  $('#input_random_seed span').text(data.run_inputs.random_seed);
+                  $('#input_budget span').text(data.run_inputs.budget);
+                  $('#input_cost_per_hectare span').text(data.run_inputs.cost_per_hectare);
+                  $('#input_weather span').text(data.run_inputs.weather);
+                  $('#input_final_year span').text(data.run_inputs.final_year);
+                  $('#input_management span').text(data.run_inputs.management_polygons);
+                  $('#status span').text(data.run_inputs.status);
+                  $('#output_years span').text(year_list);
+                  $('#output_area span').text(infected_area_list);
+                  $('#output_number span').text(infected_number_list);
+                $( "#status-indicator" ).hide();
+                $( "#status-indicator-shading" ).hide();
           },
+
           error: function (xhr) {
             alert(xhr.statusText)
           }
