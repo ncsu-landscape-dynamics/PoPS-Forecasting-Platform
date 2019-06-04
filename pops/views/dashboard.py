@@ -121,3 +121,11 @@ def get_output_view(request):
     "results": list(outputs.values("date_created","id","number_infected", "infected_area", "years", "spread_map"))
     }
     return JsonResponse(data)
+
+def check_status(request):
+    run_id = request.GET.get('new_run_id', None)
+    run = Run.objects.get(pk=run_id)
+    data = {
+        "status":run.status,
+        }
+    return JsonResponse(data)

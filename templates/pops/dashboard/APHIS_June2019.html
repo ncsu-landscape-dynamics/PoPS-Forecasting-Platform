@@ -298,9 +298,11 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   <div id="status-indicator-shading">
                   </div>
                   <div id="status-indicator" class="text-center">
+                  <div id="status-logo">
                   <img class="rounded-circle" src="{% static 'images/PoPS_AnimatedLogo_TransparentBackground.gif' %}" alt="Generic placeholder image" width="180">
-                  <div>
-                  Pending...
+                  </div>
+                  <div id="status-text">
+                  <span>Run submitted...</span>
                   </div>
                   </div>
 
@@ -1460,6 +1462,47 @@ $.ajaxSetup({
     }
 });
 
+function poll(){
+   setTimeout(function(){
+      var new_run_id = $('#get-data-button').attr('data-run');
+      $.ajax({
+        url: "{% url 'check_status' %}",
+          dataType: "json",
+          data: {
+          'new_run_id': new_run_id
+          },
+        success: function(data){
+        console.log(data.status);
+
+        //Setup the next poll recursively
+        if (data.status == "SUCCESS") {
+        $('#status-text span').text('Success! Loading results...');
+          $( "#get-data-button" ).trigger( "click" );
+        }
+        else if (data.status == "FAILED") {
+        $('#status-text span').text('RUN FAILED.');
+        $( "#status-logo" ).hide();
+
+        }
+        else if (data.status == "IN PROGRESS") {
+        $('#status-text span').text('Run in progress...');
+        poll();
+        }
+        else if (data.status == "PENDING") {
+        $('#status-text span').text('Pending...');
+        poll();
+        }
+        else {
+        poll();
+        }
+
+
+        }
+      });
+  }, 10000);
+};
+
+
     $("#submit-run").on('submit', function () {
       event.preventDefault();
       console.log("form submitted!") // sanity check
@@ -1473,9 +1516,14 @@ $.ajaxSetup({
         success: function (data) {
           console.log('Data successfully posted!');
           console.log('New run id:');
+          var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";
           var new_run_id = data.pk;
-                  $("#get-data-button").attr('data-run',new_run_id);
+          var run_url = base_url.concat(new_run_id.toString());
+          console.log(run_url);
+          $.get( run_url);
+          $("#get-data-button").attr('data-run',new_run_id);
           console.log(data.pk);
+          poll();
         },
                 // handle a non-successful response
         error : function(xhr,errmsg,err) {
