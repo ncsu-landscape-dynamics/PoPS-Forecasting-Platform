@@ -627,12 +627,7 @@ mode: 'markers',
                 </div>
               </div>
               <div id="map-container-map-view" class="col-md-9">
-                <div id="map2" class="large_map"></div>
-                <div id="year-slider2" class="pt-0 range range-info">
-                  <h5 class="py-0">Year: <output id="displayYear">2018</output></h5>
-                  <input class="custom-range px-2 py-0" type="range" name="range" min="2018" max="2020" step="1" value="2018"
-                    onchange="displayYear.value=value">
-                </div>
+
               </div>
 
               <div id="side-plots" class="d-none d-md-block col-md-3 p-1">
@@ -663,7 +658,6 @@ mode: 'markers',
                   <h4>
                     Details
                   </h4>
-                                  <div id="map3" class="small_map"></div>
 
                   <span>Management area: <strong id="polygon-info">425.1</strong> km<sup>2</sup></span>
                   <div id="gauge-plots" class="row no-gutters">
@@ -796,20 +790,6 @@ CheckValue('#money_on_off');
       center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
       zoom: 7 // starting zoom
     });
-    var map2 = new mapboxgl.Map({
-      container: 'map2', // container id
-      style: 'mapbox://styles/mapbox/light-v10', //hosted style id
-      center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
-      zoom: 7 // starting zoom
-    });
-
-    var map3 = new mapboxgl.Map({
-      container: 'map3', // container id
-      style: 'mapbox://styles/mapbox/light-v10', //hosted style id
-      center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
-      zoom: 6, // starting zoom
-
-    });
 
 
 var year_id = '0';
@@ -829,6 +809,7 @@ map.addLayer({
                             "source": year,
                             "layout": {
                               'visibility':'none',
+                              
                             },
                             'paint': {
                             'fill-color': [
@@ -847,7 +828,40 @@ map.addLayer({
                             0.9, '#DA2480',
                             1, '#ff0000'
                             ],
-                            'fill-opacity': 0.5
+                            'fill-outline-color': [
+                                'interpolate',
+                                    ['linear'],
+                                    ['get', 'outputs'],
+                            0, '#009CB0',
+                            0.1, '#00C49D',
+                            0.2, '#00D793',
+                            0.3, '#00FF80',
+                            0.4, '#24DA80',
+                            0.5, '#48B680',
+                            0.6, '#6D9180',
+                            0.7, '#916D80',
+                            0.8, '#B64880',
+                            0.9, '#DA2480',
+                            1, '#ff0000'
+                                ],
+                                'fill-opacity': [
+                                    'interpolate',
+                                    ['linear'],
+                                    ['get', 'outputs'],
+                                    0, 0.00,
+                                    0.05, 0.05,
+                                    0.10, 0.40,
+                                    0.20, 0.50,
+                                    0.30, 0.50,
+                                    0.40, 0.50,
+                                    0.50, 0.50,
+                                    0.60, 0.50,
+                                    0.70, 0.50,
+                                    0.80, 0.50,
+                                    0.90, 0.50,
+                                    1.0, 0.50
+                                ]
+
                             }
                             }, 'waterway-label'); 
 
@@ -887,8 +901,24 @@ map.addLayer({
                             0.9, '#DA2480',
                             1, '#ff0000'
                             ],
-                            'fill-opacity': 0.5
-                            }
+
+                                'fill-opacity': [
+                                    'interpolate',
+                                    ['linear'],
+                                    ['get', 'layer.1'],
+                                    0, 0.00,
+                                    0.05, 0.05,
+                                    0.10, 0.20,
+                                    0.20, 0.30,
+                                    0.30, 0.40,
+                                    0.40, 0.50,
+                                    0.50, 0.50,
+                                    0.60, 0.50,
+                                    0.70, 0.50,
+                                    0.80, 0.50,
+                                    0.90, 0.60,
+                                    1.0, 0.70
+                                ]                            }
                             }, 'waterway-label'); 
 
 };
@@ -924,155 +954,6 @@ map.on('load', function() {
 addLayers();
                             
   });
-
-map2.on('load', function() {
-  map2.addSource('infection', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': {{ output.spread_map |safe }}
-  });
-  /*here we are adding a source, then a layer based on that that source*/
-
-map2.addLayer({
-                            "id": 'infection_layer',
-                            "type": 'fill',
-                            "source": 'infection',
-                            'paint': {
-                            'fill-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'tree_of_heaven_0.50'],
-                            0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
-                            ],
-                            'fill-opacity': 0.5
-                            }
-                            }, 'waterway-label');
-
-
-                        map2.addLayer({
-                          'id': 'management_line',
-                          'type': 'line',
-                          'source': {
-                          'type': 'geojson',
-                          'data': {
-                          'type': 'Feature',
-                          'geometry': {
-                          'type': 'Polygon',
-                          'coordinates': [[[-76.49533170441632, 40.1039152196177],
-                          [-74.69533170441632, 39.8039152196177],
-                          [-74.89533170441632, 40.5039152196177],
-                          [-75.89533170441632, 41.0039152196177],
-                          [-76.89533170441632, 40.5039152196177],],
-                          ]
-                          }
-                          }
-                          },
-                          'layout': {},
-                          'paint': {
-                          'line-color': 'rgba(255, 0, 0, 1)',
-                          'line-width': 4
-
-                          }
-                          });
-                        map2.addLayer({
-                          'id': 'management_fill',
-                          'type': 'fill',
-                          'source': {
-                          'type': 'geojson',
-                          'data': {
-                          'type': 'Feature',
-                          'geometry': {
-                          'type': 'Polygon',
-                          'coordinates': [[[-76.49533170441632, 40.1039152196177],
-                          [-74.69533170441632, 39.8039152196177],
-                          [-74.89533170441632, 40.5039152196177],
-                          [-75.89533170441632, 41.0039152196177],
-                          [-76.89533170441632, 40.5039152196177],],
-                          ]
-                          }
-                          }
-                          },
-                          'layout': {},
-                          'paint': {
-                          'fill-color': 'rgba(255, 0, 0, 1)',
-                            'fill-opacity': 0.1,
-                          }
-                          });
-
-});
-
-
-
-
-map3.on('load', function() {
-  map3.addSource('infection', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/infection_0_2019.geojson" %}'
-  });
-  /*here we are adding a source, then a layer based on that that source*/
-
-map3.addLayer({
-                            "id": 'infection_layer',
-                            "type": 'fill',
-                            "source": 'infection',
-                            'paint': {
-                            'fill-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'layer.1'],
-                            0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
-                            ],
-                            'fill-opacity': 0.5
-                            }
-                            }, 'waterway-label');
-
-                        map3.addLayer({
-                          'id': 'management_area',
-                          'type': 'line',
-                          'source': {
-                          'type': 'geojson',
-                          'data': {
-                          'type': 'Feature',
-                          'geometry': {
-                          'type': 'Polygon',
-                          'coordinates': [[[-76.49533170441632, 40.1039152196177],
-                          [-74.69533170441632, 39.8039152196177],
-                          [-74.89533170441632, 40.5039152196177],
-                          [-75.89533170441632, 41.0039152196177],
-                          [-76.89533170441632, 40.5039152196177],],
-                          ]
-                          }
-                          }
-                          },
-                          'layout': {},
-                          'paint': {
-                          'line-color': 'rgba(255, 0, 0, 1)',
-                          'line-width': 4
-
-                          }
-                          });
-});
 
 
 
@@ -1462,7 +1343,6 @@ map3.addLayer({
       $('#map-container-map-view').toggleClass('col-md-9 col-md-12');
       $('#side-plots').toggleClass('d-md-block d-md-none');
       //$('#map').toggleClass( 'large_map small_map' );
-      map2.resize();
       //map.fitBounds(bounds);
       $(this).text($(this).text() == 'Hide Details' ? 'Show Details' : 'Hide Details');
     });
@@ -1471,13 +1351,11 @@ map3.addLayer({
         map.resize();
     });
         $('#map-view-tab').on('shown.bs.tab', function () {
-        map2.resize();
     $(side_plot("side_plot1", '# infected', x, y1, y2, '#2598b8',error_bar=false));
     $(side_plot("side_plot2", 'Area infected', x, y1, y2, '#5fc2c2',error_bar=false));
     });
 
       $('#chart-view-tab').on('shown.bs.tab', function () {
-        map3.resize();
     $(side_plot("main_plot1", '# infected', x, y1, y2, '#2598b8'));
     $(side_plot("main_plot2", 'Area infected', x, y1, y2, '#5fc2c2'));
     });
