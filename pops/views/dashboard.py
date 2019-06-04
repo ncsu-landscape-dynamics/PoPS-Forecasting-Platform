@@ -100,7 +100,7 @@ class AJAXTestView(AjaxableResponseMixin, CreateView):
 def get_output_view(request):
     run_id = request.GET.get('new_run_id', None)
  
-    outputs = Output.objects.filter(run_id = 48)
+    outputs = Output.objects.filter(run_id = run_id)
     run = Run.objects.get(pk=run_id)
     data = {"run_inputs": {
         "name": run.name, 

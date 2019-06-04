@@ -1462,6 +1462,67 @@ $.ajaxSetup({
     }
 });
 
+function get_output(run_id) {
+ console.log(run_id)
+      $.ajax({
+        url: "{% url 'get_output' %}",
+          dataType: "json",
+          data: {
+          'new_run_id': run_id
+          },
+          success: function (data) {
+            console.log('Sanity check: New data retrieved.');
+            console.log(data);
+            var year_list = [], infected_area_list = [], infected_number_list = [];
+            for (var i=0; i<data.results.length; i++) {
+                  var year = data.results[i].years.toString();
+                  var map_data = data.results[i].spread_map;
+                  year_list.push( data.results[i].years );
+                  infected_area_list.push( data.results[i].infected_area );
+                  infected_number_list.push( data.results[i].number_infected );
+
+                  console.log(data.results[i].spread_map);
+                  console.log(data.results[i].years);
+
+                        if (map.getLayer(year)) {
+                            map.removeLayer(year);
+                        };
+                        if (map.getSource(year)) {
+                            map.removeSource(year);
+                        };                       
+          //newLayer('{% static "map_data/infection_0_2019.geojson" %}', year);
+                  newLayer(map_data, year);
+                  $("#year-slider input").attr('max',year);
+            }
+                  $('#input_run_name span').text(data.run_inputs.name);
+                  $('#input_run_pk span').text(data.run_inputs.primary_key);
+                  $('input#id_name').val(data.run_inputs.name);
+                  $('#input_description span').text(data.run_inputs.description);
+                  $('#input_reproductive_rate span').text(data.run_inputs.reproductive_rate);
+                  $('#input_distance_scale span').text(data.run_inputs.distance_scale);
+                  $('#input_efficacy span').text(data.run_inputs.efficacy);
+                  $('#input_date_created span').text(data.run_inputs.date_created);
+                  $('#input_random_seed span').text(data.run_inputs.random_seed);
+                  $('#input_budget span').text(data.run_inputs.budget);
+                  $('#input_cost_per_hectare span').text(data.run_inputs.cost_per_hectare);
+                  $('#input_weather span').text(data.run_inputs.weather);
+                  $('#input_final_year span').text(data.run_inputs.final_year);
+                  $('#input_management span').text(data.run_inputs.management_polygons);
+                  $('#status span').text(data.run_inputs.status);
+                  $('#output_years span').text(year_list);
+                  $('#output_area span').text(infected_area_list);
+                  $('#output_number span').text(infected_number_list);
+                $( "#status-indicator" ).hide();
+                $( "#status-indicator-shading" ).hide();
+          },
+
+          error: function (xhr) {
+            alert(xhr.statusText)
+          }
+        
+      });
+  };
+
 function poll(){
    setTimeout(function(){
       var new_run_id = $('#get-data-button').attr('data-run');
@@ -1477,7 +1538,8 @@ function poll(){
         //Setup the next poll recursively
         if (data.status == "SUCCESS") {
         $('#status-text span').text('Success! Loading results...');
-          $( "#get-data-button" ).trigger( "click" );
+        get_output(new_run_id);
+          //$( "#get-data-button" ).trigger( "click" );
         }
         else if (data.status == "FAILED") {
         $('#status-text span').text('RUN FAILED.');
@@ -1495,8 +1557,6 @@ function poll(){
         else {
         poll();
         }
-
-
         }
       });
   }, 10000);
