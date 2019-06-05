@@ -405,13 +405,17 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
 
                   </div>
                 </div>                
-                <div id="run-output-details">
+                <div id="run-output-details" >
                   <h5 class="py-0">
                     <!-- Button trigger modal -->
                     Run details<a class="btn" data-toggle="modal" data-target="#viewParameters" href="#"><i
                         style="font-size:0.6em" class="fas fa-pencil-alt align-top text-light"></i></a>
-                  </h5>               
-
+                  </h5>    
+                  <div class="row no-gutters pt-2">
+                    <div id="money-results" class="col py-0" style="width:180px; height:140px"></div>
+                  </div>
+                      <div id="number_infected_side_plot" style="height:180px;"></div>
+                      <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
 
                                   <!-- Modal -->
                   <div class="modal fade" id="viewParameters" tabindex="-1" role="dialog" aria-labelledby="viewParameters"
@@ -1217,9 +1221,9 @@ addLayers();
     gauge_plot("money-new", 0, 120);
     gauge_plot("money-chart-view", 57.8, 120);
 
-    function side_plot(myDiv, title, x, y1, y2, color, error_bar=true) {
+    function side_plot(myDiv, title, x1, x2, y1, y2, color, error_bar=true) {
       var trace1 = {
-        x: x,
+        x: x1,
         y: y1,
         error_y: {
       type: 'percent',
@@ -1235,7 +1239,7 @@ addLayers();
       };
 
       var trace2 = {
-        x: x,
+        x: x2,
         y: y2,
     error_y: {
       type: 'percent',
@@ -1292,11 +1296,12 @@ addLayers();
       });
     };
 
-    var x = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
+    var x1 = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
+    var x2 = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
     var y1 = [20, 40, 100, 300, 700, 1000];
     var y2 = [20, 30, 50, 100, 300, 400];
-    $(side_plot("main_plot1", '# infected', x, y1, y2, '#2598b8',error_bar=false));
-    $(side_plot("main_plot2", 'Area infected', x, y1, y2, '#5fc2c2',error_bar=false));
+    $(side_plot("main_plot1", '# infected', x1, x2, y1, y2, '#2598b8',error_bar=false));
+    $(side_plot("main_plot2", 'Area infected', x1, x2, y1, y2, '#5fc2c2',error_bar=false));
 
     $('#show-hide-new-view').on('click', function () {
       var bounds = map.getBounds();
@@ -1315,8 +1320,8 @@ addLayers();
     });
 
       $('#chart-view-tab').on('shown.bs.tab', function () {
-    $(side_plot("main_plot1", '# infected', x, y1, y2, '#2598b8'));
-    $(side_plot("main_plot2", 'Area infected', x, y1, y2, '#5fc2c2'));
+    $(side_plot("main_plot1", '# infected', x1, x2, y1, y2, '#2598b8'));
+    $(side_plot("main_plot2", 'Area infected', x1, x2, y1, y2, '#5fc2c2'));
     });
 
 
@@ -1492,6 +1497,10 @@ $( "#results-tab" ).trigger( "click" );
                         "fill-opacity": 0.3,
                       }
                     }, 'waterway-label');
+
+                    $(side_plot("number_infected_side_plot", '# infected', x1, year_list, y1,infected_number_list, '#2598b8',error_bar=false));
+                    $(side_plot("area_infected_side_plot", 'Area infected', x1, year_list, y1, infected_area_list, '#5fc2c2',error_bar=false));
+                    $(gauge_plot("money-results", 20, data.run_inputs.budget));
           },
 
           error: function (xhr) {
@@ -1542,7 +1551,7 @@ function poll(){
 };
 
     $("#get-data-button").on('click', function () {
-      var run_id = 27;
+      var run_id = 48;
       $("#submit-run-button").attr("disabled", true);
       $("input#id_name").prop('disabled', true);
       $( "#run-details" ).hide();
@@ -1585,8 +1594,10 @@ function poll(){
       };
       map.addControl(draw);
       var treatment = JSON.parse($('#id_management_polygons').val());
-      var ids = draw.set(treatment);
-
+      console.log(treatment);
+      if (treatment != 0) {
+        var ids = draw.set(treatment);
+      };
       $( "#run-details" ).show();
       $( "#run-output-details" ).hide();
       $("a.nav-link").removeClass("active");
