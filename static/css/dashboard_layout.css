@@ -90,6 +90,7 @@ height:100%;
 }
 
 div#run-preview-container {
+  background-color: #0b0d0e;
   overflow-x: auto;
   width:100%;
   }

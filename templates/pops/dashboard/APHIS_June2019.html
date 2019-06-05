@@ -257,8 +257,6 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                       class="btn btn-success float-right d-none d-md-inline ml-4">Run PoPS Model</button>
                     <button id="show-hide-new-view" type="button"
                       class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
-                    <button id="get-data-button" type="button" data-run=""
-                      class="btn btn-dark float-right d-none d-md-inline">Output </button>
                   </div>
                 </div>
                 {{ form.session.as_hidden }}
@@ -682,16 +680,8 @@ mode: 'markers',
     </div>
     </div>
     <div id="run-preview-container" class="row no-gutters flex-nowrap">
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot1" run_title="Run1" infected=2 area=20 money=19 a=10000 b=15000 %}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot2" run_title="Run2" infected=4 area=40 money=10 a=70000 b=20000%}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot3" run_title="My favorite run" infected=2 area=20 money=17 a=5000 b=10000 %}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot4" run_title="Management extending beyond current boundaries" infected=2 area=20 money=19 a=10000 b=15000%}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot5" run_title="Run1" infected=2 area=20 money=5 a=2000 b=5000%}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot6" run_title="Run1" infected=5 area=60 money=29 a=1500 b=1000%}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot7" run_title="My favorite run" infected=2 area=20 money=19 a=3000 b=2000%}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot8" run_title="Management extending beyond current boundaries" infected=2 area=20 money=19 a=10000 b=15000%}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot9" run_title="Run1" infected=2 area=20 money=5 a=10000 b=1000 %}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot10" run_title="Run1" infected=5 area=60 money=29 a=1000 b=15000 %}
+      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run48" run_title="Run 48" run_pk="48" infected=2 area=20 money=19 a=10000 b=15000 %}
+      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run27" run_title="Run 27" run_pk="27" infected=6 area=40 money=10 a=70000 b=20000%}
     </div>
 </div>
 <div>
@@ -1385,11 +1375,11 @@ $( "#year-slider" ).change(function() {
         year_id = $(this).find('input').val();
       console.log(year_id);
       $("#year-value").text(year_id);
-
-      map.setLayoutProperty('2018','visibility','none');
-      map.setLayoutProperty('2019','visibility','none');
-      map.setLayoutProperty('2020','visibility','none');
-      map.setLayoutProperty('2021','visibility','none');
+                  for (i = 2018; i < 2022; i++) {
+                        if (map.getLayer(i.toString())) {
+                          map.setLayoutProperty(i.toString(),'visibility','none');
+                        };
+                  };
       map.setLayoutProperty(year_id,'visibility','visible');
 });
 
@@ -1423,8 +1413,20 @@ $( "#results-tab" ).trigger( "click" );
         $('#status-text span').text('Loading...');
                 $( "#status-indicator" ).show();
                 $( "#status-indicator-shading" ).show();
+        $("#year-slider").find('input').val('2018');
 
- console.log(run_id)
+            $("#year-slider input").attr('max','2018');
+            $("#displayYear").val('2018');
+      map.setLayoutProperty('2018','visibility','visible');
+                  for (i = 2019; i < 2022; i++) {
+                        if (map.getLayer(i.toString())) {
+                            map.removeLayer(i.toString());
+                        };
+                        if (map.getSource(i.toString())) {
+                            map.removeSource(i.toString());
+                        };                       
+                  };
+                   console.log(run_id)
       $.ajax({
         url: "{% url 'get_output' %}",
           dataType: "json",
@@ -1434,6 +1436,7 @@ $( "#results-tab" ).trigger( "click" );
           success: function (data) {
             console.log('Sanity check: New data retrieved.');
             console.log(data);
+
             var year_list = [], infected_area_list = [], infected_number_list = [];
             for (var i=0; i<data.results.length; i++) {
                   var year = data.results[i].years.toString();
@@ -1445,16 +1448,12 @@ $( "#results-tab" ).trigger( "click" );
                   console.log(data.results[i].spread_map);
                   console.log(data.results[i].years);
 
-                        if (map.getLayer(year)) {
-                            map.removeLayer(year);
-                        };
-                        if (map.getSource(year)) {
-                            map.removeSource(year);
-                        };                       
           //newLayer('{% static "map_data/infection_0_2019.geojson" %}', year);
                   newLayer(map_data, year);
                   $("#year-slider input").attr('max',year);
+                  console.log('Analyzing data...')
             }
+            
                   $('#input_run_name span').text(data.run_inputs.name);
                   $('#input_run_pk span').text(data.run_inputs.primary_key);
                   $('input#id_name').val(data.run_inputs.name);
@@ -1547,11 +1546,12 @@ function poll(){
         }
         }
       });
-  }, 10000);
+  }, 2000);
 };
 
-    $("#get-data-button").on('click', function () {
-      var run_id = 48;
+    $(".run-link").on('click', function () {
+      var run_id = $(this).attr('data-run');
+      console.log(run_id)
       $("#submit-run-button").attr("disabled", true);
       $("input#id_name").prop('disabled', true);
       $( "#run-details" ).hide();
@@ -1564,7 +1564,6 @@ function poll(){
     });    
     
     $("#results-tab").on('click', function () {
-      var run_id = 48;
       $("#submit-run-button").attr("disabled", true);
       $("input#id_name").prop('disabled', true);
       if ($("#map-tab").hasClass("active")){
@@ -1630,7 +1629,7 @@ function poll(){
         success: function (data) {
           console.log('Data successfully posted!');
           console.log('New run id:');
-          var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+          var base_url = "https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
           var new_run_id = data.pk;
           var run_url = base_url.concat(new_run_id.toString());
           console.log(run_url);
@@ -1647,7 +1646,6 @@ function poll(){
         }
       });
       $("input#id_name").prop('disabled', true);
-      map.removeControl(draw);
       $( "#run-details" ).hide();
       $( "#run-output-details" ).show();
         $('#status-text span').text('Getting ready...');
