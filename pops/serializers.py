@@ -158,7 +158,6 @@ class OutputSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SessionSerializer(serializers.ModelSerializer):
-    casestudy = CaseStudySerializer()
 
     class Meta:
         model = Session
@@ -183,3 +182,24 @@ class PrecipitationDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Precipitation
         fields = '__all__'
+
+class SessionDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Session
+        fields = '__all__'
+
+    run_count = serializers.SerializerMethodField()
+    most_recent_run = serializers.SerializerMethodField()
+
+    def get_run_count(self, obj):
+        return obj.run_set.count()
+
+    def get_most_recent_run(self, obj):
+        if obj.run_set.exists():
+            return obj.run_set.order_by('-pk')[0].pk
+        else:
+            return 'null'
+
+
+
+

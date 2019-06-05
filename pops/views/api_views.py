@@ -62,3 +62,11 @@ class PrecipitationDataViewSet(viewsets.ModelViewSet):
     queryset = Precipitation.objects.prefetch_related().all()
     serializer_class = PrecipitationDataSerializer
     permission_classes = (permissions.AllowAny,)
+
+class SessionDetailViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows output to be viewed or edited.
+    """
+    queryset = Session.objects.prefetch_related('run_set').all()
+    serializer_class = SessionDetailSerializer
+    permission_classes = (permissions.AllowAny,)
