@@ -108,6 +108,11 @@ div#run-preview-container {
       border-style: inset;
     }
 
+    div#run-preview-container a.active {
+      background-color: #070909;
+      border-style: inset;
+    }
+
     #legend-container {
       position: absolute;
       top: 10px;
@@ -130,6 +135,14 @@ div#run-preview-container {
       right: 50px;
       width:200px;
     }
+
+    #draw-controls {
+      position: absolute;
+      top: 100px;
+      left: 10px;
+  
+    }
+
     #status-indicator-shading {
       position: absolute;
       background: black;

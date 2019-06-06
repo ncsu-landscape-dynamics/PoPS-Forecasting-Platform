@@ -263,6 +263,10 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                     <input class="custom-range px-2 py-0" type="range" name="range" min="2018" max="2018" step="1"
                       value="2018" onchange="displayYear.value=value">
                   </div>
+                  <div id="draw-controls">
+                  <button class="btn btn-default" type="button">Polygon
+                  </button>
+                  </div>
                   <div id="status-indicator-shading">
                   </div>
                   <div id="status-indicator" class="text-center">
@@ -675,21 +679,7 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name }}', {{ output.number_infe
 <div>
 more content
 
-{% comment %}                 {% for run in runs %}
-<div>
-{{ run.pk }}:
-{{ run.name }}
-</div>
-<div>
-{{ run.description }}
-</div>
-                {% for output in run.output_set.all %}
-<div>
-{{ output.years }}
-</div>
 
-                {% endfor %}
-                {% endfor %} {% endcomment %}
 </div>
     {% comment %} <div class="col-12 mt-2">
       <div class="panel-container">
@@ -1048,9 +1038,14 @@ addLayers();
     map.on('draw.delete', updateArea);
     map.on('draw.update', updateArea);
 
+//map.on('draw.modechange', e => {
+//    draw.changeMode('draw_polygon');
+//});
+
     function updateArea(e) {
       var data = draw.getAll();
       console.log(data);
+
       if (data.features.length > 0) {
                   // Stringify the GeoJson
                   var convertedData = JSON.stringify(data);
@@ -1413,7 +1408,6 @@ $.ajaxSetup({
 });
 
 function displayRun(run_id) {
-  $( "#results-tab" ).trigger( "click" );
             get_output(run_id);
 };
 
@@ -1421,13 +1415,12 @@ function insertRunButton(run_id,name,infected_number,infected_area,budget) {
   var run_pk = run_id.toString();
   console.log(run_pk);
   $('<a href="#" id="run_button_' + run_id.toString()  
-      + '" class="run-link" data-run = "'+run_id.toString()
+      + '" class="run-link active" data-run = "'+run_id.toString()
       + '"><div id= "run_'+run_id.toString()
       + '" style=" width:150px; height:150px;"></div></a>').prependTo($('#run-preview-container'));   
   $(run_comparison_plot('run_'+run_id.toString(),name,infected_number,infected_area,budget));
   $("#run_button_"+ run_id.toString()).on('click', function () {
       var run_id = $(this).attr('data-run');
-      displayRun(run_id);
   });  
             }  ;
 
@@ -1518,7 +1511,7 @@ function get_output(run_id) {
                         "fill-opacity": 0.3,
                       }
                     }, 'waterway-label');
-
+                  $( "#results-tab" ).trigger( "click" );
                     $(side_plot("number_infected_side_plot", '# infected', x1, year_list, y1,infected_number_list, '#2598b8',error_bar=false));
                     $(side_plot("area_infected_side_plot", 'Area infected', x1, year_list, y1, infected_area_list, '#5fc2c2',error_bar=false));
                     $(gauge_plot("money-results", 20, data.run_inputs.budget));
@@ -1553,6 +1546,7 @@ function poll(){
         if (data.status == "SUCCESS") {
         $('#status-text span').text('Success! Loading results...');
         get_output(new_run_id);
+        $('#id_management_polygons').val(0);
           //$( "#get-data-button" ).trigger( "click" );
         }
         else if (data.status == "FAILED") {
@@ -1577,6 +1571,8 @@ function poll(){
 };
 
     $(".run-link").on('click', function () {
+      $('#run-preview-container a').removeClass('active');
+      $(this).addClass('active');
       var run_id = $(this).attr('data-run');
       displayRun(run_id);
     });    
@@ -1638,6 +1634,7 @@ function poll(){
       event.preventDefault();
       console.log("form submitted!") // sanity check
       $("#submit-run-button").attr("disabled", true);
+      $('#run-preview-container a').removeClass('active');
       var form = $(this).closest("form");
       $.ajax({
         url: form.attr("submit-run-url"),
@@ -1652,7 +1649,6 @@ function poll(){
           console.log(run_url);
           $.get( run_url);
           $("#submit-run-button").attr('data-run',new_run_id);
-          $( "#results-tab" ).trigger( "click" );
           console.log(data.pk);
           poll();
         },
