@@ -46,6 +46,7 @@ class DashboardView(TemplateView):
                 session = None
             context['session'] = session
             return context
+            
 
 class AjaxableResponseMixin:
     """
@@ -90,11 +91,13 @@ class AJAXTestView(AjaxableResponseMixin, CreateView):
             except:
                 session = None
             try:
-                output = Output.objects.get(pk=15)
+                runs = Run.objects.prefetch_related('output_set').filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created')
+
             except:
-                output = None
+                runs = None                
+
             context['session'] = session
-            context['output'] = output
+            context['runs'] = runs
             return context
 
 def get_output_view(request):

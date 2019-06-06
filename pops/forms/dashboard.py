@@ -79,11 +79,10 @@ class SessionForm(forms.ModelForm):
     fields_required = fields_required_conditionally
     class Meta:
         model = Session
-        fields = ['case_study','name','description']
+        fields = ['case_study','name','description'] 
     
     def clean(self):
         self.fields_required(['case_study','name','description'])
-
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
@@ -105,7 +104,8 @@ class RunForm(forms.ModelForm):
         'weather','budget','cost_per_hectare','efficacy','final_year','management_polygons']
     
     def clean(self):
-        self.fields_required(['name','description'])
+        self.fields_required(['session','name','description','reproductive_rate','distance_scale',
+        'weather','budget','cost_per_hectare','efficacy'])
 
         return self.cleaned_data
 
