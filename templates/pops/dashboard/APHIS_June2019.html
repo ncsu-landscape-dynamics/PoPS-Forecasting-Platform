@@ -26,7 +26,7 @@
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script>
-    function run_comparison_plot(run_comparison_div,run_name,infected, area, money,a,b) {
+    function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
 
 max_infected=4;
 max_area=70;
@@ -68,31 +68,8 @@ var trace3 = {
     opacity: 1,
   }
 }; 
-var trace4 = {
-  x: ['Apples'],
-  y: [a],
-  type: 'bar',
-  text: ['Additional info'],
-  hoverinfo: ['x+y+text'],
-  yaxis:'y4',
-  marker: {
-    color: ['#9e8adb'],
-    opacity: 1,
-  }
-}; 
-var trace5 = {
-  x: ['Grapes'],
-  y: [b],
-  type: 'bar',
-  text: ['Additional info'],
-  hoverinfo: ['x+y+text'],
-  yaxis:'y5',
-  marker: {
-    color: ['#8e6dad'],
-    opacity: 1,
-  }
-}; 
-var data = [trace1,trace2,trace3,trace4,trace5];
+
+var data = [trace1,trace2,trace3];
 
     var axis_template={
         showgrid:false,
@@ -139,8 +116,6 @@ var layout = {
     yaxis: $.extend({}, axis_template, yaxis),
     yaxis2: $.extend({}, axis_template, yaxis2),
     yaxis3: $.extend({}, axis_template, yaxis3),
-    yaxis4: $.extend({}, axis_template, yaxis4),
-    yaxis5: $.extend({}, axis_template, yaxis5),
         showlegend:false,
         paper_bgcolor:'rgba(0,0,0,0)',
         plot_bgcolor:'rgba(0,0,0,0)',//'#16181b',
@@ -680,12 +655,41 @@ mode: 'markers',
     </div>
     </div>
     <div id="run-preview-container" class="row no-gutters flex-nowrap">
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run48" run_title="Run 48" run_pk="48" infected=2 area=20 money=19 a=10000 b=15000 %}
-      {% include "pops/dashboard/include/small_run_plot.html" with div_id="run27" run_title="Run 27" run_pk="27" infected=6 area=40 money=10 a=70000 b=20000%}
+{% for run in runs %}
+<a href="#" class="run-link" data-run = {{ run.pk }}>
+<div id= "run_{{ run.pk }}" style=" width:150px; height:150px;">
+</div>
+</a>
+
+{% for output in run.output_set.all %}
+{% if forloop.last %}
+<script>
+$(run_comparison_plot('run_{{ run.pk }}','{{ run.name }}', {{ output.number_infected }},{{ output.infected_area }},{{run.budget}}));
+</script>
+{% endif %}
+ {% endfor %}
+
+{% endfor %}
     </div>
 </div>
 <div>
-more content...
+more content
+
+{% comment %}                 {% for run in runs %}
+<div>
+{{ run.pk }}:
+{{ run.name }}
+</div>
+<div>
+{{ run.description }}
+</div>
+                {% for output in run.output_set.all %}
+<div>
+{{ output.years }}
+</div>
+
+                {% endfor %}
+                {% endfor %} {% endcomment %}
 </div>
     {% comment %} <div class="col-12 mt-2">
       <div class="panel-container">
@@ -1408,8 +1412,26 @@ $.ajaxSetup({
     }
 });
 
+function displayRun(run_id) {
+  $( "#results-tab" ).trigger( "click" );
+            get_output(run_id);
+};
+
+function insertRunButton(run_id,name,infected_number,infected_area,budget) { 
+  var run_pk = run_id.toString();
+  console.log(run_pk);
+  $('<a href="#" id="run_button_' + run_id.toString()  
+      + '" class="run-link" data-run = "'+run_id.toString()
+      + '"><div id= "run_'+run_id.toString()
+      + '" style=" width:150px; height:150px;"></div></a>').prependTo($('#run-preview-container'));   
+  $(run_comparison_plot('run_'+run_id.toString(),name,infected_number,infected_area,budget));
+  $("#run_button_"+ run_id.toString()).on('click', function () {
+      var run_id = $(this).attr('data-run');
+      displayRun(run_id);
+  });  
+            }  ;
+
 function get_output(run_id) {
-$( "#results-tab" ).trigger( "click" );
         $('#status-text span').text('Loading...');
                 $( "#status-indicator" ).show();
                 $( "#status-indicator-shading" ).show();
@@ -1500,6 +1522,10 @@ $( "#results-tab" ).trigger( "click" );
                     $(side_plot("number_infected_side_plot", '# infected', x1, year_list, y1,infected_number_list, '#2598b8',error_bar=false));
                     $(side_plot("area_infected_side_plot", 'Area infected', x1, year_list, y1, infected_area_list, '#5fc2c2',error_bar=false));
                     $(gauge_plot("money-results", 20, data.run_inputs.budget));
+
+                  if (!(document.getElementById("run_"+ data.run_inputs.primary_key.toString()))){
+                    insertRunButton(data.run_inputs.primary_key,data.run_inputs.name,infected_number_list.slice(-1)[0] ,infected_area_list.slice(-1)[0],data.run_inputs.budget);
+                  };
           },
 
           error: function (xhr) {
@@ -1508,6 +1534,7 @@ $( "#results-tab" ).trigger( "click" );
         
       });
   };
+
 
 function poll(){
    setTimeout(function(){
@@ -1551,16 +1578,7 @@ function poll(){
 
     $(".run-link").on('click', function () {
       var run_id = $(this).attr('data-run');
-      console.log(run_id)
-      $("#submit-run-button").attr("disabled", true);
-      $("input#id_name").prop('disabled', true);
-      $( "#run-details" ).hide();
-      $( "#run-output-details" ).show();
-      get_output(run_id);
-      $("a.nav-link").removeClass("active");
-  // add class to the one we clicked
-      $("a#results-tab").addClass("active");
-
+      displayRun(run_id);
     });    
     
     $("#results-tab").on('click', function () {
@@ -1620,7 +1638,6 @@ function poll(){
       event.preventDefault();
       console.log("form submitted!") // sanity check
       $("#submit-run-button").attr("disabled", true);
-
       var form = $(this).closest("form");
       $.ajax({
         url: form.attr("submit-run-url"),
@@ -1635,6 +1652,7 @@ function poll(){
           console.log(run_url);
           $.get( run_url);
           $("#submit-run-button").attr('data-run',new_run_id);
+          $( "#results-tab" ).trigger( "click" );
           console.log(data.pk);
           poll();
         },
@@ -1645,14 +1663,10 @@ function poll(){
             console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
       });
-      $("input#id_name").prop('disabled', true);
-      $( "#run-details" ).hide();
-      $( "#run-output-details" ).show();
         $('#status-text span').text('Getting ready...');
       $( "#status-indicator" ).show();
       $( "#status-indicator-shading" ).show();
     });
-
 
   </script>
   {% endblock %}
