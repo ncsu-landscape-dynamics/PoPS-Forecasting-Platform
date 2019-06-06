@@ -263,10 +263,38 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                     <input class="custom-range px-2 py-0" type="range" name="range" min="2018" max="2018" step="1"
                       value="2018" onchange="displayYear.value=value">
                   </div>
-                  <div id="draw-controls">
-                  <button class="btn btn-default" type="button">Polygon
+                  <div id="draw-controls" class="btn-group-vertical" role="group" aria-label="Basic example">
+                  <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
+                  title="Draw management tool" data-placement="right">
+                  <i class="fas fa-draw-polygon"></i>
                   </button>
+                  <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
+                  title="Selection tool" data-placement="right">
+                  <i class="fas fa-hand-paper"></i>
+                  </button>
+                  <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
+                  title="Delete selection" data-placement="right">
+                  <i class="fas fa-trash-alt"></i>
+                  </button>
+
                   </div>
+                  <script>
+                      $("#polygon-tool").on('click', function () {
+                        $('.drawing-tool').removeClass('active');
+                        $(this).addClass('active');
+                        draw.changeMode('draw_polygon');
+                      }); 
+
+                      $("#select-tool").on('click', function () {
+                        $('.drawing-tool').removeClass('active');
+                        $(this).addClass('active');
+                        draw.changeMode('simple_select');
+                      }); 
+                      $("#delete-tool").on('click', function () {
+                        draw.trash();
+                      }); 
+
+                  </script>
                   <div id="status-indicator-shading">
                   </div>
                   <div id="status-indicator" class="text-center">
@@ -724,6 +752,14 @@ more content
   $('[data-toggle="pill"]').tooltip({trigger : 'hover'})
 })
 
+    $(function () {
+  $('[data-toggle="tooltip"]').tooltip({trigger : 'hover'})
+})
+    $(function () {
+  $('[data-toggle="tool"]').tooltip({trigger : 'hover'})
+})
+
+
 function CheckValue(toggle_id) {
     if ($(toggle_id).is(':checked')){
         console.log('Checked');}
@@ -920,10 +956,11 @@ addLayers();
 
 
     var draw = new MapboxDraw({
+      keybindings:true,
       displayControlsDefault: false,
       controls: {
-        polygon: true,
-        trash: true
+        //polygon: true,
+        //trash: true
       }, 
   styles: [
     // ACTIVE (being drawn)
@@ -1038,9 +1075,12 @@ addLayers();
     map.on('draw.delete', updateArea);
     map.on('draw.update', updateArea);
 
-//map.on('draw.modechange', e => {
-//    draw.changeMode('draw_polygon');
-//});
+
+map.on('draw.modechange', e => {
+      if ($("#polygon-tool").hasClass("active")){
+    draw.changeMode('draw_polygon');
+  }
+});
 
     function updateArea(e) {
       var data = draw.getAll();
