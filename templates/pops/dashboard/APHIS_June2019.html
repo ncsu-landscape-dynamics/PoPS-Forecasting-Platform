@@ -263,7 +263,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                     <input class="custom-range px-2 py-0" type="range" name="range" min="2018" max="2018" step="1"
                       value="2018" onchange="displayYear.value=value">
                   </div>
-                  <div id="draw-controls" class="btn-group-vertical" role="group" aria-label="Basic example">
+                  <div id="draw-controls" class="btn-group-vertical" role="group" >
                   <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
                   title="Draw management tool" data-placement="right">
                   <i class="fas fa-draw-polygon"></i>
@@ -1621,7 +1621,15 @@ function poll(){
       $("#submit-run-button").attr("disabled", true);
       $("input#id_name").prop('disabled', true);
       if ($("#map-tab").hasClass("active")){
+              draw.changeMode('simple_select');
               map.removeControl(draw);
+              map.getContainer().classList.remove("mouse-add");
+              $('.drawing-tool').removeClass('active');
+              $('#select-tool').addClass('active');
+              $( "#draw-controls" ).hide();
+
+
+
       };
                         if (map.getLayer("treatment")) {
       map.setLayoutProperty('treatment','visibility','visible');
@@ -1633,6 +1641,7 @@ function poll(){
       $("a#results-tab").addClass("active");
       $(".tab-pane").removeClass("active");
       $("#v-pills-map").addClass("active");
+
     });
 
     $("#map-tab").on('click', function () {
@@ -1643,9 +1652,15 @@ function poll(){
                         };
 
       if ($("#map-tab").hasClass("active")){
+        draw.changeMode('simple_select');
               map.removeControl(draw);
+              map.getContainer().classList.remove("mouse-add");
+              $('.drawing-tool').removeClass('active');
+              $('#select-tool').addClass('active');
+              $( "#draw-controls" ).hide();
       };
       map.addControl(draw);
+      $( "#draw-controls" ).show();
       var treatment = JSON.parse($('#id_management_polygons').val());
       console.log(treatment);
       if (treatment != 0) {
@@ -1661,7 +1676,13 @@ function poll(){
 
     $("#chart-view-tab").on('click', function () {
       if ($("#map-tab").hasClass("active")){
+        draw.changeMode('simple_select');
               map.removeControl(draw);
+              map.getContainer().classList.remove("mouse-add");
+              $('.drawing-tool').removeClass('active');
+              $('#select-tool').addClass('active');
+              $( "#draw-controls" ).hide();
+
       };
       $("a.nav-link").removeClass("active");
       $("a#chart-view-tab").addClass("active");
