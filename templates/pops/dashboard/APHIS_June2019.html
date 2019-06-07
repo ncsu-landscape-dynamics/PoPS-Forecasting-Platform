@@ -357,6 +357,13 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                             {% include "pops/include/form_field.html" with field=form.final_year form_class="col-6" %}
                             {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
                             {% include "pops/include/form_field.html" with field=form.weather form_class="col-12" %}
+                            <div class="form-check col ml-2">
+                              <input class="form-check-input" type="checkbox" value="" id="tangible_landscape">
+                              <label class="form-check-label" for="tangible_landscape">
+                                Use tangible landscape for management?
+                              </label>
+                            </div>
+
                           </div>
                         </div>
                         <div class="modal-footer">
@@ -1451,6 +1458,20 @@ function displayRun(run_id) {
             get_output(run_id);
 };
 
+function disableDrawTools(){
+  draw.changeMode('simple_select');
+  map.removeControl(draw);
+  map.getContainer().classList.remove("mouse-add");
+  $('.drawing-tool').removeClass('active');
+  $('#select-tool').addClass('active');
+  $( "#draw-controls" ).hide();
+};
+
+function enableDrawTools(){
+  map.addControl(draw);
+  $( "#draw-controls" ).show();
+};
+
 function insertRunButton(run_id,name,infected_number,infected_area,budget) { 
   var run_pk = run_id.toString();
   console.log(run_pk);
@@ -1599,7 +1620,12 @@ function poll(){
         poll();
         }
         else if (data.status == "PENDING") {
-        $('#status-text span').text('Pending...');
+          if ($('input#tangible_landscape').prop('checked')){
+            $('#status-text span').text('Waiting for Tangible Landscape management...');
+          }
+          else {
+            $('#status-text span').text('Pending...');
+          }
         poll();
         }
         else {
@@ -1609,6 +1635,18 @@ function poll(){
       });
   }, 2000);
 };
+
+//Changes to the page for tangible landscape.
+$("input#tangible_landscape").on('change', function () {
+if ($('input#tangible_landscape').prop('checked')){
+  console.log('Tangible landscape is on...');
+      $("#submit-run-button").text("Send to Tangible Landscape");
+}
+else {
+  console.log('Tangible landscape is off...');
+  $("#submit-run-button").text("Run PoPS Model");
+}
+});
 
     $(".run-link").on('click', function () {
       $('#run-preview-container a').removeClass('active');
@@ -1702,15 +1740,21 @@ function poll(){
         data: form.serialize(),
         type : "POST", // http method
         success: function (data) {
-          console.log('Data successfully posted!');
+          console.log('New run parameters successfully posted to database!');
           console.log('New run id:');
-          var base_url = "https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
           var new_run_id = data.pk;
-          var run_url = base_url.concat(new_run_id.toString());
-          console.log(run_url);
-          $.get( run_url);
+          console.log(new_run_id);
+          if (!$('input#tangible_landscape').prop('checked')){
+            var base_url = "https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+            var run_url = base_url.concat(new_run_id.toString());
+            console.log(run_url);
+            $.get( run_url);
+            console.log('Sent run request to PoPS. Waiting for updates to database...')
+          }
+          else {
+            console.log('Waiting for management from tangible landscape...')
+          }
           $("#submit-run-button").attr('data-run',new_run_id);
-          console.log(data.pk);
           poll();
         },
                 // handle a non-successful response
