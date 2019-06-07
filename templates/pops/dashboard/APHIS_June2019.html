@@ -1459,17 +1459,41 @@ function displayRun(run_id) {
 };
 
 function disableDrawTools(){
-  draw.changeMode('simple_select');
-  map.removeControl(draw);
-  map.getContainer().classList.remove("mouse-add");
-  $('.drawing-tool').removeClass('active');
-  $('#select-tool').addClass('active');
-  $( "#draw-controls" ).hide();
+  if ($("#draw-controls").is(":visible")){
+    console.log('Disabling draw tools.')
+    draw.changeMode('simple_select');
+    map.removeControl(draw);
+    map.getContainer().classList.remove("mouse-add");
+    $('.drawing-tool').removeClass('active');
+    $('#select-tool').addClass('active');
+    $( "#draw-controls" ).hide();
+  }
+  else {
+    console.log("Draw tools already disabled.")
+  }
 };
 
 function enableDrawTools(){
-  map.addControl(draw);
-  $( "#draw-controls" ).show();
+  if ($("#draw-controls").is(":hidden")){
+    if (!$('input#tangible_landscape').prop('checked') && $('#map-tab').hasClass('active')){
+      map.addControl(draw);
+      $( "#draw-controls" ).show();
+      var treatment = JSON.parse($('#id_management_polygons').val());
+      console.log('Currently drawn treatment JSON:');
+      console.log(treatment);
+      if (treatment != 0) {
+        var ids = draw.set(treatment);
+      };
+
+      console.log('Added draw tools.')
+    }  
+    else  {
+    console.log('Did not add draw tools because TL is checked')
+    }
+  }
+  else {
+    console.log("Draw tools already enabled.")
+  }
 };
 
 function insertRunButton(run_id,name,infected_number,infected_area,budget) { 
@@ -1638,14 +1662,16 @@ function poll(){
 
 //Changes to the page for tangible landscape.
 $("input#tangible_landscape").on('change', function () {
-if ($('input#tangible_landscape').prop('checked')){
-  console.log('Tangible landscape is on...');
+  if ($('input#tangible_landscape').prop('checked')){
+    console.log('Tangible landscape is on...');
       $("#submit-run-button").text("Send to Tangible Landscape");
-}
-else {
-  console.log('Tangible landscape is off...');
-  $("#submit-run-button").text("Run PoPS Model");
-}
+      disableDrawTools();
+  }
+  else {
+    console.log('Tangible landscape is off...');
+    $("#submit-run-button").text("Run PoPS Model");
+    enableDrawTools();
+  }
 });
 
     $(".run-link").on('click', function () {
@@ -1658,17 +1684,7 @@ else {
     $("#results-tab").on('click', function () {
       $("#submit-run-button").attr("disabled", true);
       $("input#id_name").prop('disabled', true);
-      if ($("#map-tab").hasClass("active")){
-              draw.changeMode('simple_select');
-              map.removeControl(draw);
-              map.getContainer().classList.remove("mouse-add");
-              $('.drawing-tool').removeClass('active');
-              $('#select-tool').addClass('active');
-              $( "#draw-controls" ).hide();
-
-
-
-      };
+        disableDrawTools();
                         if (map.getLayer("treatment")) {
       map.setLayoutProperty('treatment','visibility','visible');
                         };
@@ -1689,39 +1705,17 @@ else {
       map.setLayoutProperty('treatment','visibility','none');
                         };
 
-      if ($("#map-tab").hasClass("active")){
-        draw.changeMode('simple_select');
-              map.removeControl(draw);
-              map.getContainer().classList.remove("mouse-add");
-              $('.drawing-tool').removeClass('active');
-              $('#select-tool').addClass('active');
-              $( "#draw-controls" ).hide();
-      };
-      map.addControl(draw);
-      $( "#draw-controls" ).show();
-      var treatment = JSON.parse($('#id_management_polygons').val());
-      console.log(treatment);
-      if (treatment != 0) {
-        var ids = draw.set(treatment);
-      };
       $( "#run-details" ).show();
       $( "#run-output-details" ).hide();
       $("a.nav-link").removeClass("active");
       $("a#map-tab").addClass("active");
       $(".tab-pane").removeClass("active");
       $("#v-pills-map").addClass("active");
+      enableDrawTools();
     });
 
     $("#chart-view-tab").on('click', function () {
-      if ($("#map-tab").hasClass("active")){
-        draw.changeMode('simple_select');
-              map.removeControl(draw);
-              map.getContainer().classList.remove("mouse-add");
-              $('.drawing-tool').removeClass('active');
-              $('#select-tool').addClass('active');
-              $( "#draw-controls" ).hide();
-
-      };
+        disableDrawTools();
       $("a.nav-link").removeClass("active");
       $("a#chart-view-tab").addClass("active");
       $(".tab-pane").removeClass("active");
