@@ -96,23 +96,42 @@ div#run-preview-container {
   width:100%;
   }
 
-  div#run-preview-container a {
-    background-color: #0b0d0e;
-    border-width: 3px;
-    border-style: outset;
-    border-color: #212529;
+    div#run-preview-container button {
+      background-color: #0b0d0e;
+      border-width: 3px;
+      border-style: outset;
+      border-color: #212529;
+      color:#0b0d0e;
+      font-size: 1.2em;
+      position: relative;
     }
 
-    div#run-preview-container a:hover {
-      background-color: #070909;
-      border-style: inset;
-    }
+      div#run-preview-container button a{
+        color:#0b0d0e;
+        }
 
-    div#run-preview-container a.active {
-      background-color: #070909;
-      border-style: inset;
-    }
-
+        div#run-preview-container button.active a{
+          color:#070909;
+          }
+         
+          div#run-preview-container button:hover a{
+            color:#a0a8bd;
+            }
+    
+      div#run-preview-container button:hover, 
+      div#run-preview-container button.active {
+        background-color: #070909;
+        border-style: inset;
+      }
+  div.run_info_popup {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    height:100px;
+    width:100px;
+    background-color:grey;
+  }
+      
     #legend-container {
       position: absolute;
       top: 10px;
@@ -212,5 +231,7 @@ input#id_name {
   color: white;
 }
 
-input#id_name:focus {
-}
+
+
+
+

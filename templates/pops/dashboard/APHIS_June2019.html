@@ -122,8 +122,8 @@ var layout = {
         margin: {
             l: 10,
             r: 10,
-            b: 40,
-            t: 20,
+            b: 30,
+            t: 5,
             pad: 0
         },
         bargap: 0.1,
@@ -202,7 +202,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
         <div class="nav " id="side-bar" aria-orientation="vertical">
           <a class="nav-link active" id="map-tab" data-toggle="pill" title="Create new run" data-placement="right" 
              href="#" aria-controls="v-pills-home" aria-selected="true"><i class="align-middle fas fa-plus-circle"></i></a>
-          <a class="nav-link " id="results-tab" data-toggle="pill" title="<h4>Results</h4>View map results for selected run"
+          <a class="nav-link " id="results-tab" data-toggle="pill" title="View map results for selected run"
             href="#" data-placement="right"  aria-controls="v-pills-profile" aria-selected="false"><i
               class="align-middle fas fa-globe-americas"></i></a>
           <a class="nav-link" id="chart-view-tab" data-toggle="pill" title="View detailed analytics for selected run"
@@ -265,15 +265,15 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   </div>
                   <div id="draw-controls" class="btn-group-vertical" role="group" >
                   <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
-                  title="Draw management tool" data-placement="right">
+                  title="Draw management tool" data-placement="left">
                   <i class="fas fa-draw-polygon"></i>
                   </button>
                   <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
-                  title="Selection tool" data-placement="right">
+                  title="Selection tool" data-placement="left">
                   <i class="fas fa-hand-paper"></i>
                   </button>
                   <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
-                  title="Delete selection" data-placement="right">
+                  title="Delete selection" data-placement="left">
                   <i class="fas fa-trash-alt"></i>
                   </button>
 
@@ -698,15 +698,23 @@ mode: 'markers',
     </div>
     <div id="run-preview-container" class="row no-gutters flex-nowrap">
 {% for run in runs %}
-<a href="#" class="run-link" data-run = {{ run.pk }}>
-<div id= "run_{{ run.pk }}" style=" width:150px; height:150px;">
-</div>
+<button type="button" class="btn text-right run-link pb-2" data-run = {{ run.pk }} >
+<a class="run_info_button" data-toggle="tool" 
+                  title="More details" data-placement="left"> 
+<i class="fas fa-plus-circle"></i>
 </a>
+<a class="load_run_text" data-toggle="tool" 
+                  title="Load results" data-placement="left"> 
+<i class="fas fa-play-circle"></i>
+</a>
+<div id="run_{{ run.pk }}" style="width:150px; height:120px;">
+</div>
+</button>
 
 {% for output in run.output_set.all %}
 {% if forloop.last %}
 <script>
-$(run_comparison_plot('run_{{ run.pk }}','{{ run.name }}', {{ output.number_infected }},{{ output.infected_area }},{{run.budget}}));
+$(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ output.number_infected }},{{ output.infected_area }},{{run.budget}}));
 </script>
 {% endif %}
  {% endfor %}
@@ -719,6 +727,20 @@ more content
 
 
 </div>
+<script>
+  $('[data-toggle="pill"],[data-toggle="tooltip"],[data-toggle="tool"]').tooltip({trigger : 'hover'})
+  $('a.load_run_text').on('click', function(event) {
+  event.stopPropagation();
+  console.log('Run button icon clicked.')
+  $(this).parent().trigger( "click" );
+  console.log('Triggered parent button click.')
+});
+  $('a.run_info_button').on('click', function(event) {
+  event.stopPropagation();
+  console.log('Run info icon clicked.')
+});
+
+</script>
     {% comment %} <div class="col-12 mt-2">
       <div class="panel-container">
         Shannon's color palette (these squares won't be in the final version ;) )
@@ -758,16 +780,6 @@ more content
 
   {% block scripts %}
   <script>
-    $(function () {
-  $('[data-toggle="pill"]').tooltip({trigger : 'hover'})
-})
-    $(function () {
-  $('[data-toggle="tooltip"]').tooltip({trigger : 'hover'})
-})
-    $(function () {
-  $('[data-toggle="tool"]').tooltip({trigger : 'hover'})
-})
-
 
 </script>
 
@@ -1491,10 +1503,10 @@ function enableDrawTools(){
 function insertRunButton(run_id,name,infected_number,infected_area,budget) { 
   var run_pk = run_id.toString();
   console.log(run_pk);
-  $('<a href="#" id="run_button_' + run_id.toString()  
-      + '" class="run-link active" data-run = "'+run_id.toString()
-      + '"><div id= "run_'+run_id.toString()
-      + '" style=" width:150px; height:150px;"></div></a>').prependTo($('#run-preview-container'));   
+  $('<button id="run_button_' + run_id.toString()  
+      + '" type="button" class="btn text-right run-link pb-2" data-run = "'+run_id.toString()
+      + '"><a data-toggle="pill" title="Load this run" data-placement="top"><i class="fas fa-play-circle"></i></a><div id= "run_'+run_id.toString()
+      + '"></div></button>').prependTo($('#run-preview-container'));   
   $(run_comparison_plot('run_'+run_id.toString(),name,infected_number,infected_area,budget));
   $("#run_button_"+ run_id.toString()).on('click', function () {
       var run_id = $(this).attr('data-run');
@@ -1668,10 +1680,12 @@ $("input#tangible_landscape").on('change', function () {
 });
 
     $(".run-link").on('click', function () {
-      $('#run-preview-container a').removeClass('active');
+      $('#run-preview-container button').removeClass('active');
+      console.log("Run link clicked.");
       $(this).addClass('active');
       var run_id = $(this).attr('data-run');
-      displayRun(run_id);
+      console.log(run_id);
+      //displayRun(run_id);
     });    
     
     $("#results-tab").on('click', function () {
@@ -1720,7 +1734,7 @@ $("input#tangible_landscape").on('change', function () {
       event.preventDefault();
       console.log("form submitted!") // sanity check
       $("#submit-run-button").attr("disabled", true);
-      $('#run-preview-container a').removeClass('active');
+      $('#run-preview-container button').removeClass('active');
       var form = $(this).closest("form");
       $.ajax({
         url: form.attr("submit-run-url"),
