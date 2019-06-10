@@ -28,16 +28,10 @@
 height:100%;
 }
 
-#map.large_map, #map2.large_map {
+#map.large_map {
   height: calc(100vh - 60px);
   max-height: calc(800px - 60px)
 }
-
-#map3 {
-  height: calc(40vh - 60px);
-  max-height: calc(800px - 60px)
-}
-
 
 #run-title, #run-preview-description {
   font-size: 1.2em;
@@ -59,7 +53,8 @@ height:100%;
   border-style: outset;
   border-color: #212529;
   height: calc(100vh - 60px);
-  max-height: calc(800px - 60px)
+  max-height: calc(800px - 60px);
+  overflow-y: auto;
 
 }
 
@@ -125,11 +120,12 @@ div#run-preview-container {
       }
   div.run_info_popup {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: -90px;
+    left: 0px;
     height:100px;
     width:100px;
     background-color:grey;
+    z-index: 100;
   }
       
     #legend-container {

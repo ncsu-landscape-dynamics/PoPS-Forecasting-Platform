@@ -407,7 +407,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                       </div>
                     </div>
                     <div id="dispersal-scale-container" class="parameter-selector-plot pt-2" style="width:200px">
-                      <strong class="py-0">Dispersal scale: <output id="displayDispersalScale">45</output></strong>
+                      <strong class="py-0">Distance scale: <output id="displayDispersalScale">45</output></strong>
                       <div id="dispersal_scale_plot" style="height:100px; width:200px;"></div>
                       <div id="dispersal-scale-slider" class="pt-0 range range-info text-light">
                         <input id="id_distance_scale" style="" class="custom-range " type="range" name="distance_scale"
@@ -421,7 +421,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   <h5 class="py-0">
                     <!-- Button trigger modal -->
                     Run details<a class="btn" data-toggle="modal" data-target="#viewParameters" href="#"><i
-                        style="font-size:0.6em" class="fas fa-pencil-alt align-top text-light"></i></a>
+                        style="font-size:0.6em" class="fas fa-plus-circle align-top text-light"></i></a>
                   </h5>    
                   <div id="new_run_redirect">You currently don't have a run selected. 
                   <a href="#">Click here</a> to create a new run.
@@ -707,7 +707,11 @@ mode: 'markers',
                   title="Load results" data-placement="left"> 
 <i class="fas fa-play-circle"></i>
 </a>
-<div id="run_{{ run.pk }}" style="width:150px; height:120px;">
+{% comment %} <div class="run_info_popup">
+<div>Title</div>
+<div>More content</div>
+</div>
+ {% endcomment %}<div id="run_{{ run.pk }}" style="width:150px; height:120px;">
 </div>
 </button>
 
@@ -1685,7 +1689,7 @@ $("input#tangible_landscape").on('change', function () {
       $(this).addClass('active');
       var run_id = $(this).attr('data-run');
       console.log(run_id);
-      //displayRun(run_id);
+      displayRun(run_id);
     });    
     
     $("#results-tab").on('click', function () {

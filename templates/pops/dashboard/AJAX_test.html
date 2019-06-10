@@ -26,7 +26,7 @@
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script>
-    function run_comparison_plot(run_comparison_div,run_name,infected, area, money,a,b) {
+  function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
 
 max_infected=4;
 max_area=70;
@@ -68,31 +68,8 @@ var trace3 = {
     opacity: 1,
   }
 }; 
-var trace4 = {
-  x: ['Apples'],
-  y: [a],
-  type: 'bar',
-  text: ['Additional info'],
-  hoverinfo: ['x+y+text'],
-  yaxis:'y4',
-  marker: {
-    color: ['#9e8adb'],
-    opacity: 1,
-  }
-}; 
-var trace5 = {
-  x: ['Grapes'],
-  y: [b],
-  type: 'bar',
-  text: ['Additional info'],
-  hoverinfo: ['x+y+text'],
-  yaxis:'y5',
-  marker: {
-    color: ['#8e6dad'],
-    opacity: 1,
-  }
-}; 
-var data = [trace1,trace2,trace3,trace4,trace5];
+
+var data = [trace1,trace2,trace3];
 
     var axis_template={
         showgrid:false,
@@ -121,34 +98,25 @@ var yaxis2= {
   };
 var yaxis3= {
   tickprefix:'$',
+  ticksuffix:' mil',
   overlaying: 'y',
   range: [0,max_money],
   };
-var yaxis4= {
-  overlaying: 'y',
-  range: [0,max_a],
-  };
-var yaxis5= {
-  overlaying: 'y',
-  range: [0,max_b],
-  };
- 
+
 
 var layout = {
     xaxis: $.extend({}, axis_template, xaxis),
     yaxis: $.extend({}, axis_template, yaxis),
     yaxis2: $.extend({}, axis_template, yaxis2),
     yaxis3: $.extend({}, axis_template, yaxis3),
-    yaxis4: $.extend({}, axis_template, yaxis4),
-    yaxis5: $.extend({}, axis_template, yaxis5),
         showlegend:false,
         paper_bgcolor:'rgba(0,0,0,0)',
         plot_bgcolor:'rgba(0,0,0,0)',//'#16181b',
         margin: {
             l: 10,
             r: 10,
-            b: 40,
-            t: 20,
+            b: 30,
+            t: 5,
             pad: 0
         },
         bargap: 0.1,
@@ -252,25 +220,29 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
       <div id="" class="col">
 
 <div>
-      <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
+    <div id="run-preview-container" class="row no-gutters flex-nowrap">
+{% for run in runs %}
+<button type="button" class="btn text-right run-link pb-2" data-run = {{ run.pk }}>
+<a data-toggle="pill" title="Load this run" data-placement="top"> 
+<i class="fas fa-play-circle"></i>
+</a>
+<div id= "run_{{ run.pk }}" style=" width:150px; height:120px">
+</div>
+</button>
 
-            {% include "pops/include/form_field.html" with field=form.session form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.name form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.description form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.status form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.reproductive_rate form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.distance_scale form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.weather form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.budget form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.cost_per_hectare form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.efficacy form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.final_year form_class="col-6" %}
-            {% include "pops/include/form_field.html" with field=form.management_polygons form_class="col-6" %}
-                      <div class="text-center py-2">
-            <button class="btn btn-info btn-lg" type="submit">Go</button>
-          </div>
-</form>
+{% for output in run.output_set.all %}
+{% if forloop.last %}
+<script>
+$(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ output.number_infected }},{{ output.infected_area }},{{run.budget}}));
+    $(function () {
+  $('[data-toggle="pill"],[data-toggle="tooltip"],[data-toggle="tool"]').tooltip({trigger : 'hover'})
+})
+</script>
+{% endif %}
+ {% endfor %}
+
+{% endfor %}
+    </div>
 </div>
 
 
