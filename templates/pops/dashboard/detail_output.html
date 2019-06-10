@@ -48,7 +48,7 @@
             alt="Pest or Pathogen Spread Simulation">
         </a>
         <span class="navbar-text d-none d-md-inline-block mr-auto text-bottom" style="font-size:1.4em;">
-          {{ session.name }} <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
+          Output details <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
           <span class="text-muted " style="font-size:0.6em;">
             {{ session.case_study }} <a href="#"><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
           </span>
@@ -118,7 +118,7 @@
               <div class="row no-gutters">
                 <div class="col-12 d-flex flex-column">
                   <div id="run-title">
-                    Run name: <input id="id_name" required type="text" value="My run name" name="name">
+                    Run name: <input id="id_name" required type="text" value="{{ output.run.name }}" name="name">
                     <button id="submit-run-button" type="submit" data-run=""
                       class="btn btn-success float-right d-none d-md-inline ml-4">Run PoPS Model</button>
                     <button id="show-hide-new-view" type="button"
@@ -225,6 +225,12 @@
                   </div>
                   <div> Year:
                   {{ output.years}}
+                  </div>
+                  <div>
+                  <h4>Note:
+                  </h4>
+                  If no map displays, check the Javascript Console by right-clicking on the page. Clicking "Inspect". 
+                  Then select Console at the top to see any error messages.
                   </div>
                   </div>
                   <div class="row no-gutters pt-2">
@@ -642,6 +648,7 @@ map.addLayer({
 
 map.on('load', function() {
   var spread_map = {{ output.spread_map|safe}};
+  console.log('The spread_map data:')
   console.log(spread_map);
 newLayer({{ output.spread_map|safe }}, '{{ output.years }}');
 });
