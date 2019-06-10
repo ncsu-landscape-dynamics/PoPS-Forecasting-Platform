@@ -696,17 +696,17 @@ class Run(models.Model):
     weather = models.CharField(verbose_name = _("weather"), help_text="", max_length = 20,
                     choices = WEATHER_CHOICES,
                     default = "AVERAGE", blank=True)
-    budget = models.PositiveIntegerField(verbose_name = _("budget"), default = 10, null = True, validators = [MinValueValidator(1)])
+    budget = models.PositiveIntegerField(verbose_name = _("budget"), default = 30000000, null = True, validators = [MinValueValidator(1)])
     cost_per_hectare = models.PositiveIntegerField(verbose_name = _("cost per hectare"), default = 1000, null = True, validators = [MinValueValidator(1)])
     efficacy = models.PositiveSmallIntegerField(verbose_name = _("efficacy"), help_text="", blank=True, default = 100, validators = [MinValueValidator(1), MaxValueValidator(100)])
     final_year = models.PositiveIntegerField(verbose_name = _("final run year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
     management_polygons = JSONField(null = True, blank = True)
-    management_cost = models.DecimalField(verbose_name = _("management cost"), max_digits = 13, decimal_places = 2, blank=True, null=True)
-    management_area = models.DecimalField(verbose_name = _("management area"), max_digits = 13, decimal_places = 2, blank=True, null=True)
+    management_cost = models.DecimalField(verbose_name = _("management cost"), max_digits = 13, decimal_places = 2, blank=True, null=True, default = 0)
+    management_area = models.DecimalField(verbose_name = _("management area"), max_digits = 13, decimal_places = 2, blank=True, null=True, default = 0)
     tangible_landscape = models.BooleanField(verbose_name = _("tangible landscape"), help_text="Use tangible landscape for management?", default = False)
     logging = models.TextField(verbose_name = _("error logs for backend"), max_length = 300, blank=True, null=True, help_text="For checking error logs for backend model runs")
     time_taken = models.DecimalField(verbose_name = _("time taken"), max_digits = 5, decimal_places = 1, blank=True, null=True)
-
+ 
 
 
     class Meta:

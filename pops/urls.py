@@ -17,6 +17,7 @@ router.register('session', views.SessionDetailViewSet)
 
 urlpatterns = [
     path('ajax', views.AJAXTestView.as_view(), name='ajax'),
+    path('output/<int:pk>', views.OutputDetailView.as_view(), name='output_detail'),
     path('get_output', views.get_output_view, name='get_output'),
     path('check_status', views.check_status, name='check_status'),
     path('save_run_data', views.AJAXTestView.as_view(), name='save_run_data'),
