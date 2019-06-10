@@ -14,6 +14,7 @@
 .gitignore
 Pipfile
 Pipfile.lock
+media/documents/avg_spread_temp_coefficient_slf_2018_2022_pm.tif
 
 # Python pycache:
 __pycache__/

@@ -14,7 +14,7 @@ dash-html-components = "*"
 django-autocomplete-light = "*"
 arrow = "*"
 django-crispy-forms = "*"
-django-storages = "*"
+django-storages = {extras = ["google"],version = "*"}
 psycopg2 = "*"
 google-auth = "*"
 google-cloud-storage = "*"

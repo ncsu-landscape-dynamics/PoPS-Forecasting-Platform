@@ -676,6 +676,10 @@ class Run(models.Model):
     STATUS_CHOICES = (
         ("PENDING", "Pending"),
         ("IN PROGRESS", "In progress"),
+        ("READING DATA", "Reading data"),
+        ("WAITING FOR TL", "Waiting for Tangible Landscape"),
+        ("RUNNING MODEL", "Running model"),
+        ("WRITING DATA", "Writing data"),
         ("FAILED", "Failed"),
         ("SUCCESS", "Successful"),
     )
@@ -697,6 +701,11 @@ class Run(models.Model):
     efficacy = models.PositiveSmallIntegerField(verbose_name = _("efficacy"), help_text="", blank=True, default = 100, validators = [MinValueValidator(1), MaxValueValidator(100)])
     final_year = models.PositiveIntegerField(verbose_name = _("final run year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
     management_polygons = JSONField(null = True, blank = True)
+    management_cost = models.DecimalField(verbose_name = _("management cost"), max_digits = 13, decimal_places = 2, blank=True, null=True)
+    management_area = models.DecimalField(verbose_name = _("management area"), max_digits = 13, decimal_places = 2, blank=True, null=True)
+    tangible_landscape = models.BooleanField(verbose_name = _("tangible landscape"), help_text="Use tangible landscape for management?", default = False)
+    logging = models.TextField(verbose_name = _("error logs for backend"), max_length = 300, blank=True, null=True, help_text="For checking error logs for backend model runs")
+    time_taken = models.DecimalField(verbose_name = _("time taken"), max_digits = 5, decimal_places = 1, blank=True, null=True)
 
 
 
