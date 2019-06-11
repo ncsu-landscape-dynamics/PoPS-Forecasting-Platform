@@ -101,7 +101,8 @@ class RunForm(forms.ModelForm):
     class Meta:
         model = Run
         fields = ['session','name','description','random_seed','status','reproductive_rate','distance_scale',
-        'weather','budget','cost_per_hectare','efficacy','final_year','management_polygons']
+        'weather','budget','cost_per_hectare','efficacy','final_year','management_polygons','management_cost',
+        'management_area','tangible_landscape']
     
     def clean(self):
         self.fields_required(['session','name','description','reproductive_rate','distance_scale',

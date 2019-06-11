@@ -117,6 +117,8 @@ def get_output_view(request):
         "weather": run.weather,
         "budget": run.budget,
         "cost_per_hectare": run.cost_per_hectare,
+        "management_cost": run.management_cost,
+        "management_area": run.management_area,
         "efficacy": run.efficacy,
         "final_year": run.final_year,
         "management_polygons": run.management_polygons,
