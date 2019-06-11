@@ -30,9 +30,9 @@
 
 max_infected=4;
 max_area=70;
-max_money=19;
-max_a=10000;
-max_b=20000;
+max_money=30000000;
+max_a=1;
+max_b=1;
 var trace1 = {
   x: ['# Infected'],
   y: [infected],
@@ -283,15 +283,18 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                         $('.drawing-tool').removeClass('active');
                         $(this).addClass('active');
                         draw.changeMode('draw_polygon');
+                        console.log("Polygon tool selected to draw management.")
                       }); 
 
                       $("#select-tool").on('click', function () {
                         $('.drawing-tool').removeClass('active');
                         $(this).addClass('active');
                         draw.changeMode('simple_select');
+                        console.log("Select tool selected.")
                       }); 
                       $("#delete-tool").on('click', function () {
                         draw.trash();
+                        console.log("Trash")
                       }); 
 
                   </script>
@@ -397,11 +400,11 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
 
 
                     <div id="reproductive-rate-container" class="parameter-selector-plot pt-2" style="width:200px">
-                      <strong class="py-0">Reproductive rate: <output id="displayRate">3</output></strong>
+                      <strong class="py-0">Reproductive rate: <output id="displayRate">2</output></strong>
                       <div id="reproductive_rate_plot" style="height:100px; width:200px;"></div>
                       <div id="reproductive-rate-slider" class="pt-0 range range-info text-light">
                         <input id="id_reproductive_rate" style="" class="custom-range " type="range"
-                          name="reproductive_rate" min="10" max="18" step="1" value="3"
+                          name="reproductive_rate" min="1.4" max="3.0" step="0.2" value="2.0"
                           onchange="displayRate.value=value">
                       </div>
                     </div>
@@ -630,9 +633,9 @@ mode: 'markers',
       });
     };
 
-    var reproductive_rates = [10,11,12,13,14,15,16,17,18];
+    var reproductive_rates = [1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3.0];
     var reproductive_rate_probabilities = [0,0.05,0.1,0.2,0.24,0.2,0.1,0.05,0];
-    var reproductive_rate= [13];
+    var reproductive_rate= [2.2];
     var dispersal_scales = [25,30,35,40,45,50,55,60,65];
     var dispersal_scale_probabilities = [0,0.05,0.15,0.2,0.22,0.2,0.15,0.05,0];
     var dispersal_scale= [45];
@@ -708,7 +711,7 @@ mode: 'markers',
 {% for run in runs %}
 <button type="button" class="btn text-right run-link pb-2" data-run = {{ run.pk }} >
 <a class="run_info_button" data-toggle="tool" 
-                  title="More details" data-placement="left"> 
+                  title="More details (coming soon)" data-placement="left"> 
 <i class="fas fa-plus-circle"></i>
 </a>
 <a class="load_run_text" data-toggle="tool" 
@@ -726,7 +729,7 @@ mode: 'markers',
 {% for output in run.output_set.all %}
 {% if forloop.last %}
 <script>
-$(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ output.number_infected }},{{ output.infected_area }},{{run.budget}}));
+$(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ output.number_infected }},{{ output.infected_area }},{{run.management_cost}}));
 </script>
 {% endif %}
  {% endfor %}
@@ -1517,15 +1520,22 @@ function enableDrawTools(){
 function insertRunButton(run_id,name,infected_number,infected_area,budget) { 
   var run_pk = run_id.toString();
   console.log(run_pk);
+var short_name = jQuery.trim(name).substring(0, 18).split(" ").slice(0, -1).join(" ") + "...";
   $('<button id="run_button_' + run_id.toString()  
       + '" type="button" class="btn text-right run-link pb-2" data-run = "'+run_id.toString()
-      + '"><a data-toggle="pill" title="Load this run" data-placement="top"><i class="fas fa-play-circle"></i></a><div id= "run_'+run_id.toString()
-      + '"></div></button>').prependTo($('#run-preview-container'));   
-  $(run_comparison_plot('run_'+run_id.toString(),name,infected_number,infected_area,budget));
+      + '"><a class="run_info_button" data-toggle="tool" title="More details (coming soon)" data-placement="left"><i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tool" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a><div id="run_'+run_id.toString()
+      + '" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));   
+  $(run_comparison_plot('run_'+run_id.toString(),short_name,infected_number,infected_area,budget));
   $("#run_button_"+ run_id.toString()).on('click', function () {
+      $('#run-preview-container button').removeClass('active');
+      console.log("Run link clicked.");
+      $(this).addClass('active');
       var run_id = $(this).attr('data-run');
+      console.log("Run id "+ run_id +" requested.");
+      displayRun(run_id);
+      console.log("Run "+ run_id +" successfully loaded.")
   });  
-            }  ;
+  };
 
 function get_output(run_id) {
         $('#new_run_redirect').remove();
@@ -1625,7 +1635,7 @@ function get_output(run_id) {
                     $(gauge_plot("money-results", data.run_inputs.management_cost, data.run_inputs.budget));
 
                   if (!(document.getElementById("run_"+ data.run_inputs.primary_key.toString()))){
-                    insertRunButton(data.run_inputs.primary_key,data.run_inputs.name,infected_number_list.slice(-1)[0] ,infected_area_list.slice(-1)[0],data.run_inputs.budget);
+                    insertRunButton(data.run_inputs.primary_key,data.run_inputs.name,infected_number_list.slice(-1)[0] ,infected_area_list.slice(-1)[0],data.run_inputs.management_cost);
                   };
           },
 
@@ -1704,8 +1714,9 @@ $("input#id_tangible_landscape").on('change', function () {
       console.log("Run link clicked.");
       $(this).addClass('active');
       var run_id = $(this).attr('data-run');
-      console.log(run_id);
+      console.log("Run id "+ run_id +" requested.");
       displayRun(run_id);
+      console.log("Run "+ run_id +" successfully loaded.")
     });    
     
     $("#results-tab").on('click', function () {
