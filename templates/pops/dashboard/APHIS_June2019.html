@@ -591,10 +591,11 @@ mode: 'markers',
       var data = [trace1, trace2];
 
 
+
       var layout = {
 
         xaxis: {
-          range: [(min_x-1), (max_x+1)],
+          range: [(min_x-(max_x - min_x)/20), (max_x+(max_x - min_x)/20)],
           dtick: parseInt((max_x - min_x)/4),
           tickfont: {
             size: 12,
@@ -1650,7 +1651,7 @@ function get_output(run_id) {
 function poll(){
    setTimeout(function(){
       var new_run_id = $('#submit-run-button').attr('data-run');
-      console.log(new_run_id);
+      console.log("Run id: " + new_run_id);
       $.ajax({
         url: "{% url 'check_status' %}",
           dataType: "json",
@@ -1658,7 +1659,7 @@ function poll(){
           'new_run_id': new_run_id
           },
         success: function(data){
-        console.log(data.status);
+        console.log("Status" + data.status);
 
         //Setup the next poll recursively
         if (data.status == "SUCCESS") {
@@ -1667,14 +1668,14 @@ function poll(){
         $('#id_management_polygons').val(0);
           //$( "#get-data-button" ).trigger( "click" );
         }
+        else if (stop_listening == true) {
+          $( "#status-indicator" ).hide();
+          $( "#status-indicator-shading" ).hide();
+        }
         else if (data.status == "FAILED") {
         $('#status-text span').text('RUN FAILED.');
         $( "#status-logo" ).hide();
 
-        }
-        else if (data.status == "IN PROGRESS") {
-        $('#status-text span').text('Run in progress...');
-        poll();
         }
         else if (data.status == "PENDING") {
           if ($('input#id_tangible_landscape').prop('checked')){
