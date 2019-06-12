@@ -227,7 +227,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
               <div class="row no-gutters">
                 <div class="col-12 d-flex flex-column">
                   <div id="run-title">
-                    Run name: <input id="id_name" required type="text" value="My run name" name="name">
+                    Run name: {{ form.name }}
                     <button id="submit-run-button" type="submit" data-run=""
                       class="btn btn-success float-right d-none d-md-inline ml-4">Run PoPS Model</button>
                     <button id="show-hide-new-view" type="button"
@@ -307,8 +307,17 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   <div id="status-text">
                   <span>Loading...</span>
                   </div>
+                  <button id="cancel-polling" class="btn btn-dark" type="button" data-value='false' >Cancel</button>
                   </div>
+<script>
+$("button#cancel-polling").hide();
 
+$("button#cancel-polling").on('click', function () {
+          $(this).attr('data-value','true');
+      console.log("Cancel polling clicked.");
+      $(this).hide();
+    });   
+</script>
                 </div>
                 <div id="side-panel" class="d-none d-md-block col-md-3 p-1">
                 <div id="run-details">
@@ -532,16 +541,15 @@ $( document ).ready(function() {
 
 $( "#dispersal-scale-container" ).click(function() {
         dispersal_scale = $(this).find('input').val();
-      console.log(dispersal_scale);
+      console.log("Distance scale is now: " + dispersal_scale);
           $(parameter_plot("dispersal_scale_plot", 'Probability', dispersal_scales, dispersal_scale_probabilities, dispersal_scale, '#2598b8', error_bar=false));
-
 })
 $( "#reproductive-rate-container" ).click(function() {
         reproductive_rate = $(this).find('input').val();
-      console.log(reproductive_rate);
+      console.log("Reproductive rate is now: " + reproductive_rate);
           $(parameter_plot("reproductive_rate_plot", 'Probability', reproductive_rates, reproductive_rate_probabilities, reproductive_rate, '#2598b8', error_bar=false));
-
 })
+
 function findMax(arr) {
   let max = arr[0];
 
@@ -565,7 +573,6 @@ var y_selected_value=y_values[index_value];
 var min_x=x_values[0];
 var max_x=x_values.slice(-1).pop();
 var max_y=Number(findMax(y_values));
-console.log(max_y)
       var trace1 = {
         x: x_values,
         y: y_values,
@@ -643,7 +650,7 @@ mode: 'markers',
 
     
     $(parameter_plot("reproductive_rate_plot", 'Probability', reproductive_rates, reproductive_rate_probabilities, reproductive_rate, '#2598b8', error_bar=false));
-          $(parameter_plot("dispersal_scale_plot", 'Probability', dispersal_scales, dispersal_scale_probabilities, dispersal_scale, '#2598b8', error_bar=false));
+    $(parameter_plot("dispersal_scale_plot", 'Probability', dispersal_scales, dispersal_scale_probabilities, dispersal_scale, '#2598b8', error_bar=false));
     </script>
 
 
@@ -757,39 +764,6 @@ more content
 });
 
 </script>
-    {% comment %} <div class="col-12 mt-2">
-      <div class="panel-container">
-        Shannon's color palette (these squares won't be in the final version ;) )
-        <div id="color-palette" class="row flex-nowrap">
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#9e8adb">#9e8adb</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#ae85d4">#ae85d4</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#2598b8">#2598b8</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#41b7cc">#41b7cc</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#5fc2c2">#5fc2c2</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#8fccc0">#8fccc0</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#5fc782">#5fc782</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#9acc54">#9acc54</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#f5a61d">#f5a61d</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#f55949">#f55949</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#0000">#0000</div>
-        </div> 
-        <div id="color-palette" class="row flex-nowrap">
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#8372b5">#8372b5</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#8e6dad">#8e6dad</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#1d7891">#1d7891</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#3294a6">#3294a6</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#4c9c9c">#4c9c9c</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#62a396">#62a396</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#4da169">#4da169</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#7ba83d">#7ba83d</div>
-        </div>
-        <div id="color-palette" class="row flex-nowrap">
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#676b73">#676b73</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#a0a8bd">#a0a8bd</div>
-          <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#f0f1f5">#f0f1f5</div>
-        </div>
-      </div>
-    </div> {% endcomment %}
 
   </div>
   {% endblock %}
@@ -820,7 +794,7 @@ var year_id = '0';
 
 
 function newLayer(map_data,year) {
-
+console.log("Adding new layer for year " + year);
   map.addSource(year, {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
@@ -898,7 +872,6 @@ function addLayers() {
 
 if (year_id == '2018') {
   visibility_2018='visible';
-  console.log(visibility_2018);
 };
 
 map.addLayer({
@@ -948,11 +921,13 @@ map.addLayer({
 };
 
 map.on('load', function() {
+  console.log("Adding initial data.");
   map.addSource('2018', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
     'data': '{% static "map_data/no_management_2018.geojson" %}'
   });
+  console.log("Adding APHIS Perimeter Zone.");
     map.addSource('perimeter_zone', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
@@ -1103,6 +1078,9 @@ addLayers();
     map.on('draw.update', updateArea);
 
 
+//Mapbox draw switches to select tool after drawing a polygon.
+//This function makes it so that the mode stays as polygon if the polygon
+//tool is selected.
 map.on('draw.modechange', e => {
       if ($("#polygon-tool").hasClass("active")){
     draw.changeMode('draw_polygon');
@@ -1111,6 +1089,7 @@ map.on('draw.modechange', e => {
 
     function updateArea(e) {
       var data = draw.getAll();
+      console.log("Updating management polygons:");
       console.log(data);
 
       if (data.features.length > 0) {
@@ -1121,12 +1100,12 @@ map.on('draw.modechange', e => {
         $('#id_management_polygons').val(convertedData);
       } else {
         $('#id_management_polygons').val(0);
+        console.log("There is no management.")
       }
       var answer = document.getElementById('polygon-info');
       var budget = $("input#id_budget").val();
       var cost_per_hectare = $("input#id_cost_per_hectare").val();
 
-      console.log(budget);
       if (data.features.length > 0) {
         var area = turf.area(data) / 10000; //area in hectares
         // restrict to area to 2 decimal points
@@ -1365,19 +1344,21 @@ map.on('draw.modechange', e => {
       var bounds = map.getBounds();
       $('#map-container-new-view').toggleClass('col-md-9 col-md-12');
       $('#side-panel').toggleClass('d-md-block d-md-none');
-      //$('#map').toggleClass( 'large_map small_map' );
+      console.log("Toggle side panel.")
       map.resize();
       //map.fitBounds(bounds);
       $(this).text($(this).text() == 'Hide Details' ? 'Show Details' : 'Hide Details');
     });
 
 
-
-        $('#map-tab').on('shown.bs.tab', function () {
+//I don't think this is used anymore... check
+  $('#map-tab').on('shown.bs.tab', function () {
+    console.log("Map tab selected.")
         map.resize();
     });
 
-      $('#chart-view-tab').on('shown.bs.tab', function () {
+//Not sure if this is used anymore either
+  $('#chart-view-tab').on('shown.bs.tab', function () {
     $(side_plot("main_plot1", '# infected', x1, x2, y1, y2, '#2598b8'));
     $(side_plot("main_plot2", 'Area infected', x1, x2, y1, y2, '#5fc2c2'));
     });
@@ -1393,9 +1374,9 @@ function updateLayers(){
       var raster2018 = '{% static "map_data/" %}'+ "perimeter" + '_' + '6' + '_'+ '100' + '_2018.geojson';
       var raster2019 = '{% static "map_data/" %}'+ "perimeter" + '_' + '6' + '_'+ '100' + '_2019.geojson';
       var raster2020 = '{% static "map_data/" %}'+ "perimeter" + '_' + '6' + '_'+ '100' + '_2020.geojson';
-      console.log(raster2018)
-      console.log(raster2019)
-      console.log(raster2020)
+      //console.log(raster2018)
+      //console.log(raster2019)
+      //console.log(raster2020)
                        
                         // update the map
                         // change the overlay
@@ -1529,12 +1510,10 @@ var short_name = jQuery.trim(name).substring(0, 18).split(" ").slice(0, -1).join
   $(run_comparison_plot('run_'+run_id.toString(),short_name,infected_number,infected_area,budget));
   $("#run_button_"+ run_id.toString()).on('click', function () {
       $('#run-preview-container button').removeClass('active');
-      console.log("Run link clicked.");
       $(this).addClass('active');
       var run_id = $(this).attr('data-run');
-      console.log("Run id "+ run_id +" requested.");
       displayRun(run_id);
-      console.log("Run "+ run_id +" successfully loaded.")
+      console.log("Run " + run_id + "link clicked.");
   });  
   };
 
@@ -1556,7 +1535,7 @@ function get_output(run_id) {
                             map.removeSource(i.toString());
                         };                       
                   };
-                   console.log(run_id)
+                   console.log("Requesting run " + run_id + " data from the database.")
       $.ajax({
         url: "{% url 'get_output' %}",
           dataType: "json",
@@ -1564,8 +1543,7 @@ function get_output(run_id) {
           'new_run_id': run_id
           },
           success: function (data) {
-            console.log('Sanity check: New data retrieved.');
-            console.log(data);
+            console.log('Run ' + data.run_inputs.primary_key + ' data successfully retrieved from database.');
 
             var year_list = [], infected_area_list = [], infected_number_list = [];
             for (var i=0; i<data.results.length; i++) {
@@ -1575,13 +1553,12 @@ function get_output(run_id) {
                   infected_area_list.push( data.results[i].infected_area );
                   infected_number_list.push( data.results[i].number_infected );
 
-                  console.log(data.results[i].spread_map);
-                  console.log(data.results[i].years);
+                  //console.log(data.results[i].spread_map);
+                  //console.log(data.results[i].years);
 
           //newLayer('{% static "map_data/infection_0_2019.geojson" %}', year);
                           newLayer(map_data, year);
                   $("#year-slider input").attr('max',year);
-                  console.log('Analyzing data...')
 
             }
             
@@ -1648,51 +1625,53 @@ function get_output(run_id) {
   };
 
 
-function poll(){
-   setTimeout(function(){
-      var new_run_id = $('#submit-run-button').attr('data-run');
-      console.log("Run id: " + new_run_id);
-      $.ajax({
-        url: "{% url 'check_status' %}",
-          dataType: "json",
-          data: {
-          'new_run_id': new_run_id
-          },
-        success: function(data){
-        console.log("Status" + data.status);
+function poll() {
+  setTimeout(function () {
+    var new_run_id = $('#submit-run-button').attr('data-run');
+    var stop_listening = $('button#cancel-polling').attr('data-value');
+    $.ajax({
+      url: "{% url 'check_status' %}",
+      dataType: "json",
+      data: {
+        'new_run_id': new_run_id
+      },
+      success: function (data) {
+        console.log("Status for run " + new_run_id + ": " + data.status);
 
         //Setup the next poll recursively
         if (data.status == "SUCCESS") {
-        $('#status-text span').text('Success! Loading results...');
-        get_output(new_run_id);
-        $('#id_management_polygons').val(0);
+          $('#status-text span').text('Success! Loading results...');
+          get_output(new_run_id);
+          $('#id_management_polygons').val(0);
           //$( "#get-data-button" ).trigger( "click" );
-        }
-        else if (stop_listening == true) {
-          $( "#status-indicator" ).hide();
-          $( "#status-indicator-shading" ).hide();
-        }
-        else if (data.status == "FAILED") {
-        $('#status-text span').text('RUN FAILED.');
-        $( "#status-logo" ).hide();
+        } else if (stop_listening == 'true') {
+          console.log("Exiting polling loop. This won't stop the PoPS run from continuing, but will prevent it from displaying on the dashboard.")
+          $("#status-indicator").hide();
+          $("#status-indicator-shading").hide();
+          $("button#cancel-polling").attr('data-value', 'false');
+        } else if (data.status == "FAILED") {
+          $('#status-text span').text('RUN FAILED.');
+          $("#status-logo").hide();
 
-        }
-        else if (data.status == "PENDING") {
-          if ($('input#id_tangible_landscape').prop('checked')){
+        } else if (data.status == "PENDING") {
+          if ($('input#id_tangible_landscape').prop('checked')) {
             $('#status-text span').text('Waiting for Tangible Landscape management...');
-          }
-          else {
+          } else {
             $('#status-text span').text('Pending...');
           }
-        poll();
-        }
-        else {
-        $('#status-text span').text(data.status);
+          poll();
+        } else {
+          $('#status-text span').text(data.status);
 
-        poll();
+          poll();
         }
-        }
-      });
+      },
+      error : function(xhr,errmsg,err) {
+          $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+              " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+          console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+      }
+    });
   }, 2000);
 };
 
@@ -1712,12 +1691,10 @@ $("input#id_tangible_landscape").on('change', function () {
 
     $(".run-link").on('click', function () {
       $('#run-preview-container button').removeClass('active');
-      console.log("Run link clicked.");
       $(this).addClass('active');
       var run_id = $(this).attr('data-run');
-      console.log("Run id "+ run_id +" requested.");
+      console.log("Run " + run_id + " link clicked.");
       displayRun(run_id);
-      console.log("Run "+ run_id +" successfully loaded.")
     });    
     
     $("#results-tab").on('click', function () {
@@ -1764,7 +1741,7 @@ $("input#id_tangible_landscape").on('change', function () {
 
     $("#submit-run").on('submit', function () {
       event.preventDefault();
-      console.log("form submitted!") // sanity check
+      console.log("New run form submitted.") // sanity check
       $("#submit-run-button").attr("disabled", true);
       $('#run-preview-container button').removeClass('active');
       var form = $(this).closest("form");
@@ -1774,9 +1751,8 @@ $("input#id_tangible_landscape").on('change', function () {
         type : "POST", // http method
         success: function (data) {
           console.log('New run parameters successfully posted to database!');
-          console.log('New run id:');
           var new_run_id = data.pk;
-          console.log(new_run_id);
+          console.log('New run id: ' + new_run_id);
           if (!$('input#id_tangible_landscape').prop('checked')){
             var base_url =  "https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = base_url.concat(new_run_id.toString());
@@ -1800,6 +1776,7 @@ $("input#id_tangible_landscape").on('change', function () {
         $('#status-text span').text('Getting ready...');
       $( "#status-indicator" ).show();
       $( "#status-indicator-shading" ).show();
+      $("button#cancel-polling").show();
     });
 
   </script>
