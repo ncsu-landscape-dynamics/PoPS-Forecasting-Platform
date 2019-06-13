@@ -369,7 +369,7 @@ $("button#cancel-polling").on('click', function () {
                             {% include "pops/include/form_field.html" with field=form.management_cost form_class="col-12" %}
                             {% include "pops/include/form_field.html" with field=form.management_area form_class="col-12" %}
                             <div class="form-check col ml-2">
-                              <input class="form-check-input" name="tangible_landscape" type="checkbox" value="" id="id_tangible_landscape">
+                            {{ form.tangible_landscape }}
                               <label class="form-check-label" for="tangible_landscape">
                                 Use tangible landscape for management?
                               </label>
