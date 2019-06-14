@@ -815,32 +815,32 @@ map.addLayer({
                             ['linear'],
                             ['get', 'outputs'],
                             0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
+                            10, '#00C49D',
+                            20, '#00D793',
+                            30, '#00FF80',
+                            40, '#24DA80',
+                            50, '#48B680',
+                            60, '#6D9180',
+                            70, '#916D80',
+                            80, '#B64880',
+                            90, '#DA2480',
+                            100, '#ff0000'
                             ],
                             'fill-outline-color': [
                                 'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
                             0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
+                            10, '#00C49D',
+                            20, '#00D793',
+                            30, '#00FF80',
+                            40, '#24DA80',
+                            50, '#48B680',
+                            60, '#6D9180',
+                            70, '#916D80',
+                            80, '#B64880',
+                            90, '#DA2480',
+                            100, '#ff0000'
                                 ],
                                 'fill-opacity': [
                                     'interpolate',
@@ -887,16 +887,16 @@ map.addLayer({
                             ['linear'],
                             ['get', 'layer.1'],
                             0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
+                            10, '#00C49D',
+                            20, '#00D793',
+                            30, '#00FF80',
+                            40, '#24DA80',
+                            50, '#48B680',
+                            60, '#6D9180',
+                            70, '#916D80',
+                            80, '#B64880',
+                            90, '#DA2480',
+                            100, '#ff0000'
                             ],
 
                                 'fill-opacity': [
@@ -1420,16 +1420,20 @@ addLayers();
 
 };
 
-$( "#year-slider" ).change(function() {
-        year_id = $(this).find('input').val();
-      console.log(year_id);
-      $("#year-value").text(year_id);
-                  for (i = 2018; i < 2022; i++) {
-                        if (map.getLayer(i.toString())) {
-                          map.setLayoutProperty(i.toString(),'visibility','none');
-                        };
-                  };
-      map.setLayoutProperty(year_id,'visibility','visible');
+$("#year-slider").change(function () {
+  year_id = $(this).find('input').val();
+  //$("#year-value").text(year_id);
+  var min_year = $("#year-slider input").attr('min');
+  var max_year = $("#year-slider input").attr('max');
+  console.log("Hiding years: " + min_year + " - " + max_year);
+  for (i = parseInt(min_year); i <= parseInt(max_year); i++) {
+    if (map.getLayer(i.toString())) {
+      map.setLayoutProperty(i.toString(), 'visibility', 'none');
+    };
+  };
+  map.setLayoutProperty(year_id, 'visibility', 'visible');
+  $("#displayYear").val(year_id);
+  console.log("Current displayed year: " + year_id);
 });
 
   function getCookie(name) {
@@ -1527,7 +1531,7 @@ function get_output(run_id) {
             $("#year-slider input").attr('max','2018');
             $("#displayYear").val('2018');
       map.setLayoutProperty('2018','visibility','visible');
-                  for (i = 2019; i < 2022; i++) {
+                  for (i = 2019; i < 2030; i++) {
                         if (map.getLayer(i.toString())) {
                             map.removeLayer(i.toString());
                         };
@@ -1546,8 +1550,13 @@ function get_output(run_id) {
             console.log('Run ' + data.run_inputs.primary_key + ' data successfully retrieved from database.');
 
             var year_list = [], infected_area_list = [], infected_number_list = [];
+            var max_year=2018;
+            var min_year=2018;
             for (var i=0; i<data.results.length; i++) {
-                  var year = data.results[i].years.toString();
+                  var year = data.results[i].years;
+                  console.log("Year: " + year);
+                  var year_string = year.toString();
+                  console.log("Year string: " + year_string);
                   var map_data = data.results[i].spread_map;
                   year_list.push( data.results[i].years );
                   infected_area_list.push( data.results[i].infected_area );
@@ -1557,11 +1566,28 @@ function get_output(run_id) {
                   //console.log(data.results[i].years);
 
           //newLayer('{% static "map_data/infection_0_2019.geojson" %}', year);
-                          newLayer(map_data, year);
-                  $("#year-slider input").attr('max',year);
-
+                map.setLayoutProperty('2018','visibility','visible');
+                        if (map.getLayer(year_string)) {
+                            map.removeLayer(year_string);
+                        };
+                        if (map.getSource(year_string)) {
+                            map.removeSource(year_string);
+                        };                       
+                    newLayer(map_data, year_string);
+                    if (year > max_year ) {
+                  $("#year-slider input").attr('max',year.toString());
+                  max_year = year;
+                  console.log("New max year = " + max_year);
+                    };
+                    if (year < min_year){
+                  $("#year-slider input").attr('min',year.toString());
+                  min_year = year;
+                  console.log("New min year = " + min_year);
+                    };
             }
-            
+                map.setLayoutProperty(min_year.toString(),'visibility','visible');
+                $("#year-slider").find('input').val(min_year.toString());
+                $("#displayYear").val(min_year.toString());
                   $('#input_run_name span').text(data.run_inputs.name);
                   $('#input_run_pk span').text(data.run_inputs.primary_key);
                   $('input#id_name').val(data.run_inputs.name);
