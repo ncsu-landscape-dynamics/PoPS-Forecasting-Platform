@@ -1120,6 +1120,8 @@ map.on('draw.modechange', e => {
       } else {
         answer.innerHTML = 'Use the polygon tool to draw management areas.';
         gauge_plot("money-new", 0, budget);
+        $('#id_management_area').val(0);
+        $('#id_management_cost').val(0);
       }
     }
 
