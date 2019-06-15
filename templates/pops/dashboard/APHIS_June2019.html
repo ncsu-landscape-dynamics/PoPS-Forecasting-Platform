@@ -1495,9 +1495,11 @@ function enableDrawTools(){
       };
 
       console.log('Added draw tools.')
+      updateArea();
     }  
     else  {
     console.log('Did not add draw tools because TL is checked')
+      updateArea();
     }
   }
   else {
@@ -1511,7 +1513,7 @@ function insertRunButton(run_id,name,infected_number,infected_area,budget) {
 var short_name = jQuery.trim(name).substring(0, 18).split(" ").slice(0, -1).join(" ") + "...";
   $('<button id="run_button_' + run_id.toString()  
       + '" type="button" class="btn text-right run-link pb-2" data-run = "'+run_id.toString()
-      + '"><a class="run_info_button" data-toggle="tool" title="More details (coming soon)" data-placement="left"><i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tool" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a><div id="run_'+run_id.toString()
+      + '"><a class="run_info_button" data-toggle="tooltip" title="More details (coming soon)" data-placement="left"><i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a><div id="run_'+run_id.toString()
       + '" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));   
   $(run_comparison_plot('run_'+run_id.toString(),short_name,infected_number,infected_area,budget));
   $("#run_button_"+ run_id.toString()).on('click', function () {
@@ -1520,7 +1522,19 @@ var short_name = jQuery.trim(name).substring(0, 18).split(" ").slice(0, -1).join
       var run_id = $(this).attr('data-run');
       displayRun(run_id);
       console.log("Run " + run_id + "link clicked.");
-  });  
+  }); 
+    $("#run_button_"+ run_id.toString() +' a.load_run_text').on('click', function(event) {
+  event.stopPropagation();
+  console.log('Run button icon clicked.')
+  $(this).parent().trigger( "click" );
+  console.log('Triggered parent button click.')
+});
+  $("#run_button_"+ run_id.toString() + ' a.run_info_button').on('click', function(event) {
+  event.stopPropagation();
+  console.log('Run info icon clicked.')
+}); 
+  $('[data-toggle="tooltip"]').tooltip({trigger : 'hover'})
+
   };
 
 function get_output(run_id) {
