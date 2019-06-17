@@ -239,24 +239,40 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   id="id_management_polygons">
                 <div id="map-container-new-view" class="col-md-9">
                   <div id="map" class="large_map"></div>
-                  <div id="legend-container" class="pb-0">
-                    <h5>Probability of infection:</h5>
-                    <div class="legend-color" style="background-color:#009CB0"></div>
-                    <div class="legend-color" style="background-color:#00C49D"></div>
-                    <div class="legend-color" style="background-color:#00D793"></div>
-                    <div class="legend-color" style="background-color:#00FF80"></div>
-                    <div class="legend-color" style="background-color:#24DA80"></div>
-                    <div class="legend-color" style="background-color:#48B680"></div>
-                    <div class="legend-color" style="background-color:#6D9180"></div>
-                    <div class="legend-color" style="background-color:#916D80"></div>
-                    <div class="legend-color" style="background-color:#B64880"></div>
-                    <div class="legend-color" style="background-color:#DA2480"></div>
-                    <div class="legend-color" style="background-color:#ff0000"></div>
+                  <div id="historic-legend-container" class="pb-0">
+                    <div><strong>Number of identified pests (per km<sup>2</sup>):</strong></div>
+                    <div class="legend-color" style="background-color:#ff0000; opacity:0.1"></div>
+                    <div class="legend-color" style="background-color:#ff0000; opacity:0.2"></div>
+                    <div class="legend-color" style="background-color:#ff0000; opacity:0.3"></div>
+                    <div class="legend-color" style="background-color:#ff0000; opacity:0.4"></div>
+                    <div class="legend-color" style="background-color:#ff0000; opacity:0.5"></div>
+                    <div class="legend-color" style="background-color:#ff0000; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#ff0000; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#ff0000; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#ff0000; opacity:0.9"></div>
+                    <div class="legend-color" style="background-color:#ff0000; opacity:1.0"></div>
+                    <div style="clear: left;">
+                      <p class="legend-label" style="float:left; margin-right:190px;">0</p>
+                      <p class="legend-label">30</p>
+                    </div>
+                  </div>
+                  <div id="probability-legend-container" class="pb-0">
+                    <div><strong>Probability of infection:</strong></div>
+                    <div class="legend-color" style="background-color:#009CB0; opacity:0.1"></div>
+                    <div class="legend-color" style="background-color:#00C49D; opacity:0.2"></div>
+                    <div class="legend-color" style="background-color:#00D793; opacity:0.3"></div>
+                    <div class="legend-color" style="background-color:#00FF80; opacity:0.4"></div>
+                    <div class="legend-color" style="background-color:#24DA80; opacity:0.5"></div>
+                    <div class="legend-color" style="background-color:#48B680; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#6D9180; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#916D80; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#B64880; opacity:0.9"></div>
+                    <div class="legend-color" style="background-color:#DA2480; opacity:1"></div>
+                    <div class="legend-color" style="background-color:#ff0000; opacity:1"></div>
                     <div style="clear: left;">
                       <p class="legend-label" style="float:left; margin-right:170px;">0%</p>
                       <p class="legend-label">100%</p>
                     </div>
-
                   </div>
                   <div id="year-slider" class="pt-0 range range-info">
                     <h5 class="py-0">Year: <output id="displayYear">2018</output>
@@ -311,6 +327,8 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   <button id="cancel-polling" class="btn btn-dark" type="button" data-value='false' >Cancel</button>
                   </div>
 <script>
+$("#probability-legend-container").hide();
+
 $("button#cancel-polling").hide();
 
 $("button#cancel-polling").on('click', function () {
@@ -729,14 +747,9 @@ data-placement="top">
                   title="Load results" data-placement="left"> 
 <i class="fas fa-play-circle"></i>
 </a>
-{% comment %} <div class="run_info_popup">
-<div>Title</div>
-<div>More content</div>
-</div>
- {% endcomment %}<div id="run_{{ run.pk }}" style="width:150px; height:120px;">
+<div id="run_{{ run.pk }}" style="width:150px; height:120px;">
 </div>
 </button>
-
 {% for output in run.output_set.all %}
 {% if forloop.last %}
 <script>
@@ -744,7 +757,6 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ o
 </script>
 {% endif %}
  {% endfor %}
-
 {% endfor %}
     </div>
 </div>
@@ -818,49 +830,25 @@ map.addLayer({
                             ['linear'],
                             ['get', 'outputs'],
                             0, '#009CB0',
-                            10, '#00C49D',
-                            20, '#00D793',
-                            30, '#00FF80',
-                            40, '#24DA80',
-                            50, '#48B680',
-                            60, '#6D9180',
-                            70, '#916D80',
-                            80, '#B64880',
-                            90, '#DA2480',
-                            100, '#ff0000'
+                            90, '#00FF08',
+                            100, '#F1FF35'
                             ],
                             'fill-outline-color': [
                                 'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
                             0, '#009CB0',
-                            10, '#00C49D',
-                            20, '#00D793',
-                            30, '#00FF80',
-                            40, '#24DA80',
-                            50, '#48B680',
-                            60, '#6D9180',
-                            70, '#916D80',
-                            80, '#B64880',
-                            90, '#DA2480',
-                            100, '#ff0000'
+                            90, '#00FF08',
+                            100, '#F1FF35'
                                 ],
                                 'fill-opacity': [
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
                                     0, 0.00,
-                                    0.05, 0.05,
-                                    0.10, 0.40,
-                                    0.20, 0.50,
-                                    0.30, 0.50,
-                                    0.40, 0.50,
-                                    0.50, 0.50,
-                                    0.60, 0.50,
-                                    0.70, 0.50,
-                                    0.80, 0.50,
-                                    0.90, 0.50,
-                                    1.0, 0.50
+                                    1,0.05,
+                                    100, 1,
+
                                 ]
 
                             }
@@ -907,17 +895,17 @@ map.addLayer({
                                     ['linear'],
                                     ['get', 'outputs'],
                                     0, 0.00,
-                                    0.05, 0.05,
-                                    0.10, 0.20,
-                                    0.20, 0.30,
-                                    0.30, 0.40,
-                                    0.40, 0.50,
-                                    0.50, 0.50,
-                                    0.60, 0.50,
-                                    0.70, 0.50,
-                                    0.80, 0.50,
-                                    0.90, 0.60,
-                                    1.0, 0.70
+                                    5, 0.05,
+                                    10, 0.40,
+                                    20, 0.50,
+                                    30, 0.50,
+                                    40, 0.50,
+                                    50, 0.50,
+                                    60, 0.50,
+                                    70, 0.50,
+                                    80, 0.50,
+                                    90, 0.50,
+                                    100, 0.50
                                 ]                            }
                             }, 'waterway-label'); 
 
@@ -944,17 +932,10 @@ map.on('load', function() {
                             'interpolate',
                             ['linear'],
                             ['get', 'outputs'],
-                            0, '#009CB0',
-                            10, '#00C49D',
-                            20, '#00D793',
-                            30, '#00FF80',
-                            40, '#24DA80',
-                            50, '#48B680',
-                            60, '#6D9180',
-                            70, '#916D80',
-                            80, '#B64880',
-                            90, '#DA2480',
-                            100, '#ff0000'
+                            0, '#ff0000',
+                            10, '#ff0000',
+                            20, '#ff0000',
+                            30, '#ff0000',
                             ],
 
                                 'fill-opacity': [
@@ -962,17 +943,8 @@ map.on('load', function() {
                                     ['linear'],
                                     ['get', 'outputs'],
                                     0, 0.00,
-                                    0.05, 0.05,
-                                    0.10, 0.20,
-                                    0.20, 0.30,
-                                    0.30, 0.40,
-                                    0.40, 0.50,
-                                    0.50, 0.50,
-                                    0.60, 0.50,
-                                    0.70, 0.50,
-                                    0.80, 0.50,
-                                    0.90, 0.60,
-                                    1.0, 0.70
+                                    1,0.2,
+                                    30, 1,
                                 ]                            }
                             }, 'waterway-label'); 
   {% endfor %}
@@ -1487,9 +1459,13 @@ $("#year-slider").change(function () {
   $("#displayYear").val(year_id);
   if (year_id > 2018){
     $('#display_year_forecast').text('(Forecast)')
+    $("#probability-legend-container").show();
+    $("#historic-legend-container").hide();
   }
   else {
     $('#display_year_forecast').text('')
+    $("#probability-legend-container").hide();
+    $("#historic-legend-container").show();
   }
   console.log("Current displayed year: " + year_id);
 });
@@ -1639,7 +1615,6 @@ function get_output(run_id) {
                   //console.log(data.results[i].years);
 
           //newLayer('{% static "map_data/infection_0_2019.geojson" %}', year);
-                map.setLayoutProperty('2018','visibility','visible');
                         if (map.getLayer(year_string)) {
                             map.removeLayer(year_string);
                         };
@@ -1663,6 +1638,8 @@ function get_output(run_id) {
                 $("#year-slider").find('input').val(first_model_year.toString());
                 $("#displayYear").val(first_model_year.toString());
                 $('#display_year_forecast').text('(Forecast)')
+                $("#historic-legend-container").hide();
+                $("#probability-legend-container").show();
                   $('#input_run_name span').text(data.run_inputs.name);
                   $('#input_run_pk span').text(data.run_inputs.primary_key);
                   $('input#id_name').val(data.run_inputs.name);
