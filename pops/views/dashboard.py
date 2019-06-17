@@ -2,6 +2,7 @@ from django.views.generic import FormView, ListView, DetailView, TemplateView, C
 from django.shortcuts import render, get_object_or_404
 
 from django.http import JsonResponse, HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from ..models import *
@@ -31,8 +32,26 @@ class WorkspaceView(TemplateView):
             current_user=self.request.user
             context['current_user']=current_user
             context['user_case_studies'] = CaseStudy.objects.prefetch_related('host_set','pest_set__pest_information').filter(created_by = current_user).order_by('-date_created')[:5]
-            context['user_sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(created_by = current_user).order_by('-date_created')
+            context['user_sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(created_by = current_user).order_by('-date_created')[:5]
+            context['number_of_sessions'] = Session.objects.filter(created_by = current_user).count()
             return context
+
+class SessionListView(LoginRequiredMixin, TemplateView):
+    login_url = 'login'
+    #paginate_by = 5  # if pagination is desired
+    template_name = 'pops/dashboard/session_list.html'
+
+    def get_queryset(self):
+        return Session.objects.prefetch_related('run_set','created_by','case_study').filter(created_by = self.request.user).order_by('-date_created')
+
+    def get_context_data(self, **kwargs):
+            # Call the base implementation first to get the context
+            context = super(SessionListView, self).get_context_data(**kwargs)
+            context['sessions']=self.get_queryset()
+            return context
+
+    # def get_queryset(self):
+    #     return CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
 
 class DashboardView(TemplateView):
     template_name = 'pops/dashboard/APHIS_June2019.html'

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load get_staff_approved %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+{% endblock %}
+{% block content %}
+
+<style type="text/css" media="screen">
+    .table-wrapper-scroll-y {
+        display: block;
+        max-height: 30em;
+        overflow-y: auto;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+</style>
+
+<div class="container py-2 pb-4">
+    <h3>Available case studies: </h3>
+    <div class="row">
+        <div class="col-12">
+            <div class="panel-container">
+                <h4>Sessions created by {{ user }}:</h4>
+                {% if sessions %}
+                <div class="table-wrapper-scroll-y">
+                    <table class="table table-hover table-bordered table-dark table-sm ">
+                        <thead>
+                            <th style="width: 60%">Description</th>
+                            <th>Case study</th>
+                            <th>Most recent run</th>
+                            <th></th>
+
+                        </thead>
+
+                        <tbody>
+                            {% for session in sessions %}
+                            <tr>
+                                <td>
+                                    <div class="row no-gutters align-items-center justify-content-between	">
+
+                                        <h5 class="col-auto">{{ session.name }}</h5>
+
+                                        <div class="col-auto px-2">
+                                            <span class="badge badge-pill badge-light">{{ session.run_set.count }} runs</span>
+                                        </div>
+                                    </div>
+
+                                    <p> {{ session.description }}</p>
+                                </td>
+                                <td> <a class="text-light" href="{% url 'case_study_review' pk=session.case_study.pk %}"
+                                        >{{ session.case_study.name }}</a> </td>
+                                <td>{{ session.run_set.last.date_created }}</td>
+                                <td>
+                                    <a class="btn btn-info btn-sm btn-block" href="{% url 'dashboard' pk=session.pk %}"
+                                        role="button">Go to session</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                You haven't made any case studies yet.
+                {% endif %}
+            </div>
+        </div>
+
+
+    </div>
+</div>
+    {% endblock %}
