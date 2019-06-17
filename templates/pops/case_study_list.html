@@ -48,7 +48,7 @@
                                         </div>
                                     </div>
 
-                                    <p> {% lorem 30 w %}</p>
+                                    <p> {{ cs.description }}</p>
                                 </td>
                                 {% with pests=cs.pest_set.all %}
                                 <td>{% for pest in pests %} <p>{% firstof pest.pest_information pest.name %}

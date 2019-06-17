@@ -17,26 +17,37 @@
         <div class="col-sm-8 col-md-8 col-lg-10">
             <div class="alert alert-info">
                 <p>
+                    <strong>Please carefully review your case study.</strong> If the case study has not yet
+                    been calibrated, you may edit the case study by clicking Edit. If it is already calibrated, 
+                    you must create a new case study to make any changes.
+                </p>
+                <p>
+                    Note: Calibration and validation can take many hours. You may check on the
+                    progress of your case study on your Workspace page.
+                    If you have any questions, be sure to read the
+                    <a class="" href="{% url 'case_study_help' %}">Case Study Help page</a>.
+                </p> 
+{% comment %}                 <p>
                     <strong>Please carefully review your case study.</strong> If everything is
                     correct, click "Calibrate" to calibrate and validate the case study. 
                     If you find any mistakes, click "Edit" to edit the case study.
                 </p>
                 <p>
                     Note: Calibration and validation can take many hours. You may check on the
-                    progress of your case study on your Account page.
+                    progress of your case study on your Workspace page.
                     If you have any questions, be sure to read the
                     <a class="" href="{% url 'case_study_help' %}">Case Study Help page</a>.
-                </p>
+                </p> {% endcomment %}
             </div>
         </div>
         <div class="col-sm-4 col-md-4 col-lg-2 pb-4">
             <!--Submit button for form-->
             <div class="text-center p-2">
-                <a class="btn btn-secondary btn-lg btn-block" href="#" role="button">Edit</a>                
+                <a class="btn btn-secondary btn-lg btn-block" href="{% url 'case_study_edit' pk=case_study.pk %}" role="button">Edit</a>                
             </div>
             <!--Submit button for form--> 
             <div class="text-center p-2">
-                <button class="btn btn-info btn-lg btn-block" type="submit">Calibrate</button>
+                <a class="btn btn-info btn-lg btn-block" href="{% url 'new_session' %}" role="button">New Session</a>                
             </div>
         </div>
     </div>
@@ -515,10 +526,10 @@
             <div class="row justify-content-end pb-4">
                 <div class="col-auto">
                     <div class="d-inline text-center p-2">
-                        <a class="btn btn-secondary btn-lg" href="#" role="button">Edit</a>                
+                <a class="btn btn-secondary btn-lg" href="{% url 'case_study_edit' pk=case_study.pk %}" role="button">Edit</a>                
                     </div>
                     <div class="d-inline text-center p-2">
-                        <button class="btn btn-info btn-lg" type="submit">Calibrate</button>
+                <a class="btn btn-info btn-lg" href="{% url 'new_session' %}" role="button">New Session</a>                
                     </div>
                 </div>
             </div>
