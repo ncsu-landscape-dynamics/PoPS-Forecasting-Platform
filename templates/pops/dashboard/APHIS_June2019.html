@@ -259,7 +259,8 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
 
                   </div>
                   <div id="year-slider" class="pt-0 range range-info">
-                    <h5 class="py-0">Year: <output id="displayYear">2018</output></h5>
+                    <h5 class="py-0">Year: <output id="displayYear">2018</output>
+                    <em id="display_year_forecast"></em></h5>
                     <input class="custom-range px-2 py-0" type="range" name="range" min="2014" max="2018" step="1"
                       value="2018" onchange="displayYear.value=value">
                   </div>
@@ -1484,6 +1485,12 @@ $("#year-slider").change(function () {
   };
   map.setLayoutProperty(year_id, 'visibility', 'visible');
   $("#displayYear").val(year_id);
+  if (year_id > 2018){
+    $('#display_year_forecast').text('(Forecast)')
+  }
+  else {
+    $('#display_year_forecast').text('')
+  }
   console.log("Current displayed year: " + year_id);
 });
 
@@ -1641,7 +1648,7 @@ function get_output(run_id) {
                         };                       
                     newLayer(map_data, year_string);
                     if (year > max_year ) {
-                  $("#year-slider input").attr('max',year.toString());
+                    $("#year-slider input").attr('max',year.toString());
                   max_year = year;
                   console.log("New max year = " + max_year);
                     };
@@ -1651,9 +1658,11 @@ function get_output(run_id) {
                   console.log("New min year = " + min_year);
                     };
             }
-                map.setLayoutProperty(min_year.toString(),'visibility','visible');
-                $("#year-slider").find('input').val(min_year.toString());
-                $("#displayYear").val(min_year.toString());
+            var first_model_year=2019;
+                map.setLayoutProperty(first_model_year.toString(),'visibility','visible');
+                $("#year-slider").find('input').val(first_model_year.toString());
+                $("#displayYear").val(first_model_year.toString());
+                $('#display_year_forecast').text('(Forecast)')
                   $('#input_run_name span').text(data.run_inputs.name);
                   $('#input_run_pk span').text(data.run_inputs.primary_key);
                   $('input#id_name').val(data.run_inputs.name);
