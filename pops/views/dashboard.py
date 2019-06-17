@@ -5,6 +5,8 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Prefetch
+
 from ..models import *
 from ..forms import *
 
@@ -110,7 +112,7 @@ class AJAXTestView(AjaxableResponseMixin, CreateView):
             except:
                 session = None
             try:
-                runs = Run.objects.prefetch_related('output_set').filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created')
+                runs = Run.objects.filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created').prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map')))
 
             except:
                 runs = None                
