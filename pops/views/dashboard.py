@@ -98,6 +98,7 @@ class AJAXTestView(AjaxableResponseMixin, CreateView):
 
             context['session'] = session
             context['runs'] = runs
+            context['historic_data'] = ['2014','2015','2016','2017','2018']
             return context
 
 def get_output_view(request):

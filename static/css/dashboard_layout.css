@@ -227,6 +227,22 @@ input#id_name {
   color: white;
 }
 
+.popover {
+  border: 3px solid #555;
+}
+.popover-header {
+  background-color: black;
+  color: white;
+}
+.popover-body {
+  color: white;
+  background-color: #212529;
+}
+.popover.bottom .arrow:after {
+  border-bottom-color: #555;
+}
+
+
 
 
 
