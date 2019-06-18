@@ -112,7 +112,7 @@ class AJAXTestView(AjaxableResponseMixin, CreateView):
             except:
                 session = None
             try:
-                runs = Run.objects.filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created').prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map')))
+                runs = Run.objects.filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created').prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
 
             except:
                 runs = None                
@@ -145,7 +145,7 @@ def get_output_view(request):
         "final_year": run.final_year,
         "management_polygons": run.management_polygons,
         },
-    "results": list(outputs.values("date_created","id","number_infected", "infected_area", "years", "spread_map"))
+    "results": list(outputs.order_by('years').values("date_created","id","number_infected", "infected_area", "years", "spread_map"))
     }
     return JsonResponse(data)
 
