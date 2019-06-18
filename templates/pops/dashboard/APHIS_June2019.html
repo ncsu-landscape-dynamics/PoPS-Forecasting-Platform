@@ -1670,6 +1670,7 @@ function get_output(run_id) {
                     };
             }
             var first_model_year=2019;
+                map.setLayoutProperty('2018','visibility','none');
                 map.setLayoutProperty(first_model_year.toString(),'visibility','visible');
                 $("#year-slider").find('input').val(first_model_year.toString());
                 $("#displayYear").val(first_model_year.toString());
