@@ -697,7 +697,7 @@ class Run(models.Model):
                     choices = WEATHER_CHOICES,
                     default = "AVERAGE", blank=True)
     budget = models.PositiveIntegerField(verbose_name = _("budget"), default = 30000000, null = True, validators = [MinValueValidator(1)])
-    cost_per_hectare = models.PositiveIntegerField(verbose_name = _("cost per hectare"), default = 1000, null = True, validators = [MinValueValidator(1)])
+    cost_per_meter_squared = models.PositiveIntegerField(verbose_name = _("cost per meter squared"), default = 100, null = True, validators = [MinValueValidator(1)])
     efficacy = models.PositiveSmallIntegerField(verbose_name = _("efficacy"), help_text="", blank=True, default = 100, validators = [MinValueValidator(1), MaxValueValidator(100)])
     final_year = models.PositiveIntegerField(verbose_name = _("final run year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
     management_polygons = JSONField(null = True, blank = True)
