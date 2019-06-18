@@ -275,6 +275,15 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                       <p class="legend-label">100%</p>
                     </div>
                   </div>
+                  <div>
+                  <div id="SLF_buffer_zone_checkbox" class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" checked>
+                    <label class="form-check-label" for="defaultCheck1">
+                      SLF buffer zone
+                    </label>
+                  </div>
+
+                  </div>
                   <div id="year-slider" class="pt-0 range range-info">
                     <h5 class="py-0">Year: <output id="displayYear">2018</output>
                     <em id="display_year_forecast"></em></h5>
@@ -842,7 +851,8 @@ map.addLayer({
                             70, '#916D80',
                             80, '#B64880',
                             90, '#DA2480',
-                            100, '#ff0000'                            ],
+                            100, '#ff0000'
+                     ],
                             'fill-outline-color': [
                                 'interpolate',
                                     ['linear'],
@@ -857,7 +867,8 @@ map.addLayer({
                             70, '#916D80',
                             80, '#B64880',
                             90, '#DA2480',
-                            100, '#ff0000'                                ],
+                            100, '#ff0000'
+                            ],
                                 'fill-opacity': [
                                     'interpolate',
                                     ['linear'],
@@ -1627,6 +1638,7 @@ function get_output(run_id) {
             var min_year=2014;
             for (var i=0; i<data.results.length; i++) {
                   var year = data.results[i].years;
+                  console.log("Output ID: " + data.results[i].pk);
                   console.log("Year: " + year);
                   var year_string = year.toString();
                   console.log("Year string: " + year_string);
@@ -1790,6 +1802,20 @@ $("input#id_tangible_landscape").on('change', function () {
     enableDrawTools();
   }
 });
+
+$("#SLF_buffer_zone_checkbox input").on('change', function () {
+  if ($('#SLF_buffer_zone_checkbox input').prop('checked')){
+    console.log('Show SLF buffer zone');
+    map.setLayoutProperty('perimeter_zone_layer','visibility','visible');
+
+  }
+  else {
+    console.log('Hide SLF buffer zone');
+    map.setLayoutProperty('perimeter_zone_layer','visibility','none');
+
+  }
+});
+
 
     $(".run-link").on('click', function () {
       $('#run-preview-container button').removeClass('active');
