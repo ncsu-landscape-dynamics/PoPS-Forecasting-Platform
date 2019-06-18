@@ -28,8 +28,8 @@
   <script>
     function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
 
-max_infected=4;
-max_area=70;
+max_infected=750000;
+max_area=750000;
 max_money=30000000;
 max_a=1;
 max_b=1;
@@ -833,24 +833,38 @@ map.addLayer({
                             ['linear'],
                             ['get', 'outputs'],
                             0, '#009CB0',
-                            90, '#00FF08',
-                            100, '#F1FF35'
-                            ],
+                            10, '#00C49D',
+                            20, '#00D793',
+                            30, '#00FF80',
+                            40, '#24DA80',
+                            50, '#48B680',
+                            60, '#6D9180',
+                            70, '#916D80',
+                            80, '#B64880',
+                            90, '#DA2480',
+                            100, '#ff0000'                            ],
                             'fill-outline-color': [
                                 'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
                             0, '#009CB0',
-                            90, '#00FF08',
-                            100, '#F1FF35'
-                                ],
+                            10, '#00C49D',
+                            20, '#00D793',
+                            30, '#00FF80',
+                            40, '#24DA80',
+                            50, '#48B680',
+                            60, '#6D9180',
+                            70, '#916D80',
+                            80, '#B64880',
+                            90, '#DA2480',
+                            100, '#ff0000'                                ],
                                 'fill-opacity': [
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
                                     0, 0.00,
-                                    1,0.05,
-                                    100, 1,
+                                    1,0.7,
+                                    100, 0.7,
 
                                 ]
 
@@ -935,20 +949,27 @@ map.on('load', function() {
                             'interpolate',
                             ['linear'],
                             ['get', 'outputs'],
-                            0, '#ff0000',
-                            10, '#ff0000',
-                            20, '#ff0000',
-                            30, '#ff0000',
+                            0, '#FF2000',
+                            10, '#FFFF00'
                             ],
-
+                            'fill-outline-color': [
+                                'interpolate',
+                                    ['linear'],
+                                    ['get', 'outputs'],
+                            0, '#FF2000',
+                            10, '#FFFF00'
+                                ],
                                 'fill-opacity': [
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
                                     0, 0.00,
-                                    1,0.2,
-                                    30, 1,
-                                ]                            }
+                                    1,0.5,
+                                    10, 0.7,
+
+                                ]
+
+                            }
                             }, 'waterway-label'); 
   {% endfor %}
     map.setLayoutProperty('2018', 'visibility', 'visible');
