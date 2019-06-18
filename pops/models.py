@@ -702,7 +702,7 @@ class Run(models.Model):
     final_year = models.PositiveIntegerField(verbose_name = _("final run year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
     management_polygons = JSONField(null = True, blank = True)
     management_cost = models.DecimalField(verbose_name = _("management cost"), max_digits = 13, decimal_places = 2, blank=True, null=True, default = 0)
-    management_area = models.DecimalField(verbose_name = _("management area"), max_digits = 13, decimal_places = 2, blank=True, null=True, default = 0)
+    management_area = models.DecimalField(verbose_name = _("management area"), max_digits = 16, decimal_places = 2, blank=True, null=True, default = 0)
     tangible_landscape = models.BooleanField(verbose_name = _("tangible landscape"), help_text="Use tangible landscape for management?", default = False)
     logging = models.TextField(verbose_name = _("error logs for backend"), max_length = 300, blank=True, null=True, help_text="For checking error logs for backend model runs")
     time_taken = models.DecimalField(verbose_name = _("time taken"), max_digits = 5, decimal_places = 1, blank=True, null=True)
@@ -722,7 +722,7 @@ class Output(models.Model):
     run = models.ForeignKey(Run, verbose_name = _("run id"), on_delete = models.CASCADE)
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     number_infected = models.IntegerField(verbose_name = _("number_infected"), default = 0, null = True, validators = [MinValueValidator(0)])
-    infected_area = models.DecimalField(verbose_name = _("infected_area"), help_text="Overall infected area from the run.", blank=True, max_digits = 10, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
+    infected_area = models.DecimalField(verbose_name = _("infected_area (m^2)"), help_text="Overall infected area from the run.", blank=True, max_digits = 16, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
     years = models.PositiveIntegerField(verbose_name = _("year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
     spread_map = JSONField(null = True)
 
