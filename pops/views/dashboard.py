@@ -145,7 +145,7 @@ def get_output_view(request):
         "final_year": run.final_year,
         "management_polygons": run.management_polygons,
         },
-    "results": list(outputs.order_by('years').values("date_created","id","number_infected", "infected_area", "years", "spread_map"))
+    "results": list(outputs.order_by('years').values("pk","date_created","id","number_infected", "infected_area", "years", "spread_map"))
     }
     return JsonResponse(data)
 
