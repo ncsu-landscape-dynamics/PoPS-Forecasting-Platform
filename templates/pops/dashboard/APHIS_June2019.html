@@ -93,7 +93,7 @@ var yaxis = {
         range: [0,max_infected],
   };
 var yaxis2= {
-  ticksuffix:' Ha',
+  ticksuffix:' m^2',
   overlaying: 'y',
   range: [0,max_area],
   };
@@ -377,14 +377,14 @@ $("button#cancel-polling").on('click', function () {
                               </div>
                             </div>
                             <div class="form-group col-6">
-                              <label for="id_cost_per_hectare">Cost per hectare ($US)</label>
+                              <label for="id_cost_per_meter_squared">Cost per meter squared ($US)</label>
                               <div class="input-group">
                                 <div class="input-group-prepend">
                                   <span class="input-group-text">$</span>
                                 </div>
-                                <input type="number" name="cost_per_hectare" value="1530" min="0" data-toggle="tooltip"
-                                  data-placement="top" title="Cost per hectare" data-container="body"
-                                  class="form-control" id="id_cost_per_hectare">
+                                <input type="number" name="cost_per_meter_squared" value="1" min="0" data-toggle="tooltip"
+                                  data-placement="top" title="Cost per meter squared" data-container="body"
+                                  class="form-control" id="id_cost_per_meter_squared">
                                 <div class="input-group-append">
                                   <span class="input-group-text">.00</span>
                                 </div>
@@ -520,8 +520,8 @@ $("button#cancel-polling").on('click', function () {
                           <div id="input_management_area">
                           Management area: <span></span> ha
                           </div>
-                          <div id="input_cost_per_hectare">
-                          Cost per hectare: <span></span>
+                          <div id="input_cost_per_meter_squared">
+                          Cost per meter squared: <span></span>
                           </div>
                           <div id="status">
                           Status: <span></span>
@@ -1161,17 +1161,17 @@ map.on('draw.modechange', e => {
       }
       var answer = document.getElementById('polygon-info');
       var budget = $("input#id_budget").val();
-      var cost_per_hectare = $("input#id_cost_per_hectare").val();
+      var cost_per_meter_squared = $("input#id_cost_per_meter_squared").val();
 
       if (data.features.length > 0) {
-        var area = turf.area(data) / 4046.86; //area in acres
+        var area = turf.area(data); //area in meters
         // restrict to area to 2 decimal points
         var rounded_area = Math.round(area * 100) / 100;
         $('#id_management_area').val(rounded_area);
         // round cost to 2 decimal places
-        var cost = Math.round(area * cost_per_hectare * 100) / 100;
+        var cost = Math.round(area * cost_per_meter_squared * 100) / 100;
         $('#id_management_cost').val(cost);
-        answer.innerHTML = 'Management area: ' + rounded_area + ' acres';
+        answer.innerHTML = 'Management area: ' + rounded_area + ' meter squared';
         //console.log(map.getCenter())
         gauge_plot("money-new", cost, budget);
       } else {
@@ -1424,7 +1424,7 @@ map.on('draw.modechange', e => {
 
 
 
-$( "input#id_budget, input#id_cost_per_hectare" ).on( "click blur", function() {
+$( "input#id_budget, input#id_cost_per_meter_squared" ).on( "click blur", function() {
 updateArea();
 });
 
@@ -1689,7 +1689,7 @@ function get_output(run_id) {
                   $('#input_management_cost span').text(data.run_inputs.management_cost);
                   $('#input_management_area span').text(data.run_inputs.management_area);
                   $('#run_details_management_area span').text(data.run_inputs.management_area);
-                  $('#input_cost_per_hectare span').text(data.run_inputs.cost_per_hectare);
+                  $('#input_cost_per_meter_squared span').text(data.run_inputs.cost_per_meter_squared);
                   $('#input_weather span').text(data.run_inputs.weather);
                   $('#input_final_year span').text(data.run_inputs.final_year);
                   $('#input_management span').text(data.run_inputs.management_polygons);

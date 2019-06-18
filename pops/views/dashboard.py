@@ -138,7 +138,7 @@ def get_output_view(request):
         "distance_scale": run.distance_scale,
         "weather": run.weather,
         "budget": run.budget,
-        "cost_per_hectare": run.cost_per_hectare,
+        "cost_per_meter_squared": run.cost_per_meter_squared,
         "management_cost": run.management_cost,
         "management_area": run.management_area,
         "efficacy": run.efficacy,
