@@ -364,6 +364,18 @@ $("button#cancel-polling").on('click', function () {
                         <div class="modal-body">
                           <div class="row">
                             {% include "pops/include/form_field.html" with field=form.description form_class="col-12" %}
+                            <div class="form-group col-12">
+                              <label for="id_area_unit">Displayed Units</label>
+                              <div class="input-group ">                      
+                                <select name="area_unit" class="form-control" id="id_area_unit">
+                              <option value="1" selected>meter squared</option>
+                              <option value="0.000247105">acre</option>
+                              <option value="0.0001">hectare</option>
+                            </select> 
+                             </div>
+                              
+                            </div>
+
                             <div class="form-group col-6">
                               <label for="id_budget">Budget ($US)</label>
 
@@ -377,20 +389,22 @@ $("button#cancel-polling").on('click', function () {
                               </div>
                             </div>
                             <div class="form-group col-6">
-                              <label for="id_cost_per_meter_squared">Cost per meter squared ($US)</label>
+                              <label for="id_cost">Cost per <span class="displayed_area_unit">meter squared</span> ($US)</label>
                               <div class="input-group">
                                 <div class="input-group-prepend">
                                   <span class="input-group-text">$</span>
                                 </div>
-                                <input type="number" name="cost_per_meter_squared" value="1" min="0" data-toggle="tooltip"
-                                  data-placement="top" title="Cost per meter squared" data-container="body"
-                                  class="form-control" id="id_cost_per_meter_squared">
+                                <input type="number" name="display_cost" value="1" min="0" data-toggle="tooltip"
+                                  data-placement="top" title="Cost per area" data-container="body"
+                                  class="form-control" id="id_cost">
                                 <div class="input-group-append">
                                   <span class="input-group-text">.00</span>
                                 </div>
                               </div>
 
                             </div>
+                                <input type="hidden" name="cost_per_meter_squared" value="1"
+                                  class="form-control" id="id_cost_per_meter_squared">
 
                             {% include "pops/include/form_field.html" with field=form.final_year form_class="col-6" %}
                             {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
@@ -1166,12 +1180,15 @@ map.on('draw.modechange', e => {
       if (data.features.length > 0) {
         var area = turf.area(data); //area in meters
         // restrict to area to 2 decimal points
+        var area_modifier = $("select#id_area_unit").children("option:selected").val();
+        var area_unit = $("select#id_area_unit").children("option:selected").text();
         var rounded_area = Math.round(area * 100) / 100;
+        var displayed_area = Math.round(area*area_modifier * 100) / 100;
         $('#id_management_area').val(rounded_area);
         // round cost to 2 decimal places
         var cost = Math.round(area * cost_per_meter_squared * 100) / 100;
         $('#id_management_cost').val(cost);
-        answer.innerHTML = 'Management area: ' + rounded_area + ' meter squared';
+        answer.innerHTML = 'Management area: ' + displayed_area + ' ' + area_unit;
         //console.log(map.getCenter())
         gauge_plot("money-new", cost, budget);
       } else {
@@ -1424,7 +1441,16 @@ map.on('draw.modechange', e => {
 
 
 
-$( "input#id_budget, input#id_cost_per_meter_squared" ).on( "click blur", function() {
+$( "input#id_budget, input#id_cost, select#id_area_unit" ).on( "click blur", function() {
+  var displayed_cost_per_area = $('input#id_cost').val();
+  console.log("The displayed cost is: " + displayed_cost_per_area);
+  var cost_modifier =  $("select#id_area_unit").children("option:selected").val();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
+  var area_unit =  $("select#id_area_unit").children("option:selected").text();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
+  console.log("The cost modifier is: " + cost_modifier);
+  var actual_cost_per_meter_squared = displayed_cost_per_area*cost_modifier;
+  console.log("The actual cost per meter squared is: " + actual_cost_per_meter_squared);
+  $('input#id_cost_per_meter_squared').val(actual_cost_per_meter_squared);
+  $('span.displayed_area_unit').text(area_unit);
 updateArea();
 });
 
