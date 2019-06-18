@@ -223,7 +223,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
       <div id="" class="col">
         <div class="tab-content" id="v-pills-tabContent">
           <div id="v-pills-map" class="tab-pane fade show active no-gutters" >
-            <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
+            <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data_test' %}">
 
               <div class="row no-gutters">
                 <div class="col-12 d-flex flex-column">
@@ -1883,7 +1883,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           var new_run_id = data.pk;
           console.log('New run id: ' + new_run_id);
           if (!$('input#id_tangible_landscape').prop('checked')){
-            var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+            var base_url = "https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = base_url.concat(new_run_id.toString());
             console.log(run_url)
             $.get( run_url);

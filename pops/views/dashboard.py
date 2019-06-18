@@ -55,7 +55,7 @@ class SessionListView(LoginRequiredMixin, TemplateView):
     # def get_queryset(self):
     #     return CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
 
-class DashboardView(TemplateView):
+class DashboardTempView(TemplateView):
     template_name = 'pops/dashboard/APHIS_June2019.html'
 
     def get_context_data(self, **kwargs):
@@ -95,7 +95,7 @@ class AjaxableResponseMixin:
         else:
             return response
  
-class AJAXTestView(AjaxableResponseMixin, CreateView):
+class DashboardView(AjaxableResponseMixin, CreateView):
     template_name = 'pops/dashboard/APHIS_June2019.html'
     form_class = RunForm
     success_url = 'new_session'
@@ -106,7 +106,34 @@ class AJAXTestView(AjaxableResponseMixin, CreateView):
 
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
-            context = super(AJAXTestView, self).get_context_data(**kwargs)
+            context = super(DashboardView, self).get_context_data(**kwargs)
+            try:
+                session = Session.objects.get(pk=self.kwargs.get('pk'))
+            except:
+                session = None
+            try:
+                runs = Run.objects.filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created').prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
+
+            except:
+                runs = None                
+
+            context['session'] = session
+            context['runs'] = runs
+            context['historic_data'] = ['2014','2015','2016','2017','2018']
+            return context
+
+class DashboardTestView(AjaxableResponseMixin, CreateView):
+    template_name = 'pops/dashboard/APHIS_June2019_test.html'
+    form_class = RunForm
+    success_url = 'new_session'
+
+    def get_initial(self):
+            # call super if needed
+            return {'session': self.kwargs.get('pk')}
+
+    def get_context_data(self, **kwargs):
+            # Call the base implementation first to get the context
+            context = super(DashboardTestView, self).get_context_data(**kwargs)
             try:
                 session = Session.objects.get(pk=self.kwargs.get('pk'))
             except:
