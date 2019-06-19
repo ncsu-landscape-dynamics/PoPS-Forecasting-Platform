@@ -1603,7 +1603,11 @@ function enableDrawTools(){
 function insertRunButton(run_id,name,infected_number,infected_area,budget) { 
   var run_pk = run_id.toString();
   console.log(run_pk);
-var short_name = jQuery.trim(name).substring(0, 18).split(" ").slice(0, -1).join(" ") + "...";
+if (name.length > 18) {
+    var short_name = name.substring(0, 18) + '...';
+    } else {
+      short_name = name;
+    }
   $('<button id="run_button_' + run_id.toString()  
       + '" type="button" class="btn text-right run-link pb-2" data-run = "'+run_id.toString()
       + '"><a class="run_info_button" data-toggle="tooltip" title="More details (coming soon)" data-placement="left"><i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a><div id="run_'+run_id.toString()
