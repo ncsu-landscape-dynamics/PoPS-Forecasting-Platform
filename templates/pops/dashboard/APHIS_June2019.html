@@ -35,7 +35,7 @@ max_a=1;
 max_b=1;
 
 var trace1 = {
-  x: ['# Infected'],
+  x: ['# Occurences'],
   y: [infected],
   type: 'bar',
   text: ['Additional info'],
@@ -46,7 +46,7 @@ var trace1 = {
   }
 }; 
 var trace2 = {
-  x: ['Area infected'],
+  x: ['Occurence area'],
   y: [area],
   type: 'bar',
   text: ['Additional info'],
@@ -58,7 +58,7 @@ var trace2 = {
   }
 }; 
 var trace3 = {
-  x: ['Money'],
+  x: ['Money spent'],
   y: [money],
   type: 'bar',
   text: ['Additional info'],
@@ -240,36 +240,80 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   id="id_management_polygons">
                 <div id="map-container-new-view" class="col-md-9">
                   <div id="map" class="large_map"></div>
-                  <div id="historic-legend-container" class="pb-0">
-                    <div><strong>Number of identified pests (per km<sup>2</sup>):</strong></div>
-                    <div class="legend-color" style="background-color:#ff0000; opacity:0.1"></div>
-                    <div class="legend-color" style="background-color:#ff0000; opacity:0.2"></div>
-                    <div class="legend-color" style="background-color:#ff0000; opacity:0.3"></div>
-                    <div class="legend-color" style="background-color:#ff0000; opacity:0.4"></div>
-                    <div class="legend-color" style="background-color:#ff0000; opacity:0.5"></div>
-                    <div class="legend-color" style="background-color:#ff0000; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#ff0000; opacity:0.7"></div>
-                    <div class="legend-color" style="background-color:#ff0000; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#ff0000; opacity:0.9"></div>
-                    <div class="legend-color" style="background-color:#ff0000; opacity:1.0"></div>
+                  <h4 id="display_year_forecast">Historic data</h4>
+
+{% comment %}                   <div id="historic-legend-container" class="pb-0">
+                    <div><strong>Number of detections (per km<sup>2</sup>):</strong></div>
+                    <div class="legend-color" style="background-color:#FF2000; opacity:0.4"></div>
+                    <div class="legend-color" style="background-color:#FF3600; opacity:0.45"></div>
+                    <div class="legend-color" style="background-color:#FF4C00; opacity:0.5"></div>
+                    <div class="legend-color" style="background-color:#FF6200; opacity:0.55"></div>
+                    <div class="legend-color" style="background-color:#FF7900; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#FF8F00; opacity:0.65"></div>
+                    <div class="legend-color" style="background-color:#FFA500; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#FFBC00; opacity:0.75"></div>
+                    <div class="legend-color" style="background-color:#FFD200; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFE800; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFFF00; opacity:0.8"></div>
                     <div style="clear: left;">
-                      <p class="legend-label" style="float:left; margin-right:190px;">0</p>
-                      <p class="legend-label">30</p>
+                      <p class="legend-label" style="float:left; margin-right:180px;">0</p>
+                      <p class="legend-label">10+</p>
+                    </div>
+                  </div>
+ {% endcomment %}                  
+                   <div id="historic-legend-container" class="pb-0">
+                    <div><strong>Number of detections (per km<sup>2</sup>):</strong></div>
+                    <div class="legend-color" style="background-color:#FF2000; opacity:0.4"></div>
+                    <div class="legend-color" style="background-color:#FF3600; opacity:0.45"></div>
+                    <div class="legend-color" style="background-color:#FF4C00; opacity:0.5"></div>
+                    <div class="legend-color" style="background-color:#FF6200; opacity:0.55"></div>
+                    <div class="legend-color" style="background-color:#FF7900; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#FF8F00; opacity:0.65"></div>
+                    <div class="legend-color" style="background-color:#FFA500; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#FFBC00; opacity:0.75"></div>
+                    <div class="legend-color" style="background-color:#FFD200; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFE800; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFFF00; opacity:0.8"></div>
+                    <div style="clear: left;">
+                      <p class="legend-label" style="float:left; margin-right:180px;">0</p>
+                      <p class="legend-label">10+</p>
                     </div>
                   </div>
                   <div id="probability-legend-container" class="pb-0">
-                    <div><strong>Probability of infection:</strong></div>
-                    <div class="legend-color" style="background-color:#009CB0; opacity:0.1"></div>
-                    <div class="legend-color" style="background-color:#00C49D; opacity:0.2"></div>
-                    <div class="legend-color" style="background-color:#00D793; opacity:0.3"></div>
-                    <div class="legend-color" style="background-color:#00FF80; opacity:0.4"></div>
-                    <div class="legend-color" style="background-color:#24DA80; opacity:0.5"></div>
-                    <div class="legend-color" style="background-color:#48B680; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#6D9180; opacity:0.7"></div>
-                    <div class="legend-color" style="background-color:#916D80; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#B64880; opacity:0.9"></div>
-                    <div class="legend-color" style="background-color:#DA2480; opacity:1"></div>
-                    <div class="legend-color" style="background-color:#ff0000; opacity:1"></div>
+                    <div><strong>Probability of occurence:</strong></div>             
+                    <div class="legend-color" style="background-color:#FF2000; opacity:0.4"></div>
+                    <div class="legend-color" style="background-color:#FF3600; opacity:0.45"></div>
+                    <div class="legend-color" style="background-color:#FF4C00; opacity:0.5"></div>
+                    <div class="legend-color" style="background-color:#FF6200; opacity:0.55"></div>
+                    <div class="legend-color" style="background-color:#FF7900; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#FF8F00; opacity:0.65"></div>
+                    <div class="legend-color" style="background-color:#FFA500; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#FFBC00; opacity:0.75"></div>
+                    <div class="legend-color" style="background-color:#FFD200; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFFF00; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
+                    
+{% comment %}   Viridis color palette:                <div class="legend-color" style="background-color:#440154; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#481567; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#453781; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#39568C; opacity:0.65"></div>
+                    <div class="legend-color" style="background-color:#2D708E; opacity:0.66"></div>
+                    <div class="legend-color" style="background-color:#238A8D; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#20A387; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#3CBB75; opacity:0.75"></div>
+                    <div class="legend-color" style="background-color:#73D055; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#B8DE29; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FDE725; opacity:0.8"></div> {% endcomment %}
+{% comment %}Magma color palette:                     <div class="legend-color" style="background-color:#080616; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#1E0848; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#43006A; opacity:0.65"></div>
+                    <div class="legend-color" style="background-color:#6B116F; opacity:0.66"></div>
+                    <div class="legend-color" style="background-color:#981D69; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#C92D59; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#ED504A; opacity:0.75"></div>
+                    <div class="legend-color" style="background-color:#FA8657; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FBC17D; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FCFFB2; opacity:0.8"></div> {% endcomment %}
                     <div style="clear: left;">
                       <p class="legend-label" style="float:left; margin-right:170px;">0%</p>
                       <p class="legend-label">100%</p>
@@ -286,7 +330,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   </div>
                   <div id="year-slider" class="pt-0 range range-info">
                     <h5 class="py-0">Year: <output id="displayYear">2018</output>
-                    <em id="display_year_forecast"></em></h5>
+                    </h5>
                     <input class="custom-range px-2 py-0" type="range" name="range" min="2014" max="2018" step="1"
                       value="2018" onchange="displayYear.value=value">
                   </div>
@@ -451,21 +495,21 @@ $("button#cancel-polling").on('click', function () {
 
 
 
-                    <div id="reproductive-rate-container" class="parameter-selector-plot pt-2" style="width:200px">
-                      <strong class="py-0">Reproductive rate: <output id="displayRate">2</output></strong>
-                      <div id="reproductive_rate_plot" style="height:100px; width:200px;"></div>
+                    <div id="reproductive-rate-container" class="parameter-selector-plot pt-2" style="width:250px">
+                      <strong class="py-0">Max number of dispersers: <output id="displayRate">2</output></strong>
+                      <div id="reproductive_rate_plot" style="height:100px; width:250px;"></div>
                       <div id="reproductive-rate-slider" class="pt-0 range range-info text-light">
                         <input id="id_reproductive_rate" style="" class="custom-range " type="range"
-                          name="reproductive_rate" min="1.4" max="3.0" step="0.2" value="2.0"
+                          name="reproductive_rate" min="1.7" max="2.6" step="0.1" value="2.1"
                           onchange="displayRate.value=value">
                       </div>
                     </div>
-                    <div id="dispersal-scale-container" class="parameter-selector-plot pt-2" style="width:200px">
-                      <strong class="py-0">Distance scale: <output id="displayDispersalScale">45</output></strong>
-                      <div id="dispersal_scale_plot" style="height:100px; width:200px;"></div>
+                    <div id="dispersal-scale-container" class="parameter-selector-plot pt-2" style="width:250px">
+                      <strong class="py-0">Dispersal scale: <output id="displayDispersalScale">47</output> meters</strong>
+                      <div id="dispersal_scale_plot" style="height:100px; width:250px;"></div>
                       <div id="dispersal-scale-slider" class="pt-0 range range-info text-light">
                         <input id="id_distance_scale" style="" class="custom-range " type="range" name="distance_scale"
-                          min="25" max="65" step="5" value="45" onchange="displayDispersalScale.value=value">
+                          min="39" max="57" step="1" value="47" onchange="displayDispersalScale.value=value">
                       </div>
                     </div>
 
@@ -553,10 +597,10 @@ $("button#cancel-polling").on('click', function () {
                           Years: <span></span>
                           </div>                
                           <div id="output_area">
-                          Area infected: <span></span>
+                          Occurence area: <span></span>
                           </div>
                           <div id="output_number">
-                          Number infected: <span></span>
+                          Number of occurences: <span></span>
                           </div>
                         </div>
                         <div class="modal-footer">
@@ -653,7 +697,7 @@ mode: 'markers',
           }
         },
         yaxis: {
-          range: [-0.01, max_y+0.02],
+          range: [-0.1, max_y+1.4],
           showticklabels: false,
           title: title,
           titlefont: {
@@ -684,12 +728,12 @@ mode: 'markers',
       });
     };
 
-    var reproductive_rates = [1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3.0];
-    var reproductive_rate_probabilities = [0,0.05,0.1,0.2,0.24,0.2,0.1,0.05,0];
-    var reproductive_rate= [2.2];
-    var dispersal_scales = [25,30,35,40,45,50,55,60,65];
-    var dispersal_scale_probabilities = [0,0.05,0.15,0.2,0.22,0.2,0.15,0.05,0];
-    var dispersal_scale= [45];
+    var reproductive_rates = [1.7,1.8,1.9,2,2.1,2.2,2.3,2.4,2.5,2.6];
+    var reproductive_rate_probabilities = [0.9,4.66,9.49,14.71,18.75,18.39,14.45,9.16,4.43,0.06];
+    var reproductive_rate= [2.1];
+    var dispersal_scales = [39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57];
+    var dispersal_scale_probabilities = [0.56,2.17,2.94,4.13,5.49,6.44,7.96,8.12,8.8,8.48,8.23,7.49,6.83,5.71,4.02,3,2.31,1.52,0.82];
+    var dispersal_scale= [47];
 
     
     $(parameter_plot("reproductive_rate_plot", 'Probability', reproductive_rates, reproductive_rate_probabilities, reproductive_rate, '#2598b8', error_bar=false));
@@ -750,8 +794,8 @@ mode: 'markers',
         <select id="sort_runs_by" class="custom-select custom-select-sm">
           <option selected>Sort runs by:</option>
           <option value="1">Most recent</option>
-          <option value="2">Number infected</option>
-          <option value="3">Area infected</option>
+          <option value="2">Number occurences</option>
+          <option value="3">Occurence area</option>
           <option value="4">Money spent</option>
         </select>
 
@@ -855,41 +899,74 @@ map.addLayer({
                             'interpolate',
                             ['linear'],
                             ['get', 'outputs'],
-                            0, '#009CB0',
-                            10, '#00C49D',
-                            20, '#00D793',
-                            30, '#00FF80',
-                            40, '#24DA80',
-                            50, '#48B680',
-                            60, '#6D9180',
-                            70, '#916D80',
-                            80, '#B64880',
-                            90, '#DA2480',
-                            100, '#ff0000'
+                            0, '#FF2000',
+                            95, '#FFFF00',
+                            100, '#FFFFCC'
+
+
+                            /* Fire color palette
+                            0, '#FF2000',
+                            100, '#FFFF00'
+                            */                         
+                            /* Magma color palette
+                            0, '#000005',
+                            10, '#080616',
+                            15, '#110B2D',
+                            20, '#1E0848',
+                            25, '#300060',
+                            30, '#43006A',
+                            35, '#57096E',
+                            40, '#6B116F',
+                            45, '#81176D',
+                            50, '#981D69',
+                            55, '#B02363',
+                            60, '#C92D59',
+                            65, '#E03B50',
+                            70, '#ED504A',
+                            75, '#F66B4D',
+                            80, '#FA8657',
+                            85, '#FBA368',
+                            90, '#FBC17D',
+                            95, '#FCDF96',
+                            100, '#FCFFB2',       
+                            */                     
+                           /* Viridis color palette 
+                            0, '#440154',
+                            10, '#481567',
+                            15, '#482677',
+                            20, '#453781',
+                            25, '#404788',
+                            30, '#39568C',
+                            35, '#33638D',
+                            40, '#2D708E',
+                            45, '#287D8E',
+                            50, '#238A8D',
+                            55, '#1F968B',
+                            60, '#20A387',
+                            65, '#29AF7F',
+                            70, '#3CBB75',
+                            75, '#55C667',
+                            80, '#73D055',
+                            85, '#95D840',
+                            90, '#B8DE29',
+                            95, '#DCE319',
+                            100, '#FDE725', */
                      ],
                             'fill-outline-color': [
                                 'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
-                            0, '#009CB0',
-                            10, '#00C49D',
-                            20, '#00D793',
-                            30, '#00FF80',
-                            40, '#24DA80',
-                            50, '#48B680',
-                            60, '#6D9180',
-                            70, '#916D80',
-                            80, '#B64880',
-                            90, '#DA2480',
-                            100, '#ff0000'
+                            0, '#FF2000',
+                            95, '#FFFF00',
+                            100, '#FFFFCC'
                             ],
                                 'fill-opacity': [
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
                                     0, 0.00,
-                                    1,0.7,
-                                    100, 0.7,
+                                    1,0.5,
+                                    100, 0.8,
 
                                 ]
 
@@ -974,23 +1051,23 @@ map.on('load', function() {
                             'interpolate',
                             ['linear'],
                             ['get', 'outputs'],
-                            0, '#FF2000',
-                            10, '#FFFF00'
+                            0, '#FF0000',
+                            5, '#FFFF00'
                             ],
                             'fill-outline-color': [
                                 'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
-                            0, '#FF2000',
-                            10, '#FFFF00'
+                            0, '#FF0000',
+                            5, '#FFFF00'
                                 ],
                                 'fill-opacity': [
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
                                     0, 0.00,
-                                    1,0.5,
-                                    10, 0.7,
+                                    1,0.6,
+                                    10, 0.8,
 
                                 ]
 
@@ -1015,9 +1092,9 @@ map.on('load', function() {
                             'interpolate',
                             ['linear'],
                             ['get', 'Dis_KB'],
-                            1, '#fda704'
+                            1, '#41dff4'
                             ],
-                            'fill-opacity': 0.2
+                            'fill-opacity': 0.1
                             }
                             }, 'waterway-label'); 
 
@@ -1409,12 +1486,13 @@ map.on('draw.modechange', e => {
       });
     };
 
-    var x1 = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
+    var default_years = [2019, 2020, 2021, 2022, 2023];
     var x2 = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
-    var y1 = [20, 40, 100, 300, 700, 1000];
+    var default_detections = [44201,159916,368383,599897,893903];
+    var default_area = [4750000000,12500000000,22200000000,32900000000,48900000000]
     var y2 = [20, 30, 50, 100, 300, 400];
-    $(side_plot("main_plot1", '# infected', x1, x2, y1, y2, '#2598b8',error_bar=false));
-    $(side_plot("main_plot2", 'Area infected', x1, x2, y1, y2, '#5fc2c2',error_bar=false));
+    $(side_plot("main_plot1", '# occurences', default_years, x2, default_detections, y2, '#2598b8',error_bar=false));
+    $(side_plot("main_plot2", 'Occurence area', default_years, x2, default_area, y2, '#5fc2c2',error_bar=false));
 
     $('#show-hide-new-view').on('click', function () {
       var bounds = map.getBounds();
@@ -1435,8 +1513,8 @@ map.on('draw.modechange', e => {
 
 //Not sure if this is used anymore either
   $('#chart-view-tab').on('shown.bs.tab', function () {
-    $(side_plot("main_plot1", '# infected', x1, x2, y1, y2, '#2598b8'));
-    $(side_plot("main_plot2", 'Area infected', x1, x2, y1, y2, '#5fc2c2'));
+    $(side_plot("main_plot1", '# occurences', default_years, x2, default_detections, y2, '#2598b8'));
+    $(side_plot("main_plot2", 'Occurence area', default_years, x2, default_area, y2, '#5fc2c2'));
     });
 
 
@@ -1519,12 +1597,12 @@ $("#year-slider").change(function () {
   map.setLayoutProperty(year_id, 'visibility', 'visible');
   $("#displayYear").val(year_id);
   if (year_id > 2018){
-    $('#display_year_forecast').text('(Forecast)')
+    $('#display_year_forecast').text('Forecast')
     $("#probability-legend-container").show();
     $("#historic-legend-container").hide();
   }
   else {
-    $('#display_year_forecast').text('')
+    $('#display_year_forecast').text('Historic data')
     $("#probability-legend-container").hide();
     $("#historic-legend-container").show();
   }
@@ -1704,7 +1782,7 @@ function get_output(run_id) {
                 map.setLayoutProperty(first_model_year.toString(),'visibility','visible');
                 $("#year-slider").find('input').val(first_model_year.toString());
                 $("#displayYear").val(first_model_year.toString());
-                $('#display_year_forecast').text('(Forecast)')
+                $('#display_year_forecast').text('Forecast')
                 $("#historic-legend-container").hide();
                 $("#probability-legend-container").show();
                   $('#input_run_name span').text(data.run_inputs.name);
@@ -1744,17 +1822,16 @@ function get_output(run_id) {
                     /*here we are adding a source, then a layer based on that that source*/
                     map.addLayer({
                       "id": 'treatment',
-                      "type": 'fill',
+                      "type": 'line',
                       "source": 'treatment',
-                      "paint": {
-                        "fill-color": "#D20C0C",
-                        "fill-outline-color": "#D20C0C",
-                        "fill-opacity": 0.3,
-                      }
-                    }, 'waterway-label');
+                      'paint': {
+                        'line-color': '#83f441',
+                        'line-width': 4
+                      } 
+                    });
                   $( "#results-tab" ).trigger( "click" );
-                    $(side_plot("number_infected_side_plot", '# infected', x1, year_list, y1,infected_number_list, '#2598b8',error_bar=false));
-                    $(side_plot("area_infected_side_plot", 'Area infected', x1, year_list, y1, infected_area_list, '#5fc2c2',error_bar=false));
+                    $(side_plot("number_infected_side_plot", '# occurences', default_years, year_list, default_detections,infected_number_list, '#2598b8',error_bar=false));
+                    $(side_plot("area_infected_side_plot", 'Occurence area', default_years, year_list, default_area, infected_area_list, '#5fc2c2',error_bar=false));
                     $(gauge_plot("money-results", data.run_inputs.management_cost, data.run_inputs.budget));
 
                   if (!(document.getElementById("run_"+ data.run_inputs.primary_key.toString()))){

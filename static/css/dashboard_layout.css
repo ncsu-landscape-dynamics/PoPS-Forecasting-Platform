@@ -130,14 +130,20 @@ div#run-preview-container {
       
   #historic-legend-container, #probability-legend-container {
     position: absolute;
-    top: 10px;
+    top: 40px;
     left: 10px;
   }
 
+  #display_year_forecast {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
   #SLF_buffer_zone_checkbox {
     position: absolute;
     bottom: 40px;
     left: 10px; 
+    background-color: rgb(65, 223, 244, 0.1)
   }
 
 .legend-color {
