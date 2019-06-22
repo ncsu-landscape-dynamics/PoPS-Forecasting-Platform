@@ -240,7 +240,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   id="id_management_polygons">
                 <div id="map-container-new-view" class="col-md-9">
                   <div id="map" class="large_map"></div>
-                  <h4 id="display_year_forecast">Historic data</h4>
+                  <h4 id="display_year_forecast">Field observations</h4>
 
 {% comment %}                   <div id="historic-legend-container" class="pb-0">
                     <div><strong>Number of detections (per km<sup>2</sup>):</strong></div>
@@ -1672,7 +1672,7 @@ $("#year-slider").change(function () {
     $("#historic-legend-container").hide();
   }
   else {
-    $('#display_year_forecast').text('Historic data')
+    $('#display_year_forecast').text('Field observations')
     $("#probability-legend-container").hide();
     $("#historic-legend-container").show();
   }
