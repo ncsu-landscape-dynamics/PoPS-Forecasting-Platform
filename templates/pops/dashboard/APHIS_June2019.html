@@ -28,11 +28,12 @@
   <script>
     function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
 
-max_infected=893903;
-max_area=48900000000;
-max_money=50000000;
-max_a=1;
-max_b=1;
+var acre_to_meter_ratio=0.000247105;
+var max_infected=893903;
+var max_area=48900000000*acre_to_meter_ratio;
+var max_money=50000000;
+var max_a=1;
+var max_b=1;
 
 var trace1 = {
   x: ['# Occurences'],
@@ -47,7 +48,7 @@ var trace1 = {
 }; 
 var trace2 = {
   x: ['Occurence area'],
-  y: [area],
+  y: [area*acre_to_meter_ratio],
   type: 'bar',
   text: ['Additional info'],
   hoverinfo: ['x+y+text'],
@@ -93,7 +94,7 @@ var yaxis = {
         range: [0,max_infected],
   };
 var yaxis2= {
-  ticksuffix:' m^2',
+  ticksuffix:' acres',
   overlaying: 'y',
   range: [0,max_area],
   };
@@ -528,7 +529,7 @@ $("button#cancel-polling").on('click', function () {
                     <div id="money-results" class="col py-0" style="width:180px; height:140px"></div>
                   </div>
                           <div id="run_details_management_area">
-                          Management area: <span></span> m<sup>2</sup>
+                          Management area: <span></span> acres
                           </div>
                       <div id="number_infected_side_plot" style="height:180px;"></div>
                       <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
@@ -1482,6 +1483,8 @@ map.on('draw.modechange', e => {
     gauge_plot("money-new", 0, $("input#id_budget").val());
 
     function side_plot(myDiv, title, x1, x2, y1, y2, color, error_bar=true) {
+      //x1, x2 = Years
+      //y1, y2 = parameters
       var trace1 = {
         x: x1,
         y: y1,
@@ -1556,10 +1559,13 @@ map.on('draw.modechange', e => {
       });
     };
 
-    var default_years = [2019, 2020, 2021, 2022, 2023];
+var acre_to_meter_ratio=0.000247105;
+
+    var default_years = [2019, 2020, 2021];// 2022, 2023];
     var x2 = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
-    var default_detections = [44201,159916,368383,599897,893903];
-    var default_area = [4750000000,12500000000,22200000000,32900000000,48900000000]
+    var default_detections = [44201,159916,368383];//,599897,893903];
+    var default_area = [4750000000*acre_to_meter_ratio,12500000000*acre_to_meter_ratio,22200000000*acre_to_meter_ratio]; //,32900000000,48900000000]*acre_to_meter_ratio;
+    console.log(default_area);
     var y2 = [20, 30, 50, 100, 300, 400];
     $(side_plot("main_plot1", '# occurences', default_years, x2, default_detections, y2, '#2598b8',error_bar=false));
     $(side_plot("main_plot2", 'Occurence area', default_years, x2, default_area, y2, '#5fc2c2',error_bar=false));
@@ -1595,7 +1601,7 @@ $( "input#id_budget, input#id_cost, select#id_area_unit" ).on( "click blur", fun
   var cost_modifier =  $("select#id_area_unit").children("option:selected").val();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
   var area_unit =  $("select#id_area_unit").children("option:selected").text();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
   console.log("The cost modifier is: " + cost_modifier);
-  var actual_cost_per_meter_squared = displayed_cost_per_area*cost_modifier;
+  var actual_cost_per_meter_squared = Math.round(displayed_cost_per_area*cost_modifier*100000000)/100000000;
   console.log("The actual cost per meter squared is: " + actual_cost_per_meter_squared);
   $('input#id_cost_per_meter_squared').val(actual_cost_per_meter_squared);
   $('span.displayed_area_unit').text(area_unit);
@@ -1822,7 +1828,7 @@ function get_output(run_id) {
                   console.log("Year string: " + year_string);
                   var map_data = data.results[i].spread_map;
                   year_list.push( data.results[i].years );
-                  infected_area_list.push( data.results[i].infected_area );
+                  infected_area_list.push( data.results[i].infected_area*acre_to_meter_ratio);
                   infected_number_list.push( data.results[i].number_infected );
 
                   //console.log(data.results[i].spread_map);
@@ -1867,7 +1873,7 @@ function get_output(run_id) {
                   $('#input_budget span').text(data.run_inputs.budget);
                   $('#input_management_cost span').text(data.run_inputs.management_cost);
                   $('#input_management_area span').text(data.run_inputs.management_area);
-                  $('#run_details_management_area span').text(data.run_inputs.management_area);
+                  $('#run_details_management_area span').text(Math.round(data.run_inputs.management_area*acre_to_meter_ratio));
                   $('#input_cost_per_meter_squared span').text(data.run_inputs.cost_per_meter_squared);
                   $('#input_weather span').text(data.run_inputs.weather);
                   $('#input_final_year span').text(data.run_inputs.final_year);
