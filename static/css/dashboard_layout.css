@@ -256,6 +256,42 @@ input#id_name {
 
 
 
+.modal-body {
+  background-color:#0b0d0e;
+  color:white;
+}
+.modal-header {
+  background-color:#212529;
+  border-color:#0b0d0e;
+  color:white;
+}
+.modal-footer {
+  background-color:#0b0d0e;
+  border-color:#212529;
+  color:white;
+}
+.modal-content {
+  background-color:#0b0d0e;
+  border: 3px solid #555;
 
+}
 
+.modal input, .modal select, .modal textarea, .modal .input-group-text {
+  border: solid #555;
+  background-color: #2C3136; 
+  color: white;
+}
 
+.modal input:focus, .modal select:focus, .modal textarea:focus {
+  background-color: #4A5158; 
+  color: white;
+}
+
+button.close {
+  color: white;
+  opacity: 0.5;
+}
+button.close:hover {
+  color: white;
+  opacity: 0.8;
+}
