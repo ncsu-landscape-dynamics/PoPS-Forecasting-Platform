@@ -28,9 +28,9 @@
   <script>
     function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
 
-max_infected=750000;
-max_area=750000;
-max_money=30000000;
+max_infected=893903;
+max_area=48900000000;
+max_money=50000000;
 max_a=1;
 max_b=1;
 
@@ -263,34 +263,34 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
  {% endcomment %}                  
                    <div id="historic-legend-container" class="pb-0">
                     <div><strong>Number of detections (per km<sup>2</sup>):</strong></div>
-                    <div class="legend-color" style="background-color:#FF2000; opacity:0.4"></div>
-                    <div class="legend-color" style="background-color:#FF3600; opacity:0.45"></div>
-                    <div class="legend-color" style="background-color:#FF4C00; opacity:0.5"></div>
-                    <div class="legend-color" style="background-color:#FF6200; opacity:0.55"></div>
-                    <div class="legend-color" style="background-color:#FF7900; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#FF8F00; opacity:0.65"></div>
-                    <div class="legend-color" style="background-color:#FFA500; opacity:0.7"></div>
-                    <div class="legend-color" style="background-color:#FFBC00; opacity:0.75"></div>
-                    <div class="legend-color" style="background-color:#FFD200; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FFE800; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FFFF00; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#CC0000; opacity:0.467"></div>
+                    <div class="legend-color" style="background-color:#D61900; opacity:0.5"></div>
+                    <div class="legend-color" style="background-color:#E03300; opacity:0.533"></div>
+                    <div class="legend-color" style="background-color:#EA4C00; opacity:0.567"></div>
+                    <div class="legend-color" style="background-color:#F46600; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#FF8000; opacity:0.633"></div>
+                    <div class="legend-color" style="background-color:#FF9F19; opacity:0.676"></div>
+                    <div class="legend-color" style="background-color:#FFBF33; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#FFDF4C; opacity:0.733"></div>
+                    <div class="legend-color" style="background-color:#FFFF66; opacity:0.767"></div>
+                    <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
                     <div style="clear: left;">
                       <p class="legend-label" style="float:left; margin-right:180px;">0</p>
-                      <p class="legend-label">10+</p>
+                      <p class="legend-label">5+</p>
                     </div>
                   </div>
                   <div id="probability-legend-container" class="pb-0">
                     <div><strong>Probability of occurence:</strong></div>             
-                    <div class="legend-color" style="background-color:#FF2000; opacity:0.4"></div>
-                    <div class="legend-color" style="background-color:#FF3600; opacity:0.45"></div>
-                    <div class="legend-color" style="background-color:#FF4C00; opacity:0.5"></div>
-                    <div class="legend-color" style="background-color:#FF6200; opacity:0.55"></div>
-                    <div class="legend-color" style="background-color:#FF7900; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#FF8F00; opacity:0.65"></div>
-                    <div class="legend-color" style="background-color:#FFA500; opacity:0.7"></div>
-                    <div class="legend-color" style="background-color:#FFBC00; opacity:0.75"></div>
-                    <div class="legend-color" style="background-color:#FFD200; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FFFF00; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#CC0000; opacity:0.467"></div>
+                    <div class="legend-color" style="background-color:#D61900; opacity:0.5"></div>
+                    <div class="legend-color" style="background-color:#E03300; opacity:0.533"></div>
+                    <div class="legend-color" style="background-color:#EA4C00; opacity:0.567"></div>
+                    <div class="legend-color" style="background-color:#F46600; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#FF8000; opacity:0.633"></div>
+                    <div class="legend-color" style="background-color:#FF9F19; opacity:0.676"></div>
+                    <div class="legend-color" style="background-color:#FFBF33; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#FFDF4C; opacity:0.733"></div>
+                    <div class="legend-color" style="background-color:#FFFF66; opacity:0.767"></div>
                     <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
                     
 {% comment %}   Viridis color palette:                <div class="legend-color" style="background-color:#440154; opacity:0.6"></div>
@@ -496,7 +496,7 @@ $("button#cancel-polling").on('click', function () {
 
 
                     <div id="reproductive-rate-container" class="parameter-selector-plot pt-2" style="width:250px">
-                      <strong class="py-0">Max number of dispersers: <output id="displayRate">2</output></strong>
+                      <strong class="py-0">Max number of dispersers: <output id="displayRate">2.1</output></strong>
                       <div id="reproductive_rate_plot" style="height:100px; width:250px;"></div>
                       <div id="reproductive-rate-slider" class="pt-0 range range-info text-light">
                         <input id="id_reproductive_rate" style="" class="custom-range " type="range"
@@ -828,6 +828,25 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ o
  </script>
 
 {% endfor %} 
+
+<button type="button" class="btn text-right run-link pb-2" style="background-color: #1E2325; border-color:#393F46; color:#1E2325" data-run = 351 >
+<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>No management</strong></div><small><em> Default </em></small>" 
+data-content="<div>Default scenario with no management.</div><div>Reproductive rate: 2.1</div><div>Distance scale: 
+47</div><div>Efficacy: n/a</div>" 
+data-placement="top"> 
+<i class="fas fa-plus-circle"></i>
+</a>
+<a class="load_run_text" data-toggle="tool" 
+                  title="Load results" data-placement="left"> 
+<i class="fas fa-play-circle"></i>
+</a>
+<div id="run_351" style="width:150px; height:120px;">
+</div>
+</button>
+<script>
+$(run_comparison_plot('run_351','No management', 893903,48900000000,0)); 
+ </script>
+
     </div>
 </div>
 <div>
@@ -899,10 +918,17 @@ map.addLayer({
                             'interpolate',
                             ['linear'],
                             ['get', 'outputs'],
-                            0, '#FF2000',
-                            95, '#FFFF00',
+                            0, '#CC0000',
+                            10, '#D61900',
+                            20, '#E03300',
+                            30, '#EA4C00',
+                            40, '#F46600',
+                            50, '#FF8000',
+                            60, '#FF9F19',
+                            70, '#FFBF33',
+                            80, '#FFDF4C',
+                            90, '#FFFF66',
                             100, '#FFFFCC'
-
 
                             /* Fire color palette
                             0, '#FF2000',
@@ -957,16 +983,33 @@ map.addLayer({
                                 'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
-                            0, '#FF2000',
-                            95, '#FFFF00',
+                            0, '#CC0000',
+                            10, '#D61900',
+                            20, '#E03300',
+                            30, '#EA4C00',
+                            40, '#F46600',
+                            50, '#FF8000',
+                            60, '#FF9F19',
+                            70, '#FFBF33',
+                            80, '#FFDF4C',
+                            90, '#FFFF66',
                             100, '#FFFFCC'
+
                             ],
                                 'fill-opacity': [
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
                                     0, 0.00,
-                                    1,0.5,
+                                    10,0.5,
+                                    20,0.533,
+                                    30,0.567,
+                                    40,0.6,
+                                    50,0.633,
+                                    60,0.667,
+                                    70,0.7,
+                                    80,0.733,
+                                    90,0.767,
                                     100, 0.8,
 
                                 ]
@@ -1052,23 +1095,49 @@ map.on('load', function() {
                             'interpolate',
                             ['linear'],
                             ['get', 'outputs'],
-                            0, '#FF0000',
-                            5, '#FFFF00'
+                            0, '#CC0000',
+                            0.5, '#D61900',
+                            1, '#E03300',
+                            1.5, '#EA4C00',
+                            2, '#F46600',
+                            2.5, '#FF8000',
+                            3, '#FF9F19',
+                            3.5, '#FFBF33',
+                            4, '#FFDF4C',
+                            4.5, '#FFFF66',
+                            5, '#FFFFCC'
                             ],
                             'fill-outline-color': [
                                 'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
-                            0, '#FF0000',
-                            5, '#FFFF00'
+                            0, '#CC0000',
+                            0.5, '#D61900',
+                            1, '#E03300',
+                            1.5, '#EA4C00',
+                            2, '#F46600',
+                            2.5, '#FF8000',
+                            3, '#FF9F19',
+                            3.5, '#FFBF33',
+                            4, '#FFDF4C',
+                            4.5, '#FFFF66',
+                            5, '#FFFFCC'
                                 ],
                                 'fill-opacity': [
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
                                     0, 0.00,
-                                    1,0.6,
-                                    10, 0.8,
+                                    0.5,0.5,
+                                    1,0.533,
+                                    1.5,0.567,
+                                    2,0.6,
+                                    2.5,0.633,
+                                    3,0.667,
+                                    3.5,0.7,
+                                    4,0.733,
+                                    4.5,0.767,
+                                    5, 0.8,
 
                                 ]
 
