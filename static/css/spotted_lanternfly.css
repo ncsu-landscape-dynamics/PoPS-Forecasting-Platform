@@ -42,4 +42,13 @@
 font-size:0.8em;
 }
 
+#run-details {
+  background-color: #0b0d0e;
+  border-width: 3px;
+  border-style: outset;
+  border-color: #212529;
+  height: calc(100vh - 60px);
+  max-height: calc(800px - 60px);
+  overflow-y: auto;
 
+}
