@@ -30,9 +30,8 @@
 var acre_to_meter_ratio=0.000247105;
 
     function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
-var max_infected=893903;
-var max_area=48900000000*acre_to_meter_ratio;
-;
+var max_infected=44201;
+var max_area=4750000000*acre_to_meter_ratio;
 var max_money=50000000;
 var max_a=1;
 var max_b=1;
@@ -794,12 +793,13 @@ mode: 'markers',
     Other runs in this session:
     </div>
       <div class="col-auto">
-        <select id="sort_runs_by" class="custom-select custom-select-sm">
-          <option selected>Sort runs by:</option>
-          <option value="1">Most recent</option>
-          <option value="2">Number occurences</option>
-          <option value="3">Occurence area</option>
-          <option value="4">Money spent</option>
+        <select id="run_preview_year_selector" class="custom-select custom-select-sm">
+          <option >Show year:</option>
+          <option value="2019" selected>2019</option>
+          <option value="2020">2020</option>
+          <option value="2021" >2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
         </select>
 
       </div>
@@ -818,12 +818,12 @@ data-placement="top">
                   title="Load results" data-placement="left"> 
 <i class="fas fa-play-circle"></i>
 </a>
-<div id="run_{{ run.pk }}" style="width:150px; height:120px;">
+<div id="run_{{ run.pk }}" data-years=2019 data-numbers=100 data-areas=200 style="width:150px; height:120px;">
 </div>
 </button>
 <script>
 {% for output in run.output_set.all %}
-{% if forloop.last %}
+{% if output.years == 2019 %}
 $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ output.number_infected }},{{ output.infected_area }}*acre_to_meter_ratio,{{run.management_cost}}));
 {% endif %}
  {% endfor %}
@@ -843,13 +843,12 @@ data-placement="top">
                   title="Load results" data-placement="left"> 
 <i class="fas fa-play-circle"></i>
 </a>
-<div id="run_351" style="width:150px; height:120px;">
+<div id="run_351" data-years=2019 data-numbers=200 data-areas=400 style="width:150px; height:120px;">
 </div>
 </button>
 <script>
-$(run_comparison_plot('run_351','No management', 893903,48900000000*acre_to_meter_ratio,0)); 
- </script>
-
+$(run_comparison_plot('run_351','No management', 44201,4750000000*acre_to_meter_ratio,0)); 
+ </script>    
     </div>
 </div>
 <div>
@@ -1197,7 +1196,7 @@ map.on('load', function() {
           "line-join": "round"
         },
         "paint": {
-          "line-color": "red",
+          "line-color": "#83f441",
           "line-dasharray": [0.2, 2],
           "line-width": 3
         }
@@ -1208,9 +1207,9 @@ map.on('load', function() {
       "type": "fill",
       "filter": ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
       "paint": {
-        "fill-color": "#D20C0C",
-        "fill-outline-color": "#D20C0C",
-        "fill-opacity": 0.3
+        "fill-color": "#83f441",
+        "fill-outline-color": "#83f441",
+        "fill-opacity": 0.1
       }
     },
     // polygon outline stroke
@@ -1224,7 +1223,7 @@ map.on('load', function() {
         "line-join": "round"
       },
       "paint": {
-        "line-color": "#D20C0C",
+        "line-color": "#83f441",
         "line-width": 3
       }
     },
@@ -1245,7 +1244,7 @@ map.on('load', function() {
       "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
       "paint": {
         "circle-radius": 5,
-        "circle-color": "#D20C0C",
+        "circle-color": "#83f441",
       }
     },
 
@@ -1564,7 +1563,6 @@ map.on('draw.modechange', e => {
     var x2 = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
     var default_detections = [44201,159916,368383];//,599897,893903];
     var default_area = [4750000000*acre_to_meter_ratio,12500000000*acre_to_meter_ratio,22200000000*acre_to_meter_ratio]; //,32900000000,48900000000]*acre_to_meter_ratio;
-    console.log(default_area);
     var y2 = [20, 30, 50, 100, 300, 400];
     $(side_plot("main_plot1", '# occurences', default_years, x2, default_detections, y2, '#2598b8',error_bar=false));
     $(side_plot("main_plot2", 'Occurence area', default_years, x2, default_area, y2, '#5fc2c2',error_bar=false));
@@ -1684,6 +1682,14 @@ $("#year-slider").change(function () {
   console.log("Current displayed year: " + year_id);
 });
 
+$("select#run_preview_year_selector").change(function () {
+  var preview_year = $(this).children("option:selected").val();
+console.log("New year selected: " + preview_year);
+
+
+});
+
+run_preview_year_selector
   function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -1819,6 +1825,8 @@ function get_output(run_id) {
             var year_list = [], infected_area_list = [], infected_number_list = [];
             var max_year=2018;
             var min_year=2014;
+            var button_area = 0;
+            var button_number_infected = 0;
             for (var i=0; i<data.results.length; i++) {
                   var year = data.results[i].years;
                   console.log("Output ID: " + data.results[i].pk);
@@ -1829,7 +1837,10 @@ function get_output(run_id) {
                   year_list.push( data.results[i].years );
                   infected_area_list.push( data.results[i].infected_area*acre_to_meter_ratio);
                   infected_number_list.push( data.results[i].number_infected );
-
+                  if (year == 2019){
+                    button_area = data.results[i].infected_area*acre_to_meter_ratio;
+                    button_number_infected = data.results[i].number_infected;
+                  }
                   //console.log(data.results[i].spread_map);
                   //console.log(data.results[i].years);
 
@@ -1886,6 +1897,9 @@ function get_output(run_id) {
                         if (map.getLayer('treatment')) {
                             map.removeLayer('treatment');
                         };
+                        if (map.getLayer('treatment-fill')) {
+                            map.removeLayer('treatment-fill');
+                        };
                         if (map.getSource('treatment')) {
                             map.removeSource('treatment');
                         };      
@@ -1901,7 +1915,16 @@ function get_output(run_id) {
                       "source": 'treatment',
                       'paint': {
                         'line-color': '#83f441',
-                        'line-width': 4
+                        'line-width': 3
+                      } 
+                    });
+                    map.addLayer({
+                      "id": 'treatment-fill',
+                      "type": 'fill',
+                      "source": 'treatment',
+                      'paint': {
+                        'fill-color': '#83f441',
+                        'fill-opacity': 0.1,
                       } 
                     });
                   $( "#results-tab" ).trigger( "click" );
@@ -1910,7 +1933,7 @@ function get_output(run_id) {
                     $(gauge_plot("money-results", data.run_inputs.management_cost, data.run_inputs.budget));
 
                   if (!(document.getElementById("run_"+ data.run_inputs.primary_key.toString()))){
-                    insertRunButton(data.run_inputs.primary_key,data.run_inputs.name,infected_number_list.slice(-1)[0] ,infected_area_list.slice(-1)[0],data.run_inputs.management_cost);
+                    insertRunButton(data.run_inputs.primary_key,data.run_inputs.name,button_number_infected ,button_area,data.run_inputs.management_cost);
                   };
           },
 
@@ -1990,12 +2013,10 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
   if ($('#SLF_buffer_zone_checkbox input').prop('checked')){
     console.log('Show SLF buffer zone');
     map.setLayoutProperty('perimeter_zone_layer','visibility','visible');
-
   }
   else {
     console.log('Hide SLF buffer zone');
     map.setLayoutProperty('perimeter_zone_layer','visibility','none');
-
   }
 });
 
@@ -2012,9 +2033,12 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
       $("#submit-run-button").attr("disabled", true);
       $("input#id_name").prop('disabled', true);
         disableDrawTools();
-                        if (map.getLayer("treatment")) {
-      map.setLayoutProperty('treatment','visibility','visible');
-                        };
+      if (map.getLayer("treatment")) {
+        map.setLayoutProperty('treatment','visibility','visible');
+      };
+      if (map.getLayer("treatment-fill")) {
+        map.setLayoutProperty('treatment-fill','visibility','visible');
+      };
 
       $( "#run-details" ).hide();
       $( "#run-output-details" ).show();
@@ -2031,6 +2055,9 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
                         if (map.getLayer("treatment")) {
       map.setLayoutProperty('treatment','visibility','none');
                         };
+      if (map.getLayer("treatment-fill")) {
+        map.setLayoutProperty('treatment-fill','visibility','none');
+      };
 
       $( "#run-details" ).show();
       $( "#run-output-details" ).hide();
