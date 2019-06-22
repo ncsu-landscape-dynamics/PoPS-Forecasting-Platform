@@ -26,11 +26,13 @@
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script>
-    function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
 
 var acre_to_meter_ratio=0.000247105;
+
+    function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
 var max_infected=893903;
 var max_area=48900000000*acre_to_meter_ratio;
+;
 var max_money=50000000;
 var max_a=1;
 var max_b=1;
@@ -48,7 +50,7 @@ var trace1 = {
 }; 
 var trace2 = {
   x: ['Occurence area'],
-  y: [area*acre_to_meter_ratio],
+  y: [area],
   type: 'bar',
   text: ['Additional info'],
   hoverinfo: ['x+y+text'],
@@ -822,7 +824,7 @@ data-placement="top">
 <script>
 {% for output in run.output_set.all %}
 {% if forloop.last %}
-$(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ output.number_infected }},{{ output.infected_area }},{{run.management_cost}}));
+$(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ output.number_infected }},{{ output.infected_area }}*acre_to_meter_ratio,{{run.management_cost}}));
 {% endif %}
  {% endfor %}
  
@@ -845,7 +847,7 @@ data-placement="top">
 </div>
 </button>
 <script>
-$(run_comparison_plot('run_351','No management', 893903,48900000000,0)); 
+$(run_comparison_plot('run_351','No management', 893903,48900000000*acre_to_meter_ratio,0)); 
  </script>
 
     </div>
@@ -1483,8 +1485,6 @@ map.on('draw.modechange', e => {
     gauge_plot("money-new", 0, $("input#id_budget").val());
 
     function side_plot(myDiv, title, x1, x2, y1, y2, color, error_bar=true) {
-      //x1, x2 = Years
-      //y1, y2 = parameters
       var trace1 = {
         x: x1,
         y: y1,
@@ -1559,7 +1559,6 @@ map.on('draw.modechange', e => {
       });
     };
 
-var acre_to_meter_ratio=0.000247105;
 
     var default_years = [2019, 2020, 2021];// 2022, 2023];
     var x2 = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
