@@ -414,8 +414,8 @@ $("button#cancel-polling").on('click', function () {
                               <label for="id_area_unit">Displayed Units</label>
                               <div class="input-group ">                      
                                 <select name="area_unit" class="form-control" id="id_area_unit">
-                              <option value="1" selected>meter squared</option>
-                              <option value="0.000247105">acre</option>
+                              <option value="1">meter squared</option>
+                              <option value="0.000247105" selected>acre</option>
                               <option value="0.0001">hectare</option>
                             </select> 
                              </div>
@@ -435,21 +435,17 @@ $("button#cancel-polling").on('click', function () {
                               </div>
                             </div>
                             <div class="form-group col-6">
-                              <label for="id_cost">Cost per <span class="displayed_area_unit">meter squared</span> ($US)</label>
+                              <label for="id_cost">Cost per <span class="displayed_area_unit">acre</span> ($US)</label>
                               <div class="input-group">
                                 <div class="input-group-prepend">
                                   <span class="input-group-text">$</span>
                                 </div>
-                                <input type="number" name="display_cost" value="1" min="0" data-toggle="tooltip"
+                                <input type="number" name="display_cost" value="1530" min="0" data-toggle="tooltip"
                                   data-placement="top" title="Cost per area" data-container="body"
                                   class="form-control" id="id_cost">
-                                <div class="input-group-append">
-                                  <span class="input-group-text">.00</span>
-                                </div>
                               </div>
-
                             </div>
-                                <input type="hidden" name="cost_per_meter_squared" value="1"
+                                <input type="hidden" name="cost_per_meter_squared" value="0.37807065"
                                   class="form-control" id="id_cost_per_meter_squared">
 
                             {% include "pops/include/form_field.html" with field=form.final_year form_class="col-6" %}
