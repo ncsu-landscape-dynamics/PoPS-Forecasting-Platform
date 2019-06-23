@@ -198,6 +198,13 @@ div#run-preview-container {
       margin-left: -200px;
       height: 250px;
         }
+        #status-close-button {
+          position: absolute;
+          right: 0;
+          top: 0;
+          color: white;
+          opacity: 0.3;
+        }
     
 .parameter-selector-plot input {
   padding-right: 25px;
