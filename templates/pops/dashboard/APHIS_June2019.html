@@ -820,7 +820,7 @@ data-placement="top">
                   title="Load results" data-placement="left"> 
 <i class="fas fa-play-circle"></i>
 </a>
-<div id="run_{{ run.pk }}" data-years=2019 data-numbers=100 data-areas=200 style="width:150px; height:120px;">
+<div id="run_{{ run.pk }}" style="width:150px; height:120px;">
 </div>
 </button>
 <script>
@@ -834,7 +834,7 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ o
 
 {% endfor %} 
 
-<button type="button" class="btn text-right run-link pb-2" style="background-color: #1E2325; border-color:#393F46; color:#1E2325" data-run = 351 >
+<button type="button" class="btn text-right run-link pb-2" style="background-color: #1E2325; border-color:#393F46; color:#1E2325" data-run = 428 >
 <a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>No management</strong></div><small><em> Default </em></small>" 
 data-content="<div>Default scenario with no management.</div><div>Reproductive rate: 2.1</div><div>Distance scale: 
 47</div><div>Efficacy: n/a</div>" 
@@ -845,11 +845,11 @@ data-placement="top">
                   title="Load results" data-placement="left"> 
 <i class="fas fa-play-circle"></i>
 </a>
-<div id="run_351" data-years=2019 data-numbers=200 data-areas=400 style="width:150px; height:120px;">
+<div id="run_428" style="width:150px; height:120px;">
 </div>
 </button>
 <script>
-$(run_comparison_plot('run_351','No management', 44201,4750000000*acre_to_meter_ratio,0)); 
+$(run_comparison_plot('run_428','No management', 44201,4750000000*acre_to_meter_ratio,0)); 
  </script>    
     </div>
 </div>
