@@ -1714,7 +1714,13 @@ $.ajaxSetup({
             // Only send the token to relative URLs i.e. locally.
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         }
+    },
+    error: function(xhr, status, error) {
+      alert("An error has occured: " + status + "\nError: " + error 
+      + "\nIf the displayed error is not informative, the most likely issue is that there was a 500 error from the PoPS model." +
+      "Wait a minute and try again. If the problem persists, contact administrators.");
     }
+
 });
 
 function displayRun(run_id) {
@@ -2006,8 +2012,8 @@ function poll() {
         }
       },
       error : function(xhr,errmsg,err) {
-          $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-              " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+      + "\nThere was a problem listening for the results of the model run... the simulation is most likely still running. Try refreshing the page in 1-2 minutes.");
           console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
       }
     });
@@ -2113,7 +2119,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           if (!$('input#id_tangible_landscape').prop('checked')){
             var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = base_url.concat(new_run_id.toString());
-            console.log(run_url)
+            console.log(run_url);
             $.get( run_url);
             console.log('Sent run request to PoPS. Waiting for updates to database...')
           }
@@ -2125,9 +2131,9 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
         },
                 // handle a non-successful response
         error : function(xhr,errmsg,err) {
-            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+      + "\nIf the displayed error is not informative, the most likely issue is that there was a problem writing to the database.");
+            console.log('There was an error writing to the database:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
       });
         $('#status-text span').text('Getting ready...');
