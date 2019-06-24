@@ -2113,7 +2113,28 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
             var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = base_url.concat(new_run_id.toString());
             console.log(run_url);
-            $.get( run_url);
+            $.ajax({
+              url: run_url,
+              dataType: 'JSONP',
+              jsonpCallback: 'callbackFnc',
+              type: 'GET',
+              async: false,
+              crossDomain: true,
+              statusCode: {
+                404: function() {
+                  alert( "PoPS Model API not found (404 error)... \n Please try again. \n If the problem persists, contact an admin." );
+                },
+                500: function() {
+                  alert( "PoPS Model API returned 500 Error... \n Please try again. \n If the problem persists, contact an admin." );
+                }
+              },
+              success : function (data) {
+                console.log('Success signal from PoPS Model API.');
+              },
+              error : function(xhr,errmsg,err) {
+                console.log('Received status from the PoPS model API:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+              }
+            });
             console.log('Sent run request to PoPS. Waiting for updates to database...')
           }
           else {
