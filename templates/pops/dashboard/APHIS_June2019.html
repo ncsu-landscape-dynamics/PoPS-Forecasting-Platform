@@ -1952,7 +1952,7 @@ function get_output(run_id) {
                     $(gauge_plot("money-results", data.run_inputs.management_cost, data.run_inputs.budget));
 
                   if (!(document.getElementById("run_"+ data.run_inputs.primary_key.toString()))){
-                    insertRunButton(data.run_inputs.primary_key,data.run_inputs.name,button_number_infected ,button_area,data.run_inputs.management_cost);
+                    insertRunButton(data.run_inputs.primary_key,data.run_inputs.name,data.run_inputs.date_created,data.run_inputs.description,data.run_inputs.reproductive_rate,data.run_inputs.distance_scale,data.run_inputs.efficacy,button_number_infected ,button_area,data.run_inputs.management_cost);
                   };
           },
 
