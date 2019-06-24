@@ -1761,7 +1761,7 @@ function enableDrawTools(){
   }
 };
 
-function insertRunButton(run_id,name,infected_number,infected_area,budget) { 
+function insertRunButton(run_id,name,date,description,reproductive_rate,distance_scale,efficacy,infected_number,infected_area,budget) { 
   var run_pk = run_id.toString();
   console.log(run_pk);
 if (name.length > 18) {
@@ -1769,11 +1769,27 @@ if (name.length > 18) {
     } else {
       short_name = name;
     }
+
   $('<button id="run_button_' + run_id.toString()  
       + '" type="button" class="btn text-right run-link pb-2" data-run = "'+run_id.toString()
-      + '"><a class="run_info_button" data-toggle="tooltip" title="More details (coming soon)" data-placement="left"><i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a><div id="run_'+run_id.toString()
+      + '"><a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>' + name 
+      + '</strong></div><small><em>' + date
+      + '</em></small>" data-content="<div>' + description
+      + '</div><div>Reproductive rate: ' + reproductive_rate 
+      + '</div><div>Distance scale: ' + distance_scale
+      + '</div><div>Efficacy: ' + efficacy
+      + '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a>'
+      + '<div id="run_'+run_id.toString()
       + '" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));   
+
+
   $(run_comparison_plot('run_'+run_id.toString(),short_name,infected_number,infected_area,budget));
+
+$(function () {
+  $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})
+})
+
+
   $("#run_button_"+ run_id.toString()).on('click', function () {
       $('#run-preview-container button').removeClass('active');
       $(this).addClass('active');
@@ -1781,6 +1797,7 @@ if (name.length > 18) {
       displayRun(run_id);
       console.log("Run " + run_id + "link clicked.");
   }); 
+
     $("#run_button_"+ run_id.toString() +' a.load_run_text').on('click', function(event) {
   event.stopPropagation();
   console.log('Run button icon clicked.')
