@@ -105,7 +105,6 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             # call super if needed
             return {'session': self.kwargs.get('pk')}
 
-    @method_decorator(ensure_csrf_cookie)
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
             context = super(DashboardView, self).get_context_data(**kwargs)
