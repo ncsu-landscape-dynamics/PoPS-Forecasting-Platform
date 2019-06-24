@@ -2111,7 +2111,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           var new_run_id = data.pk;
           console.log('New run id: ' + new_run_id);
           if (!$('input#id_tangible_landscape').prop('checked')){
-            var base_url = "https://pops-1model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+            var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = base_url.concat(new_run_id.toString());
             console.log(run_url);
             $.get( run_url);

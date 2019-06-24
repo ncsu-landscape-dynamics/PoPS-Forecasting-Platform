@@ -435,7 +435,7 @@ $("#status-indicator").hide();
                                 <div class="input-group-prepend">
                                   <span class="input-group-text">$</span>
                                 </div>
-                                <input type="number" name="budget" value="30000000" min="0" data-toggle="tooltip"
+                                <input type="number" name="budget" value="30000000" min="0" step="0.01" data-toggle="tooltip"
                                   data-placement="top" title="Allowed budget" data-container="body" class="form-control"
                                   id="id_budget">
                               </div>
@@ -795,7 +795,7 @@ mode: 'markers',
     Other runs in this session:
     </div>
       <div class="col-auto">
-        <select id="run_preview_year_selector" class="custom-select custom-select-sm">
+        <select disabled id="run_preview_year_selector" class="custom-select custom-select-sm">
           <option >Show year:</option>
           <option value="2019" selected>2019</option>
           <option value="2020">2020</option>
@@ -1714,7 +1714,7 @@ $.ajaxSetup({
             // Only send the token to relative URLs i.e. locally.
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         }
-    }
+    },
 });
 
 function displayRun(run_id) {
@@ -1761,7 +1761,7 @@ function enableDrawTools(){
   }
 };
 
-function insertRunButton(run_id,name,infected_number,infected_area,budget) { 
+function insertRunButton(run_id,name,date,description,reproductive_rate,distance_scale,efficacy,infected_number,infected_area,budget) { 
   var run_pk = run_id.toString();
   console.log(run_pk);
 if (name.length > 18) {
@@ -1769,11 +1769,27 @@ if (name.length > 18) {
     } else {
       short_name = name;
     }
+
   $('<button id="run_button_' + run_id.toString()  
       + '" type="button" class="btn text-right run-link pb-2" data-run = "'+run_id.toString()
-      + '"><a class="run_info_button" data-toggle="tooltip" title="More details (coming soon)" data-placement="left"><i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a><div id="run_'+run_id.toString()
-      + '" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));   
+      + '"><a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>' + name 
+      + '</strong></div><small><em>' + date
+      + '</em></small>" data-content="<div>' + description
+      + '</div><div>Reproductive rate: ' + reproductive_rate 
+      + '</div><div>Distance scale: ' + distance_scale
+      + '</div><div>Efficacy: ' + efficacy
+      + '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a>'
+      + '<div id="run_'+run_id.toString()
+      + '" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));  
+
+
   $(run_comparison_plot('run_'+run_id.toString(),short_name,infected_number,infected_area,budget));
+
+$(function () {
+  $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})
+})
+
+
   $("#run_button_"+ run_id.toString()).on('click', function () {
       $('#run-preview-container button').removeClass('active');
       $(this).addClass('active');
@@ -1781,6 +1797,7 @@ if (name.length > 18) {
       displayRun(run_id);
       console.log("Run " + run_id + "link clicked.");
   }); 
+
     $("#run_button_"+ run_id.toString() +' a.load_run_text').on('click', function(event) {
   event.stopPropagation();
   console.log('Run button icon clicked.')
@@ -1935,7 +1952,7 @@ function get_output(run_id) {
                     $(gauge_plot("money-results", data.run_inputs.management_cost, data.run_inputs.budget));
 
                   if (!(document.getElementById("run_"+ data.run_inputs.primary_key.toString()))){
-                    insertRunButton(data.run_inputs.primary_key,data.run_inputs.name,button_number_infected ,button_area,data.run_inputs.management_cost);
+                    insertRunButton(data.run_inputs.primary_key,data.run_inputs.name,data.run_inputs.date_created,data.run_inputs.description,data.run_inputs.reproductive_rate,data.run_inputs.distance_scale,data.run_inputs.efficacy,button_number_infected ,button_area,data.run_inputs.management_cost);
                   };
           },
 
@@ -1989,8 +2006,8 @@ function poll() {
         }
       },
       error : function(xhr,errmsg,err) {
-          $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-              " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+      + "\nThere was a problem listening for the results of the model run... the simulation is most likely still running. Try refreshing the page in 1-2 minutes.");
           console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
       }
     });
@@ -2096,7 +2113,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           if (!$('input#id_tangible_landscape').prop('checked')){
             var base_url = "https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = base_url.concat(new_run_id.toString());
-            console.log(run_url)
+            console.log(run_url);
             $.get( run_url);
             console.log('Sent run request to PoPS. Waiting for updates to database...')
           }
@@ -2108,9 +2125,9 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
         },
                 // handle a non-successful response
         error : function(xhr,errmsg,err) {
-            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+      + "\nIf the displayed error is not informative, the most likely issue is that there was a problem writing to the database.");
+            console.log('There was an error writing to the database:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
       });
         $('#status-text span').text('Getting ready...');
