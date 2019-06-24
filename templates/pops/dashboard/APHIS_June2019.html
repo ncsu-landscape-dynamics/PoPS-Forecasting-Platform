@@ -2116,10 +2116,8 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
             $.ajax({
               url: run_url,
               dataType: 'JSONP',
-              jsonpCallback: 'callbackFnc',
               type: 'GET',
-              async: false,
-              crossDomain: true,
+              headers: { 'Access-Control-Allow-Origin': 'https://pops-model-api.appspot.com' },
               statusCode: {
                 404: function() {
                   alert( "PoPS Model API not found (404 error)... \n Please try again. \n If the problem persists, contact an admin." );
