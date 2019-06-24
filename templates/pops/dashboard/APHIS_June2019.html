@@ -226,7 +226,6 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
         <div class="tab-content" id="v-pills-tabContent">
           <div id="v-pills-map" class="tab-pane fade show active no-gutters" >
             <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
-              {% csrf_token %}
               <div class="row no-gutters">
                 <div class="col-12 d-flex flex-column">
                   <div id="run-title">

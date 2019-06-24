@@ -4,7 +4,8 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+
 from django.db.models import Prefetch
 
 from ..models import *
@@ -104,6 +105,7 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             # call super if needed
             return {'session': self.kwargs.get('pk')}
 
+    @method_decorator(ensure_csrf_cookie)
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
             context = super(DashboardView, self).get_context_data(**kwargs)
