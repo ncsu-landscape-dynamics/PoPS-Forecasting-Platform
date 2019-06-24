@@ -1715,12 +1715,6 @@ $.ajaxSetup({
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         }
     },
-    error: function(xhr, status, error) {
-      alert("An error has occured: " + status + "\nError: " + error 
-      + "\nIf the displayed error is not informative, the most likely issue is that there was a 500 error from the PoPS model." +
-      "Wait a minute and try again. If the problem persists, contact administrators.");
-    }
-
 });
 
 function displayRun(run_id) {
@@ -1786,7 +1780,7 @@ if (name.length > 18) {
       + '</div><div>Efficacy: ' + efficacy
       + '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a>'
       + '<div id="run_'+run_id.toString()
-      + '" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));   
+      + '" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));  
 
 
   $(run_comparison_plot('run_'+run_id.toString(),short_name,infected_number,infected_area,budget));
@@ -2117,7 +2111,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           var new_run_id = data.pk;
           console.log('New run id: ' + new_run_id);
           if (!$('input#id_tangible_landscape').prop('checked')){
-            var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+            var base_url = "https://pops-1model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = base_url.concat(new_run_id.toString());
             console.log(run_url);
             $.get( run_url);
