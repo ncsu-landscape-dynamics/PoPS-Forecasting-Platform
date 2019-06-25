@@ -1691,7 +1691,6 @@ console.log("New year selected: " + preview_year);
 
 });
 
-run_preview_year_selector
   function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -1708,15 +1707,17 @@ run_preview_year_selector
     return cookieValue;
 }
 
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-            // Only send the token to relative URLs i.e. locally.
-            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-        }
-    },
-});
+console.log("The CSRF Token is: " + getCookie('csrftoken'));
 
+//$.ajaxSetup({
+//    beforeSend: function(xhr, settings) {
+//        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+//            // Only send the token to relative URLs i.e. locally.
+//            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+//            console.log('Ajax header is set up with CSRF Token.')
+//        }
+//    },
+//});
 function displayRun(run_id) {
             get_output(run_id);
 };
@@ -2106,15 +2107,38 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
         url: form.attr("submit-run-url"),
         data: form.serialize(),
         type : "POST", // http method
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            console.log('Ajax header is set up with CSRF Token.')
+        },
         success: function (data) {
           console.log('New run parameters successfully posted to database!');
           var new_run_id = data.pk;
           console.log('New run id: ' + new_run_id);
           if (!$('input#id_tangible_landscape').prop('checked')){
-            var base_url = "https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+            var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = base_url.concat(new_run_id.toString());
             console.log(run_url);
-            $.get( run_url);
+            $.ajax({
+              url: run_url,
+              dataType: 'JSONP',
+              type: 'GET',
+              headers: { 'Access-Control-Allow-Origin' : 'https://pops-model-api.appspot.com' },
+              statusCode: {
+                404: function() {
+                  alert( "PoPS Model API not found (404 error)... \n Please try again. \n If the problem persists, contact an admin." );
+                },
+                500: function() {
+                  alert( "PoPS Model API returned 500 Error... \n Please try again. \n If the problem persists, contact an admin." );
+                }
+              },
+              success : function (data) {
+                console.log('Success signal from PoPS Model API.');
+              },
+              error : function(xhr,errmsg,err) {
+                console.log('Received status from the PoPS model API:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+              }
+            });
             console.log('Sent run request to PoPS. Waiting for updates to database...')
           }
           else {

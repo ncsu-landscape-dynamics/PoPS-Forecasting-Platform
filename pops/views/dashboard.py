@@ -4,7 +4,8 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from django.db.models import Prefetch
 
@@ -108,7 +109,7 @@ class DashboardView(AjaxableResponseMixin, CreateView):
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
             context = super(DashboardView, self).get_context_data(**kwargs)
-            try:
+            try:                
                 session = Session.objects.get(pk=self.kwargs.get('pk'))
             except:
                 session = None
@@ -123,6 +124,7 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             context['historic_data'] = ['2014','2015','2016','2017','2018']
             return context
 
+@method_decorator(ensure_csrf_cookie, name='get')
 class DashboardTestView(AjaxableResponseMixin, CreateView):
     template_name = 'pops/dashboard/APHIS_June2019_test.html'
     form_class = RunForm
