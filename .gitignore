@@ -7,6 +7,7 @@ pops_website/settings/development.py
 pops_website/settings/production.py
 pops_website/settings/staging.py
 pops_website/settings/staging2.py
+pops_website/settings/__init__.py
 pops_website/db.sqlite3
 static_files_all/
 db.sqlite3
