@@ -23,6 +23,7 @@ plotly = "*"
 numpy = "*"
 django-debug-toolbar = "*"
 django-widget-tweaks = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.7"
