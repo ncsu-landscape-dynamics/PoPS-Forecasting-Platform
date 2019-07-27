@@ -701,6 +701,21 @@ class Run(models.Model):
     efficacy = models.PositiveSmallIntegerField(verbose_name = _("efficacy"), help_text="", blank=True, default = 100, validators = [MinValueValidator(1), MaxValueValidator(100)])
     final_year = models.PositiveIntegerField(verbose_name = _("final run year"), default = 2021, null = True, validators = [MinValueValidator(2018)])
     management_polygons = JSONField(null = True, blank = True)
+    MONTH = (
+        (1, "January"),
+        (2, "February"),
+        (3, "March"),
+        (4, "April"),
+        (5, "May"),
+        (6, "June"),
+        (7, "July"),
+        (8, "August"),
+        (9, "September"),
+        (10, "October"),
+        (11, "November"),
+        (12, "December"),
+    )
+    management_month = models.PositiveSmallIntegerField(verbose_name = _("month management takes place"), help_text="What month does management take place?", choices = MONTH, default = 7, blank=False, validators = [MinValueValidator(1), MaxValueValidator(12)])
     management_cost = models.DecimalField(verbose_name = _("management cost"), max_digits = 13, decimal_places = 2, blank=True, null=True, default = 0)
     management_area = models.DecimalField(verbose_name = _("management area"), max_digits = 16, decimal_places = 2, blank=True, null=True, default = 0)
     tangible_landscape = models.BooleanField(verbose_name = _("tangible landscape"), help_text="Use tangible landscape for management?", default = False)
