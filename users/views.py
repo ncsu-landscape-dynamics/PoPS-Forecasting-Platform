@@ -50,7 +50,8 @@ def sign_up(request):
                 # this encodes the user's primary key [user.pk]). When the user 
                 # clicks on the link, this value gets passed to
                 # the activate view and decoded to determine the user.
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                #'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 # create a token to use in the email confirmation link. The
                 # token is generated in users/tokens.py and is a combination
                 # of the user's primary key and email_confirmed status. This
