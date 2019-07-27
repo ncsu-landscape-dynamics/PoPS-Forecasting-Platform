@@ -716,7 +716,7 @@ class Run(models.Model):
         (12, "December"),
     )
     management_month = models.PositiveSmallIntegerField(verbose_name = _("month management takes place"), help_text="What month does management take place?", choices = MONTH, default = 7, blank=False, validators = [MinValueValidator(1), MaxValueValidator(12)])
-    management_cost = models.DecimalField(verbose_name = _("management cost"), max_digits = 13, decimal_places = 2, blank=True, null=True, default = 0)
+    management_cost = models.DecimalField(verbose_name = _("management cost"), max_digits = 15, decimal_places = 2, blank=True, null=True, default = 0)
     management_area = models.DecimalField(verbose_name = _("management area"), max_digits = 16, decimal_places = 2, blank=True, null=True, default = 0)
     tangible_landscape = models.BooleanField(verbose_name = _("tangible landscape"), help_text="Use tangible landscape for management?", default = False)
     logging = models.TextField(verbose_name = _("error logs for backend"), max_length = 300, blank=True, null=True, help_text="For checking error logs for backend model runs")
