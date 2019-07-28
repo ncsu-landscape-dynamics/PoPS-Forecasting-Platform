@@ -13,7 +13,6 @@ pops_website/settings/__init__.py
 pops_website/db.sqlite3
 static_files_all/
 db.sqlite3
-*/migrations/0*
 /db.sqlite3
 media/*
 cloud_sql_proxy.exe
