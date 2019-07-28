@@ -456,6 +456,7 @@ $("#status-indicator").hide();
                             {% include "pops/include/form_field.html" with field=form.final_year form_class="col-6" %}
                             {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
                             {% include "pops/include/form_field.html" with field=form.weather form_class="col-12" %}
+                            {% include "pops/include/form_field.html" with field=form.management_month form_class="col-12" %}
                             {{ form.management_cost.as_hidden }}
                             {{ form.management_area.as_hidden }}
                             <div class="form-check col ml-2">
@@ -574,6 +575,9 @@ $("#status-indicator").hide();
                           </div>
                           <div id="input_budget">
                           Budget: $<span></span>
+                          </div>
+                          <div id="input_management_month">
+                          Management month: <span></span>
                           </div>
                           <div id="input_management_cost">
                           Management cost: $<span></span>
@@ -1882,6 +1886,7 @@ function get_output(run_id) {
                     };
             }
             var first_model_year=2019;
+            console.log('Management month: ' + data.run_inputs.management_month)
                 map.setLayoutProperty('2018','visibility','none');
                 map.setLayoutProperty(first_model_year.toString(),'visibility','visible');
                 $("#year-slider").find('input').val(first_model_year.toString());
@@ -1899,6 +1904,7 @@ function get_output(run_id) {
                   $('#input_date_created span').text(data.run_inputs.date_created);
                   $('#input_random_seed span').text(data.run_inputs.random_seed);
                   $('#input_budget span').text(data.run_inputs.budget);
+                  $('#input_management_month span').text(data.run_inputs.management_month);
                   $('#input_management_cost span').text(data.run_inputs.management_cost);
                   $('#input_management_area span').text(data.run_inputs.management_area);
                   $('#run_details_management_area span').text(Math.round(data.run_inputs.management_area*acre_to_meter_ratio));
