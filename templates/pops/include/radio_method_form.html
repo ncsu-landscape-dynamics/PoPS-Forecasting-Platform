@@ -1,0 +1,15 @@
+{% load widget_tweaks %}
+
+<div class="form-group">
+  <label style="font-size:1.2em" for="{{ field.id_for_label }}">{{ field.label }}: </label>
+  <div class="row pl-4">
+    <div class="col-auto"> {% render_field field.0 %} </div>
+    <div class="col-auto"> {% render_field field.1 %} </div>
+  </div> 
+  {% for error in field.errors %} 
+  <div class=" text-danger pt-0" style="font-size:0.8em">
+    <strong>{{ error|escape }}</strong>
+  </div>
+  {% endfor %}
+
+</div>

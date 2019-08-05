@@ -1,0 +1,69 @@
+{% load widget_tweaks %}
+
+<div class="form-group row align-items-end">
+<div class="col-auto">
+  <label style="font-size:1.2em" for="{{ form.degree.id_for_label }}">{{ form.degree.label }}: </label>
+  </div>
+    <div class="col-auto"> {% render_field form.degree.0 %} </div>
+    <div class="col-auto"> {% render_field form.degree.1 %} </div>
+    <div class="col-auto"> {% render_field form.degree.2 %} </div>
+  {% for error in form.degree.errors %}
+  <div class=" text-danger pt-0" style="font-size:0.8em">
+    <strong>{{ error|escape }}</strong>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="pb-2" style="font-size:1.2em">Coefficient = </div>
+<!--Degree 1 coefficients-->
+<div id="{{form.prefix}}_degree_1" class="row input-group no-gutters">
+  {% include "pops/include/form_field_no_label.html" with field=form.a0 form_class="col-3"%}
+  <div class="col-auto px-1 text-center">
+    <h3> + </h3>
+  </div>
+  {% include "pops/include/form_field_no_label.html" with field=form.a1 form_class="col-3"%}
+  <div class="col-auto px-1 text-right">
+    <h3> ( {{ equation_variable }}+ </h3>
+  </div>
+  {% include "pops/include/form_field_no_label.html" with field=form.x1 form_class="col-2"%}
+  <div class="col-auto px-1 text-left">
+    <h3> )</h3>
+  </div>
+</div>
+<!--Degree 2 coefficients-->
+<div id="{{form.prefix}}_degree_2" class="input-group no-gutters">
+  <div class="col-auto offset-3 px-1 text-center">
+    <h3> + </h3>
+  </div>
+  {% include "pops/include/form_field_no_label.html" with field=form.a2 form_class="col-3"%}
+  <div class="col-auto px-1 text-right">
+    <h3> ( {{ equation_variable }}+ </h3>
+  </div>
+  {% include "pops/include/form_field_no_label.html" with field=form.x2 form_class="col-2"%}
+  <div class="col-auto px-1 text-left">
+    <h3> )<sup>2</sup></h3>
+  </div>
+</div>
+<!--Degree 3 coefficients-->
+<div id="{{form.prefix}}_degree_3" class="input-group no-gutters">
+  <div class="col-auto offset-3 px-1 text-center">
+    <h3> + </h3>
+  </div>
+  {% include "pops/include/form_field_no_label.html" with field=form.a3 form_class="col-3"%}
+  <div class="col-auto px-1 text-right">
+    <h3> ( {{ equation_variable }}+ </h3>
+  </div>
+  {% include "pops/include/form_field_no_label.html" with field=form.x3 form_class="col-2"%}
+  <div class="col-auto px-1 text-left">
+    <h3> )<sup>3</sup></h3>
+  </div>
+</div>
+
+<script>
+togglePolynomialVisibility('#{{ form.degree.0.id_for_label }}','#{{ form.degree.1.id_for_label }}','#{{ form.degree.2.id_for_label }}','#{{form.prefix}}_degree_1','#{{form.prefix}}_degree_2','#{{form.prefix}}_degree_3')
+$(document).ready(function () {
+  $('input').on('click',function () {
+    togglePolynomialVisibility('#{{ form.degree.0.id_for_label }}','#{{ form.degree.1.id_for_label }}','#{{ form.degree.2.id_for_label }}','#{{form.prefix}}_degree_1','#{{form.prefix}}_degree_2','#{{form.prefix}}_degree_3')
+  })
+});
+</script>

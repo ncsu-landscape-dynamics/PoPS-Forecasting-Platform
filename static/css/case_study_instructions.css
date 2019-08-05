@@ -1,0 +1,57 @@
+a.toc-link{
+    color:#17a2b8;
+}
+section.field-section{
+    padding: 0.5em 0;
+}
+
+div.field-container{
+    background-color: transparent;
+    border-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+h2.section-heading-title{
+    color:white;
+    font-size:1.8em;
+    padding: 2em 0 0;
+}
+
+a.back-to-top-link{
+    color:#17a2b8;
+}
+
+div.card-body{
+    padding: 0.5em 1em;
+}
+
+h3.field-name{
+    color:white;
+    font-size:1.5em;
+    border-bottom: solid;
+}
+
+div.sub-field h3.field-name{
+    font-size:1.3em;
+}
+
+div.field-description{
+    color:white;
+    padding: 0 1.5em;
+    line-height: 1.2em;
+}
+
+div.requirements {
+    color:white;
+    padding: 0em 0em 0.2em;
+  }
+
+div.example {
+    color:#17a2b8;
+    padding: 0 1.5em;
+  }
+
+div.sub-field{
+    padding: 0 0 0 1.5em;
+}

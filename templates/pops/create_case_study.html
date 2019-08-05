@@ -1,0 +1,709 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+  <!--Page title-->
+  <h2 class="text-center">Create Case Study</h2>
+  <!--Start of form-->
+  <form method="post" enctype="multipart/form-data" class="form-horizontal">
+    <div class="row justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-6">
+        <!--Announcement at top of page-->
+        <div class="alert alert-warning">
+          <p>
+            <strong>Welcome to the create case study page!</strong> Please be sure to read the
+            <a class="" href="{% url 'case_study_help' %}">Case Study Help page</a> before getting started.
+          </p>
+        </div>
+
+        <!--Warning message that there were errors in the form-->
+        {% if error_message %}
+        <div class="alert alert-danger text-center" role="alert">
+          <strong>Please correct the errors below!</strong>
+          <p>Note! You must also reselect any files to upload.</p>
+        </div>
+        {% endif %}
+        <!--CSRF Token-->
+        {% csrf_token %}
+
+        <!--Case study form section-->
+        <div class="border border-light p-2 my-1">
+          <div class="">
+            <legend>Case study details</legend>
+          </div>
+          <!--Most of case study form (defined in Crispy Layout in forms.py)-->
+          {% crispy case_study_form %}
+
+          <!--Infestation data file field-->
+          {{ case_study_form.infestation_data|as_crispy_field }}
+          {% for error in case_study_form.infestation_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+          <!--All plants data file field-->
+          {{ case_study_form.all_plants|as_crispy_field }}
+          {% for error in case_study_form.all_plants.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+          <!--Treatments On/Off Toggle-->
+          <div class="row no-gutters pt-3">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ case_study_form.use_treatment.help_text }}"
+                data-container="body">
+                {{ case_study_form.use_treatment }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto align-middle px-2">
+              <p style="font-size:1.2em"> {{ case_study_form.use_treatment.label }} </p>
+            </div>
+          </div>
+          <!--Treatment form (visibility dependent on toggle above)-->
+          <div id="treatment_form_visibility">
+            {{ case_study_form.treatment_data|as_crispy_field }}
+          </div>
+          {% for error in case_study_form.treatment_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+          <!--Treatment visibility javascript (hides treatment form based on toggle)-->
+          <script>
+            if ($("#id_cs-use_treatment").is(':checked')){
+              $("#treatment_form_visibility").show();}
+            else {$("#treatment_form_visibility").hide();}
+            $(document).ready(function () {
+                var ckbox = $('#id_cs-use_treatment');
+                $('input').on('click',function () {
+                    if (ckbox.is(':checked')) {$("#treatment_form_visibility").show();} 
+                    else {$("#treatment_form_visibility").hide();}
+                });
+            });
+          </script>
+
+        </div>
+
+        <!--Pest details form section-->
+        <div class="border border-light p-2 my-1">
+          <div class="">
+            <legend>Pest details</legend>
+          </div>
+          <!--Most of pest form (defined in Crispy Layout in forms.py)-->
+          {% crispy pest_form %}
+
+          <!--Script to hide Pest.common_name field on load and show it IF Pest choice is "Other"-->
+          <script>
+            if ($("#id_pest-pest_information option:selected").text() == 'Other')
+              {$("#div_id_pest-name").show();}
+            else {$("#div_id_pest-name").hide();}
+
+            $(document).ready(function () {
+                $('select').on('click',function () {
+                  if ($("#id_pest-pest_information option:selected").text() == 'Other')
+                    {$("#div_id_pest-name").show();}
+                  else {$("#div_id_pest-name").hide();}
+                });
+            });
+          </script>
+
+
+          <!--Vector form On/Off toggle-->
+          <div class="row no-gutters row-eq-height">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ pest_form.vector_born.help_text }}"
+                data-container="body">
+                {{ pest_form.vector_born }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em"> {{ pest_form.vector_born.label }} </p>
+            </div>
+          </div>
+          <!--Vector form (visibility dependent on Vector toggle above)-->
+          <div id="vector_form_visibility">
+            {% crispy vector_form %}
+          <!--All plants data file field-->
+          {{ vector_form.vector_data|as_crispy_field }}
+          {% for error in vector_form.vector_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+          </div>
+          <!--Vector visibility javascript (hides vector form based on toggle)-->
+          <script>
+            if ($("#id_pest-vector_born").is(':checked')){
+                $("#vector_form_visibility").show();}
+            else {$("#vector_form_visibility").hide();}
+            $(document).ready(function () {
+                var ckbox = $('#id_pest-vector_born');
+                $('input').on('click',function () {
+                    if (ckbox.is(':checked')) {$("#vector_form_visibility").show();} 
+                    else {$("#vector_form_visibility").hide();}
+                });
+            });
+          </script>
+        </div>
+        <!--End Pest details form section-->
+
+        <!--Host details form section-->
+        <div class="border border-light p-2 my-1">
+          <div class="">
+            <legend>Host details</legend>
+          </div>
+          <!--Most of host form (defined in Crispy Layout in forms.py)-->
+          {% crispy host_form %}
+          <!--Host data file field-->
+          {{ host_form.host_data|as_crispy_field }}
+          {% for error in host_form.host_data.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+          <!--Mortality form On/Off toggle-->
+          <div class="row no-gutters pt-3">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ host_form.mortality_on.help_text }}"
+                data-container="body">
+                {{ host_form.mortality_on }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em"> {{ host_form.mortality_on.label }} </p>
+            </div>
+          </div>
+          <!--Mortality form (visibility dependent on Vector toggle above)-->
+          <div id="mortality_form_user_visibility">
+            {{ mortality_form.method|as_crispy_field }}
+            <!--Mortality data file field (visibility dependent on mortality_form.method)-->
+            <div id="mortality_file_form_visibility">
+              {{ mortality_form.mortality_data|as_crispy_field }}
+              {% for error in mortality_form.mortality_data.errors %}
+              <div class=" text-danger pt-0" style="font-size:0.8em">
+                <strong>{{ error|escape }}</strong>
+              </div>
+              {% endfor %}
+            </div>
+            <!--Mortality rate and time_lag fields (visibility dependent on mortality_form.method)-->
+            <div id="mortality_user_input_form_visibility">
+              {% crispy mortality_form %}
+            </div>
+          </div>
+
+          <!--Mortality visibility javascript (hides vector form based on toggle)-->
+          <script>
+            if ($("#id_host-mortality_on").is(':checked')){
+              $("#mortality_form_user_visibility").show();}
+            else {$("#mortality_form_user_visibility").hide();}
+            $(document).ready(function () {
+                var ckbox = $('#id_host-mortality_on');
+                $('input').on('click',function () {
+                    if (ckbox.is(':checked')) {$("#mortality_form_user_visibility").show();} 
+                    else {$("#mortality_form_user_visibility").hide();}
+                });
+            });
+          </script>
+
+          <!--User input type for mortality (visibility dependent on mortality_form.method-->
+          <script>
+            if ($("#id_id_mortality-method_0_1").is(':checked')){
+                $("#mortality_user_input_form_visibility").hide();
+                $("#mortality_file_form_visibility").show();}
+            if ($("#id_id_mortality-method_0_2").is(':checked')){
+                $("#mortality_file_form_visibility").hide();
+                $("#mortality_user_input_form_visibility").show();}
+            $(document).ready(function () {
+                $('input').on('click',function () {
+                        if ($("#id_id_mortality-method_0_1").is(':checked')){
+                            $("#mortality_user_input_form_visibility").hide();
+                            $("#mortality_file_form_visibility").show();}
+                        if ($("#id_id_mortality-method_0_2").is(':checked')){
+                            $("#mortality_file_form_visibility").hide();
+                            $("#mortality_user_input_form_visibility").show();}
+                });
+            });
+          </script>
+        </div>
+        <!--End host details form section-->
+
+        <!--Weather details form section-->
+        <div class="border border-light p-2 my-1">
+          <div class="py-2">
+            <legend>Weather details</legend>
+          </div>
+          <!--Wind section-->
+          <!--Wind on/off toggle-->
+          <div class="row no-gutters row-eq-height">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.wind_on.help_text }}"
+                data-container="body">
+                {{ weather_form.wind_on }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em"> {{ weather_form.wind_on.label }} </p>
+            </div>
+          </div>
+          <!--Wind form (visibility dependent on toggle above)-->
+          <div id="wind_form_visibility">
+            {% crispy wind_form %}
+          </div>
+          <!--Wind visibility javascript (hides form based on toggle)-->
+          <script>
+            if ($("#id_weather-wind_on").is(':checked')){
+                $("#wind_form_visibility").show();}
+            else {$("#wind_form_visibility").hide();}
+            $(document).ready(function () {
+                var ckbox = $('#id_weather-wind_on');
+                $('input').on('click',function () {
+                    if (ckbox.is(':checked')) {$("#wind_form_visibility").show();} 
+                    else {$("#wind_form_visibility").hide();}
+                });
+            });
+          </script>
+          <!--Seasonality section-->
+          <!--Seasonality on/off toggle-->
+          <div class="row no-gutters">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.seasonality_on.help_text }}"
+                data-container="body">
+                {{ weather_form.seasonality_on }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto align-middle px-2">
+              <p style="font-size:1.2em"> {{ weather_form.seasonality_on.label }} </p>
+            </div>
+          </div>
+          <!--Seasonality form (visibility dependent on toggle above)-->
+          <div id="seasonality_form_visibility">
+            {% crispy seasonality_form %}
+          </div>
+          <!--Seasonality visibility javascript (hides form based on toggle)-->
+          <script>
+            if ($("#id_weather-seasonality_on").is(':checked')){
+                $("#seasonality_form_visibility").show();}
+            else {$("#seasonality_form_visibility").hide();}
+
+            $(document).ready(function () {
+                var ckbox = $('#id_weather-seasonality_on');
+                $('input').on('click',function () {
+                    if (ckbox.is(':checked')) {$("#seasonality_form_visibility").show();} 
+                    else {$("#seasonality_form_visibility").hide();}
+                });
+            });
+            </script>
+          <!--Lethal temperature section-->
+          <!--Lethal temperature on/off toggle-->
+          <div class="weather on_off row no-gutters">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.lethal_temp_on.help_text }}"
+                data-container="body">
+                {{ weather_form.lethal_temp_on }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em">{{ weather_form.lethal_temp_on.label }}</p>
+            </div>
+          </div>
+          <!--Lethal temp form (visibility dependent on toggle above)-->
+          <div id="lethal_form_visibility">
+            {% crispy lethal_temp_form %}
+          </div>
+          <!--Lethal temp visibility javascript (hides form based on toggle)-->
+          <script>
+            if ($("#id_weather-lethal_temp_on").is(':checked')){
+                $("#lethal_form_visibility").show();}
+            else {$("#lethal_form_visibility").hide();}
+
+            $(document).ready(function () {
+                var ckbox = $('#id_weather-lethal_temp_on');
+                $('input').on('click',function () {
+                    if (ckbox.is(':checked')) {$("#lethal_form_visibility").show();} 
+                    else {$("#lethal_form_visibility").hide();}
+                });
+            });
+            </script>
+          <!--Temperature section-->
+          <!--Temperature on/off toggle-->
+          <div class="weather on_off row no-gutters">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.temp_on.help_text }}"
+                data-container="body">
+                {{ weather_form.temp_on }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em"> {{ weather_form.temp_on.label }} </p>
+            </div>
+          </div>
+          <!--Temperature form (visibility dependent on toggle above)-->
+          <div id="temp_form_visibility" class="pb-4">
+            <!--Temperature method (checked option determines visibility of reclass/polynomial forms)-->
+            {% crispy temperature_form %}
+            <!--Temp reclass form (visibility determined by temperature.method above)-->
+            <div class="px-3" id="temp_reclass_visibility">
+              <!--Management form required for formsets!! This tracks the number of forms.-->
+              {{ temperature_reclass_formset.management_form }}
+
+              <div class="row">
+                <div class="col-3 px-1 pl-2"><strong>Min (&#8451)</strong></div>
+                <div class="col-3 px-1"><strong>Max (&#8451)</strong></div>
+                <div class="col-3 px-1"><strong>Coefficient</strong></div>
+              </div>
+
+              {% for form in temperature_reclass_formset %}
+
+              <div id="temp_reclass_formset" class="row">
+                <div class="col-3 px-1 pl-2">
+                  {{ form.min_value|as_crispy_field }}
+                </div>
+                <div class="col-3 px-1">
+                  {{ form.max_value|as_crispy_field }}
+                </div>
+                <div class="col-3 px-1">
+                  {{ form.reclass|as_crispy_field }}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <!--Temp polynomial form (visibility determined by temperature.method above)-->
+            <div id="temp_polynomial_visibility" class="py-2">
+              <!--Polynomial degree-->
+              {% crispy temperature_polynomial_form %}
+              <h5>Temperature Coefficient = </h5>
+              <!--Degree 1 coefficients-->
+              <div id="temp_degree_1" class=" input-group no-gutters">
+                <div class="col-2 ">
+                  {{ temperature_polynomial_form.a0|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-center">
+                  <h3> + </h3>
+                </div>
+                <div class="col-2">
+                  {{ temperature_polynomial_form.a1|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-right">
+                  <h3> ( T+ </h3>
+                </div>
+                <div class="col-2">
+                  {{ temperature_polynomial_form.x1|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-left">
+                  <h3> )</h3>
+                </div>
+              </div>
+              <!--Degree 2 coefficients-->
+              <div id="temp_degree_2" class="input-group no-gutters">
+                <div class="col-auto offset-2 px-1 text-center">
+                  <h3> + </h3>
+                </div>
+                <div class="col-2">
+                  {{ temperature_polynomial_form.a2|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-right">
+                  <h3> ( T+ </h3>
+                </div>
+                <div class="col-2">
+                  {{ temperature_polynomial_form.x2|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-left">
+                  <h3> )<sup>2</sup></h3>
+                </div>
+              </div>
+              <!--Degree 3 coefficients-->
+              <div id="temp_degree_3" class="input-group no-gutters">
+                <div class="col-auto offset-2 px-1 text-center">
+                  <h3> + </h3>
+                </div>
+                <div class="col-2">
+                  {{ temperature_polynomial_form.a3|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-right">
+                  <h3> ( T+ </h3>
+                </div>
+                <div class="col-2">
+                  {{ temperature_polynomial_form.x3|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-left">
+                  <h3> )<sup>3</sup></h3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Temperature visibility javascript (hides form based on toggle)-->
+          <script>
+            if ($("#id_weather-temp_on").is(':checked')){
+                $("#temp_form_visibility").show();}
+            else {$("#temp_form_visibility").hide();}
+            $(document).ready(function () {
+                var ckbox = $('#id_weather-temp_on');
+                $('input').on('click',function () {
+                    if (ckbox.is(':checked')) {$("#temp_form_visibility").show();} 
+                    else {$("#temp_form_visibility").hide();}
+                });
+            });
+          </script>
+          <!--Temperature method visibility javascript (hides/shows reclass/polynomial form based on temperature.method)-->
+          <script>
+            if ($("#id_id_temp-method_1").is(':checked')){
+                $("#temp_polynomial_visibility").hide();}
+            else {$("#temp_reclass_visibility").hide();}
+            $(document).ready(function () {
+                var ckbox1 = $('#id_id_temp-method_1');
+                var ckbox2 = $('#id_id_temp-method_2');
+                $('input').on('click',function () {
+                    if (ckbox1.is(':checked')) {$("#temp_reclass_visibility").show();} 
+                    else {$("#temp_reclass_visibility").hide();}
+
+                    if (ckbox2.is(':checked')) {$("#temp_polynomial_visibility").show();} 
+                    else {$("#temp_polynomial_visibility").hide();}
+
+                });
+            });
+            </script>
+          <!--Polynomial form visibility script based on degree choice-->
+          <script>
+            if ($("#id_id_temp_polynomial-degree_1").is(':checked')){
+                $("#temp_degree_2").hide(); $("#temp_degree_3").hide();}
+            if ($("#id_id_temp_polynomial-degree_2").is(':checked')){
+                $("#temp_degree_3").hide();}
+            $(document).ready(function () {
+                $('input').on('click',function () {
+                  if ($("#id_id_temp_polynomial-degree_1").is(':checked')){
+                    $("#temp_degree_2").hide(); $("#temp_degree_3").hide();}
+                  if ($("#id_id_temp_polynomial-degree_2").is(':checked')){
+                    $("#temp_degree_2").show(); $("#temp_degree_3").hide();}
+                  if ($("#id_id_temp_polynomial-degree_3").is(':checked')){
+                    $("#temp_degree_2").show(); $("#temp_degree_3").show();}
+
+                });
+            });
+            </script>
+
+          <!--Precipitation section-->
+          <!--Precipitation visibility on/off toggle-->
+          <div class="weather on_off row no-gutters">
+            <div class="col-auto">
+              <label class="switch" data-toggle="tooltip" data-placement="top" title="{{ weather_form.precipitation_on.help_text }}"
+                data-container="body">
+                {{ weather_form.precipitation_on }}
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="col-auto px-2">
+              <p style="font-size:1.2em"> {{ weather_form.precipitation_on.label }} </p>
+            </div>
+          </div>
+          <!--Precipitation form (visibility dependent on toggle above)-->
+          <div id="precip_form_visibility">
+            <!--Precipitation method (checked option determines visibility of reclass/polynomial forms)-->
+            {% crispy precipitation_form %}
+            <!--Precipitation reclass form (visibility determined by temperature.method above)-->
+            <div class="px-3" id="precip_reclass_visibility">
+              <!--Management form required for formsets!! This tracks the number of forms.-->
+              {{ precipitation_reclass_formset.management_form }}
+
+              <div class="row">
+                <div class="col-3 px-1 pl-2"><strong>Min (mm)</strong></div>
+                <div class="col-3 px-1"><strong>Max (mm)</strong></div>
+                <div class="col-3 px-1"><strong>Reclass</strong></div>
+              </div>
+
+              {% for form in precipitation_reclass_formset %}
+
+              <div id="precip_reclass_formset" class="row">
+                <div class="col-3 px-1 pl-2">
+                  {{ form.min_value|as_crispy_field }}
+                </div>
+                <div class="col-3 px-1">
+                  {{ form.max_value|as_crispy_field }}
+                </div>
+                <div class="col-3 px-1">
+                  {{ form.reclass|as_crispy_field }}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <!--Precipitation polynomial form (visibility determined by temperature.method above)-->
+            <div id="precip_polynomial_visibility">
+              <!--Polynomial degree form-->
+              {% crispy precipitation_polynomial_form %}
+              <h5>Precipitation Coefficient = </h5>
+              <!--Degree 1 form-->
+              <div id="precip_degree_1" class=" input-group no-gutters">
+                <div class="col-2 ">
+                  {{ precipitation_polynomial_form.a0|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-center">
+                  <h3> + </h3>
+                </div>
+                <div class="col-2">
+                  {{ precipitation_polynomial_form.a1|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-right">
+                  <h3> ( P+ </h3>
+                </div>
+                <div class="col-2">
+                  {{ precipitation_polynomial_form.x1|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-left">
+                  <h3> )</h3>
+                </div>
+              </div>
+              <!--Degree 2 form-->
+              <div id="precip_degree_2" class="input-group no-gutters">
+                <div class="col-auto offset-2 px-1 text-center">
+                  <h3> + </h3>
+                </div>
+                <div class="col-2">
+                  {{ precipitation_polynomial_form.a2|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-right">
+                  <h3> ( P+ </h3>
+                </div>
+                <div class="col-2">
+                  {{ precipitation_polynomial_form.x2|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-left">
+                  <h3> )<sup>2</sup></h3>
+                </div>
+              </div>
+              <!--Degree 3 form-->
+              <div id="precip_degree_3" class="input-group no-gutters">
+                <div class="col-auto offset-2 px-1 text-center">
+                  <h3> + </h3>
+                </div>
+                <div class="col-2">
+                  {{ precipitation_polynomial_form.a3|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-right">
+                  <h3> ( P+ </h3>
+                </div>
+                <div class="col-2">
+                  {{ precipitation_polynomial_form.x3|as_crispy_field}}
+                </div>
+                <div class="col-auto px-1 text-left">
+                  <h3> )<sup>3</sup></h3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Precipitation form visibility script (depends on on/off toggle)-->
+          <script>
+            if ($("#id_weather-precipitation_on").is(':checked')){
+                $("#precip_form_visibility").show();}
+            else {$("#precip_form_visibility").hide();}
+            $(document).ready(function () {
+                var ckbox = $('#id_weather-precipitation_on');
+                $('input').on('click',function () {
+                    if (ckbox.is(':checked')) {$("#precip_form_visibility").show();} 
+                    else {$("#precip_form_visibility").hide();}
+                });
+            });
+            </script>
+          <!--Precipitation method visibility script (shows/hides reclass/polynomial forms based on precip.method-->
+          <script>
+            if ($("#id_id_precip-method_1").is(':checked')){
+                $("#precip_polynomial_visibility").hide();}
+            else {$("#precip_reclass_visibility").hide();}
+            $(document).ready(function () {
+                var ckbox1 = $('#id_id_precip-method_1');
+                var ckbox2 = $('#id_id_precip-method_2');
+                $('input').on('click',function () {
+                    if (ckbox1.is(':checked')) {$("#precip_reclass_visibility").show();} 
+                    else {$("#precip_reclass_visibility").hide();}
+
+                    if (ckbox2.is(':checked')) {$("#precip_polynomial_visibility").show();} 
+                    else {$("#precip_polynomial_visibility").hide();}
+
+                });
+            });
+            </script>
+          <!--Polynomial visibility script (shows/hides form sections based on polynomial degree)-->
+          <script>
+            if ($("#id_id_precip_polynomial-degree_1").is(':checked')){
+                $("#precip_degree_2").hide(); $("#precip_degree_3").hide();}
+            if ($("#id_id_precip_polynomial-degree_2").is(':checked')){
+                $("#precip_degree_3").hide();}
+            $(document).ready(function () {
+                $('input').on('click',function () {
+                  if ($("#id_id_precip_polynomial-degree_1").is(':checked')){
+                    $("#precip_degree_2").hide(); $("#precip_degree_3").hide();}
+                  if ($("#id_id_precip_polynomial-degree_2").is(':checked')){
+                    $("#precip_degree_2").show(); $("#precip_degree_3").hide();}
+                  if ($("#id_id_precip_polynomial-degree_3").is(':checked')){
+                    $("#precip_degree_2").show(); $("#precip_degree_3").show();}
+
+                });
+            });
+            </script>
+
+
+        </div>
+
+        <!--Submit button for form-->
+        <div class="text-center py-2">
+          <button class="btn btn-info btn-lg" type="submit">Next</button>
+        </div>
+        <div class="text-center">
+          <span>Note: You will be able to review your case study on the next page before submitting for calibration.</span>
+        </div>
+
+      </div>
+    </div>
+
+  </form>
+  <!--End form-->
+
+</div>
+<!--End main container-->
+
+<!--Script to make tooltips appear on hover-->
+<script>
+  $(document).ready(function () {
+    $("body").tooltip({
+      selector: '[data-toggle=tooltip]'
+    });
+  });
+</script>
+{% endblock %}
+
+{% block scripts %}
+<!--Scripts to add/remove reclass rows to temp/precip forms-->
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script>
+  $('div#temp_reclass_formset').formset({
+    prefix: '{{ temperature_reclass_formset.prefix }}',
+    addText: 'Add Row',
+    deleteText: 'remove',
+    addCssClass: 'btn btn-info',
+    deleteCssClass: 'text-light'
+  });
+</script>
+
+<script>
+  $('div#precip_reclass_formset').formset({
+    prefix: '{{ precipitation_reclass_formset.prefix }}',
+    addText: 'Add Row',
+    deleteText: 'remove',
+    addCssClass: 'btn btn-info',
+    deleteCssClass: 'text-light'
+  });
+</script>
+{% endblock %}

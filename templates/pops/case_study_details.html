@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-4">
+
+<h2 class="text-center">Case Study: {{ case_study.name }}</h2>
+<div class="row justify-content-center py-4">
+      <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6">
+      <h4>Case study</h4>
+
+<table class="table table-sm table-bordered">
+  <tbody>
+    <tr>
+      <th scope="row">Primary Key</th>
+      <td> {{ case_study.pk }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Date created</th>
+      <td> {{ case_study.date_created }}</td>
+    </tr>
+    <tr>
+      <th scope="row">User</th>
+      <td> {{ case_study.created_by }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Name</th>
+      <td> {{ case_study.name }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Number of pests</th>
+      <td> {{ case_study.number_of_pests }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Number of hosts</th>
+      <td> {{ case_study.number_of_hosts }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Start year</th>
+      <td> {{ case_study.start_year }}</td>
+    </tr>
+    <tr>
+      <th scope="row">End year</th>
+      <td> {{ case_study.end_year }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Time step</th>
+      <td> {{ case_study.time_step }}</td>
+    </tr>
+    <tr>
+      <th scope="row">infestation_data</th>
+      <td> {{ case_study.infestation_data }}</td>
+    </tr>
+  </tbody>
+</table>
+
+{% for host in case_study.host_set.all %}
+<h4 class="text-center">Host: {{ host.name }}</h4>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <th scope="row">Primary Key</th>
+                <td> {{ host.pk }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Host name</th>
+                <td> {{ host.name }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Score</th>
+                <td> {{ host.score }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Host data</th>
+                <td> {{ host.host_data }}</td>
+            </tr>
+            <tr>
+                <th scope="row">All plant data</th>
+                <td> {{ host.all_plants }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Mortality?</th>
+                <td> {{ host.mortality_on }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Mortality PK</th>
+                <td> {{ host.mortality.pk }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Mortality user input</th>
+                <td> {{ host.mortality.method }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Mortality data</th>
+                <td> {{ host.mortality.mortality_data }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Mortality rate</th>
+                <td> {{ host.mortality.rate }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Mortality rate standard deviation</th>
+                <td> {{ host.mortality.rate_standard_deviation }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Mortality time lag</th>
+                <td> {{ host.mortality.time_lag }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Mortality time lag standard deviation</th>
+                <td> {{ host.mortality.time_lag_standard_deviation }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endfor %}
+
+{% for pest in case_study.pest_set.all %}
+<h4 class="text-center">Pest: {{ pest.name }}</h4>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <th scope="row">Primary Key</th>
+                <td> {{ pest.pk }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Pest name</th>
+                <td> {{ pest.name }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Staff approved</th>
+                <td> {{ pest.staff_approved }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Pest information</th>
+                <td> {{ pest.pest_information }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Vector born?</th>
+                <td> {{ pest.vector_born }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Model type</th>
+                <td> {{ pest.model_type }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Dispersal type</th>
+                <td> {{ pest.dispersal_type }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Vector PK</th>
+                <td> {{ pest.vector.pk }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Vector common name</th>
+                <td> {{ pest.vector.common_name }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Vector scientific name</th>
+                <td> {{ pest.vector.scientific_name }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Vector to host transmission rate</th>
+                <td> {{ pest.vector.vector_to_host_transmission_rate }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Host to vector transmission rate</th>
+                <td> {{ pest.vector.host_to_vector_transmission_rate }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Short distance dispersal scale</th>
+                <td> {{ pest.shortdistance.scale }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Short distance dispersal scale standard dev</th>
+                <td> {{ pest.shortdistance.scale_standard_deviation }}</td>
+            </tr>
+            <tr>
+                <th scope="row">% short distance</th>
+                <td> {{ pest.shortdistance.percent_short_distance }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Long distance dispersal scale</th>
+                <td> {{ pest.longdistance.scale }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Long distance dispersal scale standard dev</th>
+                <td> {{ pest.longdistance.scale_standard_deviation }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Cryptic to infected rate</th>
+                <td> {{ pest.cryptictoinfected.rate }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Cryptic to infected rate standard dev</th>
+                <td> {{ pest.cryptictoinfected.rate_standard_deviation }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Infected to diseased rate</th>
+                <td> {{ pest.infectedtodiseased.rate }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Infected to diseased rate standard dev</th>
+                <td> {{ pest.infectedtodiseased.rate_standard_deviation }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endfor %}
+
+<h4 class="text-center">Weather</h4>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <th style="width: 34%" scope="row">Primary Key</th>
+                <td style="width: 66%"> {{ case_study.weather.pk }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Case study name</th>
+                <td> {{ case_study.weather.case_study }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Wind on?</th>
+                <td> {{ case_study.weather.wind_on }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Seasonality on?</th>
+                <td> {{ case_study.weather.seasonality_on }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Lethal temp on?</th>
+                <td> {{ case_study.weather.lethal_temp_on }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Temp on?</th>
+                <td> {{ case_study.weather.temp_on }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Precipitation on?</th>
+                <td> {{ case_study.weather.precipitation_on }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Wind direction</th>
+                <td> {{ case_study.weather.wind.wind_direction }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Wind kappa</th>
+                <td> {{ case_study.weather.wind.kappa }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Seasonality first month</th>
+                <td> {{ case_study.weather.seasonality.first_month }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Seasonality last month</th>
+                <td> {{ case_study.weather.seasonality.last_month }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Lethal temperature month</th>
+                <td> {{ case_study.weather.lethaltemperature.month }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Lethal temperature value</th>
+                <td> {{ case_study.weather.lethaltemperature.value }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Temperature method</th>
+                <td> {{ case_study.weather.temperature.method }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Precipitation method</th>
+                <td> {{ case_study.weather.precipitation.method }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Temperature reclass</th>
+                <td> 
+                {% if case_study.weather.temperature.temperaturereclass_set.all %}
+                <table>
+                <thead>
+                <th>min</th>
+                <th>max</th>
+                <th>reclass</th>
+                </thead>
+                <tbody>
+                {% for row in case_study.weather.temperature.temperaturereclass_set.all %}
+                <tr>
+                <td>{{ row.min_value}}</td><td> {{row.max_value}}</td><td> {{row.reclass}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+                {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Precipitation reclass threshold</th>
+                <td> 
+                {% if case_study.weather.precipitation.precipitationreclass_set.all %}
+                <table>
+                <thead>
+                <th>min</th>
+                <th>max</th>
+                <th>reclass</th>
+                </thead>
+                <tbody>
+                {% for row in case_study.weather.precipitation.precipitationreclass_set.all %}
+                <tr>
+                <td>{{ row.min_value}}</td><td> {{row.max_value}}</td><td> {{row.reclass}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+                {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Temperature polynomial degree</th>
+                <td> {{ case_study.weather.temperature.temperaturepolynomial.degree }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Precipitation polynomial degree</th>
+                <td> {{ case_study.weather.precipitation.precipitationpolynomial.degree }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Temperature polynomial a0,a1,a2,a3</th>
+                <td> {{ case_study.weather.temperature.temperaturepolynomial.a0 }}, {{ case_study.weather.temperature.temperaturepolynomial.a1 }}, {{ case_study.weather.temperature.temperaturepolynomial.a2 }}, {{ case_study.weather.temperature.temperaturepolynomial.a3 }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Temperature polynomial x0,x1,x2</th>
+                <td> {{ case_study.weather.temperature.temperaturepolynomial.x1 }}, {{ case_study.weather.temperature.temperaturepolynomial.x2 }}, {{ case_study.weather.temperature.temperaturepolynomial.x3 }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Precipitation polynomial a0,a1,a2,a3</th>
+                <td> {{ case_study.weather.precipitation.precipitationpolynomial.a0 }}, {{ case_study.weather.precipitation.precipitationpolynomial.a1 }}, {{ case_study.weather.precipitation.precipitationpolynomial.a2 }}, {{ case_study.weather.precipitation.precipitationpolynomial.a3 }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Precipitation polynomial x0,x1,x2</th>
+                <td> {{ case_study.weather.precipitation.precipitationpolynomial.x1 }}, {{ case_study.weather.precipitation.precipitationpolynomial.x2 }}, {{ case_study.weather.precipitation.precipitationpolynomial.x3 }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+</div>
+</div>
+</div>
+
+{% endblock %}

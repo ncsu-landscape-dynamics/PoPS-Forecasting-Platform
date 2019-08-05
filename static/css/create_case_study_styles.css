@@ -1,0 +1,95 @@
+  div.panel-container{
+    background-color:#0b0d0e;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-bottom:1em;
+    padding: 1em;
+    flex:1;
+
+  }
+
+.bodycontainer { max-height: 85px; 
+  width: 100%; 
+  margin: 0; 
+  overflow-y: auto; 
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+.table-scrollable { margin: 0; padding: 0; }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 65px;
+    height: 30px;
+  }
+  
+  .switch input {display:none;}
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #495057;
+    -webkit-transition: .4s;
+    transition: .4s;
+     border-radius: 30px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #adb5bd;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #17a2b8;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #17a2b8;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(35px);
+  }
+  
+  /*------ ADDED CSS ---------*/
+  .slider:after
+  {
+   content:'OFF';
+   color: white;
+   display: block;
+   position: absolute;
+   transform: translate(-10%,-50%);
+   top: 50%;
+   left: 50%;
+   font-size: 0.9em;
+   font-family: Verdana, sans-serif;
+  }
+  
+  input:checked + .slider:after
+  {  
+    content:'ON';
+    transform: translate(-100%,-50%);
+
+  }
+  input:checked + .slider:before
+{
+  background-color: white;
+}
+
+  /*--------- END --------*/
+  

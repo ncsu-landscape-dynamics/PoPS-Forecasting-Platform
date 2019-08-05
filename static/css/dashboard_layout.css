@@ -1,0 +1,304 @@
+#side-bar a.nav-link, #side-bar-filler {
+  padding:0.5;
+  color:#a0a8bd;
+  font-size: 1.5em;
+  height: 60px;
+  background-color: #0b0d0e;
+  border-width: 3px;
+  border-style: outset;
+  border-color: #212529;
+  flex: 0 1 auto;
+
+}
+
+#side-bar a.nav-link.active {
+  color:white;
+  background-color: #070909;
+  border-style: inset;
+
+}
+
+#side-bar a.nav-link:hover {
+  color:white;
+  background-color: #070909;
+  border-style: inset;
+}
+
+#side-bar-filler {
+height:100%;
+}
+
+#map.large_map {
+  height: calc(100vh - 60px);
+  max-height: calc(800px - 60px)
+}
+
+#run-title, #run-preview-description {
+  font-size: 1.2em;
+  height: 60px;
+  padding: 0.5em;
+  background-color: #0b0d0e;
+  border-width: 3px;
+  border-style: outset;
+  border-color: #212529;
+  flex: 0 1 auto;
+}
+#run-preview-description {
+  height: 100%;
+}
+
+#side-plots, #side-panel {
+  background-color: #0b0d0e;
+  border-width: 3px;
+  border-style: outset;
+  border-color: #212529;
+  height: calc(100vh - 60px);
+  max-height: calc(800px - 60px);
+  overflow-y: auto;
+
+}
+
+#side-bar {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+.box .row {
+  border: 1px dotted grey;
+}
+
+.box .row.header {
+  flex: 0 1 auto;
+  /* The above is shorthand for:
+  flex-grow: 0,
+  flex-shrink: 1,
+  flex-basis: auto
+  */
+}
+
+.box .row.content {
+  flex: 1 1 auto;
+}
+
+.box .row.footer {
+  flex: 0 1 40px;
+}
+
+div#run-preview-container {
+  background-color: #0b0d0e;
+  overflow-x: auto;
+  width:100%;
+  }
+
+    div#run-preview-container button {
+      background-color: #0b0d0e;
+      border-width: 3px;
+      border-style: outset;
+      border-color: #212529;
+      color:#0b0d0e;
+      font-size: 1.2em;
+      position: relative;
+    }
+
+      div#run-preview-container button a{
+        color:#0b0d0e;
+        }
+
+        div#run-preview-container button.active a{
+          color:#070909;
+          }
+         
+          div#run-preview-container button:hover a{
+            color:#a0a8bd;
+            }
+    
+      div#run-preview-container button:hover, 
+      div#run-preview-container button.active {
+        background-color: #070909;
+        border-style: inset;
+      }
+  div.run_info_popup {
+    position: absolute;
+    top: -90px;
+    left: 0px;
+    height:100px;
+    width:100px;
+    background-color:grey;
+    z-index: 100;
+  }
+      
+  #historic-legend-container, #probability-legend-container {
+    position: absolute;
+    top: 40px;
+    left: 10px;
+  }
+
+  #display_year_forecast {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
+  #SLF_buffer_zone_checkbox {
+    position: absolute;
+    bottom: 40px;
+    left: 10px; 
+    background-color: rgb(65, 223, 244, 0.1)
+  }
+
+.legend-color {
+      height: 10px;
+      width: 20px;
+      float:left;
+    }
+    
+    .legend-label {
+    font-size:0.8em;
+    }
+
+    #year-slider, #year-slider2 {
+      position: absolute;
+      top: 10px;
+      right: 60px;
+      width:200px;
+    }
+
+    #draw-controls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .drawing-tool {
+      border-radius: 0px;
+      border-width: 2px;
+      border-style: outset;
+    }
+
+    #draw-controls button.active {
+      border-style: inset;
+    }
+
+    #status-indicator-shading {
+      position: absolute;
+      background: black;
+      opacity: 0.7;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+            }
+    #status-indicator {
+      position: absolute;
+      font-size: 1.5em;
+      left: 50%;
+      top: 50%;
+      width: 400px;
+      margin-top:-125px;
+      margin-left: -200px;
+      height: 250px;
+        }
+        #status-close-button {
+          position: absolute;
+          right: 0;
+          top: 0;
+          color: white;
+          opacity: 0.3;
+        }
+    
+.parameter-selector-plot input {
+  padding-right: 25px;
+  padding-left: 35px;
+}
+
+  #map-instructions {
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    height:50px;
+    width:300px;
+    background-color:black;
+  }
+
+  .modal {
+    color:black;
+  }
+
+  #budget label.btn, #management-area label.btn, #efficiency label.btn {
+    padding:0.5;
+    color:white;
+    background-color: grey;
+    border-width: 2px;
+    border-color: #212529;
+
+  }
+
+#budget label.btn.active {
+    background-color: #5fc782;
+    border-color: #5fc782;
+}
+
+input#id_name {
+  width:50%; 
+  border-radius: 4px; 
+  border: 3px solid #555;
+  background-color: #212529; 
+  color: white;
+}
+
+.popover {
+  border: 3px solid #555;
+}
+.popover-header {
+  background-color: black;
+  color: white;
+}
+.popover-body {
+  color: white;
+  background-color: #212529;
+}
+.popover.bottom .arrow:after {
+  border-bottom-color: #555;
+}
+
+
+
+.modal-body {
+  background-color:#0b0d0e;
+  color:white;
+}
+.modal-header {
+  background-color:#212529;
+  border-color:#0b0d0e;
+  color:white;
+}
+.modal-footer {
+  background-color:#0b0d0e;
+  border-color:#212529;
+  color:white;
+}
+.modal-content {
+  background-color:#0b0d0e;
+  border: 3px solid #555;
+
+}
+
+.modal input, .modal select, .modal textarea, .modal .input-group-text {
+  border: solid #555;
+  background-color: #2C3136; 
+  color: white;
+}
+
+.modal input:focus, .modal select:focus, .modal textarea:focus {
+  background-color: #4A5158; 
+  color: white;
+}
+
+button.close {
+  color: white;
+  opacity: 0.5;
+}
+button.close:hover {
+  color: white;
+  opacity: 0.8;
+}

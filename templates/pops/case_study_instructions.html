@@ -1,0 +1,1210 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/case_study_instructions.css' %}">
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-4">
+
+    <h2 id="top-of-page" class="text-center">Case Study Help</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-12 col-lg-10 col-xl-8">
+            <div class="alert alert-info">
+            <p>
+                <strong>Welcome to the Case Study Help page!</strong> This page 
+                provides details about the fields in the 
+                <a class="" href="{% url 'create_case_study' %}">Create Case Study</a> form.
+                </p>
+                <p>
+                A case study is a model that describes a pest/pathogen system
+                for a desired geographic region and time period. 
+                To create a case study, the user must provide historical infestation/infection data, 
+                host data, weather data, and pest/host qualities. PoPS then uses this information
+                to calibrate and validate case study model parameters.
+                Once a case study is successfully calibrated and validated, a user may use
+                it to run PoPS simulations on the My PoPS page to estimate pest/pathogen
+                spread into the future with or without management scenarios.
+                </p>
+                <p>
+                You do <strong>not</strong> have to create a case study to run the PoPS model. You may run the
+                PoPS model for pre-existing case studies created by the PoPS team. Go to My Account,
+                Create Session, and select a staff-approved case study from the drop-down menu.
+
+            </p>
+            </div>
+            <div class="table-of-contents">
+                <ul>
+                    <li><a class="toc-link" href="#case-study-details">Case study details</a>
+                        <ul>
+                            <li><a class="toc-link" href="#case-study-name">Case study name</a></li>
+                            <li><a class="toc-link" href="#first-data-year">Initial calibration year</a></li>
+                            <li><a class="toc-link" href="#final-data-year">Final calibration year</a></li>
+                            <li><a class="toc-link" href="#final-model-year">Final model year</a></li>
+                            <li><a class="toc-link" href="#time-step">Time step</a></li>
+                            <li><a class="toc-link" href="#number-pests">Number of pests</a></li>
+                            <li><a class="toc-link" href="#number-hosts">Number of hosts</a></li>
+                            <li><a class="toc-link" href="#infestation-data">Infestation data</a></li>
+                            <li><a class="toc-link" href="#use-treatments">Prior treatments</a>
+                                <ul>
+                                    <li><a class="toc-link" href="#previous-treatments">Prior treatments data</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a class="toc-link" href="#pest-details">Pest details</a>
+                        <ul>
+                            <li><a class="toc-link" href="#pest">Pest</a></li>
+                            <li><a class="toc-link" href="#pest-common-name">Pest common name</a></li>
+                            <li><a class="toc-link" href="#model-type">Model type</a></li>
+                            <li><a class="toc-link" href="#dispersal-type">Dispersal type</a></li>
+                            <li><a class="toc-link" href="#vector-born">Vector born</a>
+                                <ul>
+                                    <li><a class="toc-link" href="#vector-common-name">Vector common name</a></li>
+                                    <li><a class="toc-link" href="#vector-scientific-name">Vector scientific name</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a class="toc-link" href="#host-details">Host details</a>
+                        <ul>
+                            <li><a class="toc-link" href="#host-common-name">Host common name</a></li>
+                            <li><a class="toc-link" href="#host-score">Score</a></li>
+                            <li><a class="toc-link" href="#host-data">Host data</a></li>
+                            <li><a class="toc-link" href="#all-plants">All plant data</a></li>
+                            <li><a class="toc-link" href="#mortality-on">Mortality</a>
+                                <ul>
+                                    <li><a class="toc-link" href="#mortality-method">Mortality method</a>
+                                        <ul>
+                                            <li><a class="toc-link" href="#mortality-data">Mortality data</a></li>
+                                            <li><a class="toc-link" href="#mortality-rate">Mortality rate</a></li>
+                                            <li><a class="toc-link" href="#mortality-time-lag">Mortality time lag</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a class="toc-link" href="#weather-details">Weather details</a>
+                        <ul>
+                            <li><a class="toc-link" href="#wind">Wind</a>
+                                <ul>
+                                    <li><a class="toc-link" href="#wind-direction">Wind direction</a></li>
+                                    <li><a class="toc-link" href="#wind-strength">Wind strength (kappa)</a></li>
+                                </ul>
+                            </li>
+                            <li><a class="toc-link" href="#seasonality">Seasonality</a>
+                                <ul>
+                                    <li><a class="toc-link" href="#first-month-seasonality">First month of season</a></li>
+                                    <li><a class="toc-link" href="#last-month-seasonality">Last month of season</a></li>
+                                </ul>
+                            </li>
+                            <li><a class="toc-link" href="#lethal-temperature">Lethal temperature</a>
+                                <ul>
+                                    <li><a class="toc-link" href="#lethal-temp-month">Month in which lethal temperature
+                                            occurs</a></li>
+                                    <li><a class="toc-link" href="#lethal-temp">Lethal temperature</a></li>
+                                </ul>
+                            </li>
+                            <li><a class="toc-link" href="#temperature">Temperature</a>
+                                <ul>
+                                    <li><a class="toc-link" href="#temp-method">Temperature coefficient creation method</a>
+                                        <ul>
+                                            <li><a class="toc-link" href="#temp-reclass">Reclass</a></li>
+                                            <li><a class="toc-link" href="#temp-polynomial">Polynomial</a></li>
+                                        </ul>
+
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a class="toc-link" href="#precipitation">Precipitation</a>
+                                <ul>
+                                    <li><a class="toc-link" href="#precip-method">Precipitation coefficient creation
+                                            method</a>
+                                        <ul>
+                                            <li><a class="toc-link" href="#precip-reclass">Reclass</a></li>
+                                            <li><a class="toc-link" href="#precip-polynomial">Polynomial</a></li>
+                                        </ul>
+
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <!--Case study details secton-->
+
+            <section class="field-section">
+                <h2 id="case-study-details" class="section-heading-title d-inline">
+                    Case study details
+                </h2>
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="case-study-name" class="field-name card-title">Case study name</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>, <strong>field_type:</strong>
+                            string, <strong>maximum_length</strong>: 150 characters</div>
+                        <div class="field-description card-text">Case study name is a required field that provides the
+                            user
+                            an opportunity to give the case study a descriptive name.
+                            The case study name will appear in a list of available case studies
+                            for you to choose from to start a session.</div>
+                        <div class="example"><em>Example:</em> Spotted Lanternfly, Pennsylvania, 2014-2022
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="first-data-year" class="field-name card-title">Initial
+                                    calibration year</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1900, <strong>maximum_value</strong>:
+                            2200</div>
+                        <div class="field-description card-text">The first year that you have
+                            pest occurence data for calibration. This should
+                            correspond to the first year in the infestation data file.</div>
+                        <div class="example"><em>Example:</em> 2008
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="final-data-year" class="field-name card-title">Final calibration
+                                    year</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1900, <strong>maximum_value</strong>:
+                            2200</div>
+                        <div class="field-description card-text">The last year that you have
+                            pest occurence data for calibration. This should
+                            correspond to the last year in the infestation data file.</div>
+                        <div class="example"><em>Example:</em> 2016
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="final-model-year" class="field-name card-title">Final model year</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1900, <strong>maximum_value</strong>:
+                            2200</div>
+                        <div class="field-description card-text">
+                            This will be the final year of a model run when using this
+                            case study. For example, if your final model year is 2024, then
+                            the model will run from the final calibration year to 2024.</div>
+                        <div class="example"><em>Example:</em> 2022
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="time-step" class="field-name card-title">Time step</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>, <strong>field_type:</strong>
+                            choice, <strong>options</strong>: Month, Week, Day</div>
+                        <div class="field-description card-text">
+                            The time step is the frequency with which the PoPS model runs during a simulation year. The
+                            options
+                            for time step are: Month, Week, Day. A month time step will run much faster
+                            than a day time step because the model is running fewer iterations. <br>
+                            <strong>We recommend
+                                you choose the largest time step that is biologically relevant to
+                                your system.</strong> For example, if your insect has multiple generations in a year
+                            then set the timestep close to the length of the generation.
+                        </div>
+                        <div class="example"><em>Example:</em> Month
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="number-pests" class="field-name card-title">Number of pests</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1</div>
+                        <div class="field-description card-text">
+                            Number of pests (or pathogens) you will model in your system. <br>
+                            <em>In the current version of PoPS, number of
+                                pests is limited to 1. Future versions will include multiple
+                                pests.</em></div>
+                        <div class="example"><em>Example:</em> 1
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="number-hosts" class="field-name card-title">Number of hosts</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 1</div>
+                        <div class="field-description card-text">
+                            Number of host organisms you will model in your system. <br>
+                            <em>In the current version of PoPS, number of
+                                hosts is limited to 1. Future versions will include multiple
+                                hosts.</em></div>
+                        <div class="example"><em>Example:</em> 1
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="infestation-data" class="field-name card-title">Infestation data</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: file field, <strong>format</strong>: raster stack</div>
+                        <div class="field-description card-text">
+                            Infestation data is a raster stack (single file) of the initial infestation/infection data
+                            in your study area (1 layer for each year).
+                            <em>At least 3 layers (3 years) are required for calibration and validation. </em>
+                        </div>
+                        <div class="example"><em>Example:</em> initial_infestation.tiff
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline">
+                                <h3 id="use-treatments" class="field-name card-title">Prior treatments</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: boolean (on/off)</div>
+                        <div class="field-description card-text">
+                            Do you have existing management data to include for calibration/validation?
+                            <em>Note: This field is for <strong>prior</strong> management/treatments. Only turn this
+                                field on if you have a raster file for management actions to include in the
+                                calibration and validation of the case study. You will still be able to
+                                use management during PoPS model runs if this is turned off.</em>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sub-field">
+                    <div class="field-container card">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-auto d-inline ">
+                                    <h3 id="previous-treatments" class="field-name card-title">Prior
+                                        treatments data</h3>
+                                </div>
+                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                            </div>
+                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                if <a class="toc-link" href="#use-treatments">Prior treatments</a> is <strong>On</strong>,
+                                <strong>field_type</strong>: file field, <strong>format</strong>: raster stack</div>
+                            <div class="field-description card-text">
+                                Prior treatments data is a raster stack (single file) of the initial management data in
+                                your study area (1 layer for each year).
+                                <em>At least 3 layers (3 years) are required for calibration and validation. </em>
+                            </div>
+                            <div class="example"><em>Example:</em> previous_treatments.tiff
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--Pest details secton-->
+
+            <section class="field-section">
+                <!--Div title-->
+                <h2 id="pest-details" class="section-heading-title d-inline">
+                    Pest details
+                </h2>
+
+                <!--Close Div title-->
+
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="pest" class="field-name card-title">Pest</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>, <strong>field_type:</strong>
+                            choice</div>
+                        <div class="field-description card-text">
+                            Select the pest/pathogen for your case study from the list of pests/pathogens that have
+                            been used in PoPS.
+                            If your pest/pathogen does not appear in the list, select "Other" and provide the
+                            pest/pathogen common name in the <a class="toc-link" href="#pest-common-name">Pest common
+                                name</a> field.
+                        </div>
+                        <div class="example"><em>Example:</em> Spotted Lanternfly
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sub-field">
+                    <div class="field-container card">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-auto d-inline ">
+                                    <h3 id="pest-common-name" class="field-name card-title">Pest common name</h3>
+                                </div>
+                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                            </div>
+                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                if <a class="toc-link" href="#pest">Pest</a> = Other, <strong>field_type:</strong>
+                                string, <strong>max_length</strong>: 150 characters</div>
+                            <div class="field-description card-text">This field is only required if
+                                Pest selection is "Other". If the pest/pathogen you are studying is not listed
+                                as an option under <a class="toc-link" href="#pest">Pest</a> and you select "Other",
+                                then you must provide the
+                                pest/pathogen common name here.</div>
+                            <div class="example"><em>Example:</em> New pest common name
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="model-type" class="field-name card-title">Model type</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: choice</div>
+                        <div class="field-description card-text">Select the model
+                            type that should be used for your case study. The options are:
+                            <ol>
+                                <li>Susceptible Infected (SI)</li>
+                                <li>Susceptible Infected Diseased (SID)</li>
+                                <li>Susceptible Exposed Infected Diseased (SEID)</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="dispersal" class="field-name card-title">Dispersal type</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: choice</div>
+                        <div class="field-description card-text">Select the dispersal
+                            type that should be used for your case study. The options are:
+                            <ol>
+                                <li>Cauchy</li>
+                                <li>Double Scale Cauchy</li>
+                                <li>Exponential</li>
+                                <li>Double Scale Exponential</li>
+                            </ol>
+                            Both double scale variants are meant to be used as a proxy for very long human mediated
+                            dispersal.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline">
+                                <h3 id="vector-born" class="field-name card-title">Vector born</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: boolean (on/off)</div>
+                        <div class="field-description card-text">
+                            Is the disease spread by a vector (e.g. insect)? If so, provide the common
+                            name and scientific name in the following fields.
+                            <em>Note: Selecting "On" will cause the PoPS model to create and calibrate
+                                a vector-to-host transmission rate and a host-to-vector transmission rate.</em>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sub-field">
+                    <div class="field-container card">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-auto d-inline ">
+                                    <h3 id="vector-common-name" class="field-name card-title">Vector common name</h3>
+                                </div>
+                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                            </div>
+                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                if <a class="toc-link" href="#vector-born">Vector born</a> is <strong>On</strong>,
+                                <strong>field_type:</strong>
+                                string, <strong>max_length</strong>: 150 characters</div>
+                            <div class="field-description card-text">
+                                Provide the common name of the vector.
+                            </div>
+                            <div class="example"><em>Example:</em> Asian Citrus Psyllid
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-field">
+                    <div class="field-container card">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-auto d-inline ">
+                                    <h3 id="vector-scientific-name" class="field-name card-title">Vector scientific
+                                        name</h3>
+                                </div>
+                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                            </div>
+                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                if <a class="toc-link" href="#vector-born">Vector born</a> is <strong>On</strong>,
+                                <strong>field_type:</strong>
+                                string, <strong>max_length</strong>: 150 characters</div>
+                            <div class="field-description card-text">
+                                Provide the scientific name of the vector.
+                            </div>
+                            <div class="example"><em>Example:</em> Diaphorian citri
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+            <!--Host details secton-->
+            <section class="field-section">
+
+                <h2 id="host-details" class="section-heading-title d-inline">
+                    Host details
+                </h2>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="host-common-name" class="field-name card-title">Host common name</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>* Required*</em></strong>,
+                            <strong>field_type:</strong>
+                            string, <strong>max_length</strong>: 150 characters</div>
+                        <div class="field-description card-text">Please provide the common
+                            name of the host in your system.</div>
+                        <div class="example"><em>Example:</em> Host common name
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="host-score" class="field-name card-title">Score</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: decimal, <strong>minimum_value</strong>: 0.0, <strong>maximum_value</strong>:
+                            1.0</div>
+                        <div class="field-description card-text">
+                            <p>Host score is a value between 0.0
+                            and 1.0 that serves as an indication of the pest's (or pathogen's) preference 
+                            for the host (or the host's ability to produce
+                            inoculum and become infected). Host score should be 1.0 in a single host 
+                            system. In a multi-host system, host score provides a way to differentiate
+                            the pest's preference for the hosts. </p>
+                            <p>For example, in a 2-host system, Host 1 could have a host score of 1.0,
+                            and Host 2 could have a host score of 0.5. This would indicated
+                            that the pest's preference for Host 1 is 2x's greater than its preference
+                            for Host 2 (or that Host 1 produces 2x's as much inoculum as Host 2). </p>
+                            </div>
+                        <div class="example"><em>Example:</em> 0.87
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="host-data" class="field-name card-title">Host data</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: file field, <strong>format</strong>: raster stack (.tif)</div>
+                        <div class="field-description card-text">
+                            Host data is a raster file of the number of individual hosts or groups of hosts per cell
+                            in the study area.
+                        </div>
+                        <div class="example"><em>Example:</em> my_host_data.tif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline ">
+                                <h3 id="all-plants" class="field-name card-title">All plant data</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: file field, <strong>format</strong>: .tif </div>
+                        <div class="field-description card-text">
+                            All plant data is a raster file of the study area, where each cell contains
+                            the number of plants (all species), assuming this is
+                            available.   
+                            Another option is a raster with all values set to the maximum value found in the
+                            host data.
+                        </div>
+                        <div class="example"><em>Example:</em> my_plant_data.tif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline">
+                                <h3 id="mortality-on" class="field-name card-title">Mortality</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: boolean (on/off)</div>
+                        <div class="field-description card-text">
+                            Does the host experience mortality as a result of the pest/pathogen? To 
+                            include mortality in the PoPS, model the user must provide either (1)
+                            mortality data for the study area or (2) estimates of the mortality rate
+                            and time lag.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sub-field">
+                    <div class="field-container card">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-auto d-inline ">
+                                    <h3 id="mortality-method" class="field-name card-title">Mortality rate method</h3>
+                                </div>
+                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                            </div>
+                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                if <a class="toc-link" href="#mortality-on">Mortality</a> is <strong>On</strong>,
+                                <strong>field_type:</strong> choice</div>
+                            <div class="field-description card-text">
+                                PoPS needs a mortality rate and time lag in order to include mortality
+                                in the simulations. There are two options:
+                                <ol>
+                                    <li><strong>PoPS estimates mortality rate and time lag from user data:</strong>
+                                        In
+                                        this option, the user must supply mortality data in a raster
+                                        file in the Mortality data field.</li>
+                                    <li><strong>User provides mortality rate and time lag.</strong>
+                                        With this option,
+                                        the user directly provides the Mortality rate and Time lag.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-field">
+                    <div class="sub-field">
+                        <div class="field-container card">
+                            <div class="card-body">
+                                <div class="row justify-content-between">
+                                    <div class="col-auto d-inline ">
+                                        <h3 id="mortality-data" class="field-name card-title">Mortality data</h3>
+                                    </div>
+                                    <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                                </div>
+                                <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                    if <a class="toc-link" href="#mortality-method">Mortality rate method</a> is
+                                    <strong>PoPS estimates mortality rate and time lag from user data</strong>,
+                                    <strong>field_type</strong>: decimal, <strong>minimum_value</strong>: 0.0,
+                                    <strong>maximum_value</strong>: 1.0</div>
+                                <div class="field-description card-text">
+                                    Mortality data is a raster stack (single file) of the mortality data
+                                    in your study area (1 layer for each year).
+                                    <em>At least 3 layers (3 years) are required for calibration and validation. </em>
+                                </div>
+                                <div class="example"><em>Example:</em> my_host_mortality.tiff
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-field">
+                    <div class="sub-field">
+                        <div class="field-container card">
+                            <div class="card-body">
+                                <div class="row justify-content-between">
+                                    <div class="col-auto d-inline ">
+                                        <h3 id="mortality-rate" class="field-name card-title">Mortality rate</h3>
+                                    </div>
+                                    <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                                </div>
+                                <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                    if <a class="toc-link" href="#mortality-method">Mortality rate method</a> is
+                                    <strong>User provides
+                                        mortality rate and time lag</strong>,
+                                    <strong>field_type</strong>: decimal, <strong>minimum_value</strong>: 0.0, <strong>maximum_value</strong>:
+                                    1.0</div>
+                                <div class="field-description card-text">What fraction of hosts
+                                    experience mortality each year from the pest or pathogen? For example,
+                                    if 32% of hosts experience mortality, then the mortality rate is 0.32.</div>
+                                <div class="example"><em>Example:</em> 0.32
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-field">
+                    <div class="sub-field">
+                        <div class="field-container card">
+                            <div class="card-body">
+                                <div class="row justify-content-between">
+                                    <div class="col-auto d-inline ">
+                                        <h3 id="mortality-time-lag" class="field-name card-title">Mortality time lag</h3>
+                                    </div>
+                                    <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                                </div>
+                                <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                    if <a class="toc-link" href="#mortality-method">Mortality rate method</a> is
+                                    <strong>User provides
+                                        mortality rate and time lag</strong>,
+                                    <strong>field_type</strong>: integer, <strong>minimum_value</strong>: 0, <strong>maximum_value</strong>:
+                                    10</div>
+                                <div class="field-description card-text">How long after initial
+                                    infection/infestation (in years) before mortality occurs on average? For example,
+                                    if mortality typically occurs 2 years after infection, then the mortality time lag
+                                    is
+                                    2.</div>
+                                <div class="example"><em>Example:</em> 2
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!--Weather details secton-->
+            <section class="field-section">
+
+                <h2 id="host-details" class="section-heading-title d-inline">
+                    Weather details
+                </h2>
+                <!--Wind-->
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline">
+                                <h3 id="wind-on" class="field-name card-title">Wind</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: boolean (on/off)</div>
+                        <div class="field-description card-text">
+                            Does wind strongly affect the spread of your pest/pathogen
+                            and do you have a predominate wind direction and strength?
+                        </div>
+                    </div>
+                </div>
+                <!--Wind direction-->
+                <div class="sub-field">
+                    <div class="field-container card">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-auto d-inline ">
+                                    <h3 id="wind-direction" class="field-name card-title">Wind direction</h3>
+                                </div>
+                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                            </div>
+                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                if <a class="toc-link" href="#wind">Wind</a> is <strong>On</strong>, <strong>field_type:</strong>
+                                choice
+                                <div class="field-description card-text">
+                                    Select the predominant wind direction
+                                    that should be used for your case study. The options are:
+                                    North, Northeast, Southeast, South, Southwest, West, Northwest, East
+                                </div>
+                                <div class="example"><em>Example:</em> Northwest
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Wind strength kappa-->
+                <div class="sub-field">
+                    <div class="field-container card">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-auto d-inline ">
+                                    <h3 id="wind-strength" class="field-name card-title">Wind strength (kappa)</h3>
+                                </div>
+                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                            </div>
+                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                if <a class="toc-link" href="#wind">Wind</a> is <strong>On</strong>,, <strong>field_type:</strong>
+                                integer, <strong>min_value:</strong> 1, <strong>max_value:</strong> 12
+                                <div class="field-description card-text">
+                                    Select the wind strength (kappa) for your study area. "1" corresponds to a
+                                    weak wind. "12" corresponds to a strong wind.
+                                </div>
+                                <div class="example"><em>Example:</em> 4
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Seasonality-->
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline">
+                                <h3 id="seasonality" class="field-name card-title">Seasonality</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: boolean (on/off)</div>
+                        <div class="field-description card-text">
+                            Does your pest/pathogen only spread during specific periods of the year? This could be due
+                            to
+                            diapause in insects or poor conditions for inoculum production in a pathogen.
+                        </div>
+                    </div>
+                </div>
+                <!--First month of season-->
+                <div class="sub-field">
+                    <div class="field-container card">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-auto d-inline ">
+                                    <h3 id="first-month-seasonality" class="field-name card-title">First month of
+                                        season</h3>
+                                </div>
+                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                            </div>
+                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                if <a class="toc-link" href="#seasonality">Seasonality</a> is <strong>On</strong>,
+                                <strong>field_type:</strong>
+                                choice
+                                <div class="field-description card-text">
+                                    Select the first month that your pest/pathogen spreads.
+                                </div>
+                                <div class="example"><em>Example:</em> April
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Last month of season-->
+                <div class="sub-field">
+                    <div class="field-container card">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-auto d-inline ">
+                                    <h3 id="last-month-seasonality" class="field-name card-title">Last month of season</h3>
+                                </div>
+                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                            </div>
+                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                if <a class="toc-link" href="#seasonality">Seasonality</a> is <strong>On</strong>,
+                                <strong>field_type:</strong>
+                                choice
+                                <div class="field-description card-text">
+                                    Select the last month that your pest/pathogen spreads.
+                                </div>
+                                <div class="example"><em>Example:</em> September
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Lethal temperature-->
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline">
+                                <h3 id="lethal-temperature" class="field-name card-title">Lethal temperature</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: boolean (on/off)</div>
+                        <div class="field-description card-text">
+                            Does your pest/pathogen experience mortality due to extreme temperature conditions?
+                        </div>
+                    </div>
+                </div>
+                <!--Lethal temp month-->
+                <div class="sub-field">
+                    <div class="field-container card">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-auto d-inline ">
+                                    <h3 id="lethal-temp-month" class="field-name card-title">Month in which lethal
+                                        temperature occurs</h3>
+                                </div>
+                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                            </div>
+                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                if <a class="toc-link" href="#lethal-temperature">Lethal temperature</a> is <strong>On</strong>,
+                                <strong>field_type:</strong>
+                                choice
+                                <div class="field-description card-text">
+                                    In which month is your lethal temperature most likely to occur?
+                                </div>
+                                <div class="example"><em>Example:</em> January
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Lethal temp value-->
+                <div class="sub-field">
+                    <div class="field-container card">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-auto d-inline ">
+                                    <h3 id="lethal-temp" class="field-name card-title">Lethal temp</h3>
+                                </div>
+                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                            </div>
+                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                if <a class="toc-link" href="#lethal-temperature">Lethal temperature</a> is <strong>On</strong>,
+                                <strong>field_type:</strong>
+                                decimal, <strong>min_value:</strong> -50, <strong>max_value:</strong> 50
+                                <div class="field-description card-text">
+                                    What is the lethal temperature (in degrees Celsius) at which pest/pathogen
+                                    mortality occurs?
+                                </div>
+                                <div class="example"><em>Example:</em> -12.87
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Temperature-->
+                <div class="field-container card">
+                    <div class="card-body">
+                        <div class="row justify-content-between">
+                            <div class="col-auto d-inline">
+                                <h3 id="temperature" class="field-name card-title">Temperature</h3>
+                            </div>
+                            <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                        </div>
+                        <div class="requirements card-subtitle"><strong><em>*Required*</em></strong>,
+                            <strong>field_type</strong>: boolean (on/off)</div>
+                        <div class="field-description card-text">
+                            Does temperature affect the reproduction and survival of your pest/pathogen?
+                        </div>
+                    </div>
+                </div>
+                <!--Temp method-->
+                <div class="sub-field">
+                    <div class="field-container card">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-auto d-inline ">
+                                    <h3 id="temp-method" class="field-name card-title">Temperature coefficient creation
+                                        method</h3>
+                                </div>
+                                <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                            </div>
+                            <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                if <a class="toc-link" href="#temperature">Temperature</a> is <strong>On</strong>,
+                                <strong>field_type:</strong>
+                                choice
+                                <div class="field-description card-text">
+                                    <p>If temperature affects the reproduction and survival of the pest/pathogen,
+                                        then the PoPS model needs to include the effect of temperature in its
+                                        calculations.</p>
+                                    <p>PoPS does this by using a "temperature coefficient" to modify reproductive
+                                        and survival rates. Temperature values (in degrees Celsius) are transformed
+                                        into a
+                                        coefficient value between 0 and 1. A
+                                        coefficient of "0.0" corresponds to no reproduction and survival. A coefficient
+                                        of
+                                        "1.0" corresponds to optimal reproduction and survival (i.e. ideal conditions
+                                        for pest/pathogen spread).</p>
+                                    <p>For example, at extremely low temperatures and extremely high temperatures, we
+                                        expect
+                                        the coefficient to be close to 0.0 for most pests/pathogens. At the pest's
+                                        ideal temperature, we expect the coefficient to be close to 1.0 </p>
+
+                                    <p>There are two methods to transform raw temperature into a temperature
+                                        coefficient
+                                        used by the PoPS model:<p>
+                                            <ol>
+                                                <li><a class="toc-link" href="#temp-reclass">Reclass</a></li>
+                                                <li><a class="toc-link" href="#temp-polynomial">Polynomial</a></li>
+                                            </ol>
+                                            <p>The method used is up to the user. Both methods are described below:</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Temp reclass-->
+                <div class="sub-field">
+                    <div class="sub-field">
+                        <div class="field-container card">
+                            <div class="card-body">
+                                <div class="row justify-content-between">
+                                    <div class="col-auto d-inline ">
+                                        <h3 id="temp-reclass" class="field-name card-title">Reclass</h3>
+                                    </div>
+                                    <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                                </div>
+                                <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                    if <a class="toc-link" href="#temp-method">Temperature coefficient creation method</a>
+                                    is <strong>Reclass</strong>,
+                                    <strong>field_type</strong>: decimal
+                                    <div class="field-description card-text">If Reclass is selected as the Temperature
+                                        coefficient creation method, then the user should provide the reclass
+                                        coefficient
+                                        for various temperature ranges. In the Reclass form, there is a column for:
+                                        <ul>
+                                            <li><strong>Min temp</strong>: Minimum temperature (in Celsius) for this
+                                                reclassification range.</li>
+                                            <li><strong>Max temp</strong>: Maximum temperature (in Celsius) for this
+                                                reclassification range.</li>
+                                            <li><strong>Coefficient</strong>: Temperature coefficient for the
+                                                temperature
+                                                range indicated by Min temp and Max temp.
+                                                Must be a value between 0 and 1. A
+                                                coefficient of "0.0" corresponds to no reproduction and survival. A
+                                                coefficient of
+                                                "1.0" corresponds to optimal reproduction and survival (i.e. ideal
+                                                conditions
+                                                for pest/pathogen spread). </li>
+                                        </ul>
+                                        The user must provide at least 2 reclass rows, however, the user may add 
+                                        as many rows as is necessary to the Reclass matrix. 
+                                        The user is responsible for providing temperature coefficients for the full
+                                        range
+                                        of temperatures experienced by the pest/pathogen. Any temperatures not covered
+                                        by the
+                                        reclass matrix provided by the user will receive a temperature coefficient of
+                                        "0.0".
+                                    </div>
+                                    <div class="example"><em>Example:</em>
+                                        <div class="row justify-content-center">
+                                            <div class="col-6">
+                                                <table class="table table-sm table-dark text-light">
+                                                    <thead class="thead-dark">
+                                                        <tr>
+                                                            <th scope="col">Min temp</th>
+                                                            <th scope="col">Max temp</th>
+                                                            <th scope="col">Coefficient</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><input class="form-control" type="text" placeholder="-20.0"></td>
+                                                            <td><input class="form-control" type="text" placeholder="0.0"></td>
+                                                            <td><input class="form-control" type="text" placeholder="0.0"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input class="form-control" type="text" placeholder="0.0"></td>
+                                                            <td><input class="form-control" type="text" placeholder="5.0"></td>
+                                                            <td><input class="form-control" type="text" placeholder="0.2"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input class="form-control" type="text" placeholder="5.0"></td>
+                                                            <td><input class="form-control" type="text" placeholder="10.0"></td>
+                                                            <td><input class="form-control" type="text" placeholder="0.8"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input class="form-control" type="text" placeholder="10.0"></td>
+                                                            <td><input class="form-control" type="text" placeholder="15.0"></td>
+                                                            <td><input class="form-control" type="text" placeholder="1.0"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input class="form-control" type="text" placeholder="15.0"></td>
+                                                            <td><input class="form-control" type="text" placeholder="40.0"></td>
+                                                            <td><input class="form-control" type="text" placeholder="0.2"></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Temp polynomial-->
+                    <div class="sub-field">
+                        <div class="sub-field">
+                            <div class="field-container card">
+                                <div class="card-body">
+                                    <div class="row justify-content-between">
+                                        <div class="col-auto d-inline ">
+                                            <h3 id="temp-polynomial" class="field-name card-title">Polynomial</h3>
+                                        </div>
+                                        <a href="#top-of-page" class="col-auto back-to-top-link d-inline">Back to top</a>
+                                    </div>
+                                    <div class="requirements card-subtitle"><strong><em>*Conditionally Required*</em></strong>
+                                        if <a class="toc-link" href="#temp-method">Temperature coefficient creation
+                                            method</a>
+                                        is <strong>Polynomial</strong>,
+                                        <strong>field_type</strong>: decimal
+                                        <div class="field-description card-text">
+                                            <p>If Polynomial is selected as the Temperature
+                                                coefficient creation method, then the user must provide the
+                                                coefficients and constants for a polynomial equation to reclassify
+                                                temperature
+                                                as a coefficient between 0 and 1. A
+                                                coefficient of "0.0" corresponds to no reproduction and survival. A
+                                                coefficient of
+                                                "1.0" corresponds to optimal reproduction and survival (i.e. ideal
+                                                conditions for pest/pathogen spread). </p>
+                                            <p>The user should select the degree of the polynomial from the options
+                                                (One, Two or Three).
+                                                The number of coefficients and constants depend on the degree of the
+                                                polynomial.</p>
+                                            <p><strong>Polynomial degree options and their corresponding equations:</strong></p>
+                                            <ul>
+                                                <li>
+                                                    <strong>One</strong>: a<sub>0</sub> + a<sub>1</sub>(T + x<sub>1</sub>)
+                                                </li>
+                                                <li><strong>Two</strong>: a<sub>0</sub> + a<sub>1</sub>(T + x<sub>1</sub>)
+                                                    + a<sub>2</sub>(T + x<sub>2</sub>)<sup>2</sup></li>
+                                                <li><strong>Three</strong>: a<sub>0</sub> + a<sub>1</sub>(T + x<sub>1</sub>)
+                                                    + a<sub>2</sub>(T + x<sub>2</sub>)<sup>2</sup> + a<sub>3</sub>(T +
+                                                    x<sub>3</sub>)<sup>3</li>
+                                                </li>
+                                            </ul>
+                                            <p>Where "T" is temperature (in degrees Celsius). a<sub>n</sub> and x<sub>n</sub>
+                                                must be provided by the user. The resulting polynomial should convert
+                                                temperature (T)
+                                                to a temperature coefficient ranging between 0 and 1. Any values less
+                                                than 0.0 will
+                                                be reclassed to 0.0. Any value greater than 1.0 will be reclassed to
+                                                1.0.<p>
+                                        </div>
+                                        <div class="example"><em>Example:</em><br>
+                                            To use a polynomial of the form:
+                                            <br>
+                                            <p class="col">Coefficient = 0.6 + 0.02(T - 0.2) - 0.002(T - 10.0)<sup>2</sup></p>
+                                            Select polynomial degree "2" and fill out the form as follows:
+                                            <br>
+                                            <div class="row justify-content-center" style="color:white;">
+                                                <div class="col">
+                                                    <h4>Temperature Coefficient = </h4>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center" style="color:white;">
+                                                <div class="col">
+                                                    <div id="temp_degree_1" class=" input-group no-gutters">
+                                                        <div class="col-2 ">
+                                                            <input class="form-control" type="text" placeholder="0.6">
+                                                        </div>
+                                                        <div class="col-auto px-1 text-center">
+                                                            <h3> + </h3>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <input class="form-control" type="text" placeholder="0.02">
+                                                        </div>
+                                                        <div class="col-auto px-1 text-right">
+                                                            <h3> ( T+ </h3>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <input class="form-control" type="text" placeholder="-0.2">
+                                                        </div>
+                                                        <div class="col-auto px-1 text-left">
+                                                            <h3> )</h3>
+                                                        </div>
+                                                    </div>
+                                                    <div id="temp_degree_2" class="input-group no-gutters">
+                                                        <div class="col-auto offset-2 px-1 text-center">
+                                                            <h3> + </h3>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <input class="form-control" type="text" placeholder="-0.002">
+                                                        </div>
+                                                        <div class="col-auto px-1 text-right">
+                                                            <h3> ( T+ </h3>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <input class="form-control" type="text" placeholder="-10.0">
+                                                        </div>
+                                                        <div class="col-auto px-1 text-left">
+                                                            <h3> )<sup>2</sup></h3>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+            </section>
+
+        </div> <!-- Close main col -->
+    </div> <!-- Close main row -->
+</div> <!-- Close main container -->
+{% endblock %}

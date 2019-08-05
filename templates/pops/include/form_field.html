@@ -1,0 +1,23 @@
+{% load widget_tweaks %}
+{% load filename %}
+
+<div class="form-group {{ form_class }}">
+  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+  <div class="input-group ">
+  {% if field.errors %}
+    {% render_field field class+="form-control is-invalid" %}
+  {% else %}
+    {% render_field field class+="form-control" %}
+  {% endif %}
+{% if append %}
+    <div class="input-group-append">
+      <span class="input-group-text">{{ append }}</span>
+    </div>
+{% endif %}
+  </div>
+  {% for error in field.errors %}
+  <div class=" text-danger pt-0" style="font-size:0.8em">
+    <strong>{{ error|escape }}</strong>
+  </div>
+  {% endfor %}
+</div>

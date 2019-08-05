@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container py-2 pb-4">
+        <h3>Welcome to your PoPS workspace, {{ user }} </h3>
+        <div class="row">
+                <div class="col-lg-7">
+                        <div class="panel-container">
+                                <h4>My recent sessions ({% if user_sessions.count < 5 %} {{ user_sessions.count }}
+                                        {% else %} 5 {% endif %} / {{ number_of_sessions }} ):</h4>
+                                {% if user_sessions %}
+                                <table class="table table-hover table-dark table-sm ">
+                                        <thead>
+                                                <th class="w-25">Name</th>
+                                                <th class="w-30">Case study</th>
+                                                <th class="w-5">Runs</th>
+                                                <th class="w-20">Last run</th>
+                                                <th></th>
+                                        </thead>
+
+                                        <tbody>
+                                                {% for session in user_sessions %}
+                                                <tr>
+                                                        <td><a class="text-light"
+                                                                        href="{% url 'dashboard' pk=session.pk %}">
+                                                                        <p data-toggle="tooltip" data-placement="right"
+                                                                                title="{{ session.description }}">
+                                                                                {{ session.name }}</p>
+                                                                </a></td>
+                                                        <td><a class="text-light"
+                                                                        href="{% url 'case_study_review' pk=session.case_study.pk %}">{{ session.case_study.name }}
+                                                                        <i
+                        style="font-size:0.6em" class="fas fa-plus-circle align-top text-light"></i></a>
+                                                        </td>
+                                                        <td>
+                                                                <span
+                                                                        class="badge badge-pill badge-light">{{ session.run_set.count }}</span>
+                                                        </td>
+                                                        <td>{{ session.run_set.last.date_created }}</td>
+                                                        <td><a class="text-info"
+                                                                        href="{% url 'dashboard' pk=session.pk %}"
+                                                                        role="button"><i
+                                                                                class="fas fa-arrow-alt-circle-right"
+                                                                                data-toggle="tooltip"
+                                                                                data-placement="top"
+                                                                                title="Go to session."></i></a></td>
+                                                </tr>
+                                                {% endfor %}
+
+                                        </tbody>
+                                </table>
+                                {% else %}
+                                You have no sessions yet.
+                                {% endif %}
+
+                                <div class="row">
+                                        <div class="col-6">
+                                                <a class="btn btn-secondary  btn-block" href="{% url 'session_list' %}"
+                                                        role="button" style="white-space: normal;"><i
+                                                                class="fas fa-search"></i> View All My Sessions <span
+                                                                class="badge badge-pill badge-light">{{ number_of_sessions }}</span>
+                                                </a>
+                                        </div>
+                                        <div class="col-6">
+                                                <a class="btn btn-success  btn-block" href="{% url 'new_session' %}"
+                                                        role="button" style="white-space: normal;"><i
+                                                                class="fas fa-plus-circle"></i> Create New Session
+                                                </a>
+                                        </div>
+                                </div>
+
+                        </div>
+                </div>
+                <div class="col-lg-5">
+                        <div class="panel-container">
+                                <h4>My case studies:</h4>
+                                {% if user_case_studies %}
+                                <table class="table table-hover table-dark table-sm ">
+                                        <thead>
+                                                <th>Name</th>
+                                                <th>Date</th>
+                                                <th></th>
+                                        </thead>
+
+                                        <tbody>
+                                                {% for cs in user_case_studies %}
+                                                <tr>
+                                                        <td>{{ cs.name }}
+                                                                <a class="text-light"
+                                                                        href="{% url 'case_study_review' pk=cs.pk %}"
+                                                                        role="button"><i
+                                                                                class="fas fa-info-circle"></i></a>
+                                                        </td>
+                                                        <td class="w-25">{{ cs.date_created|date:'M. j, Y'  }}</td>
+                                                        <td>
+                                                                {% if cs.calibration_status == "NO START" %}
+                                                                <i class="fas fa-question-circle text-light"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration not started. Click info for more details."></i>
+                                                                {% endif %}
+                                                                {% if cs.calibration_status == "IN PROGRESS" %}
+                                                                <i class="fas fa-spinner text-warning"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration in progress. Click info for more details."></i>
+                                                                {% endif %}
+                                                                {% if cs.calibration_status == "FAILED" %}
+                                                                <i class="fas fa-times-circle text-danger"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration FAILED. Click info for more details."></i>
+                                                                {% endif %}
+                                                                {% if cs.calibration_status == "SUCCESS" %}
+                                                                <i class="fas fa-check text-success"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration successful. Click info for more details."></i>
+                                                                {% endif %}
+
+                                                        </td>
+                                                </tr>
+                                                {% endfor %}
+
+                                        </tbody>
+                                </table>
+                                {% else %}
+                                You have no custom case studies yet.
+                                {% endif %}
+                                <a class="btn btn-secondary  btn-block" href="{% url 'case_study_list' %}" role="button"
+                                        style="white-space: normal;"><i class="fas fa-search"></i> Browse All Case
+                                        Studies
+                                </a>
+                                <a class="btn btn-success  btn-block" href="{% url 'create_case_study' %}" role="button"
+                                        style="white-space: normal;"><i class="fas fa-plus-circle"></i> Create New Case
+                                        Study
+                                </a>
+                        </div>
+                </div>
+
+
+        </div>
+
+</div>
+
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+  $(document).ready(function () {
+    $("body").tooltip({
+      selector: '[data-toggle=tooltip]'
+    });
+  });
+  </script>
+{% endblock %}

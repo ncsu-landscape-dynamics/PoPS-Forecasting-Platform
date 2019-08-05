@@ -1,0 +1,631 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+{% block content %}
+<style>
+</style>
+<script>
+    function run_comparison_plot(run_comparison_div,run_name,infected, area, money,a,b) {
+
+max_infected=4;
+max_area=70;
+max_money=19;
+max_a=10000;
+max_b=20000;
+var trace1 = {
+  x: ['# Infected'],
+  y: [infected],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  marker: {
+    color: ['#2598b8'],
+    opacity: 1,
+  }
+}; 
+var trace2 = {
+  x: ['Area infected'],
+  y: [area],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y2',
+  marker: {
+    color: ['#5fc2c2'],
+    opacity: 1,
+  }
+}; 
+var trace3 = {
+  x: ['Money'],
+  y: [money],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y3',
+  marker: {
+    color: ['#7ba83d'],
+    opacity: 1,
+  }
+}; 
+var trace4 = {
+  x: ['Apples'],
+  y: [a],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y4',
+  marker: {
+    color: ['#9e8adb'],
+    opacity: 1,
+  }
+}; 
+var trace5 = {
+  x: ['Grapes'],
+  y: [b],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y5',
+  marker: {
+    color: ['#8e6dad'],
+    opacity: 1,
+  }
+}; 
+var data = [trace1,trace2,trace3,trace4,trace5];
+
+    var axis_template={
+        showgrid:false,
+        zeroline:false,
+        showticklabels: false,
+    };
+
+var xaxis ={
+    tickfont: {
+      size: 9,
+      color: 'white',
+      },
+      title: run_name,
+      titlefont: {
+      size: 12,
+      color: 'white',
+      },
+};
+var yaxis = {
+        range: [0,max_infected],
+  };
+var yaxis2= {
+  ticksuffix:' Ha',
+  overlaying: 'y',
+  range: [0,max_area],
+  };
+var yaxis3= {
+  tickprefix:'$',
+  overlaying: 'y',
+  range: [0,max_money],
+  };
+var yaxis4= {
+  overlaying: 'y',
+  range: [0,max_a],
+  };
+var yaxis5= {
+  overlaying: 'y',
+  range: [0,max_b],
+  };
+ 
+
+var layout = {
+    xaxis: $.extend({}, axis_template, xaxis),
+    yaxis: $.extend({}, axis_template, yaxis),
+    yaxis2: $.extend({}, axis_template, yaxis2),
+    yaxis3: $.extend({}, axis_template, yaxis3),
+    yaxis4: $.extend({}, axis_template, yaxis4),
+    yaxis5: $.extend({}, axis_template, yaxis5),
+        showlegend:false,
+        paper_bgcolor:'rgba(0,0,0,0)',
+        plot_bgcolor:'rgba(0,0,0,0)',//'#16181b',
+        margin: {
+            l: 10,
+            r: 10,
+            b: 40,
+            t: 20,
+            pad: 0
+        },
+        bargap: 0.1,
+        barmode: 'group',
+
+    };
+
+
+
+return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, responsive: true});
+
+};
+</script>
+
+<div class="container-fluid py-2 pb-4">
+
+    <h3>Welcome to your PoPS dashboard, {{ user }} </h3>
+    {% if session %}
+    <div class="row">
+        <div class="col-md-10 col-lg-8 col-xl-6">
+
+            <form>
+                <div class="form-row">
+                    <div class="col input-group mb-2 mr-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">Session</div>
+                        </div>
+                        <input type="text" class="form-control" id="rename_session" placeholder="{{ session }}">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-secondary mb-2">Rename</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="panel-container ">
+                <ul class="nav nav-pills mb-3 text-light" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link text-light active" id="pills-map-tab" data-toggle="pill" href="#pills-map"
+                            role="tab" aria-controls="pills-map" aria-selected="true">Map view</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" id="pills-graphs-tab" data-toggle="pill" href="#pills-graphs"
+                            role="tab" aria-controls="pills-graphs" aria-selected="false">Graph view</a>
+                    </li>
+                </ul>
+                <div class="tab-content pb-3" id="pills-tabContent">
+                    <div class="tab-pane show active" id="pills-map" role="tabpanel" aria-labelledby="pills-map-tab">
+                        <div class="row px-1" style='height:540px'>
+
+                        <div id="map-container" class="col-8 pl-0 ">
+                        <div id="calculation-box">
+                            <p>Management area: <strong id="polygon-info">0.0</strong> m<sup>2</sup></p>
+                            </div>
+                            <div id="map" style='height:500px' ></div>
+                            </div>
+                            <div id="" class="col-4 pl-2 ">
+                                {% comment %} <div id="Money spent" class="text-right " style="font-size: 2em; line-height: 80%;">$4.75
+                                    mil</div>
+                                <div class="text-right text-muted ">in management</div> {% endcomment %}
+                                <div id="gauge-plots" class="row">
+                                <div id="money" class="" style="width:180px; height:160px"></div>
+                                <div id="efficiency" class="" style="width:180px; height:160px"></div>
+                                </div>
+                                <div id="side_plot1" class="" style='height:150px'></div>
+                                <div id="side_plot2" class="" style='height:150px'></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="pills-graphs" role="tabpanel" aria-labelledby="pills-graphs-tab">
+                        <div class="row px-1" style='height:500px'>
+                            <div id="detail_plot" class="col-4 pl-0"></div>
+                        </div>
+                    </div>
+                </div>
+<style>
+#calculation-box {
+height: 2em;
+width: 40em;
+text-align: left;
+}
+ 
+
+</style>
+ 
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css' type='text/css'/>
+ 
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
+/* eslint-disable */
+var map = new mapboxgl.Map({
+container: 'map', // container id
+style: 'mapbox://styles/mapbox/satellite-v9', //hosted style id
+center: [-77.194527, 41.203323], // initial map center in [lon, lat]
+zoom: 8 // starting zoom
+});
+ 
+var draw = new MapboxDraw({
+displayControlsDefault: false,
+controls: {
+polygon: true,
+trash: true
+}
+});
+map.addControl(draw);
+ 
+map.on('draw.create', updateArea);
+map.on('draw.delete', updateArea);
+map.on('draw.update', updateArea);
+ 
+function updateArea(e) {
+var data = draw.getAll();
+var answer = document.getElementById('polygon-info');
+if (data.features.length > 0) {
+var area = turf.area(data);
+// restrict to area to 2 decimal points
+var rounded_area = Math.round(area*100)/100;
+answer.innerHTML = rounded_area;
+} else {
+answer.innerHTML = '';
+if (e.type !== 'draw.delete') alert("Use the draw tools to draw a polygon!");
+}
+}
+ 
+map.on('load', function() {
+  map.addLayer({
+    id: 'collisions',
+    type: 'circle',
+    source: {
+      type: 'geojson',
+      data: './collisions1601.geojson' // replace this with the url of your own geojson
+    },
+    paint: {
+      'circle-radius': [
+        'interpolate',
+        ['linear'],
+        ['number', ['get', 'Casualty']],
+        0, 4,
+        5, 24
+      ],
+      'circle-color': [
+        'interpolate',
+        ['linear'],
+        ['number', ['get', 'Casualty']],
+        0, '#2DC4B2',
+        1, '#3BB3C3',
+        2, '#669EC4',
+        3, '#8B88B6',
+        4, '#A2719B',
+        5, '#AA5E79'
+      ],
+      'circle-opacity': 0.8
+    }
+  }, 'admin-2-boundaries-dispute');
+});
+
+
+</script>
+
+                <div id="run-preview-container" class="row flex-nowrap ml-1">
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot1" run_title="Run1" infected=2 area=20 money=19 a=10000 b=15000 %}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot2" run_title="Run2" infected=4 area=40 money=10 a=70000 b=20000%}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot3" run_title="My favorite run" infected=2 area=20 money=17 a=5000 b=10000 %}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot4" run_title="Management extending beyond current boundaries" infected=2 area=20 money=19 a=10000 b=15000%}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot5" run_title="Run1" infected=2 area=20 money=5 a=2000 b=5000%}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot6" run_title="Run1" infected=5 area=60 money=29 a=1500 b=1000%}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot7" run_title="My favorite run" infected=2 area=20 money=19 a=3000 b=2000%}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot8" run_title="Management extending beyond current boundaries" infected=2 area=20 money=19 a=10000 b=15000%}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot9" run_title="Run1" infected=2 area=20 money=5 a=10000 b=1000 %}
+                    {% include "pops/dashboard/include/small_run_plot.html" with div_id="run_comparison_plot10" run_title="Run1" infected=5 area=60 money=29 a=1000 b=15000 %}
+                </div>
+            </div>
+        </div>
+
+    {% comment %} <div class="col-12 mt-2">
+        <div class="panel-container">
+        Shannon's color palette (these squares won't be in the final version ;) )
+                <div id="color-palette" class="row flex-nowrap">
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#9e8adb">#9e8adb</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#ae85d4">#ae85d4</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#2598b8">#2598b8</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#41b7cc">#41b7cc</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#5fc2c2">#5fc2c2</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#8fccc0">#8fccc0</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#5fc782">#5fc782</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#9acc54">#9acc54</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#f5a61d">#f5a61d</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#f55949">#f55949</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#0000">#0000</div>
+            </div>
+                <div id="color-palette" class="row flex-nowrap">
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#8372b5">#8372b5</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#8e6dad">#8e6dad</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#1d7891">#1d7891</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#3294a6">#3294a6</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#4c9c9c">#4c9c9c</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#62a396">#62a396</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#4da169">#4da169</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#7ba83d">#7ba83d</div>
+            </div>
+                <div id="color-palette" class="row flex-nowrap">
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#676b73">#676b73</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#a0a8bd">#a0a8bd</div>
+            <div class="col-auto m-1 p-1" style="height:80px; width:80px; background-color:#f0f1f5">#f0f1f5</div>
+            </div>
+        </div>
+    </div> {% endcomment %}
+
+    </div>
+
+
+
+    More dashboard content coming soon!
+
+    {% else %}
+    <div class="row">
+        <div class="col">
+
+            Oops! We couldn't find that session. Would you like to create a new session?
+        </div>
+
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+    function side_plot(myDiv, title, x, y1, y2, color) {
+        var trace1 = {
+            x: x,
+            y: y1,
+            name: 'No management',
+            marker: {
+                color: 'grey'
+            },
+            fill: 'tozeroy',
+            type: 'scatter'
+        };
+
+        var trace2 = {
+            x: x,
+            y: y2,
+            name: 'Current run',
+            marker: {
+                color: color
+            },
+            fill: 'tozeroy',
+            type: 'scatter'
+        };
+
+        var data = [trace1, trace2];
+
+
+        var layout = {
+            xaxis: {
+                tickfont: {
+                    size: 12,
+                    color: 'rgb(107, 107, 107)'
+                }
+            },
+            yaxis: {
+                showticklabels: false,
+                title: title,
+                titlefont: {
+                    size: 12,
+                    color: 'white',
+                },
+
+                tickfont: {
+                    size: 12,
+                    color: 'rgb(107, 107, 107)'
+                }
+            },
+            showlegend: false,
+            paper_bgcolor: '#0b0d0e',
+            plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
+            margin: {
+                l: 30,
+                r: 20,
+                b: 25,
+                t: 10,
+                pad: 0
+            },
+        };
+
+        return Plotly.newPlot(myDiv, data, layout, {
+            displayModeBar: false,
+            responsive: true
+        });
+    };
+
+    var x = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
+    var y1 = [20, 40, 100, 300, 700, 1000];
+    var y2 = [20, 30, 50, 100, 300, 400];
+    $(side_plot("side_plot1", '# infected', x, y1, y2, '#2598b8'));
+    $(side_plot("side_plot2", 'Area infected', x, y1, y2, '#5fc2c2'));
+
+
+function round(value, decimals) {
+  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}
+
+function gauge_plot(div_id, amount, max_amount) {
+
+var max_level = max_amount;
+var level = amount;
+
+if (level>=max_level){
+  main_color="#f55949";
+  drawn_level=max_level;
+  var overbudget = level-max_level;
+  warning_msg="Budget exceeded by:<br>$" + round(overbudget,2) + " million";
+  warning_color="#f55949";
+} else {
+  main_color="#7ba83d";
+  drawn_level=level;
+  warning_msg='spent on<br>management';
+  warning_color='grey';
+};
+var data = [
+  { values: [drawn_level,(0.98*max_level-drawn_level),(max_level/50), (max_level/3)],
+  rotation: -135,
+   direction: "clockwise",
+  sort: false,
+  textinfo: 'text',
+  textposition:'inside',
+  marker: {colors:[main_color, '#676b73','#f55949', 'rgba(255, 255, 255, 0)']},
+  labels: ['Money spent in <br> this run:<br>$' + level + ' million', '','Budget: $' + max_level + ' million',''],
+  hoverinfo: 'label',
+  hole: 0.8,
+  type: 'pie',
+  showlegend: false
+}];
+
+var layout = {
+  annotations: [{
+    xref: 'paper',
+    yref: 'paper',
+    x: 0.5,
+    xanchor: 'middle',
+    y: 0.5,
+    yanchor: 'middle',
+    text: '$' + round(level,1),
+    font: {
+        family: 'Helvetica',
+        size: 30,
+        color: '#ffffff'
+      },
+      align: 'center',
+
+    showarrow: false,
+  },
+  {
+    xref: 'paper',
+    yref: 'paper',
+    x: 0.5,
+    xanchor: 'center',
+    y: 0.3,
+    yanchor: 'middle',
+    text: 'million',
+    font: {
+        family: 'Helvetica',
+        size: 20,
+        color: '#ffffff'
+      },
+      align: 'center',
+
+    showarrow: false,
+  },
+ {
+    xref: 'paper',
+    yref: 'paper',
+    x: 0.5,
+    xanchor: 'center',
+    y: 0.0,
+    yanchor: 'middle',
+    text: warning_msg,
+    font: {
+        family: 'Helvetica',
+        size: 14,
+        color: warning_color,
+      },
+      align: 'center',
+
+    showarrow: false,
+  }
+
+               ],
+              paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
+              margin: {
+                l: 30,
+                r: 30,
+                b: 20,
+                t: 20,
+                pad: 10
+            },
+
+
+  
+  title: {
+    text:'',
+    font:{
+      color:'white',
+    },      
+         },
+  
+  
+  xaxis: {zeroline:false, showticklabels:false,
+             showgrid: false, },
+  yaxis: {zeroline:false, showticklabels:false,
+             showgrid: false, }
+};
+
+return Plotly.newPlot(div_id, data, layout,{displayModeBar: false, responsive: true});
+}
+
+gauge_plot("money", 39.10, 120);
+gauge_plot("efficiency", 100, 120);
+
+function detail_plot() {
+        var trace1 = {
+            x: [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+                2011, 2012
+            ],
+            y: [219, 146, 112, 127, 124, 180, 236, 207, 236, 263, 350, 430, 474, 526, 488, 537, 500, 439],
+            name: 'Money spent',
+            marker: {
+                color: 'rgb(55, 83, 109)'
+            },
+            type: 'bar'
+        };
+
+        var trace2 = {
+            x: [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+                2011, 2012
+            ],
+            y: [16, 13, 10, 11, 28, 37, 43, 55, 56, 88, 105, 156, 270, 299, 340, 403, 549, 499],
+            name: 'Area infected',
+            marker: {
+                color: 'rgb(26, 118, 255)'
+            },
+            type: 'bar'
+        };
+
+        var data = [trace1, trace2];
+
+        var layout = {
+            title: 'Run 1 Results',
+            xaxis: {
+                tickfont: {
+                    size: 14,
+                    color: 'rgb(107, 107, 107)'
+                }
+            },
+            yaxis: {
+                title: 'USD (millions)',
+                titlefont: {
+                    size: 16,
+                    color: 'rgb(107, 107, 107)'
+                },
+                tickfont: {
+                    size: 14,
+                    color: 'rgb(107, 107, 107)'
+                }
+            },
+            legend: {
+                x: 0,
+                y: 1.0,
+                bgcolor: 'rgba(255, 255, 255, 0)',
+                bordercolor: 'rgba(255, 255, 255, 0)'
+            },
+            barmode: 'group',
+            bargap: 0.15,
+            bargroupgap: 0.1
+        };
+        console.log('detail plot')
+        return Plotly.newPlot('detail_plot', data, layout, {
+            responsive: true
+        });
+    }
+
+    $('#pills-map-tab').on('shown.bs.tab', function () {
+        map.resize();
+    });
+    $('#pills-graphs-tab').on('shown.bs.tab', function () {
+        $(detail_plot());
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% load widget_tweaks %}
+
+  <div class="form-group {{ form_class }}">
+    {% if field.errors %}
+    {% render_field field class+="form-control is-invalid" %}
+  {% else %}
+{% render_field field class+="form-control" %}
+        <div class="js_error"></div>        
+  {% endif %}
+    {% for error in field.errors %}
+          <div class=" text-danger pt-0" style="font-size:0.8em">
+            <strong>{{ error|escape }}</strong>
+          </div>
+              {% endfor %}
+  </div>

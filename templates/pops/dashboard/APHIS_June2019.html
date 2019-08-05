@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %} 
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+
+  {% load static %}
+  {% block page_styles %}
+  <link rel="stylesheet" href="{% static 'css/dashboard_layout.css' %}">
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script>
+
+var acre_to_meter_ratio=0.000247105;
+
+    function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
+var max_infected=44201;
+var max_area=4750000000*acre_to_meter_ratio;
+var max_money=50000000;
+var max_a=1;
+var max_b=1;
+
+var trace1 = {
+  x: ['# Occurences'],
+  y: [infected],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  marker: {
+    color: ['#2598b8'],
+    opacity: 1,
+  }
+}; 
+var trace2 = {
+  x: ['Occurence area'],
+  y: [area],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y2',
+  marker: {
+    color: ['#5fc2c2'],
+    opacity: 1,
+  }
+}; 
+var trace3 = {
+  x: ['Money spent'],
+  y: [money],
+  type: 'bar',
+  text: ['Additional info'],
+  hoverinfo: ['x+y+text'],
+  yaxis:'y3',
+  marker: {
+    color: ['#7ba83d'],
+    opacity: 1,
+  }
+}; 
+
+var data = [trace1,trace2,trace3];
+
+    var axis_template={
+        showgrid:false,
+        zeroline:false,
+        showticklabels: false,
+    };
+
+var xaxis ={
+    tickfont: {
+      size: 9,
+      color: 'white',
+      },
+      title: run_name,
+      titlefont: {
+      size: 12,
+      color: 'white',
+      },
+};
+var yaxis = {
+        range: [0,max_infected],
+  };
+var yaxis2= {
+  ticksuffix:' acres',
+  overlaying: 'y',
+  range: [0,max_area],
+  };
+var yaxis3= {
+  tickprefix:'$',
+  overlaying: 'y',
+  range: [0,max_money],
+  };
+var yaxis4= {
+  overlaying: 'y',
+  range: [0,max_a],
+  };
+var yaxis5= {
+  overlaying: 'y',
+  range: [0,max_b],
+  };
+ 
+
+var layout = {
+    xaxis: $.extend({}, axis_template, xaxis),
+    yaxis: $.extend({}, axis_template, yaxis),
+    yaxis2: $.extend({}, axis_template, yaxis2),
+    yaxis3: $.extend({}, axis_template, yaxis3),
+        showlegend:false,
+        paper_bgcolor:'rgba(0,0,0,0)',
+        plot_bgcolor:'rgba(0,0,0,0)',//'#16181b',
+        margin: {
+            l: 10,
+            r: 10,
+            b: 30,
+            t: 5,
+            pad: 0
+        },
+        bargap: 0.1,
+        barmode: 'group',
+
+    };
+
+
+
+return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, responsive: true});
+
+};
+</script>
+
+  {% endblock %}
+  <title>PoPS</title>
+</head>
+
+<body class="text-light">
+
+  {% block content %}
+  <style>
+  </style>
+
+  <div class=" container-fluid p-0 ">
+
+    <nav class="navbar navbar-dark pl-0">
+      <div class="container-fluid ">
+        <a href="{% url 'landing_page' %}" class="navbar-brand d-none d-inline-block">
+          <img src="{% static 'images/PoPSlogo_simple.svg' %}" style="width: 80px;" class="d-inline-block align-middle "
+            alt="Pest or Pathogen Spread Simulation">
+        </a>
+        <span class="navbar-text d-none d-md-inline-block mr-auto text-bottom" style="font-size:1.4em;">
+          {{ session.name }} <a href="#" data-toggle="tooltip" title="Edit session name will be available in the future" data-placement="right"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
+          <span class="text-muted " style="font-size:0.6em;">
+            {{ session.case_study }} <a href="{% url 'case_study_review' pk=session.case_study.pk %}" data-toggle="tooltip" title="View case study detail page" data-placement="right" ><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
+          </span>
+
+        </span>
+        <div class="dropdown show ml-auto">
+          <a class="btn dropdown-toggle text-light" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Menu
+          </a>
+
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="{% url 'landing_page' %}">Home</a>
+            <a class="dropdown-item" href="{% url 'workspace' %}">My Workspace</a>
+            <a class="dropdown-item" href="{% url 'about' %}">About</a>
+          </div>
+        </div>
+
+
+
+
+      </div>
+
+    </nav>
+
+
+
+    {% comment %} <div class="row p-2 no-gutters">
+      <div class="col-xs-12 col-md-12">
+        <div style="">
+          <div style="font-size:1.5em;">
+            Session: My session name <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
+          </div>
+          <div class="text-muted">
+            Spotted Lanternfly in Pennsylvania <a href="#"><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
+          </div>
+        </div>
+      </div>
+    </div> {% endcomment %}
+    <div class="row no-gutters">
+      <div id="side-bar-container" class="col-auto text-center ">
+        <div class="nav " id="side-bar" aria-orientation="vertical">
+          <a class="nav-link active" id="map-tab" data-toggle="pill" title="Create new run" data-placement="right" 
+             href="#" aria-controls="v-pills-home" aria-selected="true"><i class="align-middle fas fa-plus-circle"></i></a>
+          <a class="nav-link " id="results-tab" data-toggle="pill" title="View map results for selected run"
+            href="#" data-placement="right"  aria-controls="v-pills-profile" aria-selected="false"><i
+              class="align-middle fas fa-globe-americas"></i></a>
+          <a class="nav-link" id="chart-view-tab" data-toggle="pill" title="View detailed analytics for selected run"
+            href="#" data-placement="right" aria-controls="v-pills-messages" aria-selected="false"><i
+              class=" align-middle fas fa-chart-bar"></i></a>
+          <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" title="Session summary (Coming soon!)" data-placement="right"
+            href="#v-pills-settings"  aria-controls="v-pills-settings" aria-selected="false"><i class="align-midd far fa-list-alt"></i></a>
+          <a class="nav-link align-middle" id="v-pills-settings-tab" data-toggle="pill" title="Compare two runs (Coming soon!)"
+            data-placement="right" href="#v-pills-settings"  aria-controls="v-pills-settings" aria-selected="false">vs</a>
+          <a class="nav-link" id="report-tab" data-toggle="pill" title="Generate report (Coming soon!)" data-placement="right" href="#v-pills-messages"
+             aria-controls="v-pills-messages" aria-selected="false"><i class="align-middle fas fa-file-pdf"></i></a>
+          <div class="" id="side-bar-filler"> </div>
+        </div>
+
+      </div>
+
+      <div id="" class="col">
+        <div class="tab-content" id="v-pills-tabContent">
+          <div id="v-pills-map" class="tab-pane fade show active no-gutters" >
+            <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
+              <div class="row no-gutters">
+                <div class="col-12 d-flex flex-column">
+                  <div id="run-title">
+                    Run name: {{ form.name }}
+                    <button id="submit-run-button" type="submit" data-run=""
+                      class="btn btn-success float-right d-none d-md-inline ml-4">Run PoPS Model</button>
+                    <button id="show-hide-new-view" type="button"
+                      class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
+                  </div>
+                </div>
+                {{ form.session.as_hidden }}
+                <input type="hidden" value="0" name="management_polygons" cols="40" rows="10" class="form-control"
+                  id="id_management_polygons">
+                <div id="map-container-new-view" class="col-md-9">
+                  <div id="map" class="large_map"></div>
+                  <h4 id="display_year_forecast">Field observations</h4>
+
+{% comment %}                   <div id="historic-legend-container" class="pb-0">
+                    <div><strong>Number of detections (per km<sup>2</sup>):</strong></div>
+                    <div class="legend-color" style="background-color:#FF2000; opacity:0.4"></div>
+                    <div class="legend-color" style="background-color:#FF3600; opacity:0.45"></div>
+                    <div class="legend-color" style="background-color:#FF4C00; opacity:0.5"></div>
+                    <div class="legend-color" style="background-color:#FF6200; opacity:0.55"></div>
+                    <div class="legend-color" style="background-color:#FF7900; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#FF8F00; opacity:0.65"></div>
+                    <div class="legend-color" style="background-color:#FFA500; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#FFBC00; opacity:0.75"></div>
+                    <div class="legend-color" style="background-color:#FFD200; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFE800; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFFF00; opacity:0.8"></div>
+                    <div style="clear: left;">
+                      <p class="legend-label" style="float:left; margin-right:180px;">0</p>
+                      <p class="legend-label">10+</p>
+                    </div>
+                  </div>
+ {% endcomment %}                  
+                   <div id="historic-legend-container" class="pb-0">
+                    <div><strong>Number of detections (per km<sup>2</sup>):</strong></div>
+                    <div class="legend-color" style="background-color:#CC0000; opacity:0.467"></div>
+                    <div class="legend-color" style="background-color:#D61900; opacity:0.5"></div>
+                    <div class="legend-color" style="background-color:#E03300; opacity:0.533"></div>
+                    <div class="legend-color" style="background-color:#EA4C00; opacity:0.567"></div>
+                    <div class="legend-color" style="background-color:#F46600; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#FF8000; opacity:0.633"></div>
+                    <div class="legend-color" style="background-color:#FF9F19; opacity:0.676"></div>
+                    <div class="legend-color" style="background-color:#FFBF33; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#FFDF4C; opacity:0.733"></div>
+                    <div class="legend-color" style="background-color:#FFFF66; opacity:0.767"></div>
+                    <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
+                    <div style="clear: left;">
+                      <p class="legend-label" style="float:left; margin-right:180px;">0</p>
+                      <p class="legend-label">5+</p>
+                    </div>
+                  </div>
+                  <div id="probability-legend-container" class="pb-0">
+                    <div><strong>Probability of occurence:</strong></div>             
+                    <div class="legend-color" style="background-color:#CC0000; opacity:0.467"></div>
+                    <div class="legend-color" style="background-color:#D61900; opacity:0.5"></div>
+                    <div class="legend-color" style="background-color:#E03300; opacity:0.533"></div>
+                    <div class="legend-color" style="background-color:#EA4C00; opacity:0.567"></div>
+                    <div class="legend-color" style="background-color:#F46600; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#FF8000; opacity:0.633"></div>
+                    <div class="legend-color" style="background-color:#FF9F19; opacity:0.676"></div>
+                    <div class="legend-color" style="background-color:#FFBF33; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#FFDF4C; opacity:0.733"></div>
+                    <div class="legend-color" style="background-color:#FFFF66; opacity:0.767"></div>
+                    <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
+                    
+{% comment %}   Viridis color palette:                <div class="legend-color" style="background-color:#440154; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#481567; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#453781; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#39568C; opacity:0.65"></div>
+                    <div class="legend-color" style="background-color:#2D708E; opacity:0.66"></div>
+                    <div class="legend-color" style="background-color:#238A8D; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#20A387; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#3CBB75; opacity:0.75"></div>
+                    <div class="legend-color" style="background-color:#73D055; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#B8DE29; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FDE725; opacity:0.8"></div> {% endcomment %}
+{% comment %}Magma color palette:                     <div class="legend-color" style="background-color:#080616; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#1E0848; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#43006A; opacity:0.65"></div>
+                    <div class="legend-color" style="background-color:#6B116F; opacity:0.66"></div>
+                    <div class="legend-color" style="background-color:#981D69; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#C92D59; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#ED504A; opacity:0.75"></div>
+                    <div class="legend-color" style="background-color:#FA8657; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FBC17D; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FCFFB2; opacity:0.8"></div> {% endcomment %}
+                    <div style="clear: left;">
+                      <p class="legend-label" style="float:left; margin-right:170px;">0%</p>
+                      <p class="legend-label">100%</p>
+                    </div>
+                  </div>
+                  <div>
+                  <div id="SLF_buffer_zone_checkbox" class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" checked>
+                    <label class="form-check-label" for="defaultCheck1">
+                      SLF buffer zone
+                    </label>
+                  </div>
+
+                  </div>
+                  <div id="year-slider" class="pt-0 range range-info">
+                    <h5 class="py-0">Year: <output id="displayYear">2018</output>
+                    </h5>
+                    <input class="custom-range px-2 py-0" type="range" name="range" min="2014" max="2018" step="1"
+                      value="2018" onchange="displayYear.value=value">
+                  </div>
+                  <div id="draw-controls" class="btn-group-vertical" role="group" >
+                  <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
+                  title="Draw management tool" data-placement="left">
+                  <i class="fas fa-draw-polygon"></i>
+                  </button>
+                  <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
+                  title="Selection tool" data-placement="left">
+                  <i class="fas fa-hand-paper"></i>
+                  </button>
+                  <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
+                  title="Delete selection" data-placement="left">
+                  <i class="fas fa-trash-alt"></i>
+                  </button>
+
+                  </div>
+                  <script>
+                      $("#polygon-tool").on('click', function () {
+                        $('.drawing-tool').removeClass('active');
+                        $(this).addClass('active');
+                        draw.changeMode('draw_polygon');
+                        console.log("Polygon tool selected to draw management.")
+                      }); 
+
+                      $("#select-tool").on('click', function () {
+                        $('.drawing-tool').removeClass('active');
+                        $(this).addClass('active');
+                        draw.changeMode('simple_select');
+                        console.log("Select tool selected.")
+                      }); 
+                      $("#delete-tool").on('click', function () {
+                        draw.trash();
+                        console.log("Trash")
+                      }); 
+
+                  </script>
+                  <div id="status-indicator-shading">
+                  </div>
+                  <div id="status-indicator" class="text-center">
+                  <a id="status-close-button"  href="#">&times;</a>
+                  <div id="status-logo">
+                  <img class="rounded-circle" src="{% static 'images/PoPS_AnimatedLogo_TransparentBackground.gif' %}" alt="Generic placeholder image" width="180">
+                  </div>
+                  <div id="status-text">
+                  <span>Loading...</span>
+                  </div>
+                  <button id="cancel-polling" class="btn btn-dark" type="button" data-value='false' >Cancel</button>
+                  </div>
+<script>
+$("#probability-legend-container").hide();
+
+$("button#cancel-polling").hide();
+
+$("button#cancel-polling").on('click', function () {
+          $(this).attr('data-value','true');
+      console.log("Cancel polling clicked.");
+      $(this).hide();
+    });   
+$("a#status-close-button").on('click', function () {
+      console.log("Close button clicked.");
+$("#status-indicator-shading").hide();
+$("#status-indicator").hide();
+    });   
+</script>
+                </div>
+                <div id="side-panel" class="d-none d-md-block col-md-3 p-1">
+                <div id="run-details">
+                  <!-- Modal -->
+                  <div class="modal fade" id="editInputParameters" tabindex="-1" role="dialog" aria-labelledby="editInputParameters"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">Edit Run Parameters</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="row">
+                            {% include "pops/include/form_field.html" with field=form.description form_class="col-12" %}
+                            <div class="form-group col-12">
+                              <label for="id_area_unit">Displayed Units</label>
+                              <div class="input-group ">                      
+                                <select name="area_unit" class="form-control" id="id_area_unit">
+                              <option value="1">meter squared</option>
+                              <option value="0.000247105" selected>acre</option>
+                              <option value="0.0001">hectare</option>
+                            </select> 
+                             </div>
+                              
+                            </div>
+
+                            <div class="form-group col-6">
+                              <label for="id_budget">Budget ($US)</label>
+
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input type="number" name="budget" value="30000000" min="0" step="0.01" data-toggle="tooltip"
+                                  data-placement="top" title="Allowed budget" data-container="body" class="form-control"
+                                  id="id_budget">
+                              </div>
+                            </div>
+                            <div class="form-group col-6">
+                              <label for="id_cost">Cost per <span class="displayed_area_unit">acre</span> ($US)</label>
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input type="number" name="display_cost" value="1530" min="0" data-toggle="tooltip"
+                                  data-placement="top" title="Cost per area" data-container="body"
+                                  class="form-control" id="id_cost">
+                              </div>
+                            </div>
+                                <input type="hidden" name="cost_per_meter_squared" value="0.37807065"
+                                  class="form-control" id="id_cost_per_meter_squared">
+
+                            {% include "pops/include/form_field.html" with field=form.final_year form_class="col-6" %}
+                            {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
+                            {% include "pops/include/form_field.html" with field=form.weather form_class="col-12" %}
+                            {% include "pops/include/form_field.html" with field=form.management_month form_class="col-12" %}
+                            {{ form.management_cost.as_hidden }}
+                            {{ form.management_area.as_hidden }}
+                            <div class="form-check col ml-2">
+                            {{ form.tangible_landscape }}
+                              <label class="form-check-label" for="tangible_landscape">
+                                Use tangible landscape for management?
+                              </label>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Save and Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <h5 class="py-0">
+                    <!-- Button trigger modal -->
+                    Parameters<a class="btn" data-toggle="modal" data-target="#editInputParameters" href="#"><i
+                        style="font-size:0.6em" class="fas fa-pencil-alt align-top text-light"></i></a>
+                  </h5>
+                  <strong class="py-0">Management:</strong>
+                  <div style="height:35px; line-height: 1em;">
+                    <small id="polygon-info">Use the polygon tool to draw management areas.</small>
+                  </div>
+                  <div id="gauge-plots" class="row no-gutters pt-2">
+                    <div id="money-new" class="col py-0" style="width:180px; height:140px"></div>
+
+                  </div>
+
+
+                  <div id="case-study-details" class="">
+                    <div id="efficiency" class="pt-2 range range-info">
+                      <strong>Efficacy: <output id="displayEfficiency">100</output>%</strong>
+                      <input id="id_efficacy" class="custom-range px-4" type="range" name="efficacy" min="50" max="100"
+                        step="10" value="100" onchange="displayEfficiency.value=value">
+                    </div>
+
+
+
+
+                    <div id="reproductive-rate-container" class="parameter-selector-plot pt-2" style="width:250px">
+                      <strong class="py-0">Max number of dispersers: <output id="displayRate">2.1</output></strong>
+                      <div id="reproductive_rate_plot" style="height:100px; width:250px;"></div>
+                      <div id="reproductive-rate-slider" class="pt-0 range range-info text-light">
+                        <input id="id_reproductive_rate" style="" class="custom-range " type="range"
+                          name="reproductive_rate" min="1.7" max="2.6" step="0.1" value="2.1"
+                          onchange="displayRate.value=value">
+                      </div>
+                    </div>
+                    <div id="dispersal-scale-container" class="parameter-selector-plot pt-2" style="width:250px">
+                      <strong class="py-0">Dispersal scale: <output id="displayDispersalScale">47</output> meters</strong>
+                      <div id="dispersal_scale_plot" style="height:100px; width:250px;"></div>
+                      <div id="dispersal-scale-slider" class="pt-0 range range-info text-light">
+                        <input id="id_distance_scale" style="" class="custom-range " type="range" name="distance_scale"
+                          min="39" max="57" step="1" value="47" onchange="displayDispersalScale.value=value">
+                      </div>
+                    </div>
+
+                  </div>
+                </div>                
+                <div id="run-output-details" >
+                  <h5 class="py-0">
+                    <!-- Button trigger modal -->
+                    Run details<a class="btn" data-toggle="modal" data-target="#viewParameters" href="#"><i
+                        style="font-size:0.6em" class="fas fa-plus-circle align-top text-light"></i></a>
+                  </h5>    
+                  <div id="new_run_redirect">You currently don't have a run selected. 
+                  <a href="#">Click here</a> to create a new run.
+                  </div>
+                  <div class="row no-gutters pt-2">
+                    <div id="money-results" class="col py-0" style="width:180px; height:140px"></div>
+                  </div>
+                          <div id="run_details_management_area">
+                          Management area: <span></span> acres
+                          </div>
+                      <div id="number_infected_side_plot" style="height:180px;"></div>
+                      <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
+
+                                  <!-- Modal -->
+                  <div class="modal fade" id="viewParameters" tabindex="-1" role="dialog" aria-labelledby="viewParameters"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">Run details</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <div id="input_run_name">
+                          Run: <span></span>
+                          </div>
+                          <div id="input_run_pk">
+                          Run primary key: <span></span>
+                          </div>
+                          <div id="input_description">
+                          Description: <span></span>
+                          </div>
+                          <div id="input_reproductive_rate">
+                          Reproductive rate: <span></span>
+                          </div>
+                          <div id="input_distance_scale">
+                          Distance Scale: <span></span>
+                          </div>
+                          <div id="input_efficacy">
+                          Efficacy: <span></span>
+                          </div>
+                          <div id="input_date_created">
+                          Date: <span></span>
+                          </div>
+                          <div id="input_weather">
+                          Weather: <span></span>
+                          </div>
+                          <div id="input_budget">
+                          Budget: $<span></span>
+                          </div>
+                          <div id="input_management_month">
+                          Management month: <span></span>
+                          </div>
+                          <div id="input_management_cost">
+                          Management cost: $<span></span>
+                          </div>
+                          <div id="input_management_area">
+                          Management area: <span></span> m<sup>2</sup>
+                          </div>
+                          <div id="input_cost_per_meter_squared">
+                          Cost per meter squared: <span></span>
+                          </div>
+                          <div id="status">
+                          Status: <span></span>
+                          </div>
+                          <div id="input_random_seed">
+                          Random Seed: <span></span>
+                          </div>
+                          <div id="input_final_year">
+                          Final year: <span></span>
+                          </div>
+                          <div id="input_management">
+                          Management polygons: <span></span>
+                          </div>
+                          <div id="output_years">
+                          Years: <span></span>
+                          </div>                
+                          <div id="output_area">
+                          Occurence area: <span></span>
+                          </div>
+                          <div id="output_number">
+                          Number of occurences: <span></span>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                </div>
+                </div>
+              </div>
+          </div>
+
+          </form>
+
+<script>
+
+$( "#run-output-details" ).hide();
+$( document ).ready(function() {
+  $( "#status-indicator" ).hide();
+  $( "#status-indicator-shading" ).hide();
+});
+
+$( "#dispersal-scale-container" ).click(function() {
+        dispersal_scale = $(this).find('input').val();
+      console.log("Distance scale is now: " + dispersal_scale);
+          $(parameter_plot("dispersal_scale_plot", 'Probability', dispersal_scales, dispersal_scale_probabilities, dispersal_scale, '#2598b8', error_bar=false));
+})
+$( "#reproductive-rate-container" ).click(function() {
+        reproductive_rate = $(this).find('input').val();
+      console.log("Reproductive rate is now: " + reproductive_rate);
+          $(parameter_plot("reproductive_rate_plot", 'Probability', reproductive_rates, reproductive_rate_probabilities, reproductive_rate, '#2598b8', error_bar=false));
+})
+
+function findMax(arr) {
+  let max = arr[0];
+
+  for (let i = 1, len=arr.length; i < len; i++) {
+    let v = arr[i];
+    max = (v > max) ? v : max;
+  }
+
+  return [max];
+}
+
+function parameter_plot(myDiv, title, x, y, selector_x, color, error_bar=true) {
+
+var x_values = x;
+var y_values = y;
+var selector_x = Number(selector_x);
+var index_value = x.indexOf(selector_x);
+
+var x_selected_value=x_values[index_value];
+var y_selected_value=y_values[index_value];
+var min_x=x_values[0];
+var max_x=x_values.slice(-1).pop();
+var max_y=Number(findMax(y_values));
+      var trace1 = {
+        x: x_values,
+        y: y_values,
+mode: 'lines',
+  type: 'scatter',
+        line: {
+          color: color
+        },
+        fill: 'tozeroy',
+      };
+
+      var trace2 = {
+        x: [x_selected_value],
+        y: [y_selected_value],
+mode: 'markers',
+  type: 'scatter',
+        marker: {
+          color: 'white',
+          size:'10',
+        },
+      };
+
+      var data = [trace1, trace2];
+
+
+
+      var layout = {
+
+        xaxis: {
+          range: [(min_x-(max_x - min_x)/20), (max_x+(max_x - min_x)/20)],
+          dtick: parseInt((max_x - min_x)/4),
+          tickfont: {
+            size: 12,
+            color: 'rgb(107, 107, 107)'
+          }
+        },
+        yaxis: {
+          range: [-0.1, max_y+1.4],
+          showticklabels: false,
+          title: title,
+          titlefont: {
+            size: 12,
+            color: 'grey',
+          },
+
+          tickfont: {
+            size: 12,
+            color: 'rgb(107, 107, 107)'
+          }
+        },
+        showlegend: false,
+        paper_bgcolor: '#0b0d0e',
+        plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
+        margin: {
+          l: 30,
+          r: 20,
+          b: 15,
+          t: 10,
+          pad: 0
+        },
+      };
+
+      return Plotly.newPlot(myDiv, data, layout, {
+        displayModeBar: false,
+        responsive: true
+      });
+    };
+
+    var reproductive_rates = [1.7,1.8,1.9,2,2.1,2.2,2.3,2.4,2.5,2.6];
+    var reproductive_rate_probabilities = [0.9,4.66,9.49,14.71,18.75,18.39,14.45,9.16,4.43,0.06];
+    var reproductive_rate= [2.1];
+    var dispersal_scales = [39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57];
+    var dispersal_scale_probabilities = [0.56,2.17,2.94,4.13,5.49,6.44,7.96,8.12,8.8,8.48,8.23,7.49,6.83,5.71,4.02,3,2.31,1.52,0.82];
+    var dispersal_scale= [47];
+
+    
+    $(parameter_plot("reproductive_rate_plot", 'Probability', reproductive_rates, reproductive_rate_probabilities, reproductive_rate, '#2598b8', error_bar=false));
+    $(parameter_plot("dispersal_scale_plot", 'Probability', dispersal_scales, dispersal_scale_probabilities, dispersal_scale, '#2598b8', error_bar=false));
+    </script>
+
+
+
+
+          <div class="tab-pane fade no-gutters" id="v-pills-chart-view"  aria-labelledby="v-pills-chart-tab">
+            <div class="row no-gutters" style="background-color: #0b0d0e;">
+              <div class="col-12 d-flex flex-column">
+                <div id="run-title">
+                  Run: My run name <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
+                </div>
+              </div>
+
+              <div id="" class="col-md-3 p-1">
+                <div style="">
+                  <h4>
+                    Details
+                  </h4>
+
+                  <span>Management area: <strong id="polygon-info">425.1</strong> km<sup>2</sup></span>
+                  <div id="gauge-plots" class="row no-gutters">
+                    <div id="money-chart-view" class="" style="width:180px; height:160px"></div>
+                  </div>
+                </div>
+              </div>
+              <div id="" class="col-md-5">
+
+                  <div id="main_plot1" class="" style='height:250px; '></div>
+                  <div id="main_plot2" class="" style='height:250px; '></div>
+              </div>
+                            <div id="" class="col-md-4">
+                           <h4> More analysis/plots...</h4>
+                           <div class="p-2">The plots on the left are just demo plots with fake data
+                           to demonstrate what we *might* put here. Note that additional information
+                           is available when you hover over data points.</div>
+                           <div class="p-2">We are currently using plotly.js plotting library to 
+                           generate plots. Check out the options at: <a href="https://plot.ly/javascript/">https://plot.ly/javascript/</a></div>
+              </div>
+
+            </div>
+                      </div>
+
+        </div>
+
+      </div>
+
+    </div>
+    <div class="col">
+    <div id="run-preview-description" class="row">
+    <div class="col">
+    Other runs in this session:
+    </div>
+      <div class="col-auto">
+        <select disabled id="run_preview_year_selector" class="custom-select custom-select-sm">
+          <option >Show year:</option>
+          <option value="2019" selected>2019</option>
+          <option value="2020">2020</option>
+          <option value="2021" >2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+        </select>
+
+      </div>
+    </div>
+    </div>
+    <div id="run-preview-container" class="row no-gutters flex-nowrap">
+{% for run in runs %}
+<button type="button" class="btn text-right run-link pb-2" data-run = {{ run.pk }} >
+<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>{{ run.name }}</strong></div><small><em> {{run.date_created}} </em></small>" 
+data-content="<div>{{ run.description }}</div><div>Reproductive rate: {{ run.reproductive_rate }}</div><div>Distance scale: 
+{{ run.distance_scale }}</div><div>Efficacy: {{ run.efficacy }}</div>" 
+data-placement="top"> 
+<i class="fas fa-plus-circle"></i>
+</a>
+<a class="load_run_text" data-toggle="tool" 
+                  title="Load results" data-placement="left"> 
+<i class="fas fa-play-circle"></i>
+</a>
+<div id="run_{{ run.pk }}" style="width:150px; height:120px;">
+</div>
+</button>
+<script>
+{% for output in run.output_set.all %}
+{% if output.years == 2019 %}
+$(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ output.number_infected }},{{ output.infected_area }}*acre_to_meter_ratio,{{run.management_cost}}));
+{% endif %}
+ {% endfor %}
+ 
+ </script>
+
+{% endfor %} 
+
+<button type="button" class="btn text-right run-link pb-2" style="background-color: #1E2325; border-color:#393F46; color:#1E2325" data-run = 428 >
+<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>No management</strong></div><small><em> Default </em></small>" 
+data-content="<div>Default scenario with no management.</div><div>Reproductive rate: 2.1</div><div>Distance scale: 
+47</div><div>Efficacy: n/a</div>" 
+data-placement="top"> 
+<i class="fas fa-plus-circle"></i>
+</a>
+<a class="load_run_text" data-toggle="tool" 
+                  title="Load results" data-placement="left"> 
+<i class="fas fa-play-circle"></i>
+</a>
+<div id="run_428" style="width:150px; height:120px;">
+</div>
+</button>
+<script>
+$(run_comparison_plot('run_428','No management', 44201,4750000000*acre_to_meter_ratio,0)); 
+ </script>    
+    </div>
+</div>
+<div>
+more content
+
+
+</div>
+<script>
+  $('[data-toggle="pill"],[data-toggle="tooltip"],[data-toggle="tool"]').tooltip({trigger : 'hover'})
+  $('a.load_run_text').on('click', function(event) {
+  event.stopPropagation();
+  console.log('Run button icon clicked.')
+  $(this).parent().trigger( "click" );
+  console.log('Triggered parent button click.')
+});
+  $('a.run_info_button').on('click', function(event) {
+  event.stopPropagation();
+  console.log('Run info icon clicked.')
+});
+
+</script>
+
+  </div>
+  {% endblock %}
+
+  {% block scripts %}
+  <script>
+
+</script>
+
+  <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
+    type='text/css' />
+
+  <script>
+    mapboxgl.accessToken =
+      'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
+    /* eslint-disable */
+    var map = new mapboxgl.Map({
+      container: 'map', // container id
+      style: 'mapbox://styles/mapbox/dark-v10', //hosted style id
+      center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
+      zoom: 7 // starting zoom
+    });
+
+
+var year_id = '0';
+
+
+function newLayer(map_data,year) {
+console.log("Adding new layer for year " + year);
+  map.addSource(year, {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': map_data
+  });
+
+map.addLayer({
+                            "id": year,
+                            "type": 'fill',
+                            "source": year,
+                            "layout": {
+                              'visibility':'none',
+                              
+                            },
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'outputs'],
+                            0, '#CC0000',
+                            10, '#D61900',
+                            20, '#E03300',
+                            30, '#EA4C00',
+                            40, '#F46600',
+                            50, '#FF8000',
+                            60, '#FF9F19',
+                            70, '#FFBF33',
+                            80, '#FFDF4C',
+                            90, '#FFFF66',
+                            100, '#FFFFCC'
+
+                            /* Fire color palette
+                            0, '#FF2000',
+                            95, '#FFFF00',
+                            100, '#FFFFCC'
+                                                        */                         
+                            /* Magma color palette
+                            0, '#000005',
+                            10, '#080616',
+                            15, '#110B2D',
+                            20, '#1E0848',
+                            25, '#300060',
+                            30, '#43006A',
+                            35, '#57096E',
+                            40, '#6B116F',
+                            45, '#81176D',
+                            50, '#981D69',
+                            55, '#B02363',
+                            60, '#C92D59',
+                            65, '#E03B50',
+                            70, '#ED504A',
+                            75, '#F66B4D',
+                            80, '#FA8657',
+                            85, '#FBA368',
+                            90, '#FBC17D',
+                            95, '#FCDF96',
+                            100, '#FCFFB2',       
+                            */                     
+                           /* Viridis color palette 
+                            0, '#440154',
+                            10, '#481567',
+                            15, '#482677',
+                            20, '#453781',
+                            25, '#404788',
+                            30, '#39568C',
+                            35, '#33638D',
+                            40, '#2D708E',
+                            45, '#287D8E',
+                            50, '#238A8D',
+                            55, '#1F968B',
+                            60, '#20A387',
+                            65, '#29AF7F',
+                            70, '#3CBB75',
+                            75, '#55C667',
+                            80, '#73D055',
+                            85, '#95D840',
+                            90, '#B8DE29',
+                            95, '#DCE319',
+                            100, '#FDE725', */
+                     ],
+                            'fill-outline-color': [
+                                'interpolate',
+                                    ['linear'],
+                                    ['get', 'outputs'],
+                            0, '#CC0000',
+                            10, '#D61900',
+                            20, '#E03300',
+                            30, '#EA4C00',
+                            40, '#F46600',
+                            50, '#FF8000',
+                            60, '#FF9F19',
+                            70, '#FFBF33',
+                            80, '#FFDF4C',
+                            90, '#FFFF66',
+                            100, '#FFFFCC'
+
+                            ],
+                                'fill-opacity': [
+                                    'interpolate',
+                                    ['linear'],
+                                    ['get', 'outputs'],
+                                    0, 0.00,
+                                    10,0.5,
+                                    20,0.533,
+                                    30,0.567,
+                                    40,0.6,
+                                    50,0.633,
+                                    60,0.667,
+                                    70,0.7,
+                                    80,0.733,
+                                    90,0.767,
+                                    100, 0.8,
+
+                                ]
+
+                            }
+                            }, 'waterway-label'); 
+
+};
+
+function addLayers() {
+  var year_id='2018';
+  var visibility_2018 = 'none';
+
+
+if (year_id == '2018') {
+  visibility_2018='visible';
+};
+
+map.addLayer({
+                            "id": '2018',
+                            "type": 'fill',
+                            "source": '2018',
+                            "layout": {
+                              'visibility':visibility_2018,
+                            },
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'outputs'],
+                            0, '#009CB0',
+                            10, '#00C49D',
+                            20, '#00D793',
+                            30, '#00FF80',
+                            40, '#24DA80',
+                            50, '#48B680',
+                            60, '#6D9180',
+                            70, '#916D80',
+                            80, '#B64880',
+                            90, '#DA2480',
+                            100, '#ff0000'
+                            ],
+
+                                'fill-opacity': [
+                                    'interpolate',
+                                    ['linear'],
+                                    ['get', 'outputs'],
+                                    0, 0.00,
+                                    5, 0.05,
+                                    10, 0.40,
+                                    20, 0.50,
+                                    30, 0.50,
+                                    40, 0.50,
+                                    50, 0.50,
+                                    60, 0.50,
+                                    70, 0.50,
+                                    80, 0.50,
+                                    90, 0.50,
+                                    100, 0.50
+                                ]                            }
+                            }, 'waterway-label'); 
+
+};
+
+map.on('load', function() {
+  console.log("Adding initial data.");
+  {% get_static_prefix as STATIC_URL %}
+{% for year in historic_data %}
+  map.addSource('{{year}}', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': '{{STATIC_URL}}map_data/SLF_historic_data/slf_{{year}}.geojson'
+  });
+  map.addLayer({
+                            "id": '{{year}}',
+                            "type": 'fill',
+                            "source": '{{year}}',
+                            "layout": {
+                              'visibility':'none',
+                            },
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'outputs'],
+                            0, '#CC0000',
+                            0.5, '#D61900',
+                            1, '#E03300',
+                            1.5, '#EA4C00',
+                            2, '#F46600',
+                            2.5, '#FF8000',
+                            3, '#FF9F19',
+                            3.5, '#FFBF33',
+                            4, '#FFDF4C',
+                            4.5, '#FFFF66',
+                            5, '#FFFFCC'
+                            ],
+                            'fill-outline-color': [
+                                'interpolate',
+                                    ['linear'],
+                                    ['get', 'outputs'],
+                            0, '#CC0000',
+                            0.5, '#D61900',
+                            1, '#E03300',
+                            1.5, '#EA4C00',
+                            2, '#F46600',
+                            2.5, '#FF8000',
+                            3, '#FF9F19',
+                            3.5, '#FFBF33',
+                            4, '#FFDF4C',
+                            4.5, '#FFFF66',
+                            5, '#FFFFCC'
+                                ],
+                                'fill-opacity': [
+                                    'interpolate',
+                                    ['linear'],
+                                    ['get', 'outputs'],
+                                    0, 0.00,
+                                    0.5,0.5,
+                                    1,0.533,
+                                    1.5,0.567,
+                                    2,0.6,
+                                    2.5,0.633,
+                                    3,0.667,
+                                    3.5,0.7,
+                                    4,0.733,
+                                    4.5,0.767,
+                                    5, 0.8,
+
+                                ]
+
+                            }
+                            }, 'waterway-label'); 
+  {% endfor %}
+    map.setLayoutProperty('2018', 'visibility', 'visible');
+
+  console.log("Adding APHIS Perimeter Zone.");
+    map.addSource('perimeter_zone', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': '{% static "map_data/slf_aphis_treatment.geojson" %}'
+  });
+  /*here we are adding a source, then a layer based on that that source*/
+    map.addLayer({
+                            "id": 'perimeter_zone_layer',
+                            "type": 'fill',
+                            "source": 'perimeter_zone',
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'Dis_KB'],
+                            1, '#41dff4'
+                            ],
+                            'fill-opacity': 0.1
+                            }
+                            }, 'waterway-label'); 
+
+
+                            
+  });
+
+
+
+
+    var draw = new MapboxDraw({
+      keybindings:true,
+      displayControlsDefault: false,
+      controls: {
+        //polygon: true,
+        //trash: true
+      }, 
+  styles: [
+    // ACTIVE (being drawn)
+    // line stroke
+    {
+        "id": "gl-draw-line",
+        "type": "line",
+        "filter": ["all", ["==", "$type", "LineString"], ["!=", "mode", "static"]],
+        "layout": {
+          "line-cap": "round",
+          "line-join": "round"
+        },
+        "paint": {
+          "line-color": "#83f441",
+          "line-dasharray": [0.2, 2],
+          "line-width": 3
+        }
+    },
+    // polygon fill
+    {
+      "id": "gl-draw-polygon-fill",
+      "type": "fill",
+      "filter": ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
+      "paint": {
+        "fill-color": "#83f441",
+        "fill-outline-color": "#83f441",
+        "fill-opacity": 0.1
+      }
+    },
+    // polygon outline stroke
+    // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
+    {
+      "id": "gl-draw-polygon-stroke-active",
+      "type": "line",
+      "filter": ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#83f441",
+        "line-width": 3
+      }
+    },
+    // vertex point halos
+    {
+      "id": "gl-draw-polygon-and-line-vertex-halo-active",
+      "type": "circle",
+      "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
+      "paint": {
+        "circle-radius": 7,
+        "circle-color": "#FFF"
+      }
+    },
+    // vertex points
+    {
+      "id": "gl-draw-polygon-and-line-vertex-active",
+      "type": "circle",
+      "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
+      "paint": {
+        "circle-radius": 5,
+        "circle-color": "#83f441",
+      }
+    },
+
+    // INACTIVE (static, already drawn)
+    // line stroke
+    {
+        "id": "gl-draw-line-static",
+        "type": "line",
+        "filter": ["all", ["==", "$type", "LineString"], ["==", "mode", "static"]],
+        "layout": {
+          "line-cap": "round",
+          "line-join": "round"
+        },
+        "paint": {
+          "line-color": "#000",
+          "line-width": 3
+        }
+    },
+    // polygon fill
+    {
+      "id": "gl-draw-polygon-fill-static",
+      "type": "fill",
+      "filter": ["all", ["==", "$type", "Polygon"], ["==", "mode", "static"]],
+      "paint": {
+        "fill-color": "#000",
+        "fill-outline-color": "#000",
+        "fill-opacity": 0.3
+      }
+    },
+    // polygon outline
+    {
+      "id": "gl-draw-polygon-stroke-static",
+      "type": "line",
+      "filter": ["all", ["==", "$type", "Polygon"], ["==", "mode", "static"]],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#000",
+        "line-width": 3
+      }
+    }
+  ]
+});
+
+    map.addControl(draw);
+
+    map.on('draw.create', updateArea);
+    map.on('draw.delete', updateArea);
+    map.on('draw.update', updateArea);
+
+
+//Mapbox draw switches to select tool after drawing a polygon.
+//This function makes it so that the mode stays as polygon if the polygon
+//tool is selected.
+map.on('draw.modechange', e => {
+      if ($("#polygon-tool").hasClass("active")){
+    draw.changeMode('draw_polygon');
+  }
+});
+
+    function updateArea(e) {
+      var data = draw.getAll();
+      console.log("Updating management polygons:");
+      console.log(data);
+
+      if (data.features.length > 0) {
+        // Stringify the GeoJson
+        var convertedData = JSON.stringify(data);
+
+        // Create export
+        $('#id_management_polygons').val(convertedData);
+      } else {
+        $('#id_management_polygons').val(0);
+        console.log("There is no management.")
+      }
+      var answer = document.getElementById('polygon-info');
+      var budget = $("input#id_budget").val();
+      var cost_per_meter_squared = $("input#id_cost_per_meter_squared").val();
+
+      if (data.features.length > 0) {
+        var area = turf.area(data); //area in meters
+        // restrict to area to 2 decimal points
+        var area_modifier = $("select#id_area_unit").children("option:selected").val();
+        var area_unit = $("select#id_area_unit").children("option:selected").text();
+        var rounded_area = Math.round(area * 100) / 100;
+        var displayed_area = Math.round(area*area_modifier * 100) / 100;
+        $('#id_management_area').val(rounded_area);
+        // round cost to 2 decimal places
+        var cost = Math.round(area * cost_per_meter_squared * 100) / 100;
+        $('#id_management_cost').val(cost);
+        answer.innerHTML = 'Management area: ' + displayed_area + ' ' + area_unit;
+        //console.log(map.getCenter())
+        gauge_plot("money-new", cost, budget);
+      } else {
+        answer.innerHTML = 'Use the polygon tool to draw management areas.';
+        gauge_plot("money-new", 0, budget);
+        $('#id_management_area').val(0);
+        $('#id_management_cost').val(0);
+      }
+    }
+
+
+    function round(value, decimals) {
+      return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+    }
+
+    function gauge_plot(div_id, amount, max_amount) {
+
+      var max_level = max_amount/1000000;
+      var level = amount/1000000;
+
+      if (level >= max_level) {
+        main_color = "#f55949";
+        drawn_level = max_level;
+        var overbudget = level - max_level;
+        warning_msg = "Budget exceeded by:<br>$" + round(overbudget, 2) + " million";
+        warning_color = "#f55949";
+      } else {
+        main_color = "#7ba83d";
+        drawn_level = level;
+        warning_msg = 'spent on<br>management';
+        warning_color = 'grey';
+      };
+      var data = [{
+        values: [drawn_level, (0.98 * max_level - drawn_level), (max_level / 50), (max_level / 3)],
+        rotation: -135,
+        direction: "clockwise",
+        sort: false,
+        textinfo: 'text',
+        textposition: 'inside',
+        marker: {
+          colors: [main_color, '#676b73', '#f55949', 'rgba(255, 255, 255, 0)']
+        },
+        labels: ['Money spent in <br> this run:<br>$' + level + ' million', '', 'Budget: $' + max_level +
+          ' million', ''
+        ],
+        hoverinfo: 'label',
+        hole: 0.8,
+        type: 'pie',
+        showlegend: false
+      }];
+
+      var layout = {
+        annotations: [{
+            xref: 'paper',
+            yref: 'paper',
+            x: 0.5,
+            xanchor: 'middle',
+            y: 0.5,
+            yanchor: 'middle',
+            text: '$' + round(level, 1),
+            font: {
+              family: 'Helvetica',
+              size: 30,
+              color: '#ffffff'
+            },
+            align: 'center',
+
+            showarrow: false,
+          },
+          {
+            xref: 'paper',
+            yref: 'paper',
+            x: 0.5,
+            xanchor: 'center',
+            y: 0.3,
+            yanchor: 'middle',
+            text: 'million',
+            font: {
+              family: 'Helvetica',
+              size: 20,
+              color: '#ffffff'
+            },
+            align: 'center',
+
+            showarrow: false,
+          },
+          {
+            xref: 'paper',
+            yref: 'paper',
+            x: 0.5,
+            xanchor: 'center',
+            y: 0.0,
+            yanchor: 'middle',
+            text: warning_msg,
+            font: {
+              family: 'Helvetica',
+              size: 14,
+              color: warning_color,
+            },
+            align: 'center',
+
+            showarrow: false,
+          }
+
+        ],
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
+        margin: {
+          l: 30,
+          r: 30,
+          b: 20,
+          t: 0,
+          pad: 0
+        },
+
+
+
+        title: {
+          text: '',
+          font: {
+            color: 'white',
+          },
+        },
+
+
+        xaxis: {
+          zeroline: false,
+          showticklabels: false,
+          showgrid: false,
+        },
+        yaxis: {
+          zeroline: false,
+          showticklabels: false,
+          showgrid: false,
+        }
+      };
+
+      return Plotly.newPlot(div_id, data, layout, {
+        displayModeBar: false,
+        responsive: true
+      });
+    }
+
+    gauge_plot("money-new", 0, $("input#id_budget").val());
+
+    function side_plot(myDiv, title, x1, x2, y1, y2, color, error_bar=true) {
+      var trace1 = {
+        x: x1,
+        y: y1,
+        error_y: {
+      type: 'percent',
+      value: 20,
+      visible: error_bar,
+    },
+        name: 'No management',
+        marker: {
+          color: 'grey'
+        },
+        fill: 'tozeroy',
+        type: 'scatter'
+      };
+
+      var trace2 = {
+        x: x2,
+        y: y2,
+    error_y: {
+      type: 'percent',
+      value: 30,
+      visible: error_bar,
+    },
+
+        name: 'Current run',
+        marker: {
+          color: color
+        },
+        fill: 'tozeroy',
+        type: 'scatter'
+      };
+
+      var data = [trace1, trace2];
+
+
+      var layout = {
+        xaxis: {
+          tickfont: {
+            size: 12,
+            color: 'rgb(107, 107, 107)'
+          }
+        },
+        yaxis: {
+          showticklabels: false,
+          title: title,
+          titlefont: {
+            size: 12,
+            color: 'white',
+          },
+
+          tickfont: {
+            size: 12,
+            color: 'rgb(107, 107, 107)'
+          }
+        },
+        showlegend: false,
+        paper_bgcolor: '#0b0d0e',
+        plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
+        margin: {
+          l: 30,
+          r: 20,
+          b: 25,
+          t: 10,
+          pad: 0
+        },
+      };
+
+      return Plotly.newPlot(myDiv, data, layout, {
+        displayModeBar: false,
+        responsive: true
+      });
+    };
+
+
+    var default_years = [2019, 2020, 2021];// 2022, 2023];
+    var x2 = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
+    var default_detections = [44201,159916,368383];//,599897,893903];
+    var default_area = [4750000000*acre_to_meter_ratio,12500000000*acre_to_meter_ratio,22200000000*acre_to_meter_ratio]; //,32900000000,48900000000]*acre_to_meter_ratio;
+    var y2 = [20, 30, 50, 100, 300, 400];
+    $(side_plot("main_plot1", '# occurences', default_years, x2, default_detections, y2, '#2598b8',error_bar=false));
+    $(side_plot("main_plot2", 'Occurence area', default_years, x2, default_area, y2, '#5fc2c2',error_bar=false));
+
+    $('#show-hide-new-view').on('click', function () {
+      var bounds = map.getBounds();
+      $('#map-container-new-view').toggleClass('col-md-9 col-md-12');
+      $('#side-panel').toggleClass('d-md-block d-md-none');
+      console.log("Toggle side panel.")
+      map.resize();
+      //map.fitBounds(bounds);
+      $(this).text($(this).text() == 'Hide Details' ? 'Show Details' : 'Hide Details');
+    });
+
+
+//I don't think this is used anymore... check
+  $('#map-tab').on('shown.bs.tab', function () {
+    console.log("Map tab selected.")
+        map.resize();
+    });
+
+//Not sure if this is used anymore either
+  $('#chart-view-tab').on('shown.bs.tab', function () {
+    $(side_plot("main_plot1", '# occurences', default_years, x2, default_detections, y2, '#2598b8'));
+    $(side_plot("main_plot2", 'Occurence area', default_years, x2, default_area, y2, '#5fc2c2'));
+    });
+
+
+
+$( "input#id_budget, input#id_cost, select#id_area_unit" ).on( "click blur", function() {
+  var displayed_cost_per_area = $('input#id_cost').val();
+  console.log("The displayed cost is: " + displayed_cost_per_area);
+  var cost_modifier =  $("select#id_area_unit").children("option:selected").val();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
+  var area_unit =  $("select#id_area_unit").children("option:selected").text();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
+  console.log("The cost modifier is: " + cost_modifier);
+  var actual_cost_per_meter_squared = Math.round(displayed_cost_per_area*cost_modifier*100000000)/100000000;
+  console.log("The actual cost per meter squared is: " + actual_cost_per_meter_squared);
+  $('input#id_cost_per_meter_squared').val(actual_cost_per_meter_squared);
+  $('span.displayed_area_unit').text(area_unit);
+updateArea();
+});
+
+function updateLayers(){
+
+      var raster2018 = '{% static "map_data/" %}'+ "perimeter" + '_' + '6' + '_'+ '100' + '_2018.geojson';
+      var raster2019 = '{% static "map_data/" %}'+ "perimeter" + '_' + '6' + '_'+ '100' + '_2019.geojson';
+      var raster2020 = '{% static "map_data/" %}'+ "perimeter" + '_' + '6' + '_'+ '100' + '_2020.geojson';
+      //console.log(raster2018)
+      //console.log(raster2019)
+      //console.log(raster2020)
+                       
+                        // update the map
+                        // change the overlay
+                        if (map.getLayer("2018")) {
+                            map.removeLayer("2018");
+                        };
+                        if (map.getSource("2018")) {
+                            map.removeSource("2018");
+                        };
+                        if (map.getLayer("2019")) {
+                            map.removeLayer("2019");
+                        };
+                        if (map.getSource("2019")) {
+                            map.removeSource("2019");
+                        };
+                        if (map.getLayer("2020")) {
+                            map.removeLayer("2020");
+                        };
+                        if (map.getSource("2020")) {
+                            map.removeSource("2020");
+                        };
+
+  map.addSource('2018', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': raster2018
+  });
+  map.addSource('2019', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': raster2019
+  });
+  map.addSource('2020', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': raster2020
+  });
+  /*here we are adding a source, then a layer based on that that source*/
+
+addLayers();
+
+};
+
+$("#year-slider").change(function () {
+  year_id = $(this).find('input').val();
+  //$("#year-value").text(year_id);
+  var min_year = $("#year-slider input").attr('min');
+  var max_year = $("#year-slider input").attr('max');
+  console.log("Hiding years: " + min_year + " - " + max_year);
+  for (i = parseInt(min_year); i <= parseInt(max_year); i++) {
+    if (map.getLayer(i.toString())) {
+      map.setLayoutProperty(i.toString(), 'visibility', 'none');
+    };
+  };
+  map.setLayoutProperty(year_id, 'visibility', 'visible');
+  $("#displayYear").val(year_id);
+  if (year_id > 2018){
+    $('#display_year_forecast').text('Forecast')
+    $("#probability-legend-container").show();
+    $("#historic-legend-container").hide();
+  }
+  else {
+    $('#display_year_forecast').text('Field observations')
+    $("#probability-legend-container").hide();
+    $("#historic-legend-container").show();
+  }
+  console.log("Current displayed year: " + year_id);
+});
+
+$("select#run_preview_year_selector").change(function () {
+  var preview_year = $(this).children("option:selected").val();
+console.log("New year selected: " + preview_year);
+
+
+});
+
+run_preview_year_selector
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+            // Only send the token to relative URLs i.e. locally.
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    },
+});
+
+function displayRun(run_id) {
+            get_output(run_id);
+};
+
+function disableDrawTools(){
+  if ($("#draw-controls").is(":visible")){
+    console.log('Disabling draw tools.')
+    draw.changeMode('simple_select');
+    map.removeControl(draw);
+    map.getContainer().classList.remove("mouse-add");
+    $('.drawing-tool').removeClass('active');
+    $('#select-tool').addClass('active');
+    $( "#draw-controls" ).hide();
+  }
+  else {
+    console.log("Draw tools already disabled.")
+  }
+};
+
+function enableDrawTools(){
+  if ($("#draw-controls").is(":hidden")){
+    if (!$('input#id_tangible_landscape').prop('checked') && $('#map-tab').hasClass('active')){
+      map.addControl(draw);
+      $( "#draw-controls" ).show();
+      var treatment = JSON.parse($('#id_management_polygons').val());
+      console.log('Currently drawn treatment JSON:');
+      console.log(treatment);
+      if (treatment != 0) {
+        var ids = draw.set(treatment);
+      };
+
+      console.log('Added draw tools.')
+      updateArea();
+    }  
+    else  {
+    console.log('Did not add draw tools because TL is checked')
+      updateArea();
+    }
+  }
+  else {
+    console.log("Draw tools already enabled.")
+  }
+};
+
+function insertRunButton(run_id,name,date,description,reproductive_rate,distance_scale,efficacy,infected_number,infected_area,budget) { 
+  var run_pk = run_id.toString();
+  console.log(run_pk);
+if (name.length > 18) {
+    var short_name = name.substring(0, 18) + '...';
+    } else {
+      short_name = name;
+    }
+
+  $('<button id="run_button_' + run_id.toString()  
+      + '" type="button" class="btn text-right run-link pb-2" data-run = "'+run_id.toString()
+      + '"><a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>' + name 
+      + '</strong></div><small><em>' + date
+      + '</em></small>" data-content="<div>' + description
+      + '</div><div>Reproductive rate: ' + reproductive_rate 
+      + '</div><div>Distance scale: ' + distance_scale
+      + '</div><div>Efficacy: ' + efficacy
+      + '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a>'
+      + '<div id="run_'+run_id.toString()
+      + '" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));  
+
+
+  $(run_comparison_plot('run_'+run_id.toString(),short_name,infected_number,infected_area,budget));
+
+$(function () {
+  $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})
+})
+
+
+  $("#run_button_"+ run_id.toString()).on('click', function () {
+      $('#run-preview-container button').removeClass('active');
+      $(this).addClass('active');
+      var run_id = $(this).attr('data-run');
+      displayRun(run_id);
+      console.log("Run " + run_id + "link clicked.");
+  }); 
+
+    $("#run_button_"+ run_id.toString() +' a.load_run_text').on('click', function(event) {
+  event.stopPropagation();
+  console.log('Run button icon clicked.')
+  $(this).parent().trigger( "click" );
+  console.log('Triggered parent button click.')
+});
+  $("#run_button_"+ run_id.toString() + ' a.run_info_button').on('click', function(event) {
+  event.stopPropagation();
+  console.log('Run info icon clicked.')
+}); 
+  $('[data-toggle="tooltip"]').tooltip({trigger : 'hover'})
+
+  };
+
+function get_output(run_id) {
+        $('#new_run_redirect').remove();
+        $('#status-text span').text('Loading...');
+        $( "#status-indicator" ).show();
+        $( "#status-indicator-shading" ).show();
+        $("#year-slider").find('input').val('2018');
+
+            $("#year-slider input").attr('max','2018');
+            $("#displayYear").val('2018');
+      map.setLayoutProperty('2018','visibility','visible');
+      //Make this loop a function of current slider max
+                  for (i = 2019; i < 2030; i++) {
+                        if (map.getLayer(i.toString())) {
+                            map.removeLayer(i.toString());
+                        };
+                        if (map.getSource(i.toString())) {
+                            map.removeSource(i.toString());
+                        };                       
+                  };
+                   console.log("Requesting run " + run_id + " data from the database.")
+      $.ajax({
+        url: "{% url 'get_output' %}",
+          dataType: "json",
+          data: {
+          'new_run_id': run_id
+          },
+          success: function (data) {
+            console.log('Run ' + data.run_inputs.primary_key + ' data successfully retrieved from database.');
+
+            var year_list = [], infected_area_list = [], infected_number_list = [];
+            var max_year=2018;
+            var min_year=2014;
+            var button_area = 0;
+            var button_number_infected = 0;
+            for (var i=0; i<data.results.length; i++) {
+                  var year = data.results[i].years;
+                  console.log("Output ID: " + data.results[i].pk);
+                  console.log("Year: " + year);
+                  var year_string = year.toString();
+                  console.log("Year string: " + year_string);
+                  var map_data = data.results[i].spread_map;
+                  year_list.push( data.results[i].years );
+                  infected_area_list.push( data.results[i].infected_area*acre_to_meter_ratio);
+                  infected_number_list.push( data.results[i].number_infected );
+                  if (year == 2019){
+                    button_area = data.results[i].infected_area*acre_to_meter_ratio;
+                    button_number_infected = data.results[i].number_infected;
+                  }
+                  //console.log(data.results[i].spread_map);
+                  //console.log(data.results[i].years);
+
+          //newLayer('{% static "map_data/infection_0_2019.geojson" %}', year);
+                        if (map.getLayer(year_string)) {
+                            map.removeLayer(year_string);
+                        };
+                        if (map.getSource(year_string)) {
+                            map.removeSource(year_string);
+                        };                       
+                    newLayer(map_data, year_string);
+                    if (year > max_year ) {
+                    $("#year-slider input").attr('max',year.toString());
+                  max_year = year;
+                  console.log("New max year = " + max_year);
+                    };
+                    if (year < min_year){
+                  $("#year-slider input").attr('min',year.toString());
+                  min_year = year;
+                  console.log("New min year = " + min_year);
+                    };
+            }
+            var first_model_year=2019;
+            console.log('Management month: ' + data.run_inputs.management_month)
+                map.setLayoutProperty('2018','visibility','none');
+                map.setLayoutProperty(first_model_year.toString(),'visibility','visible');
+                $("#year-slider").find('input').val(first_model_year.toString());
+                $("#displayYear").val(first_model_year.toString());
+                $('#display_year_forecast').text('Forecast')
+                $("#historic-legend-container").hide();
+                $("#probability-legend-container").show();
+                  $('#input_run_name span').text(data.run_inputs.name);
+                  $('#input_run_pk span').text(data.run_inputs.primary_key);
+                  $('input#id_name').val(data.run_inputs.name);
+                  $('#input_description span').text(data.run_inputs.description);
+                  $('#input_reproductive_rate span').text(data.run_inputs.reproductive_rate);
+                  $('#input_distance_scale span').text(data.run_inputs.distance_scale);
+                  $('#input_efficacy span').text(data.run_inputs.efficacy);
+                  $('#input_date_created span').text(data.run_inputs.date_created);
+                  $('#input_random_seed span').text(data.run_inputs.random_seed);
+                  $('#input_budget span').text(data.run_inputs.budget);
+                  $('#input_management_month span').text(data.run_inputs.management_month);
+                  $('#input_management_cost span').text(data.run_inputs.management_cost);
+                  $('#input_management_area span').text(data.run_inputs.management_area);
+                  $('#run_details_management_area span').text(Math.round(data.run_inputs.management_area*acre_to_meter_ratio));
+                  $('#input_cost_per_meter_squared span').text(data.run_inputs.cost_per_meter_squared);
+                  $('#input_weather span').text(data.run_inputs.weather);
+                  $('#input_final_year span').text(data.run_inputs.final_year);
+                  $('#input_management span').text(data.run_inputs.management_polygons);
+                  $('#status span').text(data.run_inputs.status);
+                  $('#output_years span').text(year_list);
+                  $('#output_area span').text(infected_area_list);
+                  $('#output_number span').text(infected_number_list);
+                $( "#status-indicator" ).hide();
+                $( "#status-indicator-shading" ).hide();
+                        if (map.getLayer('treatment')) {
+                            map.removeLayer('treatment');
+                        };
+                        if (map.getLayer('treatment-fill')) {
+                            map.removeLayer('treatment-fill');
+                        };
+                        if (map.getSource('treatment')) {
+                            map.removeSource('treatment');
+                        };      
+                    map.addSource('treatment', {
+                      'type': 'geojson',
+                      /*many types of data can be added, such as geojson, vector tiles or raster data*/
+                      'data': data.run_inputs.management_polygons,
+                    });
+                    /*here we are adding a source, then a layer based on that that source*/
+                    map.addLayer({
+                      "id": 'treatment',
+                      "type": 'line',
+                      "source": 'treatment',
+                      'paint': {
+                        'line-color': '#83f441',
+                        'line-width': 3
+                      } 
+                    });
+                    map.addLayer({
+                      "id": 'treatment-fill',
+                      "type": 'fill',
+                      "source": 'treatment',
+                      'paint': {
+                        'fill-color': '#83f441',
+                        'fill-opacity': 0.1,
+                      } 
+                    });
+                  $( "#results-tab" ).trigger( "click" );
+                    $(side_plot("number_infected_side_plot", '# occurences', default_years, year_list, default_detections,infected_number_list, '#2598b8',error_bar=false));
+                    $(side_plot("area_infected_side_plot", 'Occurence area', default_years, year_list, default_area, infected_area_list, '#5fc2c2',error_bar=false));
+                    $(gauge_plot("money-results", data.run_inputs.management_cost, data.run_inputs.budget));
+
+                  if (!(document.getElementById("run_"+ data.run_inputs.primary_key.toString()))){
+                    insertRunButton(data.run_inputs.primary_key,data.run_inputs.name,data.run_inputs.date_created,data.run_inputs.description,data.run_inputs.reproductive_rate,data.run_inputs.distance_scale,data.run_inputs.efficacy,button_number_infected ,button_area,data.run_inputs.management_cost);
+                  };
+          },
+
+          error: function (xhr) {
+            alert(xhr.statusText)
+          }
+        
+      });
+  };
+
+
+function poll() {
+  setTimeout(function () {
+    var new_run_id = $('#submit-run-button').attr('data-run');
+    var stop_listening = $('button#cancel-polling').attr('data-value');
+    $.ajax({
+      url: "{% url 'check_status' %}",
+      dataType: "json",
+      data: {
+        'new_run_id': new_run_id
+      },
+      success: function (data) {
+        console.log("Status for run " + new_run_id + ": " + data.status);
+
+        //Setup the next poll recursively
+        if (data.status == "SUCCESS") {
+          $('#status-text span').text('Success! Loading results...');
+          get_output(new_run_id);
+          $('#id_management_polygons').val(0);
+          //$( "#get-data-button" ).trigger( "click" );
+        } else if (stop_listening == 'true') {
+          console.log("Exiting polling loop. This won't stop the PoPS run from continuing, but will prevent it from displaying on the dashboard.")
+          $("#status-indicator").hide();
+          $("#status-indicator-shading").hide();
+          $("button#cancel-polling").attr('data-value', 'false');
+        } else if (data.status == "FAILED") {
+          $('#status-text span').text('RUN FAILED.');
+          $("#status-logo").hide();
+
+        } else if (data.status == "PENDING") {
+          if ($('input#id_tangible_landscape').prop('checked')) {
+            $('#status-text span').text('Waiting for Tangible Landscape management...');
+          } else {
+            $('#status-text span').text('Pending...');
+          }
+          poll();
+        } else {
+          $('#status-text span').text(data.status);
+
+          poll();
+        }
+      },
+      error : function(xhr,errmsg,err) {
+      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+      + "\nThere was a problem listening for the results of the model run... the simulation is most likely still running. Try refreshing the page in 1-2 minutes.");
+          console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+      }
+    });
+  }, 2000);
+};
+
+//Changes to the page for tangible landscape.
+$("input#id_tangible_landscape").on('change', function () {
+  if ($('input#id_tangible_landscape').prop('checked')){
+    console.log('Tangible landscape is on...');
+      $("#submit-run-button").text("Send to Tangible Landscape");
+      disableDrawTools();
+  }
+  else {
+    console.log('Tangible landscape is off...');
+    $("#submit-run-button").text("Run PoPS Model");
+    enableDrawTools();
+  }
+});
+
+$("#SLF_buffer_zone_checkbox input").on('change', function () {
+  if ($('#SLF_buffer_zone_checkbox input').prop('checked')){
+    console.log('Show SLF buffer zone');
+    map.setLayoutProperty('perimeter_zone_layer','visibility','visible');
+  }
+  else {
+    console.log('Hide SLF buffer zone');
+    map.setLayoutProperty('perimeter_zone_layer','visibility','none');
+  }
+});
+
+
+    $(".run-link").on('click', function () {
+      $('#run-preview-container button').removeClass('active');
+      $(this).addClass('active');
+      var run_id = $(this).attr('data-run');
+      console.log("Run " + run_id + " link clicked.");
+      displayRun(run_id);
+    });    
+    
+    $("#results-tab").on('click', function () {
+      $("#submit-run-button").attr("disabled", true);
+      $("input#id_name").prop('disabled', true);
+        disableDrawTools();
+      if (map.getLayer("treatment")) {
+        map.setLayoutProperty('treatment','visibility','visible');
+      };
+      if (map.getLayer("treatment-fill")) {
+        map.setLayoutProperty('treatment-fill','visibility','visible');
+      };
+
+      $( "#run-details" ).hide();
+      $( "#run-output-details" ).show();
+      $("a.nav-link").removeClass("active");
+      $("a#results-tab").addClass("active");
+      $(".tab-pane").removeClass("active");
+      $("#v-pills-map").addClass("active");
+
+    });
+
+    $("#map-tab, #new_run_redirect a").on('click', function () {
+      $("#submit-run-button").attr("disabled", false);
+      $("input#id_name").prop('disabled', false);
+                        if (map.getLayer("treatment")) {
+      map.setLayoutProperty('treatment','visibility','none');
+                        };
+      if (map.getLayer("treatment-fill")) {
+        map.setLayoutProperty('treatment-fill','visibility','none');
+      };
+
+      $( "#run-details" ).show();
+      $( "#run-output-details" ).hide();
+      $("a.nav-link").removeClass("active");
+      $("a#map-tab").addClass("active");
+      $(".tab-pane").removeClass("active");
+      $("#v-pills-map").addClass("active");
+      enableDrawTools();
+    });
+
+    $("#chart-view-tab").on('click', function () {
+        disableDrawTools();
+      $("a.nav-link").removeClass("active");
+      $("a#chart-view-tab").addClass("active");
+      $(".tab-pane").removeClass("active");
+      $("#v-pills-chart-view").addClass("active");
+      $("#v-pills-chart-view").addClass("show");
+    });
+
+    $("#submit-run").on('submit', function () {
+      event.preventDefault();
+      console.log("New run form submitted.") // sanity check
+      $("#submit-run-button").attr("disabled", true);
+      $('#run-preview-container button').removeClass('active');
+      var form = $(this).closest("form");
+      $.ajax({
+        url: form.attr("submit-run-url"),
+        data: form.serialize(),
+        type : "POST", // http method
+        success: function (data) {
+          console.log('New run parameters successfully posted to database!');
+          var new_run_id = data.pk;
+          console.log('New run id: ' + new_run_id);
+          if (!$('input#id_tangible_landscape').prop('checked')){
+            var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+            var run_url = base_url.concat(new_run_id.toString());
+            console.log(run_url);
+            $.ajax({
+              url: run_url,
+              dataType: 'JSONP',
+              type: 'GET',
+              headers: { 'Access-Control-Allow-Origin': 'https://pops-model-api.appspot.com' },
+              statusCode: {
+                404: function() {
+                  alert( "PoPS Model API not found (404 error)... \n Please try again. \n If the problem persists, contact an admin." );
+                },
+                500: function() {
+                  alert( "PoPS Model API returned 500 Error... \n Please try again. \n If the problem persists, contact an admin." );
+                }
+              },
+              success : function (data) {
+                console.log('Success signal from PoPS Model API.');
+              },
+              error : function(xhr,errmsg,err) {
+                console.log('Received status from the PoPS model API:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+              }
+            });
+            console.log('Sent run request to PoPS. Waiting for updates to database...')
+          }
+          else {
+            console.log('Waiting for management from tangible landscape...')
+          }
+          $("#submit-run-button").attr('data-run',new_run_id);
+          poll();
+        },
+                // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+      + "\nIf the displayed error is not informative, the most likely issue is that there was a problem writing to the database.");
+            console.log('There was an error writing to the database:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+      });
+        $('#status-text span').text('Getting ready...');
+      $( "#status-indicator" ).show();
+      $( "#status-indicator-shading" ).show();
+      $("button#cancel-polling").show();
+    });
+
+$(function () {
+  $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})
+})
+
+
+
+  </script>
+  {% endblock %}
+
+</body>
+
+</html>

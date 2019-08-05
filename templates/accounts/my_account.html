@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/case_study_instructions.css' %}">
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-4">
+
+    <h2 id="top-of-page" class="text-center">Account details for {{ user }}: </h2>
+    <div class="row justify-content-center">
+        <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
+            <table class="table table-sm table-bordered">
+            <tbody>
+            <tr>
+            <th>Username:</th>
+            <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+            <th>Name:</th>
+            <td>{{ user.first_name }} {{ user.last_name }}</td>
+            </tr>
+            <tr>
+            <th>Email:</th>
+            <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+            <th>Organization:</th>
+            <td>{{ user.organization }}</td>
+            </tr>
+            <tr>
+            <th>User type:</th>
+            <td>{{ user.get_user_type_display }}</td>
+            </tr>
+            <tr>
+            <th>Date joined:</th>
+            <td>{{ user.date_joined }}</td>
+            </tr>            
+            </tbody>
+            </table>
+            <a class="btn btn-secondary btn-sm" href="#" role="button">Update user information</a>
+            <a class="btn btn-success btn-sm" href="{% url 'password_change' %}" role="button">Change password</a>
+        </div> <!-- Close main col -->
+    </div> <!-- Close main row -->
+</div> <!-- Close main container -->
+{% endblock %}
