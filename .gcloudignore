@@ -15,6 +15,9 @@
 Pipfile
 Pipfile.lock
 media/documents/avg_spread_temp_coefficient_slf_2018_2022_pm.tif
+contributing_docs/CODE_OF_CONDUCT.md
+contributing_docs/CONTRIBUTING.md
+contributing_docs/STYLE_GUIDE.md
 
 # Python pycache:
 __pycache__/
