@@ -658,49 +658,10 @@ class Session(models.Model):
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     name = models.CharField(verbose_name = _("session name"), max_length=150, help_text="Give your session a descriptive name.")
     description = models.TextField(verbose_name = _("session description"), max_length = 300, blank=True, null=True, help_text="Give your session a description.")
-
-    class Meta:
-        verbose_name = _("session")
-        verbose_name_plural = _("sessions")
-
-    def __str__(self):
-        return self.name
-
-class Run(models.Model):
-
-    session = models.ForeignKey(Session, verbose_name = _("session id"), on_delete = models.CASCADE)
-    name = models.CharField(verbose_name = _("run name"), max_length = 45)
-    description = models.TextField(verbose_name = _("run description"), default="Give your run a description.", max_length = 300, blank=True, null=True, help_text="Give your run a description.")
-    random_seed = models.PositiveIntegerField(verbose_name = _("random seed"), default = 33, null = True, validators = [MinValueValidator(1)])
-    date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
-    STATUS_CHOICES = (
-        ("PENDING", "Pending"),
-        ("IN PROGRESS", "In progress"),
-        ("READING DATA", "Reading data"),
-        ("WAITING FOR TL", "Waiting for Tangible Landscape"),
-        ("RUNNING MODEL", "Running model"),
-        ("WRITING DATA", "Writing data"),
-        ("FAILED", "Failed"),
-        ("SUCCESS", "Successful"),
-    )
-    status = models.CharField(verbose_name = _("run status"), help_text="", max_length = 20,
-                    choices = STATUS_CHOICES,
-                    default = "PENDING", blank=True)
     reproductive_rate = models.DecimalField(verbose_name = _("reproductive rate"), help_text="Reproductive rate of pest/pathogen", max_digits = 6, decimal_places = 2, blank=True, null=True, default = 0)
     distance_scale = models.DecimalField(verbose_name = _("distance scale"), max_digits = 5, decimal_places = 1)
-    WEATHER_CHOICES = (
-        ("BAD", "Poor spread conditions"),
-        ("AVERAGE", "Average spread conditions"),
-        ("GOOD", "Optimal spread conditions"),
-    )
-    weather = models.CharField(verbose_name = _("weather"), help_text="", max_length = 20,
-                    choices = WEATHER_CHOICES,
-                    default = "AVERAGE", blank=True)
-    budget = models.PositiveIntegerField(verbose_name = _("budget"), default = 30000000, null = True, validators = [MinValueValidator(1)])
     cost_per_meter_squared = models.DecimalField(verbose_name = _("cost per meter squared"), max_digits = 14, decimal_places = 9, blank=True, null=True, default = 0)
-    efficacy = models.PositiveSmallIntegerField(verbose_name = _("efficacy"), help_text="", blank=True, default = 100, validators = [MinValueValidator(1), MaxValueValidator(100)])
     final_year = models.PositiveIntegerField(verbose_name = _("final run year"), default = 2021, null = True, validators = [MinValueValidator(2018)])
-    management_polygons = JSONField(null = True, blank = True)
     MONTH = (
         (1, "January"),
         (2, "February"),
@@ -716,13 +677,76 @@ class Run(models.Model):
         (12, "December"),
     )
     management_month = models.PositiveSmallIntegerField(verbose_name = _("month management takes place"), help_text="What month does management take place?", choices = MONTH, default = 7, blank=False, validators = [MinValueValidator(1), MaxValueValidator(12)])
+    WEATHER_CHOICES = (
+        ("BAD", "Poor spread conditions"),
+        ("AVERAGE", "Average spread conditions"),
+        ("GOOD", "Optimal spread conditions"),
+    )
+    weather = models.CharField(verbose_name = _("weather"), help_text="", max_length = 20,
+                    choices = WEATHER_CHOICES,
+                    default = "AVERAGE", blank=True)
+
+    class Meta:
+        verbose_name = _("session")
+        verbose_name_plural = _("sessions")
+
+    def __str__(self):
+        return self.name
+
+class RunCollection(models.Model):
+
+    session = models.ForeignKey(Session, verbose_name = _("session id"), on_delete = models.CASCADE)
+    name = models.CharField(verbose_name = _("run name"), max_length = 45)
+    description = models.TextField(verbose_name = _("run description"), default="Give your run a description.", max_length = 300, blank=True, null=True, help_text="Give your run a description.")
+    random_seed = models.PositiveIntegerField(verbose_name = _("random seed"), default = 33, null = True, validators = [MinValueValidator(1)])
+    tangible_landscape = models.BooleanField(verbose_name = _("tangible landscape"), help_text="Use tangible landscape for management?", default = False)
+    date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
+    STATUS_CHOICES = (
+        ("PENDING", "Pending"),
+        ("IN PROGRESS", "In progress"),
+        ("READING DATA", "Reading data"),
+        ("WAITING FOR TL", "Waiting for Tangible Landscape"),
+        ("RUNNING MODEL", "Running model"),
+        ("WRITING DATA", "Writing data"),
+        ("FAILED", "Failed"),
+        ("SUCCESS", "Successful"),
+    )
+    status = models.CharField(verbose_name = _("run status"), help_text="", max_length = 20,
+                    choices = STATUS_CHOICES,
+                    default = "PENDING", blank=True)
+    budget = models.PositiveIntegerField(verbose_name = _("budget"), default = 30000000, null = True, validators = [MinValueValidator(1)])
+    efficacy = models.PositiveSmallIntegerField(verbose_name = _("efficacy"), help_text="", blank=True, default = 100, validators = [MinValueValidator(1), MaxValueValidator(100)])
+
+    class Meta:
+        verbose_name = _("run collection")
+        verbose_name_plural = _("run collections")
+
+    def __str__(self):
+        return self.name
+
+class Run(models.Model):
+
+    run_collection = models.ForeignKey(RunCollection, verbose_name = _("run collection id"), on_delete = models.CASCADE)
+    date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
+    STATUS_CHOICES = (
+        ("PENDING", "Pending"),
+        ("IN PROGRESS", "In progress"),
+        ("READING DATA", "Reading data"),
+        ("WAITING FOR TL", "Waiting for Tangible Landscape"),
+        ("RUNNING MODEL", "Running model"),
+        ("WRITING DATA", "Writing data"),
+        ("FAILED", "Failed"),
+        ("SUCCESS", "Successful"),
+    )
+    status = models.CharField(verbose_name = _("run status"), help_text="", max_length = 20,
+                    choices = STATUS_CHOICES,
+                    default = "PENDING", blank=True)
+    management_polygons = JSONField(null = True, blank = True)
     management_cost = models.DecimalField(verbose_name = _("management cost"), max_digits = 16, decimal_places = 2, blank=True, null=True, default = 0)
     management_area = models.DecimalField(verbose_name = _("management area"), max_digits = 16, decimal_places = 2, blank=True, null=True, default = 0)
-    tangible_landscape = models.BooleanField(verbose_name = _("tangible landscape"), help_text="Use tangible landscape for management?", default = False)
     logging = models.TextField(verbose_name = _("error logs for backend"), max_length = 300, blank=True, null=True, help_text="For checking error logs for backend model runs")
     time_taken = models.DecimalField(verbose_name = _("time taken"), max_digits = 5, decimal_places = 1, blank=True, null=True)
- 
-
+    steering_year = models.PositiveIntegerField(verbose_name = _("steering year"), default = None, null = True, validators = [MinValueValidator(2018)])
 
     class Meta:
         verbose_name = _("run")
@@ -731,16 +755,15 @@ class Run(models.Model):
     def __str__(self):
         return self.name
 
-
 class Output(models.Model):
 
     run = models.ForeignKey(Run, verbose_name = _("run id"), on_delete = models.CASCADE)
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     number_infected = models.IntegerField(verbose_name = _("number_infected"), default = 0, null = True, validators = [MinValueValidator(0)])
     infected_area = models.DecimalField(verbose_name = _("infected_area (m^2)"), help_text="Overall infected area from the run.", blank=True, max_digits = 16, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
-    years = models.PositiveIntegerField(verbose_name = _("year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
-    spread_map = JSONField(null = True)
-
+    year = models.PositiveIntegerField(verbose_name = _("year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
+    single_spread_map = JSONField(null = True)
+    probability_map = JSONField(null = True)
 
     class Meta:
         verbose_name = _("output")
