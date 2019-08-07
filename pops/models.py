@@ -82,9 +82,6 @@ class CaseStudy(models.Model):
                     default = "NO START", blank=True)
     use_external_calibration = models.BooleanField(verbose_name = _("use another case study's calibration?"), help_text="Sample help text.", default = False)
     calibration = models.ForeignKey("self", verbose_name = _("calibrated case study"), null=True, blank=True, on_delete = models.SET_NULL)
-    longitude = models.DecimalField(verbose_name = _("longitude"), help_text="Longitude of the center of the case study", blank=True, max_digits = 17, decimal_places = 14, default = -75.89533170441632, validators = [MinValueValidator(-180), MaxValueValidator(180)])
-    latitude = models.DecimalField(verbose_name = _("latitude"), help_text="Latitude of the center of the case study", blank=True, max_digits = 17, decimal_places = 14, default = 40.2039152196177, validators = [MinValueValidator(-90), MaxValueValidator(90)])
-    zoom = models.PositiveSmallIntegerField(verbose_name = _("mapbox zoom level"), help_text="The zoom level of MapBox.", blank=True, default = 7, validators = [MinValueValidator(0), MaxValueValidator(16)])
 
     objects = MyManager()
 
@@ -112,6 +109,22 @@ class CaseStudy(models.Model):
 
         # joining all string values.
         return field_names
+
+class MapBoxParameters(models.Model):
+
+    case_study = models.OneToOneField(CaseStudy, verbose_name = _("case study"), on_delete = models.CASCADE, primary_key=True)
+    longitude = models.DecimalField(verbose_name = _("longitude"), help_text="Longitude of the center of the case study", blank=True, max_digits = 17, decimal_places = 14, default = -75.89533170441632, validators = [MinValueValidator(-180), MaxValueValidator(180)])
+    latitude = models.DecimalField(verbose_name = _("latitude"), help_text="Latitude of the center of the case study", blank=True, max_digits = 17, decimal_places = 14, default = 40.2039152196177, validators = [MinValueValidator(-90), MaxValueValidator(90)])
+    zoom = models.PositiveSmallIntegerField(verbose_name = _("mapbox zoom level"), help_text="The zoom level of MapBox.", blank=True, default = 7, validators = [MinValueValidator(0), MaxValueValidator(16)])
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("map box parameter")
+        verbose_name_plural = _("map box parameters")
+
+    def __str__(self):
+        return self.data
 
 class AllPlantsData(models.Model):
 
@@ -321,9 +334,9 @@ class Vector(models.Model):
 
 class VectorHostTransmissionRate(models.Model):
 
-    vector = models.ForeignKey(Vector, verbose_name = _("vector"), on_delete = models.CASCADE, primary_key=True)
-    value = models.DecimalField(verbose_name = _("vector to host transmission rate value"), max_digits = 5, decimal_places = 0)
-    probability = models.DecimalField(verbose_name = _("vector to host transmission rate probability"), max_digits = 5, decimal_places = 2)
+    vector = models.ForeignKey(Vector, verbose_name = _("vector"), on_delete = models.CASCADE)
+    value = models.DecimalField(verbose_name = _("vector to host transmission rate value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("vector to host transmission rate probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
@@ -336,9 +349,9 @@ class VectorHostTransmissionRate(models.Model):
 
 class HostVectorTransmissionRate(models.Model):
 
-    vector = models.ForeignKey(Vector, verbose_name = _("vector"), on_delete = models.CASCADE, primary_key=True)
-    value = models.DecimalField(verbose_name = _("host to vector transmission rate value"), max_digits = 5, decimal_places = 0)
-    probability = models.DecimalField(verbose_name = _("host to vector transmission rate probability"), max_digits = 5, decimal_places = 2)
+    vector = models.ForeignKey(Vector, verbose_name = _("vector"), on_delete = models.CASCADE)
+    value = models.DecimalField(verbose_name = _("host to vector transmission rate value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("host to vector transmission rate probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
@@ -351,9 +364,9 @@ class HostVectorTransmissionRate(models.Model):
 
 class VectorReproductiveRate(models.Model):
 
-    vector = models.ForeignKey(Vector, verbose_name = _("vector"), on_delete = models.CASCADE, primary_key=True)
-    value = models.DecimalField(verbose_name = _("vector reproductive rate value"), max_digits = 5, decimal_places = 0)
-    probability = models.DecimalField(verbose_name = _("vector reproductive rate probability"), max_digits = 5, decimal_places = 2)
+    vector = models.ForeignKey(Vector, verbose_name = _("vector"), on_delete = models.CASCADE)
+    value = models.DecimalField(verbose_name = _("vector reproductive rate value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("vector reproductive rate probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
@@ -366,9 +379,9 @@ class VectorReproductiveRate(models.Model):
 
 class VectorShortDistance(models.Model):
 
-    vector = models.ForeignKey(Vector, verbose_name = _("vector"), on_delete = models.CASCADE, primary_key=True)
-    value = models.DecimalField(verbose_name = _("vector short distance scale value"), max_digits = 5, decimal_places = 0)
-    probability = models.DecimalField(verbose_name = _("vector short distance scale probability"), max_digits = 5, decimal_places = 2)
+    vector = models.ForeignKey(Vector, verbose_name = _("vector"), on_delete = models.CASCADE)
+    value = models.DecimalField(verbose_name = _("vector short distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("vector short distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
@@ -381,9 +394,9 @@ class VectorShortDistance(models.Model):
 
 class ReproductiveRate(models.Model):
 
-    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
-    value = models.DecimalField(verbose_name = _("reproductive rate value"), max_digits = 5, decimal_places = 0)
-    probability = models.DecimalField(verbose_name = _("reproductive rate probability"), max_digits = 5, decimal_places = 2)
+    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
+    value = models.DecimalField(verbose_name = _("reproductive rate value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("reproductive rate probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
@@ -396,9 +409,9 @@ class ReproductiveRate(models.Model):
 
 class PercentShortDistance(models.Model):
 
-    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
-    value = models.DecimalField(verbose_name = _("percent short distance scale value"), max_digits = 5, decimal_places = 0)
-    probability = models.DecimalField(verbose_name = _("percent short distance scale probability"), max_digits = 5, decimal_places = 2)
+    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
+    value = models.DecimalField(verbose_name = _("percent short distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("percent short distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
@@ -411,9 +424,9 @@ class PercentShortDistance(models.Model):
 
 class ShortDistance(models.Model):
 
-    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
-    value = models.DecimalField(verbose_name = _("short distance scale value"), max_digits = 5, decimal_places = 0)
-    probability = models.DecimalField(verbose_name = _("short distance scale probability"), max_digits = 5, decimal_places = 2)
+    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
+    value = models.DecimalField(verbose_name = _("short distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("short distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
@@ -426,9 +439,9 @@ class ShortDistance(models.Model):
 
 class LongDistance(models.Model):
 
-    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
-    value = models.DecimalField(verbose_name = _("long distance scale value"), max_digits = 5, decimal_places = 0)
-    probability = models.DecimalField(verbose_name = _("long distance scale probability"), max_digits = 5, decimal_places = 2)
+    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
+    value = models.DecimalField(verbose_name = _("long distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("long distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
@@ -441,9 +454,9 @@ class LongDistance(models.Model):
 
 class CrypticToInfected(models.Model):
 
-    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
-    value = models.DecimalField(verbose_name = _("cryptic to infected value"), max_digits = 5, decimal_places = 0)
-    probability = models.DecimalField(verbose_name = _("cryptic to infected  probability"), max_digits = 5, decimal_places = 2)
+    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
+    value = models.DecimalField(verbose_name = _("cryptic to infected value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("cryptic to infected  probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
@@ -456,9 +469,9 @@ class CrypticToInfected(models.Model):
 
 class InfectedToDiseased(models.Model):
 
-    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
-    value = models.DecimalField(verbose_name = _("infected to diseased value"), max_digits = 5, decimal_places = 0)
-    probability = models.DecimalField(verbose_name = _("infected to diseased  probability"), max_digits = 5, decimal_places = 2)
+    pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
+    value = models.DecimalField(verbose_name = _("infected to diseased value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("infected to diseased  probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
