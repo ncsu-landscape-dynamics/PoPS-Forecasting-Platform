@@ -82,6 +82,10 @@ class CaseStudy(models.Model):
                     default = "NO START", blank=True)
     use_external_calibration = models.BooleanField(verbose_name = _("use another case study's calibration?"), help_text="Sample help text.", default = False)
     calibration = models.ForeignKey("self", verbose_name = _("calibrated case study"), null=True, blank=True, on_delete = models.SET_NULL)
+    longitude = models.DecimalField(verbose_name = _("longitude"), help_text="Longitude of the center of the case study", blank=True, max_digits = 17, decimal_places = 14, default = -75.89533170441632, validators = [MinValueValidator(-180), MaxValueValidator(180)])
+    latitude = models.DecimalField(verbose_name = _("latitude"), help_text="Latitude of the center of the case study", blank=True, max_digits = 17, decimal_places = 14, default = 40.2039152196177, validators = [MinValueValidator(-90), MaxValueValidator(90)])
+    zoom = models.PositiveSmallIntegerField(verbose_name = _("mapbox zoom level"), help_text="The zoom level of MapBox.", blank=True, default = 7, validators = [MinValueValidator(0), MaxValueValidator(16)])
+
 
     objects = MyManager()
 
