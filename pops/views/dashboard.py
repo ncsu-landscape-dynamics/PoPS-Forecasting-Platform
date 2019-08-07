@@ -58,7 +58,7 @@ class SessionListView(LoginRequiredMixin, TemplateView):
     #     return CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
 
 class DashboardTempView(TemplateView):
-    template_name = 'pops/dashboard/APHIS_June2019.html'
+    template_name = 'pops/dashboard/dashboard.html'
 
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
@@ -98,7 +98,7 @@ class AjaxableResponseMixin:
             return response
  
 class DashboardView(AjaxableResponseMixin, CreateView):
-    template_name = 'pops/dashboard/APHIS_June2019.html'
+    template_name = 'pops/dashboard/dashboard.html'
     form_class = RunForm
     success_url = 'new_session'
 
@@ -126,7 +126,7 @@ class DashboardView(AjaxableResponseMixin, CreateView):
 
 @method_decorator(ensure_csrf_cookie, name='get')
 class DashboardTestView(AjaxableResponseMixin, CreateView):
-    template_name = 'pops/dashboard/APHIS_June2019_test.html'
+    template_name = 'pops/dashboard/dashboard_test.html'
     form_class = RunForm
     success_url = 'new_session'
 
