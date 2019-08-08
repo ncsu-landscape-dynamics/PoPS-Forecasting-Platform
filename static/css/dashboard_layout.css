@@ -28,6 +28,67 @@
 height:100%;
 }
 
+#timeline {
+  height: 90px;
+  max-height: 90px;
+}
+
+#flex-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 0 auto;
+  padding-top: 10px;
+}
+
+.timeline-year-container {
+  width: 80px;
+}
+.timeline-arrow {
+  width: 40px;
+  padding-top:32px;
+  font-size:28px;
+}
+
+.timeline-buttons {
+  font-size: 16px;
+  height: 30px;
+  margin-bottom:0px;
+  position: relative;
+}
+.timeline-buttons span{
+  position: absolute;
+  bottom: -5px;
+  left:15px;
+}
+.timeline-buttons span a{
+  padding:2px;
+}
+div.timeline-active div span  {
+  bottom: -10px;
+  left: 20px;
+}
+.timeline-active div span a {
+  font-size: 35px;
+  color: green;
+}
+div.timeline-active div a  {
+  color: green;
+}
+
+  .timeline-edit {
+}
+.timeline-visibility {
+
+}
+.timeline-year {
+  margin:0px;  
+}
+.timeline-year a {
+  font-size: 30px;
+  padding-top:0px;
+}
+
 #map.large_map {
   height: calc(100vh - 60px);
   max-height: calc(800px - 60px)
@@ -130,13 +191,13 @@ div#run-preview-container {
       
   #historic-legend-container, #probability-legend-container {
     position: absolute;
-    top: 40px;
+    top: 120px;
     left: 10px;
   }
 
   #display_year_forecast {
     position: absolute;
-    top: 10px;
+    top: 90px;
     left: 10px;
   }
   #SLF_buffer_zone_checkbox {
@@ -158,14 +219,14 @@ div#run-preview-container {
 
     #year-slider, #year-slider2 {
       position: absolute;
-      top: 10px;
+      top: 90px;
       right: 60px;
       width:200px;
     }
 
     #draw-controls {
       position: absolute;
-      top: 10px;
+      top: 100px;
       right: 10px;
     }
 
