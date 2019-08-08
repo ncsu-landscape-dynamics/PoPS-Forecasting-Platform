@@ -195,6 +195,36 @@ class Mortality(models.Model):
     def __str__(self):
         return self.rate
 
+class MortalityRate(models.Model):
+
+    mortality = models.ForeignKey(Mortality, verbose_name = _("mortality"), on_delete = models.CASCADE)
+    value = models.DecimalField(verbose_name = _("mortality rate value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("mortality rate probability"), max_digits = 5, decimal_places = 2, blank=True)
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("mortality rate")
+        verbose_name_plural = _("mortality rates")
+
+    def __str__(self):
+        return self.value
+
+class MortalityTimeLag(models.Model):
+
+    mortality = models.ForeignKey(Mortality, verbose_name = _("mortality"), on_delete = models.CASCADE)
+    value = models.DecimalField(verbose_name = _("mortality time lag value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("mortality time lag probability"), max_digits = 5, decimal_places = 2, blank=True)
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("mortality time lag")
+        verbose_name_plural = _("mortality time lags")
+
+    def __str__(self):
+        return self.value
+
 class Creation(models.Model):
 
     host = models.ForeignKey(Host, verbose_name = _("host"), on_delete = models.CASCADE)
@@ -315,6 +345,20 @@ class PriorTreatment(models.Model):
 
     def __str__(self):
         return self.pest
+
+class PriorTreatmentYear(models.Model):
+
+    prior_treatment = models.ForeignKey(PriorTreatment, verbose_name = _("prior treatment"), on_delete = models.CASCADE)
+    year = models.PositiveSmallIntegerField(verbose_name = _("prior treatment year"), validators = [MinValueValidator(1900), MaxValueValidator(2200)])
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("prior treatment year")
+        verbose_name_plural = _("prior treatment years")
+
+    def __str__(self):
+        return self.year
 
 class Vector(models.Model):
 
