@@ -273,6 +273,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                         $(".timeline-year-container").removeClass("year_active");
                         $(this).parents(".timeline-year-container").removeClass("management_active").addClass("management_complete").addClass("year_active");
                         $(this).parents(".timeline-year-container").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
+                        draw_color="#61F785";
                       });
 
                       $(".timeline-year a").on('click', function () {
@@ -404,7 +405,8 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                     <input class="custom-range px-2 py-0" type="range" name="range" min="2014" max="2018" step="1"
                       value="2018" onchange="displayYear.value=value">
                   </div>
-                  <div id="draw-controls" class="btn-group-vertical" role="group" >
+                  <div id="money-new" class="col py-0" style="width:180px; height:140px"></div>
+                  <div id="draw-controls" class="btn-group" role="group" >
                   <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
                   title="Draw management tool" data-placement="left">
                   <i class="fas fa-draw-polygon"></i>
@@ -553,7 +555,6 @@ $("#status-indicator").hide();
                     <small id="polygon-info">Use the polygon tool to draw management areas.</small>
                   </div>
                   <div id="gauge-plots" class="row no-gutters pt-2">
-                    <div id="money-new" class="col py-0" style="width:180px; height:140px"></div>
 
                   </div>
 
@@ -1138,7 +1139,7 @@ map.on('load', function() {
   });
 
 
-
+draw_color='#C6F761';
 
     var draw = new MapboxDraw({
       keybindings:true,
@@ -1159,7 +1160,7 @@ map.on('load', function() {
           "line-join": "round"
         },
         "paint": {
-          "line-color": "#83f441",
+          "line-color": draw_color,
           "line-dasharray": [0.2, 2],
           "line-width": 3
         }
@@ -1170,8 +1171,8 @@ map.on('load', function() {
       "type": "fill",
       "filter": ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
       "paint": {
-        "fill-color": "#83f441",
-        "fill-outline-color": "#83f441",
+        "fill-color": draw_color,
+        "fill-outline-color": draw_color,
         "fill-opacity": 0.1
       }
     },
@@ -1186,7 +1187,7 @@ map.on('load', function() {
         "line-join": "round"
       },
       "paint": {
-        "line-color": "#83f441",
+        "line-color": draw_color,
         "line-width": 3
       }
     },
@@ -1207,7 +1208,7 @@ map.on('load', function() {
       "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
       "paint": {
         "circle-radius": 5,
-        "circle-color": "#83f441",
+        "circle-color": draw_color,
       }
     },
 

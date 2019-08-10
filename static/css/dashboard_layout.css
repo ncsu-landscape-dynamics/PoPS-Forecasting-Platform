@@ -296,15 +296,21 @@ div#run-preview-container {
 
     #year-slider, #year-slider2 {
       position: absolute;
-      top: 90px;
-      right: 60px;
-      width:200px;
+      top: 100px;
+      right: 10px;
+      width:130px;
     }
 
     #draw-controls {
       position: absolute;
-      top: 100px;
+      top: 330px;
       right: 10px;
+    }
+
+    #money-new {
+      position: absolute;
+      top: 180px;
+      right: 0px;
     }
 
     .drawing-tool {
