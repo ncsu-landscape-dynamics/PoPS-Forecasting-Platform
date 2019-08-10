@@ -241,40 +241,74 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   id="id_management_polygons">
                 <div id="map-container-new-view" class="col-md-9">
                 <div id="timeline" class="text-center">
-<div id="flex-container">
-    <div class="timeline-year-container">
-    <div class="timeline-buttons">
-      <span><a class="timeline-edit" href="#"><i class="fas fa-backspace text-light"></i></a>
-      <a class="timeline-visibility" href="#"><i class="far fa-eye text-light"></i></a></span>
-    </div>
-    <div class="timeline-year"><a class=" align-top text-light" href="#">2023</a></div>
-    </div>
-  <div class="timeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
-    <div class="timeline-year-container">
-    <div class="timeline-buttons">
-      <span><a class="timeline-edit" href="#"><i class="fas fa-backspace text-light"></i></a>
-      <a class="timeline-visibility" href="#"><i class="far fa-eye text-light"></i></a></span>
-    </div>
-    <div class="timeline-year"><a class=" align-top text-light" href="#">2023</a></div>
-  </div>
-  <div class="timeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
-  <div class="timeline-year-container timeline-active">
-    <div class="timeline-buttons">
-      <span class=""><a href="#"><i class="fas fa-play-circle"></i></a></span>
-    </div>
-    <div class="timeline-year"><a class="" href="#">2020</a></div>
-  </div>
-  <div class="timeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
-    <div class="timeline-year-container">
-    <div class="timeline-buttons">
-      <span></span>
-    </div>
-    <div class="timeline-year"><a class=" align-top text-light" href="#">2023</a></div>
-  </div>
-</div>
 
-
+                  <div id="flex-container">
+                    {% for i in '123456'|make_list %}
+                    <div class="timeline-year-container year-{{ forloop.counter }} {% if forloop.first %} management_active {% else %} management_not_started {% endif %} management_visible">
+                      <div class="timeline-buttons">
+                        <span class="completed_management_buttons">
+                          <a class="timeline-edit" href="#"><i class="fas fa-backspace "></i></a>
+                          <a class="timeline-visibility" href="#"><i class="far fa-eye "></i></a>
+                        </span>
+                        <span class="submit_run_button">
+                          <a href="#"><i class="fas fa-play-circle"></i></a>
+                        </span>
+                      </div>
+                      <div class="timeline-year">
+                        <a class="align-top" href="#">201{{ forloop.counter }}</a>
+                      </div>
+                    </div>
+                    {% if forloop.last %}
+                    {% else %}
+                    <div class="timeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                    {% endif %}
+                    {% endfor %}
+                  </div>
                 </div>
+                  <script>
+
+
+                      $(".submit_run_button").on('click', function () {
+                        console.log("Submit management.")
+                        $(".timeline-year-container").removeClass("year_active");
+                        $(this).parents(".timeline-year-container").removeClass("management_active").addClass("management_complete").addClass("year_active");
+                        $(this).parents(".timeline-year-container").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
+                      });
+
+                      $(".timeline-year a").on('click', function () {
+                        console.log("Year clicked.")
+                        if (!$(this).parents(".timeline-year-container").hasClass("year_active")) {
+                          if ($(this).parents(".timeline-year-container").hasClass("management_complete")) {
+                            console.log("Updating year.")
+                            $(".timeline-year-container").removeClass("year_active");
+                            $(this).parents(".timeline-year-container").addClass("year_active");
+                          };
+                        };
+                      });
+
+                      $(".timeline-visibility").on('click', function () {
+                        console.log("Visibility toggled.")
+                        if ($(this).parents(".timeline-year-container").hasClass("management_visible")) {
+                          console.log('Turning visibility off...');
+                          $(this).parents(".timeline-year-container").removeClass("management_visible").addClass("management_hidden");
+                          $(this).children("i").removeClass("fa-eye").addClass("fa-eye-slash");
+                        } else {
+                          console.log('Turning visibility on...');
+                          $(this).parents(".timeline-year-container").removeClass("management_hidden").addClass("management_visible");
+                          $(this).children("i").removeClass("fa-eye-slash").addClass("fa-eye");
+                        }
+                      });
+
+                      $(".timeline-edit").on('click', function () {
+                        console.log("Editing...")
+                        $(this).parents(".timeline-year-container").removeClass("management_complete").removeClass("year_active").addClass("management_active").removeClass("management_hidden").addClass("management_visible");
+                        $(this).next(".timeline-visibility").children("i").removeClass("fa-eye-slash").addClass("fa-eye");
+                        $(this).parents(".timeline-year-container").nextAll(".timeline-year-container").removeClass("management_active").removeClass("management_complete").removeClass("year_active").addClass("management_not_started").removeClass("management_hidden").addClass("management_visible");
+                        $(this).parents(".timeline-year-container").nextAll(".timeline-year-container").find(".timeline-visibility").children("i").removeClass("fa-eye-slash").addClass("fa-eye");
+                        $(this).parents(".timeline-year-container").prev().prev(".timeline-year-container").addClass("year_active");
+                      });
+
+                  </script>                
                   <div id="map" class="large_map"></div>
                   <h4 id="display_year_forecast">Field observations</h4>
 
@@ -534,23 +568,7 @@ $("#status-indicator").hide();
 
 
 
-                    <div id="reproductive-rate-container" class="parameter-selector-plot pt-2" style="width:250px">
-                      <strong class="py-0">Max number of dispersers: <output id="displayRate">2.1</output></strong>
-                      <div id="reproductive_rate_plot" style="height:100px; width:250px;"></div>
-                      <div id="reproductive-rate-slider" class="pt-0 range range-info text-light">
-                        <input id="id_reproductive_rate" style="" class="custom-range " type="range"
-                          name="reproductive_rate" min="1.7" max="2.6" step="0.1" value="2.1"
-                          onchange="displayRate.value=value">
-                      </div>
-                    </div>
-                    <div id="dispersal-scale-container" class="parameter-selector-plot pt-2" style="width:250px">
-                      <strong class="py-0">Dispersal scale: <output id="displayDispersalScale">47</output> meters</strong>
-                      <div id="dispersal_scale_plot" style="height:100px; width:250px;"></div>
-                      <div id="dispersal-scale-slider" class="pt-0 range range-info text-light">
-                        <input id="id_distance_scale" style="" class="custom-range " type="range" name="distance_scale"
-                          min="39" max="57" step="1" value="47" onchange="displayDispersalScale.value=value">
-                      </div>
-                    </div>
+
 
                   </div>
                 </div>                
@@ -668,16 +686,7 @@ $( document ).ready(function() {
   $( "#status-indicator-shading" ).hide();
 });
 
-$( "#dispersal-scale-container" ).click(function() {
-        dispersal_scale = $(this).find('input').val();
-      console.log("Distance scale is now: " + dispersal_scale);
-          $(parameter_plot("dispersal_scale_plot", 'Probability', dispersal_scales, dispersal_scale_probabilities, dispersal_scale, '#2598b8', error_bar=false));
-})
-$( "#reproductive-rate-container" ).click(function() {
-        reproductive_rate = $(this).find('input').val();
-      console.log("Reproductive rate is now: " + reproductive_rate);
-          $(parameter_plot("reproductive_rate_plot", 'Probability', reproductive_rates, reproductive_rate_probabilities, reproductive_rate, '#2598b8', error_bar=false));
-})
+
 
 function findMax(arr) {
   let max = arr[0];
@@ -690,96 +699,10 @@ function findMax(arr) {
   return [max];
 }
 
-function parameter_plot(myDiv, title, x, y, selector_x, color, error_bar=true) {
-
-var x_values = x;
-var y_values = y;
-var selector_x = Number(selector_x);
-var index_value = x.indexOf(selector_x);
-
-var x_selected_value=x_values[index_value];
-var y_selected_value=y_values[index_value];
-var min_x=x_values[0];
-var max_x=x_values.slice(-1).pop();
-var max_y=Number(findMax(y_values));
-      var trace1 = {
-        x: x_values,
-        y: y_values,
-mode: 'lines',
-  type: 'scatter',
-        line: {
-          color: color
-        },
-        fill: 'tozeroy',
-      };
-
-      var trace2 = {
-        x: [x_selected_value],
-        y: [y_selected_value],
-mode: 'markers',
-  type: 'scatter',
-        marker: {
-          color: 'white',
-          size:'10',
-        },
-      };
-
-      var data = [trace1, trace2];
 
 
-
-      var layout = {
-
-        xaxis: {
-          range: [(min_x-(max_x - min_x)/20), (max_x+(max_x - min_x)/20)],
-          dtick: parseInt((max_x - min_x)/4),
-          tickfont: {
-            size: 12,
-            color: 'rgb(107, 107, 107)'
-          }
-        },
-        yaxis: {
-          range: [-0.1, max_y+1.4],
-          showticklabels: false,
-          title: title,
-          titlefont: {
-            size: 12,
-            color: 'grey',
-          },
-
-          tickfont: {
-            size: 12,
-            color: 'rgb(107, 107, 107)'
-          }
-        },
-        showlegend: false,
-        paper_bgcolor: '#0b0d0e',
-        plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
-        margin: {
-          l: 30,
-          r: 20,
-          b: 15,
-          t: 10,
-          pad: 0
-        },
-      };
-
-      return Plotly.newPlot(myDiv, data, layout, {
-        displayModeBar: false,
-        responsive: true
-      });
-    };
-
-    var reproductive_rates = [1.7,1.8,1.9,2,2.1,2.2,2.3,2.4,2.5,2.6];
-    var reproductive_rate_probabilities = [0.9,4.66,9.49,14.71,18.75,18.39,14.45,9.16,4.43,0.06];
-    var reproductive_rate= [2.1];
-    var dispersal_scales = [39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57];
-    var dispersal_scale_probabilities = [0.56,2.17,2.94,4.13,5.49,6.44,7.96,8.12,8.8,8.48,8.23,7.49,6.83,5.71,4.02,3,2.31,1.52,0.82];
-    var dispersal_scale= [47];
 
     
-    $(parameter_plot("reproductive_rate_plot", 'Probability', reproductive_rates, reproductive_rate_probabilities, reproductive_rate, '#2598b8', error_bar=false));
-    $(parameter_plot("dispersal_scale_plot", 'Probability', dispersal_scales, dispersal_scale_probabilities, dispersal_scale, '#2598b8', error_bar=false));
     </script>
 
 
