@@ -244,7 +244,8 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
 
                   <div id="flex-container">
                     {% for i in '123456'|make_list %}
-                    <div class="timeline-year-container year-{{ forloop.counter }} {% if forloop.first %} management_active {% else %} management_not_started {% endif %} management_visible">
+                    <div class="timeline-year-container year-{{ forloop.counter }} {% if forloop.first %} management_active {% else %} management_not_started {% endif %} management_visible"
+                    data-year-counter="{{ forloop.counter }}">
                       <div class="timeline-buttons">
                         <span class="completed_management_buttons">
                           <a class="timeline-edit" href="#"><i class="fas fa-backspace "></i></a>
@@ -267,13 +268,33 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                 </div>
                   <script>
 
+                  function updateDrawColor (year_count) {
+                    var colors = ['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
+                    disableDrawTools();
+                    enableDrawTools();
+                    console.log('Removing draw control.')
+                    map.removeControl(draw);
+                    if (year_count) {
+                      var draw_color = colors[year_count-1];
+                    }
+                    else {
+                      var draw_color = '#000';
+                    }
+                    console.log('Draw color:' + draw_color);
+                    draw = set_draw_color(draw_color);
+                    map.addControl(draw);
+                    return;
+                  };
 
                       $(".submit_run_button").on('click', function () {
                         console.log("Submit management.")
                         $(".timeline-year-container").removeClass("year_active");
                         $(this).parents(".timeline-year-container").removeClass("management_active").addClass("management_complete").addClass("year_active");
                         $(this).parents(".timeline-year-container").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
-                        draw_color="#61F785";
+                        $(this).parents(".timeline-year-container").removeClass("management_active").addClass("management_complete").addClass("year_active");
+                        var year_count = $(this).parents(".timeline-year-container").next().next(".timeline-year-container").attr('data-year-counter');
+                        console.log('Year count is:' + year_count)
+                        updateDrawColor(year_count);
                       });
 
                       $(".timeline-year a").on('click', function () {
@@ -307,6 +328,9 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                         $(this).parents(".timeline-year-container").nextAll(".timeline-year-container").removeClass("management_active").removeClass("management_complete").removeClass("year_active").addClass("management_not_started").removeClass("management_hidden").addClass("management_visible");
                         $(this).parents(".timeline-year-container").nextAll(".timeline-year-container").find(".timeline-visibility").children("i").removeClass("fa-eye-slash").addClass("fa-eye");
                         $(this).parents(".timeline-year-container").prev().prev(".timeline-year-container").addClass("year_active");
+                        var year_count = $(this).parents(".timeline-year-container").attr('data-year-counter');
+                        console.log('Year count is:' + year_count)
+                        updateDrawColor(year_count);
                       });
 
                   </script>                
@@ -1139,22 +1163,24 @@ map.on('load', function() {
   });
 
 
-draw_color='#C6F761';
 
-    var draw = new MapboxDraw({
-      keybindings:true,
-      displayControlsDefault: false,
-      controls: {
-        //polygon: true,
-        //trash: true
-      }, 
-  styles: [
-    // ACTIVE (being drawn)
-    // line stroke
-    {
+function set_draw_color(draw_color) {
+  var draw = new MapboxDraw({
+    keybindings: true,
+    displayControlsDefault: false,
+    controls: {
+      //polygon: true,
+      //trash: true
+    },
+    styles: [
+      // ACTIVE (being drawn)
+      // line stroke
+      {
         "id": "gl-draw-line",
         "type": "line",
-        "filter": ["all", ["==", "$type", "LineString"], ["!=", "mode", "static"]],
+        "filter": ["all", ["==", "$type", "LineString"],
+          ["!=", "mode", "static"]
+        ],
         "layout": {
           "line-cap": "round",
           "line-join": "round"
@@ -1164,60 +1190,72 @@ draw_color='#C6F761';
           "line-dasharray": [0.2, 2],
           "line-width": 3
         }
-    },
-    // polygon fill
-    {
-      "id": "gl-draw-polygon-fill",
-      "type": "fill",
-      "filter": ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
-      "paint": {
-        "fill-color": draw_color,
-        "fill-outline-color": draw_color,
-        "fill-opacity": 0.1
-      }
-    },
-    // polygon outline stroke
-    // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
-    {
-      "id": "gl-draw-polygon-stroke-active",
-      "type": "line",
-      "filter": ["all", ["==", "$type", "Polygon"], ["!=", "mode", "static"]],
-      "layout": {
-        "line-cap": "round",
-        "line-join": "round"
       },
-      "paint": {
-        "line-color": draw_color,
-        "line-width": 3
-      }
-    },
-    // vertex point halos
-    {
-      "id": "gl-draw-polygon-and-line-vertex-halo-active",
-      "type": "circle",
-      "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
-      "paint": {
-        "circle-radius": 7,
-        "circle-color": "#FFF"
-      }
-    },
-    // vertex points
-    {
-      "id": "gl-draw-polygon-and-line-vertex-active",
-      "type": "circle",
-      "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
-      "paint": {
-        "circle-radius": 5,
-        "circle-color": draw_color,
-      }
-    },
+      // polygon fill
+      {
+        "id": "gl-draw-polygon-fill",
+        "type": "fill",
+        "filter": ["all", ["==", "$type", "Polygon"],
+          ["!=", "mode", "static"]
+        ],
+        "paint": {
+          "fill-color": draw_color,
+          "fill-outline-color": draw_color,
+          "fill-opacity": 0.1
+        }
+      },
+      // polygon outline stroke
+      // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
+      {
+        "id": "gl-draw-polygon-stroke-active",
+        "type": "line",
+        "filter": ["all", ["==", "$type", "Polygon"],
+          ["!=", "mode", "static"]
+        ],
+        "layout": {
+          "line-cap": "round",
+          "line-join": "round"
+        },
+        "paint": {
+          "line-color": draw_color,
+          "line-width": 3
+        }
+      },
+      // vertex point halos
+      {
+        "id": "gl-draw-polygon-and-line-vertex-halo-active",
+        "type": "circle",
+        "filter": ["all", ["==", "meta", "vertex"],
+          ["==", "$type", "Point"],
+          ["!=", "mode", "static"]
+        ],
+        "paint": {
+          "circle-radius": 7,
+          "circle-color": "#FFF"
+        }
+      },
+      // vertex points
+      {
+        "id": "gl-draw-polygon-and-line-vertex-active",
+        "type": "circle",
+        "filter": ["all", ["==", "meta", "vertex"],
+          ["==", "$type", "Point"],
+          ["!=", "mode", "static"]
+        ],
+        "paint": {
+          "circle-radius": 5,
+          "circle-color": draw_color,
+        }
+      },
 
-    // INACTIVE (static, already drawn)
-    // line stroke
-    {
+      // INACTIVE (static, already drawn)
+      // line stroke
+      {
         "id": "gl-draw-line-static",
         "type": "line",
-        "filter": ["all", ["==", "$type", "LineString"], ["==", "mode", "static"]],
+        "filter": ["all", ["==", "$type", "LineString"],
+          ["==", "mode", "static"]
+        ],
         "layout": {
           "line-cap": "round",
           "line-join": "round"
@@ -1226,36 +1264,44 @@ draw_color='#C6F761';
           "line-color": "#000",
           "line-width": 3
         }
-    },
-    // polygon fill
-    {
-      "id": "gl-draw-polygon-fill-static",
-      "type": "fill",
-      "filter": ["all", ["==", "$type", "Polygon"], ["==", "mode", "static"]],
-      "paint": {
-        "fill-color": "#000",
-        "fill-outline-color": "#000",
-        "fill-opacity": 0.3
-      }
-    },
-    // polygon outline
-    {
-      "id": "gl-draw-polygon-stroke-static",
-      "type": "line",
-      "filter": ["all", ["==", "$type", "Polygon"], ["==", "mode", "static"]],
-      "layout": {
-        "line-cap": "round",
-        "line-join": "round"
       },
-      "paint": {
-        "line-color": "#000",
-        "line-width": 3
+      // polygon fill
+      {
+        "id": "gl-draw-polygon-fill-static",
+        "type": "fill",
+        "filter": ["all", ["==", "$type", "Polygon"],
+          ["==", "mode", "static"]
+        ],
+        "paint": {
+          "fill-color": "#000",
+          "fill-outline-color": "#000",
+          "fill-opacity": 0.3
+        }
+      },
+      // polygon outline
+      {
+        "id": "gl-draw-polygon-stroke-static",
+        "type": "line",
+        "filter": ["all", ["==", "$type", "Polygon"],
+          ["==", "mode", "static"]
+        ],
+        "layout": {
+          "line-cap": "round",
+          "line-join": "round"
+        },
+        "paint": {
+          "line-color": "#000",
+          "line-width": 3
+        }
       }
-    }
-  ]
-});
+    ]
+  });
+  return draw;
+};
 
-    map.addControl(draw);
+draw_color='#C6F761';
+draw = set_draw_color(draw_color);
+map.addControl(draw);
 
     map.on('draw.create', updateArea);
     map.on('draw.delete', updateArea);
