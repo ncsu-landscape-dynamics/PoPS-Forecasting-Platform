@@ -31,6 +31,7 @@ height:100%;
 #timeline {
   height: 90px;
   max-height: 90px;
+  background-color: #191a1a;
 }
 
 #flex-container {
@@ -45,7 +46,7 @@ height:100%;
   width: 80px;
 }
 .timeline-arrow {
-  color: grey;
+  color: #454545;
   width: 40px;
   padding-top:32px;
   font-size:28px;
@@ -76,6 +77,10 @@ height:100%;
 
 .timeline-buttons span a{
   padding:2px;
+  opacity: 0.8
+}
+.timeline-buttons span a:hover{
+  opacity: 1.0
 }
 
 div.timeline-active div span  {
@@ -97,16 +102,17 @@ div.timeline-active div a  {
 }
 
 .timeline-visibility {
-  color: grey;
+  color: #454545;
 }
-.timeline-edit {
-  color: grey;
+.timeline-edit, .timeline-edit:hover {
+  color: #454545;
 }
+
 .timeline-year {
   margin:0px;  
 }
 .timeline-year a {
-  color: grey;
+  color: #454545;
   font-size: 30px;
   padding-top:0px;
 }
@@ -131,7 +137,7 @@ div.timeline-active div a  {
 }
 
 .management_not_started .timeline-year a, .management_not_started .timeline-visibility {
-  color: grey;
+  color: #454545;
 }
 
 .management_complete.year_active .timeline-year a {
@@ -167,8 +173,8 @@ div.timeline-active div a  {
   opacity: 0.5;
 }
 #map.large_map {
-  height: calc(100vh - 60px);
-  max-height: calc(800px - 60px)
+  height: calc(100vh - 150px);
+  max-height: calc(800px - 150px)
 }
 
 #run-title, #run-preview-description {
@@ -202,6 +208,21 @@ div.timeline-active div a  {
   height: 100%;
 }
 
+#run-button-set button, #hide_details_button {
+  background-color: transparent;
+  color:#a0a8bd;
+}
+#run-button-set {
+float:right;
+}
+#run-button-set button:hover, #hide_details_button:hover {
+  background-color: transparent;
+  color: white;
+}
+div#run-collection-name {
+  color:#a0a8bd;
+  height: 2em;
+}
 .box .row {
   border: 1px dotted grey;
 }
@@ -271,7 +292,13 @@ div#run-preview-container {
     top: 120px;
     left: 10px;
   }
-
+#show_details_button {
+    position: absolute;
+    top: 5px;
+    right: 0px;
+    background-color: transparent;
+    color:#a0a8bd;
+  }
   #display_year_forecast {
     position: absolute;
     top: 90px;
@@ -374,8 +401,11 @@ div#run-preview-container {
     background-color: grey;
     border-width: 2px;
     border-color: #212529;
-
   }
+#efficiency input {
+  background-color: transparent;
+  border-width: 0px;
+}
 
 #budget label.btn.active {
     background-color: #5fc782;
