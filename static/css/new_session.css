@@ -1,0 +1,60 @@
+
+
+
+
+        #status-close-button {
+          right: 0;
+          top: 0;
+          color: white;
+          opacity: 0.3;
+        }
+    
+
+
+  .modal {
+    color:#2e3236;
+  }
+
+
+.dark_input input, .dark_input textarea, .dark_input select  {
+  width:50%; 
+  border-radius: 4px; 
+  border: 3px solid #555;
+  background-color: #2e3236; 
+  color: white;
+}
+.dark_input input:focus, .dark_input textarea:focus, .dark_input select:focus  {
+  background-color: #4A5158; 
+  color: white;
+}
+
+.modal-body {
+  background-color:#2C3136;
+  color:white;
+}
+.modal-header {
+  background-color:#212529;
+  border-color:#212529;
+  color:white;
+}
+.modal-footer {
+  background-color:#212529;
+  border-color:#212529;
+  color:white;
+}
+.modal-content {
+  background-color:#212529;
+  border: 3px solid #555;
+
+}
+
+
+
+button.close {
+  color: white;
+  opacity: 0.5;
+}
+button.close:hover {
+  color: white;
+  opacity: 0.8;
+}

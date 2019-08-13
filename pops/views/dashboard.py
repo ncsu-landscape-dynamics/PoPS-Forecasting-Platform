@@ -12,8 +12,49 @@ from django.db.models import Prefetch
 from ..models import *
 from ..forms import *
 
+class SessionAjaxableResponseMixin:
+    """
+    Mixin to add AJAX support to a form.
+    Must be used with an object-based FormView (e.g. CreateView)
+    """
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
+
+    def form_valid(self, form):
+        # We make sure to call the parent's form_valid() method because
+        # it might do some processing (in the case of CreateView, it will
+        # call form.save() for example).
+        form.instance.created_by = self.request.user
+        response = super().form_valid(form)
+        session_id=self.object.pk
+        new_run_collection = RunCollection(session=self.object,name='Default')
+        new_run_collection.save()
+        new_run=Run(run_collection=new_run_collection)
+        new_run.save()
+        if self.request.is_ajax():
+            data = {
+                'session_pk': self.object.pk,
+                'run_collection_pk': new_run_collection.pk,
+                'run_pk': new_run.pk,
+            }
+            return JsonResponse(data)
+        else:
+            return response
  
-class NewSessionView(CreateView):
+class NewSessionView(SessionAjaxableResponseMixin, CreateView):
+    template_name = 'pops/dashboard/new_session.html'
+    form_class = SessionForm
+
+
+    def get_success_url(self, **kwargs):
+        # obj = form.instance or self.object
+        return reverse("dashboard", kwargs={'pk': self.object.pk})
+
+""" class NewSessionView(CreateView):
     template_name = 'pops/dashboard/new_session.html'
     form_class = SessionForm
 
@@ -26,7 +67,7 @@ class NewSessionView(CreateView):
     def get_success_url(self, **kwargs):
         # obj = form.instance or self.object
         return reverse("dashboard", kwargs={'pk': self.object.pk})
-
+ """
 class WorkspaceView(TemplateView):
     template_name = 'pops/dashboard/workspace.html'
 
