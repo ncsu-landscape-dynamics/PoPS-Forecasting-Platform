@@ -160,24 +160,24 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
           <img src="{% static 'images/PoPSlogo_simple.svg' %}" style="width: 80px;" class="d-inline-block align-middle "
             alt="Pest or Pathogen Spread Simulation">
         </a>
-        <span class="navbar-text d-none d-md-inline-block mr-auto text-bottom" style="font-size:1.4em;">
-          {{ session.name }} <a href="#" data-toggle="tooltip" title="Edit session name will be available in the future" data-placement="right"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
-          <span class="text-muted " style="font-size:0.6em;">
+        <span id="session_title" class="pb-0 navbar-text d-none d-md-inline-block mr-auto text-bottom" style="font-size:1.2em;">
+          <strong>Session:</strong> {{ session.name|truncatechars:55  }} <a href="#" data-toggle="tooltip" title="Edit session name will be available in the future" data-placement="right"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top"></i></a>
+          <span id="case_study_title" class="text-muted d-none d-lg-inline-block" style="font-size:0.6em;">
             {{ session.case_study }} <a href="{% url 'case_study_review' pk=session.case_study.pk %}" data-toggle="tooltip" title="View case study detail page" data-placement="right" ><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
           </span>
 
         </span>
 
-        <div class="dropdown show ml-auto">
-          <a class="btn dropdown-toggle text-light" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+        <div id="main_menu" class="dropdown show ml-auto">
+          <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
             Menu
           </a>
 
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" href="{% url 'landing_page' %}">Home</a>
             <a class="dropdown-item" href="{% url 'workspace' %}">My Workspace</a>
-            <a class="dropdown-item" href="{% url 'about' %}">About</a>
+            <a class="dropdown-item" href="{% url 'new_session' %}">New Session</a>
+            
           </div>
         </div>
 
@@ -225,7 +225,21 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                 <div id="map-container-new-view" class="col-md-9">
                 <div id="timeline" class="text-center">
                   <div id="flex-container">
-                    {% for i in '123456'|make_list %}
+                    <div class="timeline-year-container year-0 management_complete year_active management_visible"
+                    data-year-counter="0">
+                      <div class="timeline-buttons">
+                        <span class="completed_management_buttons">
+                        </span>
+                        <span class="submit_run_button">
+                          <a href="#" data-toggle="tool" title="Run PoPS model for 2010 management."><i class="fas fa-play-circle"></i></a>
+                        </span>
+                      </div>
+                      <div class="timeline-year">
+                        <a class="align-top" data-toggle="tool" title="View forecast with no management." href="#"><em>2010</em></a>
+                      </div>
+                    </div>
+                    <div class="timeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+                    {% for i in '12345'|make_list %}
                     <div class="timeline-year-container year-{{ forloop.counter }} {% if forloop.first %} management_active {% else %} management_not_started {% endif %} management_visible"
                     data-year-counter="{{ forloop.counter }}">
                       <div class="timeline-buttons">
@@ -238,7 +252,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                         </span>
                       </div>
                       <div class="timeline-year">
-                        <a class="align-top" href="#">201{{ forloop.counter }}</a>
+                        <a class="align-top" data-toggle="tool" title="View forecast with management up to 201{{ forloop.counter }}." href="#">201{{ forloop.counter }}</a>
                       </div>
                     </div>
                     {% if forloop.last %}
@@ -405,11 +419,19 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   </div>
 
                   </div>
+                  <div id="budget_background_layer"></div>
+                  <div id="year-slider-container">
+                    <div id="display_year_label" class="py-0 "><output id="displayYear">2018</output>
+                    </div>
                   <div id="year-slider" class="pt-0 range range-info">
-                    <h5 class="py-0">Year: <output id="displayYear">2018</output>
-                    </h5>
-                    <input class="custom-range px-2 py-0" type="range" name="range" min="2014" max="2018" step="1"
+                    <div class="slider-bar">
+                    <div class="slider-bar-colors historic-years" style="width: 55px;"></div>
+                    <div class="slider-bar-colors managed-years" style="width: 2px;"></div>
+                    <div class="slider-bar-colors forecast-years"></div>
+                    </div>                  
+                    <input class="year-range" type="range" name="range" min="2014" max="2018" step="1"
                       value="2018" onchange="displayYear.value=value">
+                    </div>
                   </div>
                   <div id="money-new" class="col py-0" style="width:180px; height:140px"></div>
                   <div id="draw-controls" class="btn-group" role="group" >
@@ -536,10 +558,7 @@ $("#status-indicator").hide();
                                 step="10" value="100" onchange="displayEfficiency.value=value">
                             </div>
 
-                            {% include "pops/include/form_field.html" with field=form.final_year form_class="col-6" %}
                             {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
-                            {% include "pops/include/form_field.html" with field=form.weather form_class="col-12" %}
-                            {% include "pops/include/form_field.html" with field=form.management_month form_class="col-12" %}
                             
                             {{ form.management_cost.as_hidden }}
                             {{ form.management_area.as_hidden }}
@@ -553,7 +572,7 @@ $("#status-indicator").hide();
                           </div>
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Save and Close</button>
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Submit</button>
                         </div>
                       </div>
                     </div>
@@ -562,7 +581,7 @@ $("#status-indicator").hide();
                   <button id="hide_details_button" type="button" class="btn" data-toggle="tool" title="Hide details."><i class="fas fa-chevron-right"></i></button>
                   <div id="run-button-set" class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm" data-toggle="tool" title="View run and session details."><i class="fas fa-info"></i></button>
-                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Start a new run in this session."><i class="fas fa-plus"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editInputParameters" title="Start a new run in this session."><i class="fas fa-plus"></i></button>
                     <button type="button" class="btn btn-sm" data-toggle="tool" title="Duplicate this run."><i class="fas fa-copy"></i></button>
                     <button type="button" class="btn btn-sm" data-toggle="tool" title="Delete this run."><i class="fas fa-trash-alt"></i></button>
                     <button type="button" class="btn btn-sm" data-toggle="tool" title="Go to the PoPS instructions"><i class="fas fa-question"></i></button>
@@ -686,6 +705,8 @@ $("#status-indicator").hide();
           </form>
 
 <script>
+
+$('#editInputParameters').modal('show');
 
 $( "#run-output-details" ).hide();
 $( document ).ready(function() {
@@ -1360,7 +1381,7 @@ map.on('draw.modechange', e => {
         main_color = "#7ba83d";
         drawn_level = level;
         warning_msg = 'spent on<br>management';
-        warning_color = 'grey';
+        warning_color = 'white';
       };
       var data = [{
         values: [drawn_level, (0.98 * max_level - drawn_level), (max_level / 50), (max_level / 3)],
@@ -2154,6 +2175,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
       $( "#status-indicator-shading" ).show();
       $("button#cancel-polling").show();
     });
+
 
 $(function () {
   $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})

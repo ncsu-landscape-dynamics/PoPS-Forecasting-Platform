@@ -898,7 +898,7 @@ class Run(models.Model):
         verbose_name_plural = _("runs")
 
     def __str__(self):
-        return self.name
+        return self.status
 
 class Output(models.Model):
 
