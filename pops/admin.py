@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CaseStudy, Host, Mortality, PestInformation, Pest, Vector, ShortDistance, LongDistance, CrypticToInfected, InfectedToDiseased, Weather, Wind, Seasonality, LethalTemperature, Temperature, Precipitation, TemperatureReclass, PrecipitationReclass, TemperaturePolynomial, PrecipitationPolynomial, Session, Run, RunCollection, Output, CalibrationInfestation, ValidationInfestation, InitialInfestation
+from .models import CaseStudy, MapBoxParameters, AllPlantsData, Host, HostData, Mortality, MortalityRate, MortalityTimeLag, Creation, PestInformation, Pest, Vector, VectorHostTransmissionRate, VectorReproductiveRate, VectorShortDistance, HostVectorTransmissionRate, ReproductiveRate, PercentShortDistance,  ShortDistance, LongDistance, CrypticToInfected, InfectedToDiseased, PriorTreatment, PriorTreatmentYear, Weather, Wind, Seasonality, LethalTemperature, Temperature, Precipitation, TemperatureReclass, PrecipitationReclass, TemperaturePolynomial, PrecipitationPolynomial, Session, Run, RunCollection, Output, CalibrationInfestation, ValidationInfestation, InitialInfestation
 
 class CaseStudyAdmin(admin.ModelAdmin):
     list_display = ('name', 'number_of_pests', 'number_of_hosts', 'start_year', 'end_year', 'time_step', 'created_by', 'date_created')
@@ -36,10 +36,23 @@ class RunAdmin(admin.ModelAdmin):
     
 admin.site.register(CaseStudy, CaseStudyAdmin)
 admin.site.register(Host, HostAdmin)
+admin.site.register(AllPlantsData)
+admin.site.register(HostData)
+admin.site.register(Creation)
+admin.site.register(PriorTreatment)
+admin.site.register(PriorTreatmentYear)
 admin.site.register(Mortality)
+admin.site.register(MortalityRate)
+admin.site.register(MortalityTimeLag)
 admin.site.register(PestInformation)
 admin.site.register(Pest)
 admin.site.register(Vector)
+admin.site.register(VectorHostTransmissionRate)
+admin.site.register(VectorReproductiveRate)
+admin.site.register(VectorShortDistance)
+admin.site.register(HostVectorTransmissionRate)
+admin.site.register(ReproductiveRate)
+admin.site.register(PercentShortDistance)
 admin.site.register(ShortDistance)
 admin.site.register(LongDistance)
 admin.site.register(CrypticToInfected)
