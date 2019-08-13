@@ -8,11 +8,12 @@ from . import views
 router = routers.DefaultRouter()
 router.register('case_study', views.CaseStudyViewSet)
 router.register('run', views.RunViewSet)
+router.register('run_collection', views.RunCollectionViewSet)
 router.register('output', views.OutputViewSet)
 router.register('temperature_data', views.TemperatureDataViewSet)
 router.register('lethal_temperature_data', views.LethalTemperatureDataViewSet)
 router.register('precipitation_data', views.PrecipitationDataViewSet)
-router.register('session', views.SessionDetailViewSet)
+router.register('session', views.SessionViewSet)
 
 
 urlpatterns = [
