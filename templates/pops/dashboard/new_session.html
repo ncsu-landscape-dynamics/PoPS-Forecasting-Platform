@@ -9,7 +9,7 @@
 {% block content %}
 <div class="container py-4">
   <!--Page title-->
-  <h2 class="text-center">New PoPS Session:</h2>
+  <h2 class="text-center">Create New PoPS Session</h2>
   <!--Start of form-->
     <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-6">
@@ -24,17 +24,9 @@
             {% include "pops/include/form_field.html" with field=form.weather form_class="col-12 dark_input" %}
           <div class="text-center py-2">
             <button id="submit-session-button" class="btn btn-info btn-lg" type="submit">Create New Session</button>
-          </div>
-          <div class="text-center">
-            <span>Note: </span>
-          </div>
-          
+            <div class="text-muted py-4">After your session is created, you will be redirected to the PoPS dashboard.</div>
+          </div>          
           </form>
-          <h5 class="py-0">
-                    <!-- Button trigger modal -->
-                   <a class="btn" id="test_button" href="#">Test Button</a>
-                  </h5>
-
 
 </div>
 
@@ -78,11 +70,6 @@
 {% block scripts %}
 <script>
 
-                      $("#test_button").on('click', function () {
-                        console.log('Button clicked.')
-                        window.location.href = "{% url 'dashboard' pk=2 %}";
-                      });
-
 $("#modal_close_button").hide();
 
 function getCookie(name) {
@@ -110,7 +97,7 @@ $.ajaxSetup({
     },
 });
 
-function poll(new_run_id) {
+function poll(new_run_id, new_session_id) {
   console.log('Run id is:' + new_run_id);
   setTimeout(function () {
     $.ajax({
@@ -125,16 +112,19 @@ function poll(new_run_id) {
         //Setup the next poll recursively
         if (data.status == "SUCCESS") {
           $('#status-text span').text('Success! Loading results...');
-          window.location.href = "{% url 'dashboard' pk=2 %}"; //!!may need to hardcode this in, or create a url for /dashboard without the PK, then combine with PK like I do for pops-model-api calls
+          var base_url = "{% url 'dashboard_root' %}"; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+          var run_url = base_url.concat(new_session_id.toString());
+          console.log(run_url);
+          window.location.href = run_url; //!!may need to hardcode this in, or create a url for /dashboard without the PK, then combine with PK like I do for pops-model-api calls
         } else if (data.status == "FAILED") {
           $('#status-text span').text('RUN FAILED.');
           $("#status-logo").hide();
         } else if (data.status == "PENDING") {
             $('#status-text span').text('Pending...');
-          poll(new_run_id);
+          poll(new_run_id, new_session_id);
         } else {
           $('#status-text span').text(data.status);
-          poll(new_run_id);
+          poll(new_run_id, new_session_id);
         }
       },
       error : function(xhr,errmsg,err) {
@@ -196,7 +186,7 @@ $("#submit-session").on('submit', function () {
       });
       {% endcomment %}
       console.log('Sent run request to PoPS. Waiting for updates to database...')
-      poll(new_run_id); 
+      poll(new_run_id, new_session_id); 
     },
     // handle a non-successful response
     error: function (xhr, errmsg, err) {
