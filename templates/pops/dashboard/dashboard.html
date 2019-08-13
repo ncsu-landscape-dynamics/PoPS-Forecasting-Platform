@@ -27,6 +27,7 @@
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script>
 
+var colors = ['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
 var acre_to_meter_ratio=0.000247105;
 
     function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
@@ -166,6 +167,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
           </span>
 
         </span>
+
         <div class="dropdown show ml-auto">
           <a class="btn dropdown-toggle text-light" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
@@ -188,18 +190,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
 
 
 
-    {% comment %} <div class="row p-2 no-gutters">
-      <div class="col-xs-12 col-md-12">
-        <div style="">
-          <div style="font-size:1.5em;">
-            Session: My session name <a href="#"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top text-light"></i></a>
-          </div>
-          <div class="text-muted">
-            Spotted Lanternfly in Pennsylvania <a href="#"><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
-          </div>
-        </div>
-      </div>
-    </div> {% endcomment %}
+
     <div class="row no-gutters">
       <div id="side-bar-container" class="col-auto text-center ">
         <div class="nav " id="side-bar" aria-orientation="vertical">
@@ -227,32 +218,23 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
           <div id="v-pills-map" class="tab-pane fade show active no-gutters" >
             <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
               <div class="row no-gutters">
-                <div class="col-12 d-flex flex-column">
-                  <div id="run-title">
-                    Run name: {{ form.name }}
-                    <button id="submit-run-button" type="submit" data-run=""
-                      class="btn btn-success float-right d-none d-md-inline ml-4">Run PoPS Model</button>
-                    <button id="show-hide-new-view" type="button"
-                      class="btn btn-dark float-right d-none d-md-inline">Hide Details</button>
-                  </div>
-                </div>
+
                 {{ form.session.as_hidden }}
                 <input type="hidden" value="0" name="management_polygons" cols="40" rows="10" class="form-control"
                   id="id_management_polygons">
                 <div id="map-container-new-view" class="col-md-9">
                 <div id="timeline" class="text-center">
-
                   <div id="flex-container">
                     {% for i in '123456'|make_list %}
                     <div class="timeline-year-container year-{{ forloop.counter }} {% if forloop.first %} management_active {% else %} management_not_started {% endif %} management_visible"
                     data-year-counter="{{ forloop.counter }}">
                       <div class="timeline-buttons">
                         <span class="completed_management_buttons">
-                          <a class="timeline-edit" href="#"><i class="fas fa-backspace "></i></a>
-                          <a class="timeline-visibility" href="#"><i class="far fa-eye "></i></a>
+                          <a class="timeline-edit" href="#" data-toggle="tool" title="Go back to manage year 201{{ forloop.counter}}. This will delete all subsequent management years."><i class="fas fa-backspace "></i></a>
+                          <a class="timeline-visibility" href="#" data-toggle="tool" title="Toggle management polygon visibility."><i class="far fa-eye "></i></a>
                         </span>
                         <span class="submit_run_button">
-                          <a href="#"><i class="fas fa-play-circle"></i></a>
+                          <a href="#" data-toggle="tool" title="Run PoPS model for 201{{ forloop.counter}} management."><i class="fas fa-play-circle"></i></a>
                         </span>
                       </div>
                       <div class="timeline-year">
@@ -269,7 +251,6 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   <script>
 
                   function updateDrawColor (year_count) {
-                    var colors = ['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
                     disableDrawTools();
                     enableDrawTools();
                     console.log('Removing draw control.')
@@ -335,6 +316,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
 
                   </script>                
                   <div id="map" class="large_map"></div>
+                  <button id="show_details_button" type="button" class="btn" style="display: none" data-toggle="tool" title="Show details."><i class="fas fa-chevron-left"></i></button>
                   <h4 id="display_year_forecast">Field observations</h4>
 
 {% comment %}                   <div id="historic-legend-container" class="pb-0">
@@ -502,13 +484,14 @@ $("#status-indicator").hide();
                     <div class="modal-dialog modal-dialog-centered" role="document">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLongTitle">Edit Run Parameters</h5>
+                          <h5 class="modal-title" id="exampleModalLongTitle">New Run Parameters</h5>
                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
                         <div class="modal-body">
                           <div class="row">
+                            {% include "pops/include/form_field.html" with field=form.name form_class="col-12" %}
                             {% include "pops/include/form_field.html" with field=form.description form_class="col-12" %}
                             <div class="form-group col-12">
                               <label for="id_area_unit">Displayed Units</label>
@@ -547,11 +530,17 @@ $("#status-indicator").hide();
                             </div>
                                 <input type="hidden" name="cost_per_meter_squared" value="0.37807065"
                                   class="form-control" id="id_cost_per_meter_squared">
+                            <div id="efficiency" class="col-6 pt-2 range range-info">
+                              <strong>Efficacy: <output id="displayEfficiency">100</output>%</strong>
+                              <input id="id_efficacy" class="custom-range" type="range" name="efficacy" min="50" max="100"
+                                step="10" value="100" onchange="displayEfficiency.value=value">
+                            </div>
 
                             {% include "pops/include/form_field.html" with field=form.final_year form_class="col-6" %}
                             {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
                             {% include "pops/include/form_field.html" with field=form.weather form_class="col-12" %}
                             {% include "pops/include/form_field.html" with field=form.management_month form_class="col-12" %}
+                            
                             {{ form.management_cost.as_hidden }}
                             {{ form.management_area.as_hidden }}
                             <div class="form-check col ml-2">
@@ -569,34 +558,28 @@ $("#status-indicator").hide();
                       </div>
                     </div>
                   </div>
-                  <h5 class="py-0">
+                  <div class="">
+                  <button id="hide_details_button" type="button" class="btn" data-toggle="tool" title="Hide details."><i class="fas fa-chevron-right"></i></button>
+                  <div id="run-button-set" class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-sm" data-toggle="tool" title="View run and session details."><i class="fas fa-info"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Start a new run in this session."><i class="fas fa-plus"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Duplicate this run."><i class="fas fa-copy"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Delete this run."><i class="fas fa-trash-alt"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Go to the PoPS instructions"><i class="fas fa-question"></i></button>
+                  </div>
+                  </div>
+                  <div id="run-collection-name">
+                  <strong>Run name:</strong> This is what I'm calling my run
+                  </div>
+
+
+                      <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
+{% comment %}                   <h5 class="py-0">
                     <!-- Button trigger modal -->
-                    Parameters<a class="btn" data-toggle="modal" data-target="#editInputParameters" href="#"><i
+                   Parameters<a class="btn" data-toggle="modal" data-target="#editInputParameters" href="#"><i
                         style="font-size:0.6em" class="fas fa-pencil-alt align-top text-light"></i></a>
                   </h5>
-                  <strong class="py-0">Management:</strong>
-                  <div style="height:35px; line-height: 1em;">
-                    <small id="polygon-info">Use the polygon tool to draw management areas.</small>
-                  </div>
-                  <div id="gauge-plots" class="row no-gutters pt-2">
-
-                  </div>
-
-
-                  <div id="case-study-details" class="">
-                    <div id="efficiency" class="pt-2 range range-info">
-                      <strong>Efficacy: <output id="displayEfficiency">100</output>%</strong>
-                      <input id="id_efficacy" class="custom-range px-4" type="range" name="efficacy" min="50" max="100"
-                        step="10" value="100" onchange="displayEfficiency.value=value">
-                    </div>
-
-
-
-
-
-
-                  </div>
-                </div>                
+ {% endcomment %}                </div>                
                 <div id="run-output-details" >
                   <h5 class="py-0">
                     <!-- Button trigger modal -->
@@ -613,7 +596,6 @@ $("#status-indicator").hide();
                           Management area: <span></span> acres
                           </div>
                       <div id="number_infected_side_plot" style="height:180px;"></div>
-                      <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
 
                                   <!-- Modal -->
                   <div class="modal fade" id="viewParameters" tabindex="-1" role="dialog" aria-labelledby="viewParameters"
@@ -1577,14 +1559,22 @@ map.on('draw.modechange', e => {
     $(side_plot("main_plot1", '# occurences', default_years, x2, default_detections, y2, '#2598b8',error_bar=false));
     $(side_plot("main_plot2", 'Occurence area', default_years, x2, default_area, y2, '#5fc2c2',error_bar=false));
 
-    $('#show-hide-new-view').on('click', function () {
+    $('#hide_details_button').on('click', function () {
       var bounds = map.getBounds();
       $('#map-container-new-view').toggleClass('col-md-9 col-md-12');
       $('#side-panel').toggleClass('d-md-block d-md-none');
       console.log("Toggle side panel.")
       map.resize();
+      $('#show_details_button').show("fast");
+    });
+    $('#show_details_button').on('click', function () {
+      var bounds = map.getBounds();
+      $('#map-container-new-view').toggleClass('col-md-9 col-md-12');
+      $('#side-panel').toggleClass('d-md-block d-md-none');
+      console.log("Toggle side panel.")
+      map.resize();
+      $('#show_details_button').hide("fast");
       //map.fitBounds(bounds);
-      $(this).text($(this).text() == 'Hide Details' ? 'Show Details' : 'Hide Details');
     });
 
 
@@ -2168,6 +2158,8 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
 $(function () {
   $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})
 })
+
+$(side_plot("area_infected_side_plot", 'Occurence area', [2011,2012,2013,2014,2015], [2011,2012,2013,2014,2015], [100,200,300,400,600], [100,180,270,360,400], colors[0],error_bar=false));
 
 
 

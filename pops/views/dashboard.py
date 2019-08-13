@@ -99,7 +99,7 @@ class AjaxableResponseMixin:
  
 class DashboardView(AjaxableResponseMixin, CreateView):
     template_name = 'pops/dashboard/dashboard.html'
-    form_class = RunForm
+    form_class = RunCollectionForm
     success_url = 'new_session'
 
     def get_initial(self):
