@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CaseStudy, Host, Mortality, PestInformation, Pest, Vector, ShortDistance, LongDistance, CrypticToInfected, InfectedToDiseased, Weather, Wind, Seasonality, LethalTemperature, Temperature, Precipitation, TemperatureReclass, PrecipitationReclass, TemperaturePolynomial, PrecipitationPolynomial, Session, Run, Output, CalibrationInfestation, ValidationInfestation, InitialInfestation
+from .models import CaseStudy, Host, Mortality, PestInformation, Pest, Vector, ShortDistance, LongDistance, CrypticToInfected, InfectedToDiseased, Weather, Wind, Seasonality, LethalTemperature, Temperature, Precipitation, TemperatureReclass, PrecipitationReclass, TemperaturePolynomial, PrecipitationPolynomial, Session, Run, RunCollection, Output, CalibrationInfestation, ValidationInfestation, InitialInfestation
 
 class CaseStudyAdmin(admin.ModelAdmin):
     list_display = ('name', 'number_of_pests', 'number_of_hosts', 'start_year', 'end_year', 'time_step', 'created_by', 'date_created')
@@ -28,6 +28,12 @@ class SessionAdmin(admin.ModelAdmin):
 
         return super(SessionAdmin, self).save_model(request, obj, form, change)
 
+class RunCollectionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'session','date_created','status','tangible_landscape')
+
+class RunAdmin(admin.ModelAdmin):
+    list_display = ('run_collection', 'steering_year','date_created','status')
+    
 admin.site.register(CaseStudy, CaseStudyAdmin)
 admin.site.register(Host, HostAdmin)
 admin.site.register(Mortality)
@@ -49,7 +55,8 @@ admin.site.register(TemperaturePolynomial)
 admin.site.register(PrecipitationReclass)
 admin.site.register(PrecipitationPolynomial)
 admin.site.register(Session,SessionAdmin)
-admin.site.register(Run)
+admin.site.register(Run,RunAdmin)
+admin.site.register(RunCollection,RunCollectionAdmin)
 admin.site.register(Output)
 admin.site.register(CalibrationInfestation)
 admin.site.register(ValidationInfestation)
