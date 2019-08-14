@@ -1,0 +1,6 @@
+#area_plot, #spread_plot {
+  width: 250px;
+  height: 250px;
+  border-style: solid;
+  border-color: red;
+}

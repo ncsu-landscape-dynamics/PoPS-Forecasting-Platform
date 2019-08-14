@@ -18,6 +18,7 @@ router.register('session', views.SessionViewSet)
 
 urlpatterns = [
     #path('ajax', views.AJAXTestView.as_view(), name='ajax'),
+    path('plots', TemplateView.as_view(template_name="pops/dashboard/plotting_test.html")),
     path('output/<int:pk>', views.OutputDetailView.as_view(), name='output_detail'),
     path('get_output', views.get_output_view, name='get_output'),
     path('check_status', views.check_status, name='check_status'),

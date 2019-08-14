@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %} 
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+
+  {% block page_styles %}
+  <link rel="stylesheet" href="{% static 'css/dashboard_layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/plots.css' %}">
+  
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    {% endblock %}
+
+  <script>
+var colors = ['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
+</script>
+
+  <title>PoPS</title>
+</head>
+
+<body class="text-light">
+
+  <div class=" container-fluid p-0 ">
+
+    <nav class="navbar navbar-dark pl-0">
+      <div class="container-fluid ">
+        <a href="{% url 'landing_page' %}" class="navbar-brand d-none d-inline-block">
+          <img src="{% static 'images/PoPSlogo_simple.svg' %}" style="width: 80px;" class="d-inline-block align-middle "
+            alt="Pest or Pathogen Spread Simulation">
+        </a>
+        <span id="session_title" class="pb-0 navbar-text d-none d-md-inline-block mr-auto text-bottom"
+          style="font-size:1.2em;">
+
+        </span>
+
+        <div id="main_menu" class="dropdown show ml-auto">
+          <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Menu
+          </a>
+
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="{% url 'workspace' %}">My Workspace</a>
+            <a class="dropdown-item" href="{% url 'new_session' %}">New Session</a>
+
+          </div>
+        </div>
+
+
+      </div>
+
+    </nav>
+
+    <div class="row">
+      <div class="col-auto m-auto">
+      <div>Sample plot (id="area_plot"):</div>
+        <div id="area_plot"></div>
+      <div>Spread plot (id="spread_plot"):</div>
+        <div id="spread_plot"></div>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script>
+var data=[];
+            for (var i=0; i<5; i++) {
+data.push({
+                 type: "scatterpolar",
+      name: "2019",
+      r: [10-i,9-i,7-i,3-i,10-i],
+      theta: ["E", "N", "W", "S","E"],
+      fill: "toself",
+		 marker: {
+    color: colors[i],
+    size: 2,
+  },
+  line: {
+width: 2,
+  },
+
+
+                });
+            };
+
+
+var layout = {
+  font: {size: 25, color: "white", border:"transparent"},
+  showlegend: false,
+  legend: {font: {size: 16}},
+  polar: {
+      bgcolor: "#2e3236",
+      angularaxis: {
+        tickwidth: 2,
+        linewidth: 3,
+			showline: false,
+			
+        layer: "below traces"
+      },
+      radialaxis: {
+        showline: false,
+			showticklabels: false,
+			showgrid: true,
+    zeroline: false,
+    autotick: true,
+    ticks: '',
+ 
+			visible: true,
+        linewidth: 2,
+        tickwidth: 2,
+        gridcolor: "#4A5158",
+        gridwidth: 2
+      }
+    },
+  orientation: 0,
+  paper_bgcolor: '#212529',
+	plot_bgcolor: 'black',
+  margin: {
+          l: 40,
+          r: 40,
+          b: 50,
+          t: 50,
+          pad: 0
+        },
+};
+
+Plotly.newPlot('spread_plot', data, layout)
+
+
+
+    function side_plot(myDiv, title, x1, x2, y1, y2, color, error_bar=true) {
+      var trace1 = {
+        x: x1,
+        y: y1,
+        error_y: {
+      type: 'percent',
+      value: 20,
+      visible: error_bar,
+    },
+        name: 'No management',
+        marker: {
+          color: 'grey'
+        },
+        type: 'scatter'
+      };
+
+      var trace2 = {
+        x: x2,
+        y: y2,
+    error_y: {
+      type: 'percent',
+      value: 30,
+      visible: error_bar,
+    },
+
+        name: 'Current run',
+        marker: {
+          color: color
+        },
+        type: 'scatter'
+      };
+
+      var data = [trace1, trace2];
+
+
+      var layout = {
+        xaxis: {
+          tickfont: {
+            size: 12,
+            color: 'rgb(107, 107, 107)'
+          }
+        },
+        yaxis: {
+          showticklabels: false,
+          title: title,
+          titlefont: {
+            size: 12,
+            color: 'white',
+          },
+
+          tickfont: {
+            size: 12,
+            color: 'rgb(107, 107, 107)'
+          }
+        },
+        showlegend: false,
+        paper_bgcolor: '#0b0d0e',
+        plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
+        margin: {
+          l: 30,
+          r: 20,
+          b: 25,
+          t: 10,
+          pad: 0
+        },
+      };
+
+      return Plotly.newPlot(myDiv, data, layout, {
+        displayModeBar: false,
+        responsive: true
+      });
+    };
+
+    var default_years = [2019, 2020, 2021, 2022, 2023];// 2022, 2023];
+    var default_area = [20, 30, 50, 100, 200];
+    var x2 = [2020, 2021, 2022, 2023];
+    var y2 = [28,45,90,270]; //,32900000000,48900000000]*acre_to_meter_ratio;
+    //$(side_plot("area_plot", 'Occurence area', default_years, x2, default_area, y2, 'green',error_bar=false));
+
+var data= [];
+              data.push({
+                x:default_years,
+                y:default_area, 
+                name: 'No management',
+                type: 'scatter',
+                mode: 'lines',
+                opacity: 0.7,
+                line: {
+                    color: 'grey',
+                    width: 4,
+                  }
+
+                });
+
+    var area = [20, 40, 80, 150, 400];
+    var opacity = 0.7;
+              console.log('Area: ' + area);
+              var years=x2;
+            for (var i=0; i<3; i++) {
+              short_area = area;
+              for(var j=1; j<short_area.length; j++) {
+                short_area[j] /= 1.2;
+              };
+              short_area=short_area.slice(i);
+              console.log('Area after splice: ' + short_area);
+              short_years=years.slice(i);
+              for(var j=1; j<short_area.length; j++) {
+                short_area[j] /= 1.2;
+              };
+                        if (i==2) {
+                opacity= 1.0;
+                }
+                else {
+                  opacity= 0.7;
+                };      
+              console.log('Area after division: ' + short_area);
+              data.push({
+                x:short_years,
+                y:short_area,
+                name: (2010 +i).toString(),
+                mode: 'lines',
+                opacity: opacity,
+                line: {
+                    color: colors[i],
+                    width: 4,
+                  }
+                });
+              };
+
+          var layout = {
+        xaxis: {
+          tickfont: {
+            size: 12,
+            color: 'rgb(107, 107, 107)'
+          }
+        },
+        yaxis: {
+          showticklabels: false,
+          title: 'Area infected',
+          titlefont: {
+            size: 12,
+            color: 'white',
+          },
+
+          tickfont: {
+            size: 12,
+            color: 'rgb(107, 107, 107)'
+          }
+        },
+        showlegend: false,
+        paper_bgcolor: '#0b0d0e',
+        plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
+        margin: {
+          l: 30,
+          r: 20,
+          b: 25,
+          t: 10,
+          pad: 0
+        },
+      };
+
+Plotly.newPlot("area_plot", data, layout, {
+        displayModeBar: false,
+        responsive: true
+      });
+      
+      </script>
+</html>
