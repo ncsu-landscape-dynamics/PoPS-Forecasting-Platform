@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CaseStudy, MapBoxParameters, AllPlantsData, Host, HostData, Mortality, MortalityRate, MortalityTimeLag, Creation, PestInformation, Pest, Vector, VectorHostTransmissionRate, VectorReproductiveRate, VectorShortDistance, HostVectorTransmissionRate, ReproductiveRate, PercentShortDistance,  ShortDistance, LongDistance, CrypticToInfected, InfectedToDiseased, PriorTreatment, PriorTreatmentYear, Weather, Wind, Seasonality, LethalTemperature, Temperature, Precipitation, TemperatureReclass, PrecipitationReclass, TemperaturePolynomial, PrecipitationPolynomial, Session, Run, RunCollection, Output, CalibrationInfestation, ValidationInfestation, InitialInfestation
+from .models import CaseStudy, MapBoxParameters, AllPlantsData, Host, HostData, Mortality, MortalityRate, MortalityTimeLag, Creation, PestInformation, Pest, Vector, VectorHostTransmissionRate, VectorReproductiveRate, VectorNaturalDistance, HostVectorTransmissionRate, ReproductiveRate, PercentNaturalDistance,  NaturalDistance, AnthropogenicDistance, AnthropogenicDirection, CrypticToInfected, InfectedToDiseased, PriorTreatment, PriorTreatmentYear, Weather, Wind, Seasonality, LethalTemperature, Temperature, Precipitation, TemperatureReclass, PrecipitationReclass, TemperaturePolynomial, PrecipitationPolynomial, Session, Run, RunCollection, Output, CalibrationInfestation, ValidationInfestation, InitialInfestation
 
 class CaseStudyAdmin(admin.ModelAdmin):
     list_display = ('name', 'number_of_pests', 'number_of_hosts', 'start_year', 'end_year', 'time_step', 'created_by', 'date_created')
@@ -49,12 +49,13 @@ admin.site.register(Pest)
 admin.site.register(Vector)
 admin.site.register(VectorHostTransmissionRate)
 admin.site.register(VectorReproductiveRate)
-admin.site.register(VectorShortDistance)
+admin.site.register(VectorNaturalDistance)
 admin.site.register(HostVectorTransmissionRate)
 admin.site.register(ReproductiveRate)
-admin.site.register(PercentShortDistance)
-admin.site.register(ShortDistance)
-admin.site.register(LongDistance)
+admin.site.register(PercentNaturalDistance)
+admin.site.register(NaturalDistance)
+admin.site.register(AnthropogenicDistance)
+admin.site.register(AnthropogenicDirection)
 admin.site.register(CrypticToInfected)
 admin.site.register(InfectedToDiseased)
 admin.site.register(Weather)
