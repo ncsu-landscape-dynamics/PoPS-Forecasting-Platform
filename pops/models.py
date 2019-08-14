@@ -875,7 +875,7 @@ class Session(models.Model):
     weather = models.CharField(verbose_name = _("weather"), help_text="", max_length = 20,
                     choices = WEATHER_CHOICES,
                     default = "AVERAGE", blank=True)
-    ##default_run = models.OneToOneField(Run, verbose_name = _("default run id"), on_delete = models.CASCADE, blank=True, null = True)
+    default_run = models.OneToOneField('Run', verbose_name = _("default run"), help_text="Default no management run for this session and default run_collection parameters.", on_delete = models.CASCADE, blank=True, null = True)
 
     class Meta:
         verbose_name = _("session")
