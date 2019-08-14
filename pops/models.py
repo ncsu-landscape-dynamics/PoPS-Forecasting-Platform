@@ -277,10 +277,13 @@ class Pest(models.Model):
         ("EXPONENTIAL", "Exponential"),
         ("DOUBLE SCALE EXPONENTIAL", "Double Scale Exponential")
     )
-    dispersal_type = models.CharField(verbose_name = _("dispersal type"), help_text="", max_length = 70,
+    natural_dispersal_type = models.CharField(verbose_name = _("natural dispersal type"), help_text="", max_length = 70,
                     choices = DISPERSAL_CHOICES,
                     default = "CAUCHY", blank=True)
-    
+    anthropogenic_dispersal_type = models.CharField(verbose_name = _("anthropogenic dispersal type"), help_text="", max_length = 70,
+                    choices = DISPERSAL_CHOICES,
+                    default = "CAUCHY", blank=True)
+
     objects = MyManager()
 
     class Meta:
@@ -421,17 +424,17 @@ class VectorReproductiveRate(models.Model):
     def __str__(self):
         return self.value
 
-class VectorShortDistance(models.Model):
+class VectorNaturalDistance(models.Model):
 
     vector = models.ForeignKey(Vector, verbose_name = _("vector"), on_delete = models.CASCADE)
-    value = models.DecimalField(verbose_name = _("vector short distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
-    probability = models.DecimalField(verbose_name = _("vector short distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
+    value = models.DecimalField(verbose_name = _("vector natural distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("vector natural distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
     class Meta:
-        verbose_name = _("vector short distance dispersal")
-        verbose_name_plural = _("vector short distance dispersals")
+        verbose_name = _("vector natural distance dispersal")
+        verbose_name_plural = _("vector natural distance dispersals")
 
     def __str__(self):
         return self.value
@@ -451,50 +454,93 @@ class ReproductiveRate(models.Model):
     def __str__(self):
         return self.value
 
-class PercentShortDistance(models.Model):
+class PercentNaturalDistance(models.Model):
 
     pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
-    value = models.DecimalField(verbose_name = _("percent short distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
-    probability = models.DecimalField(verbose_name = _("percent short distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
+    value = models.DecimalField(verbose_name = _("percent natural distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("percent natural distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
     class Meta:
-        verbose_name = _("short distance dispersal percentage")
-        verbose_name_plural = _("short distance dispersal percentages")
+        verbose_name = _("natural distance dispersal percentage")
+        verbose_name_plural = _("natural distance dispersal percentages")
 
     def __str__(self):
         return self.value
 
-class ShortDistance(models.Model):
+class NaturalDistance(models.Model):
 
     pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
-    value = models.DecimalField(verbose_name = _("short distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
-    probability = models.DecimalField(verbose_name = _("short distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
+    value = models.DecimalField(verbose_name = _("natural distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("natural distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
     class Meta:
-        verbose_name = _("short distance dispersal")
-        verbose_name_plural = _("short distance dispersals")
+        verbose_name = _("natural distance dispersal")
+        verbose_name_plural = _("natural distance dispersals")
 
     def __str__(self):
         return self.value
 
-class LongDistance(models.Model):
+class AnthropogenicDistance(models.Model):
 
     pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
-    value = models.DecimalField(verbose_name = _("long distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
-    probability = models.DecimalField(verbose_name = _("long distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
+    value = models.DecimalField(verbose_name = _("anthropogenic distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
+    probability = models.DecimalField(verbose_name = _("anthropogenic distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
 
     class Meta:
-        verbose_name = _("long distance dispersal")
-        verbose_name_plural = _("long distance dispersals")
+        verbose_name = _("anthropogenic distance dispersal")
+        verbose_name_plural = _("anthropogenic distance dispersals")
 
     def __str__(self):
         return self.value
+
+class AnthropogenicDirection(models.Model):
+
+    pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
+    DIRECTION_CHOICES = (
+        ("N", "North"),
+        ("NE", "Northeast"),
+        ("E", "East"),
+        ("SE", "Southeast"),
+        ("S", "South"),
+        ("SW", "Southwest"),
+        ("W", "West"),
+        ("NW", "Northwest"),
+    )
+    direction = models.CharField(verbose_name = _("anthropogenic direction"), help_text="What is the predominate anthropogenic direction in your study area?", 
+                    max_length = 30,
+                    choices = DIRECTION_CHOICES,
+                    default = "N", blank = False)
+    KAPPA_CHOICES = (
+            (1, "1"),
+            (2, "2"),
+            (3, "3"),
+            (4, "4"),
+            (5, "5"),
+            (6, "6"),
+            (7, "7"),
+            (8, "8"),
+            (9, "9"),
+            (10, "10"),
+            (11, "11"),
+            (12, "12"),
+        )
+
+    kappa = models.PositiveSmallIntegerField(verbose_name = _("anthropogenic strenth (kappa)"), help_text="What is the average anthropogenic strength in your study area? 0 is no effect and 12 is very strong directional movement", choices = KAPPA_CHOICES, default = 1, blank = False, validators = [MinValueValidator(1), MaxValueValidator(12)])
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("anthropogenic direction")
+        verbose_name_plural = _("anthropogenic directions")
+
+    def __str__(self):
+        return self.anthropogenic_direction
 
 class CrypticToInfected(models.Model):
 
@@ -829,6 +875,7 @@ class Session(models.Model):
     weather = models.CharField(verbose_name = _("weather"), help_text="", max_length = 20,
                     choices = WEATHER_CHOICES,
                     default = "AVERAGE", blank=True)
+    ##default_run = models.OneToOneField(Run, verbose_name = _("default run id"), on_delete = models.CASCADE, blank=True, null = True)
 
     class Meta:
         verbose_name = _("session")
@@ -861,6 +908,7 @@ class RunCollection(models.Model):
     budget = models.PositiveIntegerField(verbose_name = _("budget"), default = 30000000, null = True, validators = [MinValueValidator(1)])
     efficacy = models.PositiveSmallIntegerField(verbose_name = _("efficacy"), help_text="", blank=True, default = 100, validators = [MinValueValidator(1), MaxValueValidator(100)])
     cost_per_meter_squared = models.DecimalField(verbose_name = _("cost per meter squared"), max_digits = 14, decimal_places = 9, blank=True, null=True, default = 0)
+    default = models.BooleanField(verbose_name = _("default run collection"), help_text="Is this the default run collection for this session?", default = False)
 
     class Meta:
         verbose_name = _("run collection")
@@ -913,6 +961,21 @@ class Output(models.Model):
     class Meta:
         verbose_name = _("output")
         verbose_name_plural = _("outputs")
+
+    def __str__(self):
+        return self.run
+
+class SpreadRate(models.Model):
+
+    output = models.OneToOneField(Output, verbose_name = _("output"), on_delete = models.CASCADE, primary_key = True)
+    west_rate = models.DecimalField(verbose_name = _("westerly spread rate"), help_text="Spread rate in westerly direction", blank=True, max_digits = 6, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
+    east_rate = models.DecimalField(verbose_name = _("easterly spread rate"), help_text="Spread rate in easterly direction", blank=True, max_digits = 6, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
+    north_rate = models.DecimalField(verbose_name = _("northerly spread rate"), help_text="Spread rate in northerly direction", blank=True, max_digits = 6, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
+    south_rate = models.DecimalField(verbose_name = _("southerly spread rate"), help_text="Spread rate in southerly direction", blank=True, max_digits = 6, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
+
+    class Meta:
+        verbose_name = _("spread rate")
+        verbose_name_plural = _("spread rates")
 
     def __str__(self):
         return self.run
