@@ -939,7 +939,7 @@ class Run(models.Model):
     management_area = models.DecimalField(verbose_name = _("management area"), max_digits = 16, decimal_places = 2, blank=True, null=True, default = 0)
     logging = models.TextField(verbose_name = _("error logs for backend"), max_length = 300, blank=True, null=True, help_text="For checking error logs for backend model runs")
     time_taken = models.DecimalField(verbose_name = _("time taken"), max_digits = 5, decimal_places = 1, blank=True, null=True)
-    steering_year = models.PositiveIntegerField(verbose_name = _("steering year"), default = None, null = True, validators = [MinValueValidator(2018)])
+    steering_year = models.PositiveIntegerField(verbose_name = _("steering year"), default = None, null = True, blank= True, validators = [MinValueValidator(2018)])
 
     class Meta:
         verbose_name = _("run")
