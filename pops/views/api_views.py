@@ -12,8 +12,9 @@ class CaseStudyViewSet(viewsets.ModelViewSet):
     """
     queryset = CaseStudy.objects.prefetch_related(
         Prefetch('host_set', queryset=Host.objects.select_related('mortality','hostdata')),
-        Prefetch('pest_set',queryset=Pest.objects.select_related('vector','initialinfestation',
-        'priortreatment','shortdistance','longdistance','cryptictoinfected','infectedtodiseased')),
+        Prefetch('pest_set',queryset=Pest.objects.prefetch_related('infectedtodiseased_set',
+        'cryptictoinfected_set','anthropogenicdistance_set','naturaldistance_set','percentnaturaldistance_set'
+        ).select_related('vector','initialinfestation','priortreatment')),
         Prefetch('weather__temperature__temperaturereclass_set'),
         Prefetch('weather__precipitation__precipitationreclass_set')).select_related(
             'created_by','allplantsdata','weather__wind','weather__seasonality',
@@ -30,6 +31,13 @@ class RunViewSet(viewsets.ModelViewSet):
     serializer_class = RunSerializer
     permission_classes = (permissions.AllowAny,)
 
+class RunCollectionViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows run collections to be viewed or edited.
+    """
+    queryset = RunCollection.objects.prefetch_related().all()
+    serializer_class = RunCollectionSerializer
+    permission_classes = (permissions.AllowAny,)
 
 class OutputViewSet(viewsets.ModelViewSet):
     """
@@ -63,10 +71,18 @@ class PrecipitationDataViewSet(viewsets.ModelViewSet):
     serializer_class = PrecipitationDataSerializer
     permission_classes = (permissions.AllowAny,)
 
-class SessionDetailViewSet(viewsets.ModelViewSet):
+class SessionViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows output to be viewed or edited.
     """
+    queryset = Session.objects.prefetch_related().all()
+    serializer_class = SessionSerializer
+    permission_classes = (permissions.AllowAny,)
+
+"""
+class SessionDetailViewSet(viewsets.ModelViewSet):
+
     queryset = Session.objects.prefetch_related('run_set').all()
     serializer_class = SessionDetailSerializer
     permission_classes = (permissions.AllowAny,)
+"""

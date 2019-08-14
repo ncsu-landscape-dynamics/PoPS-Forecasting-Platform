@@ -87,22 +87,27 @@ class HostSerializer(serializers.ModelSerializer):
 class InfectedToDiseasedSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfectedToDiseased
-        fields = ['rate','rate_standard_deviation']
+        fields = ['pk','value','probability']
 
 class CrypticToInfectedSerializer(serializers.ModelSerializer):
     class Meta:
         model = CrypticToInfected
-        fields = ['rate','rate_standard_deviation']
+        fields = ['pk','value','probability']
 
-class LongDistanceSerializer(serializers.ModelSerializer):
+class AnthropogenicDistanceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = LongDistance
-        fields = ['scale','scale_standard_deviation']
+        model = AnthropogenicDistance
+        fields = ['pk','value','probability']
 
-class ShortDistanceSerializer(serializers.ModelSerializer):
+class NaturalDistanceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ShortDistance
-        fields = ['scale','scale_standard_deviation','percent_short_distance']
+        model = NaturalDistance
+        fields = ['pk','value','probability']
+
+class PercentNaturalDistanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PercentNaturalDistance
+        fields = ['pk','value','probability']
 
 class PestInformationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -129,28 +134,35 @@ class PestSerializer(serializers.ModelSerializer):
     vector = VectorSerializer()
     initialinfestation = InitialInfestationSerializer()
     priortreatment = PriorTreatmentSerializer()
-    shortdistance = ShortDistanceSerializer()
-    longdistance = LongDistanceSerializer()
-    cryptictoinfected = CrypticToInfectedSerializer()
-    infectedtodiseased = InfectedToDiseasedSerializer()
+    naturaldistance_set = NaturalDistanceSerializer(many=True)
+    anthropogenicdistance_set = AnthropogenicDistanceSerializer(many=True)
+    percentnaturaldistance_set = PercentNaturalDistanceSerializer(many=True)
+    cryptictoinfected_set = CrypticToInfectedSerializer(many=True)
+    infectedtodiseased_set = InfectedToDiseasedSerializer(many=True)
     class Meta:
         model = Pest
-        fields = ['pk','pest_information','name','model_type','dispersal_type','initialinfestation','vector_born','vector','use_treatment','priortreatment','shortdistance','longdistance','cryptictoinfected','infectedtodiseased']
+        fields = ['pk','pest_information','name','model_type','dispersal_type','initialinfestation','vector_born','vector','use_treatment','priortreatment','naturaldistance_set','anthropogenicdistance_set','percentnaturaldistance_set','cryptictoinfected_set','infectedtodiseased_set']
         
 class AllPlantsSerializer(serializers.ModelSerializer):
     class Meta:
         model = AllPlantsData
         fields = ['user_file']
 
+class MapBoxParametersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MapBoxParameters
+        fields = ['longitude', 'latitude','zoom']
+
 class CaseStudySerializer(serializers.ModelSerializer):
     allplantsdata = AllPlantsSerializer()
+    mapboxparameters = MapBoxParametersSerializer()
     weather = WeatherSerializer()
     pest_set = PestSerializer(many=True)
     host_set = HostSerializer(many=True)
     class Meta:
         model = CaseStudy
         fields = ['name', 'description','number_of_pests','number_of_hosts','start_year','end_year','future_years',
-                'time_step','staff_approved','calibration_status','use_external_calibration','calibration','allplantsdata','pest_set','host_set','weather']
+                'time_step','staff_approved','calibration_status','use_external_calibration','calibration','allplantsdata','mapboxparameters', 'pest_set','host_set','weather']
 
 class OutputSerializer(serializers.ModelSerializer):
     class Meta:
@@ -168,6 +180,11 @@ class RunSerializer(serializers.ModelSerializer):
         model = Run
         fields = '__all__'
 
+class RunCollectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RunCollection
+        fields = '__all__'
+
 class TemperatureDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Temperature
@@ -183,6 +200,7 @@ class PrecipitationDataSerializer(serializers.ModelSerializer):
         model = Precipitation
         fields = '__all__'
 
+"""
 class SessionDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
@@ -199,7 +217,7 @@ class SessionDetailSerializer(serializers.ModelSerializer):
             return obj.run_set.order_by('-pk')[0].pk
         else:
             return 'null'
-
+"""
 
 
 
