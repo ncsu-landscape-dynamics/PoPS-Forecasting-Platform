@@ -184,10 +184,11 @@ class PestForm(forms.ModelForm):
     validate_size = validate_file_size
     class Meta:
         model = Pest
-        fields = ['pest_information','name','model_type','natural_dispersal_type','vector_born','use_treatment']
+        fields = ['pest_information','name','model_type','vector_born','use_treatment']
     
     def clean(self):
-        self.fields_required(['pest_information','model_type','natural_dispersal_type'])
+        print('VALIDATING PEST FORM')
+        self.fields_required(['pest_information','model_type'])
         pest_information = self.cleaned_data.get('pest_information')
         if pest_information:
             if pest_information.common_name == "Other":

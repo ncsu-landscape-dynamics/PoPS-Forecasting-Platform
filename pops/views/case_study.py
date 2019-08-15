@@ -193,6 +193,7 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
         success=True
 
         if my_forms['case_study_form'].is_valid() and my_forms['host_form'].is_valid() and my_forms['pest_form'].is_valid() and my_forms['weather_form'].is_valid():
+            print('Case study, host and pest form are valid (but dependent forms may not be.)')
             required_models['new_case_study'] = my_forms['case_study_form'].save(commit=False)
             required_models['new_host'] = my_forms['host_form'].save(commit=False)
             required_models['new_pest'] = my_forms['pest_form'].save(commit=False)
@@ -201,26 +202,31 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
                 optional_models['host'].append(required_models['new_host_data'])
             else:
                 success = False
+                print('Host data form failed.')
             if my_forms['all_plants_data_form'].is_valid():
                 required_models['new_all_plants'] = my_forms['all_plants_data_form'].save(commit=False)
                 optional_models['case_study'].append(required_models['new_all_plants'])
             else:
                 success = False
+                print('All plant data form failed.')
             if my_forms['initial_infestation_form'].is_valid():
                 required_models['new_initial_infestation'] = my_forms['initial_infestation_form'].save(commit=False)
                 optional_models['pest'].append(required_models['new_initial_infestation'])
             else:
-                success = False            
+                success = False     
+                print('Initial infestation form failed.')
             if my_forms['calibration_infestation_form'].is_valid():
                 required_models['new_calibration_infestation'] = my_forms['calibration_infestation_form'].save(commit=False)
                 optional_models['pest'].append(required_models['new_calibration_infestation'])
             else:
-                success = False            
+                success = False    
+                print('New calibration infestation form failed.')
             if my_forms['validation_infestation_form'].is_valid():
                 required_models['new_validation_infestation'] = my_forms['validation_infestation_form'].save(commit=False)
                 optional_models['pest'].append(required_models['new_validation_infestation'])
             else:
                 success = False
+                print('Validation infestation data form failed.')
             required_models['new_weather'] = my_forms['weather_form'].save(commit=False)
             if required_models['new_host'].mortality_on == True:
                 if my_forms['mortality_form'].is_valid():
@@ -228,36 +234,42 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
                     optional_models['host'].append(required_models['new_mortality'])
                 else:
                     success = False
+                    print('Mortality form failed.')
             if required_models['new_pest'].vector_born == True:
                 if my_forms['vector_form'].is_valid():
                     required_models['new_vector'] = my_forms['vector_form'].save(commit=False)
                     optional_models['pest'].append(required_models['new_vector'])
                 else:
                     success = False
+                    print('Pest form failed.')
             if required_models['new_pest'].use_treatment == True:
                 if my_forms['prior_treatment_form'].is_valid():
                     required_models['new_prior_treatment'] = my_forms['prior_treatment_form'].save(commit=False)
                     optional_models['pest'].append(required_models['new_prior_treatment'])
                 else:
                     success = False
+                    print('Prior treatment form failed.')
             if required_models['new_weather'].wind_on == True:
                 if my_forms['wind_form'].is_valid():
                     required_models['new_wind'] = my_forms['wind_form'].save(commit=False)
                     optional_models['weather'].append(required_models['new_wind'])
                 else:
                     success = False
+                    print('Wind form failed.')
             if required_models['new_weather'].seasonality_on == True:
                 if my_forms['seasonality_form'].is_valid():
                     required_models['new_seasonality'] = my_forms['seasonality_form'].save(commit=False)
                     optional_models['weather'].append(required_models['new_seasonality'])
                 else:
                     success = False
+                    print('Seasonality form failed.')
             if required_models['new_weather'].lethal_temp_on == True:
                 if my_forms['lethal_temp_form'].is_valid():
                     required_models['new_lethal_temp'] = my_forms['lethal_temp_form'].save(commit=False)
                     optional_models['weather'].append(required_models['new_lethal_temp'])
                 else:
                     success = False
+                    print('Lethal temp form failed.')
             if required_models['new_weather'].temp_on == True:
                 if my_forms['temperature_form'].is_valid():
                     required_models['new_temperature'] = my_forms['temperature_form'].save(commit=False)
@@ -268,6 +280,7 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
                             optional_models['temperature'].append(required_models['new_temperature_polynomial'])
                         else:
                             success = False
+                            print('Temperature polynomial form failed.')
                     if required_models['new_temperature'].method == "RECLASS":
                         if my_forms['temperature_reclass_formset'].is_valid():
                             print("temp Reclass formset is valid")
@@ -285,6 +298,7 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
  
                 else:
                     success = False
+                    print('Temperature form failed.')
             if required_models['new_weather'].precipitation_on == True:
                 if my_forms['precipitation_form'].is_valid():
                     required_models['new_precipitation'] = my_forms['precipitation_form'].save(commit=False)
@@ -295,6 +309,7 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
                             optional_models['precipitation'].append(required_models['new_precipitation_polynomial'])
                         else:
                             success = False
+                            print('Precipitation polynomial form failed.')
                     if required_models['new_precipitation'].method == "RECLASS":
                         if my_forms['precipitation_reclass_formset'].is_valid():
                             print("precip Reclass formset is valid")
@@ -311,9 +326,22 @@ class NewCaseStudyView(LoginRequiredMixin, TemplateView):
                             print(my_forms['precipitation_reclass_formset'].errors)
                 else:
                     success = False
+                    print('Precipitation form failed.')
         else:
             print('VALIDATION FAILED')
-            success=False
+            if my_forms['case_study_form'].is_valid():
+                print('Main case study form is valid.')
+            else:
+                print('Main case study form is invalid.')
+            if my_forms['host_form'].is_valid():
+                print('Main host form is valid.')
+            else:
+                print('Main host form is invalid.')
+            if my_forms['pest_form'].is_valid():
+                print('Main pest form is valid.')
+            else:
+                print('Main pest form is invalid.')
+                success=False
 
         return required_models, success, optional_models
 
