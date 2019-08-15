@@ -162,7 +162,7 @@ class CaseStudySerializer(serializers.ModelSerializer):
     class Meta:
         model = CaseStudy
         fields = ['name', 'description','number_of_pests','number_of_hosts','start_year','end_year','future_years',
-                'time_step','staff_approved','calibration_status','use_external_calibration','calibration','allplantsdata','mapboxparameters', 'pest_set','host_set','weather']
+                'time_step','staff_approved','calibration_status','use_external_calibration','calibration','model_api','allplantsdata','mapboxparameters', 'pest_set','host_set','weather']
 
 class OutputSerializer(serializers.ModelSerializer):
     class Meta:

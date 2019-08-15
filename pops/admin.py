@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import CaseStudy, MapBoxParameters, AllPlantsData, Host, HostData, Mortality, MortalityRate, MortalityTimeLag, Creation, PestInformation, Pest, Vector, VectorHostTransmissionRate, VectorReproductiveRate, VectorNaturalDistance, HostVectorTransmissionRate, ReproductiveRate, PercentNaturalDistance,  NaturalDistance, AnthropogenicDistance, AnthropogenicDirection, CrypticToInfected, InfectedToDiseased, PriorTreatment, PriorTreatmentYear, Weather, Wind, Seasonality, LethalTemperature, Temperature, Precipitation, TemperatureReclass, PrecipitationReclass, TemperaturePolynomial, PrecipitationPolynomial, Session, Run, RunCollection, Output, CalibrationInfestation, ValidationInfestation, InitialInfestation
 
 class CaseStudyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'number_of_pests', 'number_of_hosts', 'start_year', 'end_year', 'time_step', 'created_by', 'date_created')
+    list_display = ('name', 'number_of_pests', 'number_of_hosts', 'start_year', 'end_year', 'time_step', 'created_by', 'date_created', 'model_api')
 
     def save_model(self, request, obj, form, change):
         if not obj.created_by:
