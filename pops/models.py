@@ -82,7 +82,7 @@ class CaseStudy(models.Model):
                     default = "NO START", blank=True)
     use_external_calibration = models.BooleanField(verbose_name = _("use another case study's calibration?"), help_text="Sample help text.", default = False)
     calibration = models.ForeignKey("self", verbose_name = _("calibrated case study"), null=True, blank=True, on_delete = models.SET_NULL)
-    model_api = models.CharField(verbose_name = _("model api url"), max_length = 250, blank=True, help_text="Link to the model api for this case study.")
+    model_api = models.CharField(verbose_name = _("model api url"), max_length = 250, null = True, blank=True, help_text="Link to the model api for this case study.")
 
     objects = MyManager()
 
