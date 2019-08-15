@@ -82,6 +82,7 @@ class CaseStudy(models.Model):
                     default = "NO START", blank=True)
     use_external_calibration = models.BooleanField(verbose_name = _("use another case study's calibration?"), help_text="Sample help text.", default = False)
     calibration = models.ForeignKey("self", verbose_name = _("calibrated case study"), null=True, blank=True, on_delete = models.SET_NULL)
+    model_api = models.CharField(verbose_name = _("model api url"), max_length = 250, blank=True, help_text="Link to the model api for this case study.")
 
     objects = MyManager()
 
@@ -182,9 +183,7 @@ class Mortality(models.Model):
                     default = "DATA_FILE", blank = False)    
     user_file = models.FileField(verbose_name = _("mortality data"), upload_to=mortality_directory, max_length=100, help_text="A single raster file with number of trees that experienced mortality as a result of the pest/pathogen that year (each layer is a year)", null = True, blank=True)
     rate = models.DecimalField(verbose_name = _("mortality rate (fraction)"), help_text="What percentage of hosts experience mortality each year from the pest or pathogen?", max_digits = 3, decimal_places = 2, blank=True, null=True, default = 0, validators = [MinValueValidator(0), MaxValueValidator(1)])
-    rate_standard_deviation = models.DecimalField(verbose_name = _("mortality rate standard deviation"), help_text="Sample help text.", max_digits = 3, decimal_places = 2, blank=True, null=True)
     time_lag = models.PositiveSmallIntegerField(verbose_name = _("mortality time lag (years)"), help_text="How long after initial infection/infestation (in years) before mortality occurs on average?", blank=True, null=True, default = 2, validators = [MinValueValidator(1), MaxValueValidator(10)])
-    time_lag_standard_deviation = models.DecimalField(verbose_name = _("mortality time lag standard deviation"), help_text="Sample help text.", max_digits = 4, decimal_places = 2, blank=True, null=True)
 
     objects = MyManager()
 
@@ -531,7 +530,7 @@ class AnthropogenicDirection(models.Model):
             (12, "12"),
         )
 
-    kappa = models.PositiveSmallIntegerField(verbose_name = _("anthropogenic strenth (kappa)"), help_text="What is the average anthropogenic strength in your study area? 0 is no effect and 12 is very strong directional movement", choices = KAPPA_CHOICES, default = 1, blank = False, validators = [MinValueValidator(1), MaxValueValidator(12)])
+    kappa = models.PositiveSmallIntegerField(verbose_name = _("anthropogenic direction strenth (kappa)"), help_text="What is the average anthropogenic strength in your study area? 0 is no effect and 12 is very strong directional movement", choices = KAPPA_CHOICES, default = 1, blank = False, validators = [MinValueValidator(1), MaxValueValidator(12)])
 
     objects = MyManager()
 
@@ -828,19 +827,6 @@ class PrecipitationPolynomial(models.Model):
     def __str__(self):
         return 'Precipitation Polynomial'
 
-class Treatment(models.Model):
-
-    year = models.PositiveSmallIntegerField(verbose_name = _("treatment year"), validators = [MinValueValidator(1900), MaxValueValidator(2200)])
-    treatment_file = models.FileField(verbose_name = _("treatment raster for that year"), upload_to='documents', max_length = 200)
-
-    class Meta:
-        verbose_name = _("treatment")
-        verbose_name_plural = _("treatments")
-
-    # def __str__(self):
-    #     return self.name
-
-
 class Session(models.Model):
 
     case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study"), help_text="Select a case study for this session.", on_delete = models.CASCADE)
@@ -957,6 +943,7 @@ class Output(models.Model):
     year = models.PositiveIntegerField(verbose_name = _("year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
     single_spread_map = JSONField(null = True)
     probability_map = JSONField(null = True)
+    escape_probability = models.DecimalField(verbose_name = _("probability of escape"), help_text="Probability that the pest/pathogen escapes quarantine or other boundary.", blank=True, max_digits = 6, decimal_places = 2, default = 1, validators = [MinValueValidator(0), MaxValueValidator(10)])
 
     class Meta:
         verbose_name = _("output")
