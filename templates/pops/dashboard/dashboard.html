@@ -592,7 +592,7 @@ $("#status-indicator").hide();
                   </div>
                   </div>
                   <div id="run-collection-name">
-                  <strong>Run name:</strong> This is what I'm calling my run
+                  <strong>Run name:</strong> <span>This is what I'm calling my run</span>
                   </div>
 
 
@@ -2133,9 +2133,8 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           console.log('New run collection parameters successfully posted to database!');
           var new_run_collection_id = data.pk;
           console.log('New run collection id: ' + new_run_collection_id);
-          console.log('data.session = '  + data.session);
           $('#editInputParameters').modal('hide');
-
+          $('#run-collection-name span').text(data.name);
 {% comment %}           if (!$('input#id_tangible_landscape').prop('checked')){
             var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = base_url.concat(new_run_id.toString());

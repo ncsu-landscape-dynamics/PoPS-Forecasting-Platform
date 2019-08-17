@@ -132,6 +132,7 @@ class AjaxableResponseMixin:
         if self.request.is_ajax():
             data = {
                 'pk': self.object.pk,
+                'name': self.object.name,
             }
             return JsonResponse(data)
         else:
