@@ -125,12 +125,12 @@ class RunForm(forms.ModelForm):
     fields_required = fields_required_conditionally
     class Meta:
         model = Run
-        fields = ['run_collection','status',
+        fields = ['run_collection',
         'management_polygons','management_cost',
         'management_area','steering_year']
     
     def clean(self):
-        self.fields_required(['run_collection','status',
+        self.fields_required(['run_collection',
         'management_polygons','management_cost',
         'management_area','steering_year'])
 

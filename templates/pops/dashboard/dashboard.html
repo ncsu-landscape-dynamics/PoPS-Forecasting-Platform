@@ -218,16 +218,12 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
         <div class="tab-content" id="v-pills-tabContent">
           <div id="v-pills-map" class="tab-pane fade show active no-gutters" >
               <div class="row no-gutters">
-            <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
-                <input type="hidden" value="0" name="management_polygons" cols="40" rows="10" class="form-control"
-                  id="id_management_polygons">
-          </form>
 
                 <div id="map-container-new-view" class="col-md-9">
                 <div id="timeline" class="text-center">
                   <div id="flex-container">
                     <div class="timeline-year-container year-0 management_complete year_active management_visible"
-                    data-year-counter="0">
+                    data-year-counter=0>
                       <div class="timeline-buttons">
                         <span class="completed_management_buttons">
                         </span>
@@ -242,14 +238,14 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                     <div class="timeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
                     {% for year in steering_years %}
                     <div class="timeline-year-container year-{{forloop.counter}} {% if forloop.first %} management_active {% else %} management_not_started {% endif %} management_visible"
-                    data-year-counter="{{ forloop.counter }}" data-year-value= {{ year }}>
+                    data-year-counter={{ forloop.counter }} data-year-value= {{ year }}>
                       <div class="timeline-buttons">
                         <span class="completed_management_buttons">
                           <a class="timeline-edit" href="#" data-toggle="tool" title="Go back to manage year {{ year }}. This will delete all subsequent management years."><i class="fas fa-backspace "></i></a>
                           <a class="timeline-visibility" href="#" data-toggle="tool" title="Toggle management polygon visibility."><i class="far fa-eye "></i></a>
                         </span>
                         <span class="submit_run_button">
-                          <a href="#" data-toggle="tool" title="Run PoPS model for {{ year }} management."><i class="fas fa-play-circle"></i></a>
+                          <button form="submit-run" type="submit" data-toggle="tool" title="Run PoPS model for {{ year }} management."><i class="fas fa-play-circle"></i></button>
                         </span>
                       </div>
                       <div class="timeline-year">
@@ -263,6 +259,20 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                     {% endfor %}
                   </div>
                 </div>
+                            <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
+                                          {% csrf_token %}
+                <input type="hidden" value="0" name="management_polygons" cols="40" rows="10" class="form-control"
+                  id="id_management_polygons">
+                <input type="hidden" value="2019" name="steering_year" cols="40" rows="10" class="form-control"
+                  id="id_steering_year">
+                <input type="hidden" value="0" name="management_area" cols="40" rows="10" class="form-control"
+                  id="id_management_area">
+                <input type="hidden" value="0" name="management_cost" cols="40" rows="10" class="form-control"
+                  id="id_management_cost">
+                <input type="hidden" value="4" name="run_collection" cols="40" rows="10" class="form-control"
+                  id="id_run_collection">
+          </form>
+
                   <script>
 
                   function updateDrawColor (year_count) {
@@ -282,16 +292,6 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                     return;
                   };
 
-                      $(".submit_run_button").on('click', function () {
-                        console.log("Submit management.")
-                        $(".timeline-year-container").removeClass("year_active");
-                        $(this).parents(".timeline-year-container").removeClass("management_active").addClass("management_complete").addClass("year_active");
-                        $(this).parents(".timeline-year-container").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
-                        $(this).parents(".timeline-year-container").removeClass("management_active").addClass("management_complete").addClass("year_active");
-                        var year_count = $(this).parents(".timeline-year-container").next().next(".timeline-year-container").attr('data-year-counter');
-                        console.log('Year count is:' + year_count)
-                        updateDrawColor(year_count);
-                      });
 
                       $(".timeline-year a").on('click', function () {
                         console.log("Year clicked.")
@@ -433,6 +433,10 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                     <input class="year-range" type="range" name="range" min="2014" max="2018" step="1"
                       value="2018" onchange="displayYear.value=value">
                     </div>
+                  </div>
+                  <div id="displayed_management_area" class="text-center">
+                  <div>Managed area:</div> 
+                  <div id="polygon-info">0.0 acres</div> 
                   </div>
                   <div id="money-new" class="col py-0" style="width:180px; height:140px"></div>
                   <div id="draw-controls" class="btn-group" role="group" >
@@ -592,9 +596,84 @@ $("#status-indicator").hide();
                   </div>
                   </div>
                   <div id="run-collection-name">
-                  <strong>Run name:</strong> <span>This is what I'm calling my run</span>
+                  <strong>Run name:</strong> <span></span>
+                  <a class="btn" data-toggle="modal" data-target="#viewParameters" href="#"><i
+                        style="font-size:0.6em" class="fas fa-plus-circle align-top text-light"></i></a>
                   </div>
-
+                  <div class="modal fade" id="viewParameters" tabindex="-1" role="dialog"
+                    aria-labelledby="viewParameters" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">Run details</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                        <h5>Run collection details</h5>
+                          <div id="input_run_name">
+                            Name: <span></span>
+                          </div>
+                          <div id="input_run_pk">
+                            Primary key: <span></span>
+                          </div>
+                          <div id="input_description">
+                            Description: <span></span>
+                          </div>
+                          <div id="input_status">
+                            Status: <span></span>
+                          </div>
+                          <div id="input_random_seed">
+                            Random Seed: <span></span>
+                          </div>
+                          <div id="input_date_created">
+                            Date: <span></span>
+                          </div> 
+                          <div id="input_budget">
+                            Budget: $<span></span>
+                          </div>
+                          <div id="input_cost_per_meter_squared">
+                            Cost per meter squared: <span></span>
+                          </div>      
+                          <div id="input_efficacy">
+                            Efficacy: <span></span>
+                          </div>
+                          <div id="input_tangible_landscape">
+                            Tangible landscape: <span></span>
+                          </div>
+                      <h5 class="pt-4">Session details</h5>
+                        <div id="input_session_name">
+                            Session name: <span>{{ session.name }}</span>
+                        </div>
+                        <div id="input_session_description">
+                            Session description: <span>{{ session.description }}</span>
+                        </div>
+                        <div id="input_case_study_name">
+                            Case study name: <span>{{ session.case_study.name }}</span>
+                        </div>
+                          <div id="input_reproductive_rate">
+                            Reproductive rate: <span>{{ session.reproductive_rate }}</span>
+                          </div>
+                          <div id="input_distance_scale">
+                            Distance Scale: <span>{{ session.distance_scale }}</span>
+                          </div>
+                          <div id="input_weather">
+                            Weather: <span>{{ session.weather }}</span>
+                          </div>
+                          <div id="input_management_month">
+                            Management month: <span>{{ session.management_month }}</span>
+                          </div>
+                          <div id="input_final_year">
+                            Final year: <span>{{ session.final_year }}</span>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
                       <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
 {% comment %}                   <h5 class="py-0">
@@ -621,84 +700,7 @@ $("#status-indicator").hide();
                       <div id="number_infected_side_plot" style="height:180px;"></div>
 
                                   <!-- Modal -->
-                  <div class="modal fade" id="viewParameters" tabindex="-1" role="dialog" aria-labelledby="viewParameters"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLongTitle">Run details</h5>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div class="modal-body">
-                          <div id="input_run_name">
-                          Run: <span></span>
-                          </div>
-                          <div id="input_run_pk">
-                          Run primary key: <span></span>
-                          </div>
-                          <div id="input_description">
-                          Description: <span></span>
-                          </div>
-                          <div id="input_reproductive_rate">
-                          Reproductive rate: <span></span>
-                          </div>
-                          <div id="input_distance_scale">
-                          Distance Scale: <span></span>
-                          </div>
-                          <div id="input_efficacy">
-                          Efficacy: <span></span>
-                          </div>
-                          <div id="input_date_created">
-                          Date: <span></span>
-                          </div>
-                          <div id="input_weather">
-                          Weather: <span></span>
-                          </div>
-                          <div id="input_budget">
-                          Budget: $<span></span>
-                          </div>
-                          <div id="input_management_month">
-                          Management month: <span></span>
-                          </div>
-                          <div id="input_management_cost">
-                          Management cost: $<span></span>
-                          </div>
-                          <div id="input_management_area">
-                          Management area: <span></span> m<sup>2</sup>
-                          </div>
-                          <div id="input_cost_per_meter_squared">
-                          Cost per meter squared: <span></span>
-                          </div>
-                          <div id="status">
-                          Status: <span></span>
-                          </div>
-                          <div id="input_random_seed">
-                          Random Seed: <span></span>
-                          </div>
-                          <div id="input_final_year">
-                          Final year: <span></span>
-                          </div>
-                          <div id="input_management">
-                          Management polygons: <span></span>
-                          </div>
-                          <div id="output_years">
-                          Years: <span></span>
-                          </div>                
-                          <div id="output_area">
-                          Occurence area: <span></span>
-                          </div>
-                          <div id="output_number">
-                          Number of occurences: <span></span>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+
 
 
                 </div>
@@ -753,7 +755,6 @@ function findMax(arr) {
                     Details
                   </h4>
 
-                  <span>Management area: <strong id="polygon-info">425.1</strong> km<sup>2</sup></span>
                   <div id="gauge-plots" class="row no-gutters">
                     <div id="money-chart-view" class="" style="width:180px; height:160px"></div>
                   </div>
@@ -1341,23 +1342,24 @@ map.on('draw.modechange', e => {
       var answer = document.getElementById('polygon-info');
       var budget = $("input#id_budget").val();
       var cost_per_meter_squared = $("input#id_cost_per_meter_squared").val();
-
+      var area_unit = $("select#id_area_unit").children("option:selected").text();
       if (data.features.length > 0) {
         var area = turf.area(data); //area in meters
         // restrict to area to 2 decimal points
         var area_modifier = $("select#id_area_unit").children("option:selected").val();
-        var area_unit = $("select#id_area_unit").children("option:selected").text();
+        console.log('The area modifier is:' + area_modifier);
+        console.log('The area unit is:' + area_unit );
         var rounded_area = Math.round(area * 100) / 100;
         var displayed_area = Math.round(area*area_modifier * 100) / 100;
         $('#id_management_area').val(rounded_area);
         // round cost to 2 decimal places
         var cost = Math.round(area * cost_per_meter_squared * 100) / 100;
         $('#id_management_cost').val(cost);
-        answer.innerHTML = 'Management area: ' + displayed_area + ' ' + area_unit;
+        answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + area_unit;
         //console.log(map.getCenter())
         gauge_plot("money-new", cost, budget);
       } else {
-        answer.innerHTML = 'Use the polygon tool to draw management areas.';
+        answer.innerHTML = '0.0 ' + area_unit;
         gauge_plot("money-new", 0, budget);
         $('#id_management_area').val(0);
         $('#id_management_cost').val(0);
@@ -2124,7 +2126,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
       event.preventDefault();
       //$("#submit-run-button").attr("disabled", true);
       //$('#run-preview-container button').removeClass('active');
-      var form = $(this).closest("form");
+        var form = $("#submit-run-collection");
       $.ajax({
         url: form.attr("submit-run-collection-url"),
         data: form.serialize(),
@@ -2135,6 +2137,17 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           console.log('New run collection id: ' + new_run_collection_id);
           $('#editInputParameters').modal('hide');
           $('#run-collection-name span').text(data.name);
+          $('#input_run_name span').text(data.name);
+          $('#input_run_pk span').text(data.pk);
+          $('#input_description span').text(data.description);
+          $('#input_status span').text(data.status);
+          $('#input_random_seed span').text(data.random_seed);
+          $('#input_date_created span').text(data.date_created);
+          $('#input_budget span').text(data.budget);
+          $('#input_cost_per_meter_squared span').text(data.cost_per_meter_squared);
+          $('#input_efficacy span').text(data.efficacy);
+          $('#input_tangible_landscape span').text(data.tangible_landscape);
+          $('#id_run_collection').val(data.pk);
 {% comment %}           if (!$('input#id_tangible_landscape').prop('checked')){
             var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = base_url.concat(new_run_id.toString());
@@ -2179,6 +2192,79 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
       //$( "#status-indicator-shading" ).show();
       //$("button#cancel-polling").show();
     });
+
+    $("#submit-run").on('submit', function () {
+  console.log("Submit management.")
+  event.preventDefault();
+  //$("#submit-run-button").attr("disabled", true);
+  //$('#run-preview-container button').removeClass('active');
+  var steering_year = parseInt($(".timeline-year-container.management_active").attr('data-year-value'));
+  var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
+  console.log('Steering year is: ' + steering_year);
+  $('#id_steering_year').val(steering_year);
+  var form = $("#submit-run");
+      $.ajax({
+        url: form.attr("submit-run-url"),
+        data: form.serialize(),
+        type : "POST", // http method
+        success: function (data) {
+          console.log('New run AJAX succcessful!');
+          var new_run_id = data.pk;
+          console.log('New run id: ' + new_run_id);
+          console.log('Steering year: ' + data.steering_year);
+{% comment %}           if (!$('input#id_tangible_landscape').prop('checked')){
+            var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+            var run_url = base_url.concat(new_run_id.toString());
+            console.log(run_url);
+            $.ajax({
+              url: run_url,
+              dataType: 'JSONP',
+              type: 'GET',
+              headers: { 'Access-Control-Allow-Origin': 'https://pops-model-api.appspot.com' },
+              statusCode: {
+                404: function() {
+                  alert( "PoPS Model API not found (404 error)... \n Please try again. \n If the problem persists, contact an admin." );
+                },
+                500: function() {
+                  alert( "PoPS Model API returned 500 Error... \n Please try again. \n If the problem persists, contact an admin." );
+                }
+              },
+              success : function (data) {
+                console.log('Success signal from PoPS Model API.');
+              },
+              error : function(xhr,errmsg,err) {
+                console.log('Received status from the PoPS model API:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+              }
+            });
+            console.log('Sent run request to PoPS. Waiting for updates to database...')
+          }
+          else {
+            console.log('Waiting for management from tangible landscape...')
+          }
+          $("#submit-run-button").attr('data-run',new_run_id);
+          poll(); {% endcomment %}
+        },
+                // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+      + "\nIf the displayed error is not informative, the most likely issue is that there was a problem writing to the database.");
+            console.log('There was an error writing to the database:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+      });
+  
+  //$(".timeline-year-container").removeClass("year_active");
+  //$(this).parents(".timeline-year-container").removeClass("management_active").addClass("management_complete").addClass("year_active");
+  //$(this).parents(".timeline-year-container").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
+  //$(this).parents(".timeline-year-container").removeClass("management_active").addClass("management_complete").addClass("year_active");
+  $(".timeline-year-container").removeClass("year_active");
+  $(".timeline-year-container.management_active").removeClass("management_active").addClass("management_complete").addClass("year_active").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
+  console.log('Year count is:' + year_count);
+  console.log('Steering year is: ' + steering_year);
+  var next_year_count = parseInt(year_count) + 1;
+  console.log('Next year: ' + next_year_count);
+  updateDrawColor(next_year_count);
+});
+
 
 
 $(function () {

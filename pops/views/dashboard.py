@@ -133,6 +133,14 @@ class AjaxableResponseMixin:
             data = {
                 'pk': self.object.pk,
                 'name': self.object.name,
+                'description': self.object.description,
+                'status': self.object.status,
+                'random_seed': self.object.random_seed,
+                'date_created': self.object.date_created,
+                'budget': self.object.budget,
+                'efficacy': self.object.efficacy,
+                'tangible_landscape': self.object.tangible_landscape,
+                'cost_per_meter_squared': self.object.cost_per_meter_squared,
             }
             return JsonResponse(data)
         else:
@@ -166,6 +174,40 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             context['historic_data'] = ['2014','2015','2016','2017','2018']
             context['steering_years'] = steering_years
             return context
+
+@method_decorator(csrf_exempt, name='post')
+class NewRunView(CreateView):
+    template_name = 'pops/dashboard/dashboard.html'
+    form_class = RunForm
+    success_url = 'new_session'
+
+    def post(self, request, *args, **kwargs):
+        run_form = self.form_class(request.POST)
+        if run_form.is_valid():
+            new_run = run_form.save()
+            if self.request.is_ajax():
+                data = {
+                    'pk': new_run.pk,
+                    'steering_year': new_run.steering_year,
+                }
+                return JsonResponse(data)
+            else:
+                return self.render_to_response(
+                    self.get_context_data(
+                    success=True
+                )
+        )
+        else:
+            if self.request.is_ajax():
+                return JsonResponse(run_form.errors, status=400)
+            else:
+                return self.render_to_response(
+                self.get_context_data(
+                        answer_form=answer_form,
+                        question_form=question_form
+                )
+        )
+    
 
 @method_decorator(ensure_csrf_cookie, name='get')
 class DashboardTestView(AjaxableResponseMixin, CreateView):
