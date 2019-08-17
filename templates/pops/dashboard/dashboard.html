@@ -164,7 +164,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
         <span id="session_title" class="pb-0 navbar-text d-none d-md-inline-block mr-auto text-bottom" style="font-size:1.2em;">
           <strong>Session:</strong> {{ session.name|truncatechars:55  }} <a href="#" data-toggle="tooltip" title="Edit session name will be available in the future" data-placement="right"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top"></i></a>
           <span id="case_study_title" class="text-muted d-none d-lg-inline-block" style="font-size:0.6em;">
-            {{ session.case_study }} <a href="{% url 'case_study_review' pk=session.case_study.pk %}" data-toggle="tooltip" title="View case study detail page" data-placement="right" ><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
+            {{ session.case_study }} {{ session.case_study.end_year }} <a href="{% url 'case_study_review' pk=session.case_study.pk %}" data-toggle="tooltip" title="View case study detail page" data-placement="right" ><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
           </span>
 
         </span>
@@ -232,28 +232,28 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                         <span class="completed_management_buttons">
                         </span>
                         <span class="submit_run_button">
-                          <a href="#" data-toggle="tool" title="Run PoPS model for 2010 management."><i class="fas fa-play-circle"></i></a>
+                          <a href="#" data-toggle="tool" title="Run PoPS model for {{ session.case_study.end_year }} management."><i class="fas fa-play-circle"></i></a>
                         </span>
                       </div>
                       <div class="timeline-year">
-                        <a class="align-top" data-toggle="tool" title="View forecast with no management." href="#"><em>2010</em></a>
+                        <a class="align-top" data-toggle="tool" title="View forecast with no management." href="#"><em>{{ session.case_study.end_year }}</em></a>
                       </div>
                     </div>
                     <div class="timeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
-                    {% for i in '12345'|make_list %}
-                    <div class="timeline-year-container year-{{ forloop.counter }} {% if forloop.first %} management_active {% else %} management_not_started {% endif %} management_visible"
-                    data-year-counter="{{ forloop.counter }}">
+                    {% for year in steering_years %}
+                    <div class="timeline-year-container year-{{forloop.counter}} {% if forloop.first %} management_active {% else %} management_not_started {% endif %} management_visible"
+                    data-year-counter="{{ forloop.counter }}" data-year-value= {{ year }}>
                       <div class="timeline-buttons">
                         <span class="completed_management_buttons">
-                          <a class="timeline-edit" href="#" data-toggle="tool" title="Go back to manage year 201{{ forloop.counter}}. This will delete all subsequent management years."><i class="fas fa-backspace "></i></a>
+                          <a class="timeline-edit" href="#" data-toggle="tool" title="Go back to manage year {{ year }}. This will delete all subsequent management years."><i class="fas fa-backspace "></i></a>
                           <a class="timeline-visibility" href="#" data-toggle="tool" title="Toggle management polygon visibility."><i class="far fa-eye "></i></a>
                         </span>
                         <span class="submit_run_button">
-                          <a href="#" data-toggle="tool" title="Run PoPS model for 201{{ forloop.counter}} management."><i class="fas fa-play-circle"></i></a>
+                          <a href="#" data-toggle="tool" title="Run PoPS model for {{ year }} management."><i class="fas fa-play-circle"></i></a>
                         </span>
                       </div>
                       <div class="timeline-year">
-                        <a class="align-top" data-toggle="tool" title="View forecast with management up to 201{{ forloop.counter }}." href="#">201{{ forloop.counter }}</a>
+                        <a class="align-top" data-toggle="tool" title="View forecast with management up to {{ year }}." href="#">{{ year }}</a>
                       </div>
                     </div>
                     {% if forloop.last %}

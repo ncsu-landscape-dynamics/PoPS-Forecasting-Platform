@@ -156,13 +156,15 @@ class DashboardView(AjaxableResponseMixin, CreateView):
                 session = None
             try:
                 runs = Run.objects.filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created').prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
-
             except:
                 runs = None                
-
+            print(session.final_year)
+            print(session.case_study.end_year +1)
+            steering_years = range(session.case_study.end_year +1, session.final_year+1)
             context['session'] = session
             context['runs'] = runs
             context['historic_data'] = ['2014','2015','2016','2017','2018']
+            context['steering_years'] = steering_years
             return context
 
 @method_decorator(ensure_csrf_cookie, name='get')
