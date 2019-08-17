@@ -23,6 +23,7 @@ urlpatterns = [
     path('get_output', views.get_output_view, name='get_output'),
     path('check_status', views.check_status, name='check_status'),
     path('save_run_data', views.DashboardView.as_view(), name='save_run_data'),
+    path('save_run_collection_data', views.DashboardView.as_view(), name='save_run_collection_data'),
     path('save_session_data', views.NewSessionView.as_view(), name='save_session_data'),
     path('save_run_data_test', views.DashboardTestView.as_view(), name='save_run_data_test'),
     path('session/new', views.NewSessionView.as_view(), name='new_session'),
