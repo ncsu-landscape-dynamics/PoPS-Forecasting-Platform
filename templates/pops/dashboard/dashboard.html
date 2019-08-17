@@ -217,12 +217,12 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
       <div id="" class="col">
         <div class="tab-content" id="v-pills-tabContent">
           <div id="v-pills-map" class="tab-pane fade show active no-gutters" >
-            <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
               <div class="row no-gutters">
-
-                {{ form.session.as_hidden }}
+            <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
                 <input type="hidden" value="0" name="management_polygons" cols="40" rows="10" class="form-control"
                   id="id_management_polygons">
+          </form>
+
                 <div id="map-container-new-view" class="col-md-9">
                 <div id="timeline" class="text-center">
                   <div id="flex-container">
@@ -513,6 +513,10 @@ $("#status-indicator").hide();
                           </button>
                         </div>
                         <div class="modal-body">
+                        <form id="submit-run-collection" method="post" submit-run-collection-url="{% url 'save_run_collection_data' %}">
+                              {% csrf_token %}
+                {{ form.session.as_hidden }}
+
                           <div class="row">
                             {% include "pops/include/form_field.html" with field=form.name form_class="col-12" %}
                             {% include "pops/include/form_field.html" with field=form.description form_class="col-12" %}
@@ -561,8 +565,6 @@ $("#status-indicator").hide();
 
                             {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
                             
-                            {{ form.management_cost.as_hidden }}
-                            {{ form.management_area.as_hidden }}
                             <div class="form-check col ml-2">
                             {{ form.tangible_landscape }}
                               <label class="form-check-label" for="tangible_landscape">
@@ -571,9 +573,10 @@ $("#status-indicator").hide();
                             </div>
 
                           </div>
+                          </form>
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Submit</button>
+                          <button id="submit_run_collection_button" form="submit-run-collection" type="submit" >Submit</button>
                         </div>
                       </div>
                     </div>
@@ -703,7 +706,6 @@ $("#status-indicator").hide();
               </div>
           </div>
 
-          </form>
 
 <script>
 
@@ -2117,21 +2119,24 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
       $("#v-pills-chart-view").addClass("show");
     });
 
-    $("#submit-run").on('submit', function () {
+    $("#submit-run-collection").on('submit', function () {
+      console.log("Submit run collection button clicked.");
       event.preventDefault();
-      console.log("New run form submitted.") // sanity check
-      $("#submit-run-button").attr("disabled", true);
-      $('#run-preview-container button').removeClass('active');
+      //$("#submit-run-button").attr("disabled", true);
+      //$('#run-preview-container button').removeClass('active');
       var form = $(this).closest("form");
       $.ajax({
-        url: form.attr("submit-run-url"),
+        url: form.attr("submit-run-collection-url"),
         data: form.serialize(),
         type : "POST", // http method
         success: function (data) {
-          console.log('New run parameters successfully posted to database!');
-          var new_run_id = data.pk;
-          console.log('New run id: ' + new_run_id);
-          if (!$('input#id_tangible_landscape').prop('checked')){
+          console.log('New run collection parameters successfully posted to database!');
+          var new_run_collection_id = data.pk;
+          console.log('New run collection id: ' + new_run_collection_id);
+          console.log('data.session = '  + data.session);
+          $('#editInputParameters').modal('hide');
+
+{% comment %}           if (!$('input#id_tangible_landscape').prop('checked')){
             var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = base_url.concat(new_run_id.toString());
             console.log(run_url);
@@ -2161,7 +2166,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
             console.log('Waiting for management from tangible landscape...')
           }
           $("#submit-run-button").attr('data-run',new_run_id);
-          poll();
+          poll(); {% endcomment %}
         },
                 // handle a non-successful response
         error : function(xhr,errmsg,err) {
@@ -2170,10 +2175,10 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
             console.log('There was an error writing to the database:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
       });
-        $('#status-text span').text('Getting ready...');
-      $( "#status-indicator" ).show();
-      $( "#status-indicator-shading" ).show();
-      $("button#cancel-polling").show();
+      //$('#status-text span').text('Getting ready...');
+      //$( "#status-indicator" ).show();
+      //$( "#status-indicator-shading" ).show();
+      //$("button#cancel-polling").show();
     });
 
 
