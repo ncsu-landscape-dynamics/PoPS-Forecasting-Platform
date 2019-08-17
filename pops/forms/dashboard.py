@@ -101,12 +101,12 @@ class RunCollectionForm(forms.ModelForm):
     class Meta:
         model = RunCollection
         fields = ['session','name','description',
-        'tangible_landscape','status','budget','efficacy',
+        'tangible_landscape','budget','efficacy',
         'cost_per_meter_squared','random_seed']
     
     def clean(self):
         self.fields_required(['session','name','description',
-        'tangible_landscape','status','budget','efficacy',
+        'tangible_landscape','budget','efficacy',
         'cost_per_meter_squared','random_seed'])
 
         return self.cleaned_data
