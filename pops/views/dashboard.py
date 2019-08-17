@@ -31,7 +31,7 @@ class SessionAjaxableResponseMixin:
         form.instance.created_by = self.request.user
         response = super().form_valid(form)
         session_id=self.object.pk
-        new_run_collection = RunCollection(session=self.object,name='Default')
+        new_run_collection = RunCollection(session=self.object,name='Default',default=True)
         new_run_collection.save()
         new_run=Run(run_collection=new_run_collection)
         new_run.save()
@@ -132,7 +132,6 @@ class AjaxableResponseMixin:
         if self.request.is_ajax():
             data = {
                 'pk': self.object.pk,
-                'session': self.kwargs.get('pk')
             }
             return JsonResponse(data)
         else:
