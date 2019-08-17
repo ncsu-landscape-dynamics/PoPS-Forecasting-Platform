@@ -141,7 +141,7 @@ class PestSerializer(serializers.ModelSerializer):
     infectedtodiseased_set = InfectedToDiseasedSerializer(many=True)
     class Meta:
         model = Pest
-        fields = ['pk','pest_information','name','model_type','dispersal_type','initialinfestation','vector_born','vector','use_treatment','priortreatment','naturaldistance_set','anthropogenicdistance_set','percentnaturaldistance_set','cryptictoinfected_set','infectedtodiseased_set']
+        fields = ['pk','pest_information','name','model_type','natural_dispersal_type','initialinfestation','vector_born','vector','use_treatment','priortreatment','naturaldistance_set','anthropogenicdistance_set','percentnaturaldistance_set','cryptictoinfected_set','infectedtodiseased_set']
         
 class AllPlantsSerializer(serializers.ModelSerializer):
     class Meta:
