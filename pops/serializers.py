@@ -185,7 +185,7 @@ class OutputSerializer(serializers.ModelSerializer):
     timetoboundary = TimeToBoundarySerializer()
     class Meta:
         model = Output
-        fields = ['run', 'number_infected', 'infected_area', 'year', 'single_spread_map', 'probability_map', 'escape_probability', 'timetoboundary', 'distancetoboundary', 'spreadrate']
+        fields = ['pk', 'run', 'number_infected', 'infected_area', 'year', 'single_spread_map', 'probability_map', 'escape_probability', 'timetoboundary', 'distancetoboundary', 'spreadrate']
 
 class SessionSerializer(serializers.ModelSerializer):
     class Meta:
