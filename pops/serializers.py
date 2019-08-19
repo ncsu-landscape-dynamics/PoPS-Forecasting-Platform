@@ -180,12 +180,12 @@ class TimeToBoundarySerializer(serializers.ModelSerializer):
         fields = ['west_time', 'east_time', 'north_time', 'south_time']
 
 class OutputSerializer(serializers.ModelSerializer):
-    spread_rate = SpreadRateSerializer()
-    distance_to_boundary = DistanceToBoundarySerializer()
-    time_to_boundary = TimeToBoundarySerializer()
+    spreadrate = SpreadRateSerializer()
+    distancetoboundary = DistanceToBoundarySerializer()
+    timetoboundary = TimeToBoundarySerializer()
     class Meta:
         model = Output
-        fields = '__all__'
+        fields = ['run', 'number_infected', 'infected_area', 'year', 'single_spread_map', 'probability_map', 'escape_probability', 'timetoboundary', 'distancetoboundary', 'spreadrate']
 
 class SessionSerializer(serializers.ModelSerializer):
     class Meta:
