@@ -164,13 +164,24 @@ class CaseStudySerializer(serializers.ModelSerializer):
         fields = ['name', 'description','number_of_pests','number_of_hosts','start_year','end_year','future_years',
                 'time_step','staff_approved','calibration_status','use_external_calibration','calibration','model_api','allplantsdata','mapboxparameters', 'pest_set','host_set','weather']
 
+class SpreadRateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SpreadRate
+        fields = '__all__'
+
+class DistanceToBoundarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DistanceToBoundary
+        fields = '__all__'
+
 class OutputSerializer(serializers.ModelSerializer):
+    spread_rate = SpreadRateSerializer()
+    distance_to_boundary = DistanceToBoundarySerializer()
     class Meta:
         model = Output
         fields = '__all__'
 
 class SessionSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Session
         fields = '__all__'
