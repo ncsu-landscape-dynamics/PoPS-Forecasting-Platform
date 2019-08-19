@@ -965,4 +965,19 @@ class SpreadRate(models.Model):
         verbose_name_plural = _("spread rates")
 
     def __str__(self):
-        return self.run
+        return self.output
+
+class DistanceToBoundary(models.Model):
+
+    output = models.OneToOneField(Output, verbose_name = _("output"), on_delete = models.CASCADE, primary_key = True)
+    west_distance = models.DecimalField(verbose_name = _("westerly spread rate"), help_text="Spread rate in westerly direction", blank=True, max_digits = 6, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
+    east_distance = models.DecimalField(verbose_name = _("easterly spread rate"), help_text="Spread rate in easterly direction", blank=True, max_digits = 6, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
+    north_distance = models.DecimalField(verbose_name = _("northerly spread rate"), help_text="Spread rate in northerly direction", blank=True, max_digits = 6, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
+    south_distance = models.DecimalField(verbose_name = _("southerly spread rate"), help_text="Spread rate in southerly direction", blank=True, max_digits = 6, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
+
+    class Meta:
+        verbose_name = _("distance to boundary")
+        verbose_name_plural = _("distance to boundarys")
+
+    def __str__(self):
+        return self.output
