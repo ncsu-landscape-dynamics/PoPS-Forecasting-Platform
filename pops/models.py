@@ -932,7 +932,7 @@ class Run(models.Model):
         verbose_name_plural = _("runs")
 
     def __str__(self):
-        return self.status
+        return str(self.pk)
 
 class Output(models.Model):
 
@@ -950,7 +950,7 @@ class Output(models.Model):
         verbose_name_plural = _("outputs")
 
     def __str__(self):
-        return self.run
+        return str(self.pk)
 
 class SpreadRate(models.Model):
 
