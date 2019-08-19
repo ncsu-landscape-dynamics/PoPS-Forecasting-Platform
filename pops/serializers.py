@@ -185,7 +185,17 @@ class OutputSerializer(serializers.ModelSerializer):
     timetoboundary = TimeToBoundarySerializer()
     class Meta:
         model = Output
-        fields = ['pk', 'run', 'number_infected', 'infected_area', 'year', 'single_spread_map', 'probability_map', 'escape_probability', 'timetoboundary', 'distancetoboundary', 'spreadrate']
+        fields = ['pk', 'run', 'number_infected', 'infected_area', 'year', 'single_spread_map', 'probability_map', 'escape_probability', 'spreadrate', 'distancetoboundary', 'timetoboundary']
+
+    def create(self, validated_data):
+        spreadrate_data = validated_data.pop('spreadrate')
+        distancetoboundary_data = validated_data.pop('distancetoboundary')
+        timetoboundary_data = validated_data.pop('timetoboundary')
+        output = Output.objects.create(**validated_data)
+        SpreadRate.objects.create(output=output, **spreadrate_data)
+        DistanceToBoundary.objects.create(output=output, **distancetoboundary_data)
+        TimeToBoundary.objects.create(output=output, **timetoboundary_data)
+        return output
 
 class SessionSerializer(serializers.ModelSerializer):
     class Meta:
