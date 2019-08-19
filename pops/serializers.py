@@ -167,16 +167,22 @@ class CaseStudySerializer(serializers.ModelSerializer):
 class SpreadRateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SpreadRate
-        fields = '__all__'
+        fields = ['west_rate', 'east_rate', 'north_rate', 'south_rate']
 
 class DistanceToBoundarySerializer(serializers.ModelSerializer):
     class Meta:
         model = DistanceToBoundary
-        fields = '__all__'
+        fields = ['west_distance', 'east_distance', 'north_distance', 'south_distance']
+
+class TimeToBoundarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TimeToBoundary
+        fields = ['west_time', 'east_time', 'north_time', 'south_time']
 
 class OutputSerializer(serializers.ModelSerializer):
     spread_rate = SpreadRateSerializer()
     distance_to_boundary = DistanceToBoundarySerializer()
+    time_to_boundary = TimeToBoundarySerializer()
     class Meta:
         model = Output
         fields = '__all__'
