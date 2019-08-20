@@ -115,7 +115,7 @@ class HistoricData(models.Model):
 
     case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study id"), on_delete = models.CASCADE)
     year = models.PositiveIntegerField(verbose_name = _("year"), default = 2015, null = True, validators = [MinValueValidator(1900)])
-    observed_data = JSONField(null = True)
+    data = JSONField(null = True)
     
     class Meta:
         verbose_name = _("historic data")
