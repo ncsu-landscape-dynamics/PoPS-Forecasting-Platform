@@ -182,7 +182,7 @@ class HostData(models.Model):
         verbose_name_plural = _("hosts_data")
 
     def __str__(self):
-        return self.data
+        return str(self.pk)
         
 class Mortality(models.Model):
 
@@ -205,7 +205,7 @@ class Mortality(models.Model):
         verbose_name_plural = _("mortalities")
 
     def __str__(self):
-        return self.rate
+        return str(self.pk)
 
 class MortalityRate(models.Model):
 
@@ -220,7 +220,7 @@ class MortalityRate(models.Model):
         verbose_name_plural = _("mortality rates")
 
     def __str__(self):
-        return self.value
+        return str(self.pk)
 
 class MortalityTimeLag(models.Model):
 
@@ -235,7 +235,7 @@ class MortalityTimeLag(models.Model):
         verbose_name_plural = _("mortality time lags")
 
     def __str__(self):
-        return self.value
+        return str(self.pk)
 
 class Creation(models.Model):
 
@@ -246,7 +246,7 @@ class Creation(models.Model):
         verbose_name_plural = _("creation of host maps")
 
     def __str__(self):
-        return self.name
+        return str(self.pk)
 
 class PestInformation(models.Model):
 
@@ -404,7 +404,7 @@ class VectorHostTransmissionRate(models.Model):
         verbose_name_plural = _("vector to host transmission rates")
 
     def __str__(self):
-        return self.value
+        return str(self.pk)
 
 class HostVectorTransmissionRate(models.Model):
 
@@ -419,7 +419,7 @@ class HostVectorTransmissionRate(models.Model):
         verbose_name_plural = _("host to vector transmission rates")
 
     def __str__(self):
-        return self.value
+        return str(self.pk)
 
 class VectorReproductiveRate(models.Model):
 
@@ -434,7 +434,7 @@ class VectorReproductiveRate(models.Model):
         verbose_name_plural = _("vector reproductive rates")
 
     def __str__(self):
-        return self.value
+        return str(self.pk)
 
 class VectorNaturalDistance(models.Model):
 
@@ -449,7 +449,7 @@ class VectorNaturalDistance(models.Model):
         verbose_name_plural = _("vector natural distance dispersals")
 
     def __str__(self):
-        return self.value
+        return str(self.pk)
 
 class ReproductiveRate(models.Model):
 
@@ -464,7 +464,7 @@ class ReproductiveRate(models.Model):
         verbose_name_plural = _("reproductive rates")
 
     def __str__(self):
-        return self.value
+        return str(self.pk)
 
 class PercentNaturalDistance(models.Model):
 
@@ -479,7 +479,7 @@ class PercentNaturalDistance(models.Model):
         verbose_name_plural = _("natural distance dispersal percentages")
 
     def __str__(self):
-        return self.value
+        return str(self.pk)
 
 class NaturalDistance(models.Model):
 
@@ -494,7 +494,7 @@ class NaturalDistance(models.Model):
         verbose_name_plural = _("natural distance dispersals")
 
     def __str__(self):
-        return self.value
+        return str(self.pk)
 
 class AnthropogenicDistance(models.Model):
 
@@ -509,7 +509,7 @@ class AnthropogenicDistance(models.Model):
         verbose_name_plural = _("anthropogenic distance dispersals")
 
     def __str__(self):
-        return self.value
+        return str(self.pk)
 
 class AnthropogenicDirection(models.Model):
 
@@ -552,7 +552,7 @@ class AnthropogenicDirection(models.Model):
         verbose_name_plural = _("anthropogenic directions")
 
     def __str__(self):
-        return self.anthropogenic_direction
+        return str(self.pk)
 
 class CrypticToInfected(models.Model):
 
@@ -567,7 +567,7 @@ class CrypticToInfected(models.Model):
         verbose_name_plural = _("cryptic to infecteds")
 
     def __str__(self):
-        return self.value
+        return str(self.pk)
 
 class InfectedToDiseased(models.Model):
 
@@ -582,7 +582,7 @@ class InfectedToDiseased(models.Model):
         verbose_name_plural = _("infected to diseaseds")
 
     def __str__(self):
-        return self.value
+        return str(self.pk)
 
 class Weather(models.Model):
 
