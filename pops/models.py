@@ -424,7 +424,7 @@ class HostVectorTransmissionRate(models.Model):
 class VectorReproductiveRate(models.Model):
 
     vector = models.ForeignKey(Vector, verbose_name = _("vector"), on_delete = models.CASCADE)
-    value = models.DecimalField(verbose_name = _("vector reproductive rate value"), max_digits = 5, decimal_places = 0, blank=True)
+    value = models.DecimalField(verbose_name = _("vector reproductive rate value"), max_digits = 5, decimal_places = 1, blank=True)
     probability = models.DecimalField(verbose_name = _("vector reproductive rate probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
@@ -454,7 +454,7 @@ class VectorNaturalDistance(models.Model):
 class ReproductiveRate(models.Model):
 
     pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
-    value = models.DecimalField(verbose_name = _("reproductive rate value"), max_digits = 5, decimal_places = 0, blank=True)
+    value = models.DecimalField(verbose_name = _("reproductive rate value"), max_digits = 5, decimal_places = 1, blank=True)
     probability = models.DecimalField(verbose_name = _("reproductive rate probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
@@ -469,7 +469,7 @@ class ReproductiveRate(models.Model):
 class PercentNaturalDistance(models.Model):
 
     pest = models.ForeignKey(Pest, verbose_name = _("pest"), on_delete = models.CASCADE)
-    value = models.DecimalField(verbose_name = _("percent natural distance scale value"), max_digits = 5, decimal_places = 0, blank=True)
+    value = models.DecimalField(verbose_name = _("percent natural distance scale value"), max_digits = 5, decimal_places = 2, blank=True)
     probability = models.DecimalField(verbose_name = _("percent natural distance scale probability"), max_digits = 5, decimal_places = 2, blank=True)
 
     objects = MyManager()
