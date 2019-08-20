@@ -1075,15 +1075,15 @@ map.on('load', function() {
   console.log("Adding initial data.");
   {% get_static_prefix as STATIC_URL %}
 {% for year in historic_data %}
-  map.addSource('{{year}}', {
+  map.addSource('{{year.year}}', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{{STATIC_URL}}map_data/SLF_historic_data/slf_{{year}}.geojson'
+    'data': {{ year.data|safe }}
   });
   map.addLayer({
-                            "id": '{{year}}',
+                            "id": '{{year.year}}',
                             "type": 'fill',
-                            "source": '{{year}}',
+                            "source": '{{year.year}}',
                             "layout": {
                               'visibility':'none',
                             },

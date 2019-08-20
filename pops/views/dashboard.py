@@ -166,16 +166,25 @@ class DashboardView(AjaxableResponseMixin, CreateView):
                 session = Session.objects.get(pk=self.kwargs.get('pk'))
             except:
                 session = None
+            #Get case study pk    
+            case_study = session.case_study
+
+            #try:
+            #    runs = Run.objects.filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created').prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
+            #except:
+            #    runs = None   
             try:
-                runs = Run.objects.filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created').prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
+                historic_data = HistoricData.objects.filter(case_study=case_study).order_by('year')
             except:
-                runs = None                
-            print(session.final_year)
-            print(session.case_study.end_year +1)
-            steering_years = range(session.case_study.end_year +1, session.final_year+1)
+                historic_data = None   
+            print(session)
+            print(case_study)
+            steering_years = range(case_study.end_year +1, session.final_year+1)
             context['session'] = session
-            context['runs'] = runs
-            context['historic_data'] = ['2014','2015','2016','2017','2018']
+            context['case_study'] = case_study
+            #context['runs'] = runs
+            context['historic_data'] = historic_data
+            print(historic_data)
             context['steering_years'] = steering_years
             return context
 
