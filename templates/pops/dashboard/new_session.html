@@ -154,14 +154,16 @@ $("#submit-session").on('submit', function () {
       var new_session_id = data.session_pk;
       var new_run_collection_id = data.run_collection_pk;
       var new_run_id = data.run_pk;
+      var case_study_id = data.case_study_pk;
+      console.log('Case study id: ' + case_study_id); 
       console.log('New session id: ' + new_session_id); 
       console.log('New run collection id: ' + new_run_collection_id); 
       console.log('New run id: ' + new_run_id); 
-      var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
-      var run_url = base_url.concat(new_run_id.toString());
+      var base_url = "https://testing-dot-pops-model-api.appspot.com/status?"
+      //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+      var run_url = (base_url + "run_id=" + new_run_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&session_id=" + new_session_id.toString() + "&case_study_id=" + case_study_id.toString()); //base_url.concat(new_run_id.toString());
       console.log(run_url);
       $('#status-text span').text('Creating default PoPS model run for this session...');
-      {% comment %}
       $.ajax({
         url: run_url,
         dataType: 'JSONP',
@@ -184,7 +186,6 @@ $("#submit-session").on('submit', function () {
           console.log('Received status from the PoPS model API:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
       });
-      {% endcomment %}
       console.log('Sent run request to PoPS. Waiting for updates to database...')
       poll(new_run_id, new_session_id); 
     },

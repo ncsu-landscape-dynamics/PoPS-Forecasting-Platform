@@ -35,11 +35,15 @@ class SessionAjaxableResponseMixin:
         new_run_collection.save()
         new_run=Run(run_collection=new_run_collection)
         new_run.save()
+        session=self.object
+        session.default_run=new_run
+        session.save()
         if self.request.is_ajax():
             data = {
                 'session_pk': self.object.pk,
                 'run_collection_pk': new_run_collection.pk,
                 'run_pk': new_run.pk,
+                'case_study_pk': self.object.case_study.pk,
             }
             return JsonResponse(data)
         else:
