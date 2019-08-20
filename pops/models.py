@@ -138,7 +138,7 @@ class MapBoxParameters(models.Model):
         verbose_name_plural = _("map box parameters")
 
     def __str__(self):
-        return self.data
+        return str(self.pk)
 
 class AllPlantsData(models.Model):
 
@@ -152,7 +152,7 @@ class AllPlantsData(models.Model):
         verbose_name_plural = _("all_plants")
 
     def __str__(self):
-        return self.data
+        return str(self.pk)
 
 class Host(models.Model):
 
