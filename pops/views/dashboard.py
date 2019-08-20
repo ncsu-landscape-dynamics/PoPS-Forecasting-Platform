@@ -177,11 +177,18 @@ class DashboardView(AjaxableResponseMixin, CreateView):
                 historic_data = HistoricData.objects.filter(case_study=case_study).order_by('year')
             except:
                 historic_data = None   
+            try:
+                mapbox_parameters = MapBoxParameters.objects.get(case_study=case_study)
+            except:
+                historic_data = None   
+                
             print(session)
             print(case_study)
+            print(mapbox_parameters)
             steering_years = range(case_study.end_year +1, session.final_year+1)
             context['session'] = session
             context['case_study'] = case_study
+            context['mapbox_parameters'] = mapbox_parameters
             #context['runs'] = runs
             context['historic_data'] = historic_data
             print(historic_data)
