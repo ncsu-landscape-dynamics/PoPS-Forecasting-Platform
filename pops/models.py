@@ -111,6 +111,19 @@ class CaseStudy(models.Model):
         # joining all string values.
         return field_names
 
+class HistoricData(models.Model):
+
+    case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study id"), on_delete = models.CASCADE)
+    year = models.PositiveIntegerField(verbose_name = _("year"), default = 2015, null = True, validators = [MinValueValidator(1900)])
+    observed_data = JSONField(null = True)
+    
+    class Meta:
+        verbose_name = _("historic data")
+        verbose_name_plural = _("historic datas")
+    
+    def __str__(self):
+        return str(self.pk)
+
 class MapBoxParameters(models.Model):
 
     case_study = models.OneToOneField(CaseStudy, verbose_name = _("case study"), on_delete = models.CASCADE, primary_key=True)
