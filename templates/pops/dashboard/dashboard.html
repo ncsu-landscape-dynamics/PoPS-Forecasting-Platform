@@ -422,7 +422,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   </div>
                   <div id="budget_background_layer"></div>
                   <div id="year-slider-container">
-                    <div id="display_year_label" class="py-0 "><output id="displayYear">2018</output>
+                    <div id="display_year_label" class="py-0 "><output id="displayYear">{{ historic_data.last.year }}</output>
                     </div>
                   <div id="year-slider" class="pt-0 range range-info">
                     <div class="slider-bar">
@@ -430,8 +430,8 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                     <div class="slider-bar-colors managed-years" style="width: 2px;"></div>
                     <div class="slider-bar-colors forecast-years"></div>
                     </div>                  
-                    <input class="year-range" type="range" name="range" min="2014" max="2018" step="1"
-                      value="2018" onchange="displayYear.value=value">
+                    <input class="year-range" type="range" name="range" min="{{ historic_data.0.year }}" max="{{ historic_data.last.year }}" step="1"
+                      value="{{ historic_data.last.year }}" onchange="displayYear.value=value">
                     </div>
                   </div>
                   <div id="displayed_management_area" class="text-center">
@@ -886,8 +886,8 @@ more content
     var map = new mapboxgl.Map({
       container: 'map', // container id
       style: 'mapbox://styles/mapbox/dark-v10', //hosted style id
-      center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
-      zoom: 7 // starting zoom
+      center: [{{ mapbox_parameters.longitude}}, {{ mapbox_parameters.latitude}}], // initial map center in [lon, lat]
+      zoom: {{ mapbox_parameters.zoom }} // starting zoom
     });
 
 
@@ -1075,15 +1075,15 @@ map.on('load', function() {
   console.log("Adding initial data.");
   {% get_static_prefix as STATIC_URL %}
 {% for year in historic_data %}
-  map.addSource('{{year}}', {
+  map.addSource('{{year.year}}', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{{STATIC_URL}}map_data/SLF_historic_data/slf_{{year}}.geojson'
+    'data': {{ year.data|safe }}
   });
   map.addLayer({
-                            "id": '{{year}}',
+                            "id": '{{year.year}}',
                             "type": 'fill',
-                            "source": '{{year}}',
+                            "source": '{{year.year}}',
                             "layout": {
                               'visibility':'none',
                             },

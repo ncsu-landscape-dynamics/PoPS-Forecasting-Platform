@@ -35,11 +35,15 @@ class SessionAjaxableResponseMixin:
         new_run_collection.save()
         new_run=Run(run_collection=new_run_collection)
         new_run.save()
+        session=self.object
+        session.default_run=new_run
+        session.save()
         if self.request.is_ajax():
             data = {
                 'session_pk': self.object.pk,
                 'run_collection_pk': new_run_collection.pk,
                 'run_pk': new_run.pk,
+                'case_study_pk': self.object.case_study.pk,
             }
             return JsonResponse(data)
         else:
@@ -162,16 +166,32 @@ class DashboardView(AjaxableResponseMixin, CreateView):
                 session = Session.objects.get(pk=self.kwargs.get('pk'))
             except:
                 session = None
+            #Get case study pk    
+            case_study = session.case_study
+
+            #try:
+            #    runs = Run.objects.filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created').prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
+            #except:
+            #    runs = None   
             try:
-                runs = Run.objects.filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created').prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
+                historic_data = HistoricData.objects.filter(case_study=case_study).order_by('year')
             except:
-                runs = None                
-            print(session.final_year)
-            print(session.case_study.end_year +1)
-            steering_years = range(session.case_study.end_year +1, session.final_year+1)
+                historic_data = None   
+            try:
+                mapbox_parameters = MapBoxParameters.objects.get(case_study=case_study)
+            except:
+                historic_data = None   
+                
+            print(session)
+            print(case_study)
+            print(mapbox_parameters)
+            steering_years = range(case_study.end_year +1, session.final_year+1)
             context['session'] = session
-            context['runs'] = runs
-            context['historic_data'] = ['2014','2015','2016','2017','2018']
+            context['case_study'] = case_study
+            context['mapbox_parameters'] = mapbox_parameters
+            #context['runs'] = runs
+            context['historic_data'] = historic_data
+            print(historic_data)
             context['steering_years'] = steering_years
             return context
 
