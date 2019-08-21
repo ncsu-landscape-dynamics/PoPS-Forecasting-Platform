@@ -590,12 +590,12 @@ $("#status-indicator").hide();
                   <div id="run-button-set" class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm" data-toggle="tool" title="View run and session details."><i class="fas fa-info"></i></button>
                     <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editInputParameters" title="Start a new run in this session."><i class="fas fa-plus"></i></button>
-                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Duplicate this run."><i class="fas fa-copy"></i></button>
+                    <button type="button" class="btn btn-sm" id="test-get-output" data-toggle="tool" title="Duplicate this run."><i class="fas fa-copy"></i></button>
                     <button type="button" class="btn btn-sm" data-toggle="tool" title="Delete this run."><i class="fas fa-trash-alt"></i></button>
                     <button type="button" class="btn btn-sm" data-toggle="tool" title="Go to the PoPS instructions"><i class="fas fa-question"></i></button>
                   </div>
                   </div>
-                  <div id="run-collection-name">
+                  <div id="run-collection-name" data-run-collection-pk=0>
                   <strong>Run name:</strong> <span></span>
                   <a class="btn" data-toggle="modal" data-target="#viewParameters" href="#"><i
                         style="font-size:0.6em" class="fas fa-plus-circle align-top text-light"></i></a>
@@ -818,7 +818,7 @@ data-placement="top">
 </button>
 <script>
 {% for output in run.output_set.all %}
-{% if output.years == 2019 %}
+{% if output.year == 2019 %}
 $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ output.number_infected }},{{ output.infected_area }}*acre_to_meter_ratio,{{run.management_cost}}));
 {% endif %}
  {% endfor %}
@@ -846,11 +846,7 @@ $(run_comparison_plot('run_428','No management', 44201,4750000000*acre_to_meter_
  </script>    
     </div>
 </div>
-<div>
-more content
 
-
-</div>
 <script>
   $('[data-toggle="pill"],[data-toggle="tooltip"],[data-toggle="tool"]').tooltip({trigger : 'hover'})
   $('a.load_run_text').on('click', function(event) {
@@ -1840,13 +1836,13 @@ function get_output(run_id) {
         $('#status-text span').text('Loading...');
         $( "#status-indicator" ).show();
         $( "#status-indicator-shading" ).show();
-        $("#year-slider").find('input').val('2018');
+        $("#year-slider").find('input').val('2018'); //Need to add database info here
 
             $("#year-slider input").attr('max','2018');
             $("#displayYear").val('2018');
       map.setLayoutProperty('2018','visibility','visible');
       //Make this loop a function of current slider max
-                  for (i = 2019; i < 2030; i++) {
+                  for (i = 2019; i < 2024; i++) { //Need to add database info here
                         if (map.getLayer(i.toString())) {
                             map.removeLayer(i.toString());
                         };
@@ -1870,23 +1866,20 @@ function get_output(run_id) {
             var button_area = 0;
             var button_number_infected = 0;
             for (var i=0; i<data.results.length; i++) {
-                  var year = data.results[i].years;
+                  var year = data.results[i].year;
                   console.log("Output ID: " + data.results[i].pk);
                   console.log("Year: " + year);
                   var year_string = year.toString();
                   console.log("Year string: " + year_string);
-                  var map_data = data.results[i].spread_map;
-                  year_list.push( data.results[i].years );
+                  var map_data = data.results[i].single_spread_map;
+                  year_list.push( data.results[i].year );
                   infected_area_list.push( data.results[i].infected_area*acre_to_meter_ratio);
                   infected_number_list.push( data.results[i].number_infected );
                   if (year == 2019){
                     button_area = data.results[i].infected_area*acre_to_meter_ratio;
                     button_number_infected = data.results[i].number_infected;
                   }
-                  //console.log(data.results[i].spread_map);
-                  //console.log(data.results[i].years);
 
-          //newLayer('{% static "map_data/infection_0_2019.geojson" %}', year);
                         if (map.getLayer(year_string)) {
                             map.removeLayer(year_string);
                         };
@@ -1906,7 +1899,6 @@ function get_output(run_id) {
                     };
             }
             var first_model_year=2019;
-            console.log('Management month: ' + data.run_inputs.management_month)
                 map.setLayoutProperty('2018','visibility','none');
                 map.setLayoutProperty(first_model_year.toString(),'visibility','visible');
                 $("#year-slider").find('input').val(first_model_year.toString());
@@ -1914,7 +1906,7 @@ function get_output(run_id) {
                 $('#display_year_forecast').text('Forecast')
                 $("#historic-legend-container").hide();
                 $("#probability-legend-container").show();
-                  $('#input_run_name span').text(data.run_inputs.name);
+{% comment %}                   $('#input_run_name span').text(data.run_inputs.name);
                   $('#input_run_pk span').text(data.run_inputs.primary_key);
                   $('input#id_name').val(data.run_inputs.name);
                   $('#input_description span').text(data.run_inputs.description);
@@ -1936,6 +1928,7 @@ function get_output(run_id) {
                   $('#output_years span').text(year_list);
                   $('#output_area span').text(infected_area_list);
                   $('#output_number span').text(infected_number_list);
+ {% endcomment %}                
                 $( "#status-indicator" ).hide();
                 $( "#status-indicator-shading" ).hide();
                         if (map.getLayer('treatment')) {
@@ -1971,15 +1964,15 @@ function get_output(run_id) {
                         'fill-opacity': 0.1,
                       } 
                     });
-                  $( "#results-tab" ).trigger( "click" );
-                    $(side_plot("number_infected_side_plot", '# occurences', default_years, year_list, default_detections,infected_number_list, '#2598b8',error_bar=false));
-                    $(side_plot("area_infected_side_plot", 'Occurence area', default_years, year_list, default_area, infected_area_list, '#5fc2c2',error_bar=false));
-                    $(gauge_plot("money-results", data.run_inputs.management_cost, data.run_inputs.budget));
+                  //$( "#results-tab" ).trigger( "click" );
+                    //$(side_plot("number_infected_side_plot", '# occurences', default_years, year_list, default_detections,infected_number_list, '#2598b8',error_bar=false));
+                    //$(side_plot("area_infected_side_plot", 'Occurence area', default_years, year_list, default_area, infected_area_list, '#5fc2c2',error_bar=false));
+                    //$(gauge_plot("money-results", data.run_inputs.management_cost, data.run_inputs.budget));
 
-                  if (!(document.getElementById("run_"+ data.run_inputs.primary_key.toString()))){
+{% comment %}                   if (!(document.getElementById("run_"+ data.run_inputs.primary_key.toString()))){
                     insertRunButton(data.run_inputs.primary_key,data.run_inputs.name,data.run_inputs.date_created,data.run_inputs.description,data.run_inputs.reproductive_rate,data.run_inputs.distance_scale,data.run_inputs.efficacy,button_number_infected ,button_area,data.run_inputs.management_cost);
                   };
-          },
+ {% endcomment %}          },
 
           error: function (xhr) {
             alert(xhr.statusText)
@@ -1989,9 +1982,10 @@ function get_output(run_id) {
   };
 
 
-function poll() {
+
+
+function poll(new_run_id) {
   setTimeout(function () {
-    var new_run_id = $('#submit-run-button').attr('data-run');
     var stop_listening = $('button#cancel-polling').attr('data-value');
     $.ajax({
       url: "{% url 'check_status' %}",
@@ -2007,7 +2001,13 @@ function poll() {
           $('#status-text span').text('Success! Loading results...');
           get_output(new_run_id);
           $('#id_management_polygons').val(0);
-          //$( "#get-data-button" ).trigger( "click" );
+            $(".timeline-year-container").removeClass("year_active");
+            $(".timeline-year-container.management_active").removeClass("management_active").addClass("management_complete").addClass("year_active").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
+            var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
+            console.log('Year count is:' + year_count);
+            var next_year_count = parseInt(year_count) + 1;
+            console.log('Next year: ' + next_year_count);
+            updateDrawColor(next_year_count);
         } else if (stop_listening == 'true') {
           console.log("Exiting polling loop. This won't stop the PoPS run from continuing, but will prevent it from displaying on the dashboard.")
           $("#status-indicator").hide();
@@ -2023,11 +2023,10 @@ function poll() {
           } else {
             $('#status-text span').text('Pending...');
           }
-          poll();
+          poll(new_run_id);
         } else {
           $('#status-text span').text(data.status);
-
-          poll();
+          poll(new_run_id);
         }
       },
       error : function(xhr,errmsg,err) {
@@ -2137,6 +2136,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           console.log('New run collection id: ' + new_run_collection_id);
           $('#editInputParameters').modal('hide');
           $('#run-collection-name span').text(data.name);
+          $('#run-collection-name').attr('data-run-collection-pk',data.pk);
           $('#input_run_name span').text(data.name);
           $('#input_run_pk span').text(data.pk);
           $('#input_description span').text(data.description);
@@ -2148,37 +2148,6 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           $('#input_efficacy span').text(data.efficacy);
           $('#input_tangible_landscape span').text(data.tangible_landscape);
           $('#id_run_collection').val(data.pk);
-{% comment %}           if (!$('input#id_tangible_landscape').prop('checked')){
-            var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
-            var run_url = base_url.concat(new_run_id.toString());
-            console.log(run_url);
-            $.ajax({
-              url: run_url,
-              dataType: 'JSONP',
-              type: 'GET',
-              headers: { 'Access-Control-Allow-Origin': 'https://pops-model-api.appspot.com' },
-              statusCode: {
-                404: function() {
-                  alert( "PoPS Model API not found (404 error)... \n Please try again. \n If the problem persists, contact an admin." );
-                },
-                500: function() {
-                  alert( "PoPS Model API returned 500 Error... \n Please try again. \n If the problem persists, contact an admin." );
-                }
-              },
-              success : function (data) {
-                console.log('Success signal from PoPS Model API.');
-              },
-              error : function(xhr,errmsg,err) {
-                console.log('Received status from the PoPS model API:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-              }
-            });
-            console.log('Sent run request to PoPS. Waiting for updates to database...')
-          }
-          else {
-            console.log('Waiting for management from tangible landscape...')
-          }
-          $("#submit-run-button").attr('data-run',new_run_id);
-          poll(); {% endcomment %}
         },
                 // handle a non-successful response
         error : function(xhr,errmsg,err) {
@@ -2210,11 +2179,19 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
         success: function (data) {
           console.log('New run AJAX succcessful!');
           var new_run_id = data.pk;
+          var new_run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
+          var case_study_id = {{ case_study.pk }};
+          var session_id = {{ session.pk }};
           console.log('New run id: ' + new_run_id);
           console.log('Steering year: ' + data.steering_year);
-{% comment %}           if (!$('input#id_tangible_landscape').prop('checked')){
-            var base_url = "https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
-            var run_url = base_url.concat(new_run_id.toString());
+          if (!$('input#id_tangible_landscape').prop('checked')){
+            console.log('Case study id: ' + case_study_id); 
+            console.log('New session id: ' + session_id); 
+            console.log('New run collection id: ' + new_run_collection_id); 
+            console.log('New run id: ' + new_run_id); 
+            var base_url = "https://testing-dot-pops-model-api.appspot.com/status?"
+            //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+            var run_url = (base_url + "run_id=" + new_run_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&session_id=" + session_id.toString() + "&case_study_id=" + case_study_id.toString()); //base_url.concat(new_run_id.toString());
             console.log(run_url);
             $.ajax({
               url: run_url,
@@ -2242,7 +2219,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
             console.log('Waiting for management from tangible landscape...')
           }
           $("#submit-run-button").attr('data-run',new_run_id);
-          poll(); {% endcomment %}
+          poll(new_run_id); 
         },
                 // handle a non-successful response
         error : function(xhr,errmsg,err) {
@@ -2256,13 +2233,8 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
   //$(this).parents(".timeline-year-container").removeClass("management_active").addClass("management_complete").addClass("year_active");
   //$(this).parents(".timeline-year-container").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
   //$(this).parents(".timeline-year-container").removeClass("management_active").addClass("management_complete").addClass("year_active");
-  $(".timeline-year-container").removeClass("year_active");
-  $(".timeline-year-container.management_active").removeClass("management_active").addClass("management_complete").addClass("year_active").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
-  console.log('Year count is:' + year_count);
-  console.log('Steering year is: ' + steering_year);
-  var next_year_count = parseInt(year_count) + 1;
-  console.log('Next year: ' + next_year_count);
-  updateDrawColor(next_year_count);
+  $("#status-indicator").show();
+  $("#status-indicator-shading").show();
 });
 
 
@@ -2273,6 +2245,12 @@ $(function () {
 
 $(side_plot("area_infected_side_plot", 'Occurence area', [2011,2012,2013,2014,2015], [2011,2012,2013,2014,2015], [100,200,300,400,600], [100,180,270,360,400], colors[0],error_bar=false));
 
+$('#test-get-output').on('click', function(event) {
+  console.log('Test get output clicked')
+  run_id=62;
+  get_output(run_id);
+
+});
 
 
   </script>

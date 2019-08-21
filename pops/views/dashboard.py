@@ -260,28 +260,35 @@ class DashboardTestView(AjaxableResponseMixin, CreateView):
 def get_output_view(request):
     run_id = request.GET.get('new_run_id', None)
  
-    outputs = Output.objects.filter(run_id = run_id)
+    #outputs = Output.objects.filter(run_id = run_id)
     run = Run.objects.get(pk=run_id)
+    first_year = run.run_collection.session.case_study.end_year+1
+    run_collection = run.run_collection
+    steering_year = run.steering_year
+    outputs = Output.objects.filter(run_id = run_id) #get the outputs for this run
+    #then merge the outputs for previous runs to get the previous years
+    for x in range(first_year, steering_year):
+        print(x)
+        run = Run.objects.get(run_collection=run_collection, steering_year=x)
+        print(run)
+        outputs = outputs | Output.objects.filter(run_id=run,year=x)
+
+        #outputs.append(Output.objects.filter(run_id=run,year=x).values("pk","date_created","id","number_infected", "infected_area", "year", "single_spread_map","probability_map","escape_probability"))
+        #print(outputs)
+    #outputs.append(list(Output.objects.filter(run_id = run_id).values("pk","date_created","id","number_infected", "infected_area", "year", "single_spread_map","probability_map","escape_probability")))
+    print(first_year)
+    print(steering_year)
+    print(outputs)
     data = {"run_inputs": {
-        "name": run.name, 
         "primary_key": run.pk,
-        "description": run.description,
         "date_created":run.date_created,
         "status":run.status,
-        "random_seed": run.random_seed,
-        "reproductive_rate": run.reproductive_rate,
-        "distance_scale": run.distance_scale,
-        "weather": run.weather,
-        "budget": run.budget,
-        "cost_per_meter_squared": run.cost_per_meter_squared,
-        "management_month": run.management_month,
+        "steering_year":run.steering_year,
         "management_cost": run.management_cost,
         "management_area": run.management_area,
-        "efficacy": run.efficacy,
-        "final_year": run.final_year,
         "management_polygons": run.management_polygons,
         },
-    "results": list(outputs.order_by('years').values("pk","date_created","id","number_infected", "infected_area", "years", "spread_map"))
+    "results": list(outputs.order_by('year').values("pk","date_created","id","number_infected", "infected_area", "year", "single_spread_map","probability_map","escape_probability"))
     }
     return JsonResponse(data)
 
