@@ -13,7 +13,7 @@ router.register('output', views.OutputViewSet)
 router.register('temperature_data', views.TemperatureDataViewSet)
 router.register('lethal_temperature_data', views.LethalTemperatureDataViewSet)
 router.register('precipitation_data', views.PrecipitationDataViewSet)
-router.register('session', views.SessionViewSet)
+router.register('session', views.SessionDetailViewSet)
 
 
 urlpatterns = [

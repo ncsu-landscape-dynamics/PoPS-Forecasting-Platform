@@ -227,24 +227,24 @@ class PrecipitationDataSerializer(serializers.ModelSerializer):
         model = Precipitation
         fields = '__all__'
 
-"""
+
 class SessionDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
         fields = '__all__'
 
-    run_count = serializers.SerializerMethodField()
-    most_recent_run = serializers.SerializerMethodField()
+    runcollection_count = serializers.SerializerMethodField()
+    most_recent_runcollection = serializers.SerializerMethodField()
 
-    def get_run_count(self, obj):
-        return obj.run_set.count()
+    def get_runcollection_count(self, obj):
+        return obj.runcollection_set.count()
 
-    def get_most_recent_run(self, obj):
-        if obj.run_set.exists():
-            return obj.run_set.order_by('-pk')[0].pk
+    def get_most_recent_runcollection(self, obj):
+        if obj.runcollection_set.exists():
+            return obj.runcollection_set.order_by('-pk')[0].pk
         else:
             return 'null'
-"""
+
 
 
 

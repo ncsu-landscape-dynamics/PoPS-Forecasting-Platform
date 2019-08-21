@@ -79,10 +79,9 @@ class SessionViewSet(viewsets.ModelViewSet):
     serializer_class = SessionSerializer
     permission_classes = (permissions.AllowAny,)
 
-"""
+
 class SessionDetailViewSet(viewsets.ModelViewSet):
 
-    queryset = Session.objects.prefetch_related('run_set').all()
+    queryset = Session.objects.prefetch_related('runcollection_set').all()
     serializer_class = SessionDetailSerializer
     permission_classes = (permissions.AllowAny,)
-"""
