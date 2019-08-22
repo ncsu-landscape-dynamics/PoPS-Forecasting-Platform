@@ -7,8 +7,10 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register('case_study', views.CaseStudyViewSet)
-router.register('run', views.RunViewSet)
-router.register('run_collection', views.RunCollectionViewSet)
+#router.register('run', views.RunViewSet)
+router.register('run', views.RunDetailViewSet)
+router.register('run_collection', views.RunCollectionDetailViewSet)
+#router.register('run_collection', views.RunCollectionViewSet)
 router.register('output', views.OutputViewSet)
 router.register('temperature_data', views.TemperatureDataViewSet)
 router.register('lethal_temperature_data', views.LethalTemperatureDataViewSet)
