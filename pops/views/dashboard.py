@@ -261,10 +261,10 @@ def get_output_view(request):
     run_id = request.GET.get('new_run_id', None)
  
     #outputs = Output.objects.filter(run_id = run_id)
-    run = Run.objects.get(pk=run_id)
-    first_year = run.run_collection.session.case_study.end_year+1
-    run_collection = run.run_collection
-    steering_year = run.steering_year
+    this_run = Run.objects.get(pk=run_id)
+    first_year = this_run.run_collection.session.case_study.end_year+1
+    run_collection = this_run.run_collection
+    steering_year = this_run.steering_year
     outputs = Output.objects.filter(run_id = run_id) #get the outputs for this run
     #then merge the outputs for previous runs to get the previous years
     for x in range(first_year, steering_year):
@@ -280,13 +280,13 @@ def get_output_view(request):
     print(steering_year)
     print(outputs)
     data = {"run_inputs": {
-        "primary_key": run.pk,
-        "date_created":run.date_created,
-        "status":run.status,
-        "steering_year":run.steering_year,
-        "management_cost": run.management_cost,
-        "management_area": run.management_area,
-        "management_polygons": run.management_polygons,
+        "primary_key": this_run.pk,
+        "date_created":this_run.date_created,
+        "status":this_run.status,
+        "steering_year":this_run.steering_year,
+        "management_cost": this_run.management_cost,
+        "management_area": this_run.management_area,
+        "management_polygons": this_run.management_polygons,
         },
     "results": list(outputs.order_by('year').values("pk","date_created","id","number_infected", "infected_area", "year", "single_spread_map","probability_map","escape_probability"))
     }
