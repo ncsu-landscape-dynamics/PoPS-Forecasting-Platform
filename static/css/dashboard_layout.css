@@ -165,6 +165,7 @@ div.timeline-active div a  {
 }
 .year-0.management_complete.year_active .timeline-year a {
   background-color:#454545;
+  font-size: 15px;
 }
 .year-1.management_complete.year_active .timeline-year a {
   background-color:#C6F761;

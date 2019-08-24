@@ -265,20 +265,86 @@ def get_output_view(request):
     first_year = this_run.run_collection.session.case_study.end_year+1
     run_collection = this_run.run_collection
     steering_year = this_run.steering_year
-    outputs = Output.objects.filter(run_id = run_id) #get the outputs for this run
-    #then merge the outputs for previous runs to get the previous years
-    for x in range(first_year, steering_year):
-        print(x)
-        run = Run.objects.get(run_collection=run_collection, steering_year=x)
-        print(run)
-        outputs = outputs | Output.objects.filter(run_id=run,year=x)
-
-        #outputs.append(Output.objects.filter(run_id=run,year=x).values("pk","date_created","id","number_infected", "infected_area", "year", "single_spread_map","probability_map","escape_probability"))
-        #print(outputs)
-    #outputs.append(list(Output.objects.filter(run_id = run_id).values("pk","date_created","id","number_infected", "infected_area", "year", "single_spread_map","probability_map","escape_probability")))
-    print(first_year)
+    print('Steering year:')
     print(steering_year)
-    print(outputs)
+    #get all inputs for runs in this collection (management polygons)
+    inputs = Run.objects.filter(run_collection=run_collection)
+    #get the outputs for this run
+    outputs = Output.objects.filter(run_id = run_id) 
+    all_steering_years = [
+    { 
+        'steering_year' : 2019,
+        'management_cost' : 1000000,
+        'management_area' : 2000,	
+        'output' : [
+        {
+            'year': 2019,	
+            'number_infected': 1000,
+            'infected_area': 10000,
+            'escape_probability' : 50,
+        },
+        {
+            'year': 2020,	
+            'number_infected': 2000,
+            'infected_area': 20000,
+            'escape_probability' : 70,
+        },	
+        {
+            'year': 2021,	
+            'number_infected': 3000,
+            'infected_area': 40000,
+            'escape_probability' : 90,
+        }
+    ]
+    },
+    { 
+        'steering_year' : 2020,
+        'management_cost' : 2000000,
+        'management_area' : 4000,	
+        'output' : [
+        {
+            'year': 2020,	
+            'number_infected': 1800,
+            'infected_area': 15000,
+            'escape_probability' : 50,
+        },	
+        {
+            'year': 2021,	
+            'number_infected': 2500,
+            'infected_area': 20000,
+            'escape_probability' : 60,
+        }
+    ]
+    },
+    { 
+        'steering_year' : 2021,
+        'management_cost' : 3000000,
+        'management_area' : 5000,		
+        'output' : [
+        {
+            'year': 2021,	
+            'number_infected': 2200,
+            'infected_area': 10000,
+            'escape_probability' : 40,
+        }
+    ]
+    }
+    ]
+    #then merge the outputs for previous runs to get the previous steering years
+    if steering_year:
+        print('Steering year true')
+        for x in range(first_year, steering_year):
+            print(x)
+            run = Run.objects.get(run_collection=run_collection, steering_year=x)
+            print(run)
+            outputs = outputs | Output.objects.filter(run_id=run,year=x)
+    else:
+        print('Steering year false')
+    print('Data:')
+    print(all_steering_years)
+    print(first_year)
+    #print(steering_year)
+    #print(outputs)
     data = {"run_inputs": {
         "primary_key": this_run.pk,
         "date_created":this_run.date_created,
@@ -288,7 +354,9 @@ def get_output_view(request):
         "management_area": this_run.management_area,
         "management_polygons": this_run.management_polygons,
         },
-    "results": list(outputs.order_by('year').values("pk","date_created","id","number_infected", "infected_area", "year", "single_spread_map","probability_map","escape_probability"))
+    "inputs": list(inputs.order_by('steering_year').values("pk","date_created","id","steering_year", "management_cost", "management_polygons", "management_area")),
+    "results": list(outputs.order_by('year').values("pk","date_created","id","number_infected", "infected_area", "year", "single_spread_map","probability_map","escape_probability")),
+    "all_steering_years": all_steering_years
     }
     return JsonResponse(data)
 
@@ -297,6 +365,19 @@ def check_status(request):
     run = Run.objects.get(pk=run_id)
     data = {
         "status":run.status,
+        }
+    return JsonResponse(data)
+
+def delete_runs(request):
+    run_id = request.GET.get('run_id', None)
+    run_collection = request.GET.get('run_collection', None)
+    runs= Run.objects.filter(run_collection=run_collection, pk__gte=run_id)
+    print('Run collection is:' + run_collection)
+    print('The run id is:' + run_id)
+    print(runs)
+    runs.delete()
+    data = {
+        "run_id":run_id,
         }
     return JsonResponse(data)
 

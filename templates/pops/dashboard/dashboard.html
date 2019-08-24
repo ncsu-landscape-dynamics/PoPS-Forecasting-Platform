@@ -223,7 +223,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                 <div id="timeline" class="text-center">
                   <div id="flex-container">
                     <div class="timeline-year-container year-0 management_complete year_active management_visible"
-                    data-year-counter=0>
+                    data-year-counter=0 data-run-pk={{ session.default_run }}>
                       <div class="timeline-buttons">
                         <span class="completed_management_buttons">
                         </span>
@@ -232,13 +232,13 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                         </span>
                       </div>
                       <div class="timeline-year">
-                        <a class="align-top" data-toggle="tool" title="View forecast with no management." href="#"><em>{{ session.case_study.end_year }}</em></a>
+                        <a class="align-top" data-toggle="tool" title="View forecast with no management." href="#"><em>No management</em></a>
                       </div>
                     </div>
                     <div class="timeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
                     {% for year in steering_years %}
                     <div class="timeline-year-container year-{{forloop.counter}} {% if forloop.first %} management_active {% else %} management_not_started {% endif %} management_visible"
-                    data-year-counter={{ forloop.counter }} data-year-value= {{ year }}>
+                    data-year-counter={{ forloop.counter }} data-year-value= {{ year }} data-run-pk="" >
                       <div class="timeline-buttons">
                         <span class="completed_management_buttons">
                           <a class="timeline-edit" href="#" data-toggle="tool" title="Go back to manage year {{ year }}. This will delete all subsequent management years."><i class="fas fa-backspace "></i></a>
@@ -278,7 +278,8 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   function updateDrawColor (year_count) {
                     disableDrawTools();
                     enableDrawTools();
-                    console.log('Removing draw control.')
+                    console.log('Removing draw control.');
+                    console.log('Adding draw color for year: ' + year_count);
                     map.removeControl(draw);
                     if (year_count) {
                       var draw_color = colors[year_count-1];
@@ -306,14 +307,22 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
 
                       $(".timeline-visibility").on('click', function () {
                         console.log("Visibility toggled.")
+                          var year_value = $(this).parents(".timeline-year-container").attr('data-year-value');
+                          var treatment_outline = (year_value.toString() + "_management"); 
+                          var treatment_fill = (year_value.toString() + "_fill"); 
                         if ($(this).parents(".timeline-year-container").hasClass("management_visible")) {
                           console.log('Turning visibility off...');
                           $(this).parents(".timeline-year-container").removeClass("management_visible").addClass("management_hidden");
                           $(this).children("i").removeClass("fa-eye").addClass("fa-eye-slash");
+                          map.setLayoutProperty(treatment_fill,'visibility','none');
+                          map.setLayoutProperty(treatment_outline,'visibility','none');
+
                         } else {
                           console.log('Turning visibility on...');
                           $(this).parents(".timeline-year-container").removeClass("management_hidden").addClass("management_visible");
                           $(this).children("i").removeClass("fa-eye-slash").addClass("fa-eye");
+                          map.setLayoutProperty(treatment_fill,'visibility','visible');
+                          map.setLayoutProperty(treatment_outline,'visibility','visible');
                         }
                       });
 
@@ -325,8 +334,30 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                         $(this).parents(".timeline-year-container").nextAll(".timeline-year-container").find(".timeline-visibility").children("i").removeClass("fa-eye-slash").addClass("fa-eye");
                         $(this).parents(".timeline-year-container").prev().prev(".timeline-year-container").addClass("year_active");
                         var year_count = $(this).parents(".timeline-year-container").attr('data-year-counter');
-                        console.log('Year count is:' + year_count)
-                        updateDrawColor(year_count);
+                        var run_id = $(this).parents(".timeline-year-container").attr('data-run-pk');
+                        var previous_run_id = $(this).parents(".timeline-year-container").prev().prev(".timeline-year-container").attr('data-run-pk');
+                        console.log('Year count is:' + year_count);
+                        console.log('Run pk of deleted run is: ' + run_id);
+                        var run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
+    $.ajax({
+      url: "{% url 'delete_runs' %}",
+      dataType: "json",
+      data: {
+        'run_id': run_id,
+        'run_collection': run_collection_id,
+      },
+      success: function (data) {
+        console.log('Sanity Check! Success for delete runs AJAX call.');
+        console.log('The Run PK to be deleted is: ' + data.run_id);
+        get_output(previous_run_id);
+      },
+      error : function(xhr,errmsg,err) {
+      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+      + "\n");
+          console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+      }
+    });
+          updateDrawColor(year_count);
                       });
 
                   </script>                
@@ -676,6 +707,8 @@ $("#status-indicator").hide();
                   </div>
 
                       <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
+                      <div id="cost_output">
+                      </div>
 {% comment %}                   <h5 class="py-0">
                     <!-- Button trigger modal -->
                    Parameters<a class="btn" data-toggle="modal" data-target="#editInputParameters" href="#"><i
@@ -1836,19 +1869,31 @@ function get_output(run_id) {
         $('#status-text span').text('Loading...');
         $( "#status-indicator" ).show();
         $( "#status-indicator-shading" ).show();
-        $("#year-slider").find('input').val('2018'); //Need to add database info here
+        $("#year-slider").find('input').val('{{ historic_data.last.year }}'); //Need to add database info here
 
-            $("#year-slider input").attr('max','2018');
-            $("#displayYear").val('2018');
-      map.setLayoutProperty('2018','visibility','visible');
+            $("#year-slider input").attr('max','{{ historic_data.last.year }}');
+            $("#displayYear").val('{{ historic_data.last.year }}');
+      map.setLayoutProperty('{{ historic_data.last.year }}','visibility','visible');
       //Make this loop a function of current slider max
-                  for (i = 2019; i < 2024; i++) { //Need to add database info here
+                  for (i = {{ steering_years|first }}; i < ({{ steering_years|last }} + 1); i++) { //Need to add database info here
                         if (map.getLayer(i.toString())) {
                             map.removeLayer(i.toString());
                         };
                         if (map.getSource(i.toString())) {
                             map.removeSource(i.toString());
-                        };                       
+                        };        
+                        var treatment_outline = (i.toString() + "_management"); 
+                        var treatment_fill = (i.toString() + "_fill"); 
+                        console.log(treatment_outline);
+                        if (map.getLayer(treatment_outline)) {
+                            map.removeLayer(treatment_outline);
+                        };
+                        if (map.getLayer(treatment_fill)) {
+                            map.removeLayer(treatment_fill);
+                        };
+                        if (map.getSource(treatment_outline)) {
+                            map.removeSource(treatment_outline);
+                        };                 
                   };
                    console.log("Requesting run " + run_id + " data from the database.")
       $.ajax({
@@ -1928,42 +1973,56 @@ function get_output(run_id) {
                   $('#output_years span').text(year_list);
                   $('#output_area span').text(infected_area_list);
                   $('#output_number span').text(infected_number_list);
- {% endcomment %}                
+ {% endcomment %}     
+              var year_list = [], infected_area_list = [], infected_number_list = [];
+             for (var i=0; i<data.all_steering_years.length; i++) {
+              console.log('Sanity check: ' + i)
+             };
+                //$('#cost_output').text(data.data.results);
                 $( "#status-indicator" ).hide();
                 $( "#status-indicator-shading" ).hide();
-                        if (map.getLayer('treatment')) {
-                            map.removeLayer('treatment');
-                        };
-                        if (map.getLayer('treatment-fill')) {
-                            map.removeLayer('treatment-fill');
-                        };
-                        if (map.getSource('treatment')) {
-                            map.removeSource('treatment');
-                        };      
-                    map.addSource('treatment', {
+             for (var i=0; i<data.inputs.length; i++) {
+              console.log('Sanity check inputs: ' + i);
+              console.log('Steering year: ' + data.inputs[i].steering_year)
+              var treatment_outline = (data.inputs[i].steering_year.toString() + "_management"); 
+              var treatment_fill = (data.inputs[i].steering_year.toString() + "_fill"); 
+              console.log(treatment_outline);
+              if (map.getLayer(treatment_outline)) {
+                  map.removeLayer(treatment_outline);
+              };
+              if (map.getLayer(treatment_fill)) {
+                  map.removeLayer(treatment_fill);
+              };
+              if (map.getSource(treatment_outline)) {
+                  map.removeSource(treatment_outline);
+              };  
+                    map.addSource(treatment_outline, {
                       'type': 'geojson',
                       /*many types of data can be added, such as geojson, vector tiles or raster data*/
-                      'data': data.run_inputs.management_polygons,
+                      'data': data.inputs[i].management_polygons,
                     });
                     /*here we are adding a source, then a layer based on that that source*/
                     map.addLayer({
-                      "id": 'treatment',
+                      "id": treatment_outline,
                       "type": 'line',
-                      "source": 'treatment',
+                      "source": treatment_outline,
                       'paint': {
-                        'line-color': '#83f441',
+                        'line-color': colors[i],
                         'line-width': 3
                       } 
                     });
                     map.addLayer({
-                      "id": 'treatment-fill',
+                      "id": treatment_fill,
                       "type": 'fill',
-                      "source": 'treatment',
+                      "source": treatment_outline,
                       'paint': {
-                        'fill-color': '#83f441',
-                        'fill-opacity': 0.1,
+                        'fill-color': colors[i],
+                        'fill-opacity': 0.2,
                       } 
-                    });
+                    });             
+                    };
+
+                    
                   //$( "#results-tab" ).trigger( "click" );
                     //$(side_plot("number_infected_side_plot", '# occurences', default_years, year_list, default_detections,infected_number_list, '#2598b8',error_bar=false));
                     //$(side_plot("area_infected_side_plot", 'Occurence area', default_years, year_list, default_area, infected_area_list, '#5fc2c2',error_bar=false));
@@ -2000,10 +2059,10 @@ function poll(new_run_id) {
         if (data.status == "SUCCESS") {
           $('#status-text span').text('Success! Loading results...');
           get_output(new_run_id);
+            var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
           $('#id_management_polygons').val(0);
             $(".timeline-year-container").removeClass("year_active");
             $(".timeline-year-container.management_active").removeClass("management_active").addClass("management_complete").addClass("year_active").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
-            var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
             console.log('Year count is:' + year_count);
             var next_year_count = parseInt(year_count) + 1;
             console.log('Next year: ' + next_year_count);
@@ -2062,6 +2121,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
     map.setLayoutProperty('perimeter_zone_layer','visibility','none');
   }
 });
+
 
 
     $(".run-link").on('click', function () {
@@ -2179,6 +2239,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
         success: function (data) {
           console.log('New run AJAX succcessful!');
           var new_run_id = data.pk;
+          $(".timeline-year-container.management_active").attr('data-run-pk',new_run_id);
           var new_run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
           var case_study_id = {{ case_study.pk }};
           var session_id = {{ session.pk }};

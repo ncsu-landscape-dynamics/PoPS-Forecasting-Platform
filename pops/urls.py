@@ -24,6 +24,7 @@ urlpatterns = [
     path('output/<int:pk>', views.OutputDetailView.as_view(), name='output_detail'),
     path('get_output', views.get_output_view, name='get_output'),
     path('check_status', views.check_status, name='check_status'),
+    path('delete_runs', views.delete_runs, name='delete_runs'),
     path('save_run_data', views.NewRunView.as_view(), name='save_run_data'),
     path('save_run_collection_data', views.DashboardView.as_view(), name='save_run_collection_data'),
     path('save_session_data', views.NewSessionView.as_view(), name='save_session_data'),
