@@ -173,6 +173,7 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             #    runs = Run.objects.filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created').prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
             #except:
             #    runs = None   
+
             try:
                 historic_data = HistoricData.objects.filter(case_study=case_study).order_by('year')
             except:
@@ -333,6 +334,7 @@ def get_output_view(request):
     #then merge the outputs for previous runs to get the previous steering years
     if steering_year:
         print('Steering year true')
+        steering_boolean=True
         for x in range(first_year, steering_year):
             print(x)
             run = Run.objects.get(run_collection=run_collection, steering_year=x)
@@ -340,11 +342,12 @@ def get_output_view(request):
             outputs = outputs | Output.objects.filter(run_id=run,year=x)
     else:
         print('Steering year false')
+        steering_boolean=False
     print('Data:')
-    print(all_steering_years)
+    #print(all_steering_years)
     print(first_year)
     #print(steering_year)
-    #print(outputs)
+    print(outputs)
     data = {"run_inputs": {
         "primary_key": this_run.pk,
         "date_created":this_run.date_created,
@@ -356,7 +359,8 @@ def get_output_view(request):
         },
     "inputs": list(inputs.order_by('steering_year').values("pk","date_created","id","steering_year", "management_cost", "management_polygons", "management_area")),
     "results": list(outputs.order_by('year').values("pk","date_created","id","number_infected", "infected_area", "year", "single_spread_map","probability_map","escape_probability")),
-    "all_steering_years": all_steering_years
+    "all_steering_years": all_steering_years,
+    "steering": steering_boolean
     }
     return JsonResponse(data)
 

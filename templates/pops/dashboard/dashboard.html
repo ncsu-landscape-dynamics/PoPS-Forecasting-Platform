@@ -232,7 +232,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                         </span>
                       </div>
                       <div class="timeline-year">
-                        <a class="align-top" data-toggle="tool" title="View forecast with no management." href="#"><em>No management</em></a>
+                        <a class="align-top"  data-toggle="tool" title="View forecast with no management." href="#">None</a>
                       </div>
                     </div>
                     <div class="timeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
@@ -1045,60 +1045,7 @@ map.addLayer({
 
 };
 
-function addLayers() {
-  var year_id='2018';
-  var visibility_2018 = 'none';
 
-
-if (year_id == '2018') {
-  visibility_2018='visible';
-};
-
-map.addLayer({
-                            "id": '2018',
-                            "type": 'fill',
-                            "source": '2018',
-                            "layout": {
-                              'visibility':visibility_2018,
-                            },
-                            'paint': {
-                            'fill-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'outputs'],
-                            0, '#009CB0',
-                            10, '#00C49D',
-                            20, '#00D793',
-                            30, '#00FF80',
-                            40, '#24DA80',
-                            50, '#48B680',
-                            60, '#6D9180',
-                            70, '#916D80',
-                            80, '#B64880',
-                            90, '#DA2480',
-                            100, '#ff0000'
-                            ],
-
-                                'fill-opacity': [
-                                    'interpolate',
-                                    ['linear'],
-                                    ['get', 'outputs'],
-                                    0, 0.00,
-                                    5, 0.05,
-                                    10, 0.40,
-                                    20, 0.50,
-                                    30, 0.50,
-                                    40, 0.50,
-                                    50, 0.50,
-                                    60, 0.50,
-                                    70, 0.50,
-                                    80, 0.50,
-                                    90, 0.50,
-                                    100, 0.50
-                                ]                            }
-                            }, 'waterway-label'); 
-
-};
 
 map.on('load', function() {
   console.log("Adding initial data.");
@@ -1194,8 +1141,9 @@ map.on('load', function() {
                             }
                             }, 'waterway-label'); 
 
-
-                            
+  default_run = {{ session.default_run }};
+  console.log(default_run);
+  get_output(default_run);                      
   });
 
 
@@ -1660,56 +1608,7 @@ $( "input#id_budget, input#id_cost, select#id_area_unit" ).on( "click blur", fun
 updateArea();
 });
 
-function updateLayers(){
 
-      var raster2018 = '{% static "map_data/" %}'+ "perimeter" + '_' + '6' + '_'+ '100' + '_2018.geojson';
-      var raster2019 = '{% static "map_data/" %}'+ "perimeter" + '_' + '6' + '_'+ '100' + '_2019.geojson';
-      var raster2020 = '{% static "map_data/" %}'+ "perimeter" + '_' + '6' + '_'+ '100' + '_2020.geojson';
-      //console.log(raster2018)
-      //console.log(raster2019)
-      //console.log(raster2020)
-                       
-                        // update the map
-                        // change the overlay
-                        if (map.getLayer("2018")) {
-                            map.removeLayer("2018");
-                        };
-                        if (map.getSource("2018")) {
-                            map.removeSource("2018");
-                        };
-                        if (map.getLayer("2019")) {
-                            map.removeLayer("2019");
-                        };
-                        if (map.getSource("2019")) {
-                            map.removeSource("2019");
-                        };
-                        if (map.getLayer("2020")) {
-                            map.removeLayer("2020");
-                        };
-                        if (map.getSource("2020")) {
-                            map.removeSource("2020");
-                        };
-
-  map.addSource('2018', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': raster2018
-  });
-  map.addSource('2019', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': raster2019
-  });
-  map.addSource('2020', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': raster2020
-  });
-  /*here we are adding a source, then a layer based on that that source*/
-
-addLayers();
-
-};
 
 $("#year-slider").change(function () {
   year_id = $(this).find('input').val();
@@ -1724,7 +1623,7 @@ $("#year-slider").change(function () {
   };
   map.setLayoutProperty(year_id, 'visibility', 'visible');
   $("#displayYear").val(year_id);
-  if (year_id > 2018){
+  if (year_id > {{ historic_data.last.year }}){
     $('#display_year_forecast').text('Forecast')
     $("#probability-legend-container").show();
     $("#historic-legend-container").hide();
@@ -1865,180 +1764,187 @@ $(function () {
   };
 
 function get_output(run_id) {
-        $('#new_run_redirect').remove();
-        $('#status-text span').text('Loading...');
-        $( "#status-indicator" ).show();
-        $( "#status-indicator-shading" ).show();
-        $("#year-slider").find('input').val('{{ historic_data.last.year }}'); //Need to add database info here
+  $('#new_run_redirect').remove();
+  $('#status-text span').text('Loading...');
+  $("#status-indicator").show();
+  $("#status-indicator-shading").show();
+  $("#year-slider").find('input').val('{{ historic_data.last.year }}'); //Need to add database info here
 
-            $("#year-slider input").attr('max','{{ historic_data.last.year }}');
-            $("#displayYear").val('{{ historic_data.last.year }}');
-      map.setLayoutProperty('{{ historic_data.last.year }}','visibility','visible');
-      //Make this loop a function of current slider max
-                  for (i = {{ steering_years|first }}; i < ({{ steering_years|last }} + 1); i++) { //Need to add database info here
-                        if (map.getLayer(i.toString())) {
-                            map.removeLayer(i.toString());
-                        };
-                        if (map.getSource(i.toString())) {
-                            map.removeSource(i.toString());
-                        };        
-                        var treatment_outline = (i.toString() + "_management"); 
-                        var treatment_fill = (i.toString() + "_fill"); 
-                        console.log(treatment_outline);
-                        if (map.getLayer(treatment_outline)) {
-                            map.removeLayer(treatment_outline);
-                        };
-                        if (map.getLayer(treatment_fill)) {
-                            map.removeLayer(treatment_fill);
-                        };
-                        if (map.getSource(treatment_outline)) {
-                            map.removeSource(treatment_outline);
-                        };                 
-                  };
-                   console.log("Requesting run " + run_id + " data from the database.")
-      $.ajax({
-        url: "{% url 'get_output' %}",
-          dataType: "json",
-          data: {
-          'new_run_id': run_id
-          },
-          success: function (data) {
-            console.log('Run ' + data.run_inputs.primary_key + ' data successfully retrieved from database.');
-
-            var year_list = [], infected_area_list = [], infected_number_list = [];
-            var max_year=2018;
-            var min_year=2014;
-            var button_area = 0;
-            var button_number_infected = 0;
-            for (var i=0; i<data.results.length; i++) {
-                  var year = data.results[i].year;
-                  console.log("Output ID: " + data.results[i].pk);
-                  console.log("Year: " + year);
-                  var year_string = year.toString();
-                  console.log("Year string: " + year_string);
-                  var map_data = data.results[i].single_spread_map;
-                  year_list.push( data.results[i].year );
-                  infected_area_list.push( data.results[i].infected_area*acre_to_meter_ratio);
-                  infected_number_list.push( data.results[i].number_infected );
-                  if (year == 2019){
-                    button_area = data.results[i].infected_area*acre_to_meter_ratio;
-                    button_number_infected = data.results[i].number_infected;
-                  }
-
-                        if (map.getLayer(year_string)) {
-                            map.removeLayer(year_string);
-                        };
-                        if (map.getSource(year_string)) {
-                            map.removeSource(year_string);
-                        };                       
-                    newLayer(map_data, year_string);
-                    if (year > max_year ) {
-                    $("#year-slider input").attr('max',year.toString());
-                  max_year = year;
-                  console.log("New max year = " + max_year);
-                    };
-                    if (year < min_year){
-                  $("#year-slider input").attr('min',year.toString());
-                  min_year = year;
-                  console.log("New min year = " + min_year);
-                    };
-            }
-            var first_model_year=2019;
-                map.setLayoutProperty('2018','visibility','none');
-                map.setLayoutProperty(first_model_year.toString(),'visibility','visible');
-                $("#year-slider").find('input').val(first_model_year.toString());
-                $("#displayYear").val(first_model_year.toString());
-                $('#display_year_forecast').text('Forecast')
-                $("#historic-legend-container").hide();
-                $("#probability-legend-container").show();
-{% comment %}                   $('#input_run_name span').text(data.run_inputs.name);
-                  $('#input_run_pk span').text(data.run_inputs.primary_key);
-                  $('input#id_name').val(data.run_inputs.name);
-                  $('#input_description span').text(data.run_inputs.description);
-                  $('#input_reproductive_rate span').text(data.run_inputs.reproductive_rate);
-                  $('#input_distance_scale span').text(data.run_inputs.distance_scale);
-                  $('#input_efficacy span').text(data.run_inputs.efficacy);
-                  $('#input_date_created span').text(data.run_inputs.date_created);
-                  $('#input_random_seed span').text(data.run_inputs.random_seed);
-                  $('#input_budget span').text(data.run_inputs.budget);
-                  $('#input_management_month span').text(data.run_inputs.management_month);
-                  $('#input_management_cost span').text(data.run_inputs.management_cost);
-                  $('#input_management_area span').text(data.run_inputs.management_area);
-                  $('#run_details_management_area span').text(Math.round(data.run_inputs.management_area*acre_to_meter_ratio));
-                  $('#input_cost_per_meter_squared span').text(data.run_inputs.cost_per_meter_squared);
-                  $('#input_weather span').text(data.run_inputs.weather);
-                  $('#input_final_year span').text(data.run_inputs.final_year);
-                  $('#input_management span').text(data.run_inputs.management_polygons);
-                  $('#status span').text(data.run_inputs.status);
-                  $('#output_years span').text(year_list);
-                  $('#output_area span').text(infected_area_list);
-                  $('#output_number span').text(infected_number_list);
- {% endcomment %}     
-              var year_list = [], infected_area_list = [], infected_number_list = [];
-             for (var i=0; i<data.all_steering_years.length; i++) {
-              console.log('Sanity check: ' + i)
-             };
-                //$('#cost_output').text(data.data.results);
-                $( "#status-indicator" ).hide();
-                $( "#status-indicator-shading" ).hide();
-             for (var i=0; i<data.inputs.length; i++) {
-              console.log('Sanity check inputs: ' + i);
-              console.log('Steering year: ' + data.inputs[i].steering_year)
-              var treatment_outline = (data.inputs[i].steering_year.toString() + "_management"); 
-              var treatment_fill = (data.inputs[i].steering_year.toString() + "_fill"); 
-              console.log(treatment_outline);
-              if (map.getLayer(treatment_outline)) {
-                  map.removeLayer(treatment_outline);
-              };
-              if (map.getLayer(treatment_fill)) {
-                  map.removeLayer(treatment_fill);
-              };
-              if (map.getSource(treatment_outline)) {
-                  map.removeSource(treatment_outline);
-              };  
-                    map.addSource(treatment_outline, {
-                      'type': 'geojson',
-                      /*many types of data can be added, such as geojson, vector tiles or raster data*/
-                      'data': data.inputs[i].management_polygons,
-                    });
-                    /*here we are adding a source, then a layer based on that that source*/
-                    map.addLayer({
-                      "id": treatment_outline,
-                      "type": 'line',
-                      "source": treatment_outline,
-                      'paint': {
-                        'line-color': colors[i],
-                        'line-width': 3
-                      } 
-                    });
-                    map.addLayer({
-                      "id": treatment_fill,
-                      "type": 'fill',
-                      "source": treatment_outline,
-                      'paint': {
-                        'fill-color': colors[i],
-                        'fill-opacity': 0.2,
-                      } 
-                    });             
-                    };
-
-                    
-                  //$( "#results-tab" ).trigger( "click" );
-                    //$(side_plot("number_infected_side_plot", '# occurences', default_years, year_list, default_detections,infected_number_list, '#2598b8',error_bar=false));
-                    //$(side_plot("area_infected_side_plot", 'Occurence area', default_years, year_list, default_area, infected_area_list, '#5fc2c2',error_bar=false));
-                    //$(gauge_plot("money-results", data.run_inputs.management_cost, data.run_inputs.budget));
-
-{% comment %}                   if (!(document.getElementById("run_"+ data.run_inputs.primary_key.toString()))){
-                    insertRunButton(data.run_inputs.primary_key,data.run_inputs.name,data.run_inputs.date_created,data.run_inputs.description,data.run_inputs.reproductive_rate,data.run_inputs.distance_scale,data.run_inputs.efficacy,button_number_infected ,button_area,data.run_inputs.management_cost);
-                  };
- {% endcomment %}          },
-
-          error: function (xhr) {
-            alert(xhr.statusText)
-          }
-        
-      });
+  $("#year-slider input").attr('max', '{{ historic_data.last.year }}');
+  $("#displayYear").val('{{ historic_data.last.year }}');
+  map.setLayoutProperty('{{ historic_data.last.year }}', 'visibility', 'visible');
+  //Make this loop a function of current slider max
+  for (i = {{steering_years | first }}; i < ({{ steering_years | last }} + 1); i++) { //Need to add database info here
+    if (map.getLayer(i.toString())) {
+      map.removeLayer(i.toString());
+    };
+    if (map.getSource(i.toString())) {
+      map.removeSource(i.toString());
+    };
+    var treatment_outline = (i.toString() + "_management");
+    var treatment_fill = (i.toString() + "_fill");
+    console.log(treatment_outline);
+    if (map.getLayer(treatment_outline)) {
+      map.removeLayer(treatment_outline);
+    };
+    if (map.getLayer(treatment_fill)) {
+      map.removeLayer(treatment_fill);
+    };
+    if (map.getSource(treatment_outline)) {
+      map.removeSource(treatment_outline);
+    };
   };
+  console.log("Requesting run " + run_id + " data from the database.")
+  $.ajax({
+    url: "{% url 'get_output' %}",
+    dataType: "json",
+    data: {
+      'new_run_id': run_id
+    },
+    success: function (data) {
+      console.log('Run ' + data.run_inputs.primary_key + ' data successfully retrieved from database.');
+
+      var year_list = [],
+        infected_area_list = [],
+        infected_number_list = [];
+      var max_year = {{ historic_data.last.year }};
+      var min_year = {{ historic_data.first.year }};
+      var button_area = 0;
+      var button_number_infected = 0;
+      for (var i = 0; i < data.results.length; i++) {
+        var year = data.results[i].year;
+        console.log("Output ID: " + data.results[i].pk);
+        console.log("Year: " + year);
+        var year_string = year.toString();
+        console.log("Year string: " + year_string);
+        var map_data = data.results[i].single_spread_map;
+        year_list.push(data.results[i].year);
+        infected_area_list.push(data.results[i].infected_area * acre_to_meter_ratio);
+        infected_number_list.push(data.results[i].number_infected);
+        if (year == 2019) {
+          button_area = data.results[i].infected_area * acre_to_meter_ratio;
+          button_number_infected = data.results[i].number_infected;
+        }
+
+        if (map.getLayer(year_string)) {
+          map.removeLayer(year_string);
+        };
+        if (map.getSource(year_string)) {
+          map.removeSource(year_string);
+        };
+        newLayer(map_data, year_string);
+        if (year > max_year) {
+          $("#year-slider input").attr('max', year.toString());
+          max_year = year;
+          console.log("New max year = " + max_year);
+        };
+        if (year < min_year) {
+          $("#year-slider input").attr('min', year.toString());
+          min_year = year;
+          console.log("New min year = " + min_year);
+        };
+      }
+      var first_model_year = 2019;
+      map.setLayoutProperty('2018', 'visibility', 'none');
+      map.setLayoutProperty(first_model_year.toString(), 'visibility', 'visible');
+      $("#year-slider").find('input').val(first_model_year.toString());
+      $("#displayYear").val(first_model_year.toString());
+      $('#display_year_forecast').text('Forecast')
+      $("#historic-legend-container").hide();
+      $("#probability-legend-container").show(); 
+      {% comment %}
+      $('#input_run_name span').text(data.run_inputs.name);
+      $('#input_run_pk span').text(data.run_inputs.primary_key);
+      $('input#id_name').val(data.run_inputs.name);
+      $('#input_description span').text(data.run_inputs.description);
+      $('#input_reproductive_rate span').text(data.run_inputs.reproductive_rate);
+      $('#input_distance_scale span').text(data.run_inputs.distance_scale);
+      $('#input_efficacy span').text(data.run_inputs.efficacy);
+      $('#input_date_created span').text(data.run_inputs.date_created);
+      $('#input_random_seed span').text(data.run_inputs.random_seed);
+      $('#input_budget span').text(data.run_inputs.budget);
+      $('#input_management_month span').text(data.run_inputs.management_month);
+      $('#input_management_cost span').text(data.run_inputs.management_cost);
+      $('#input_management_area span').text(data.run_inputs.management_area);
+      $('#run_details_management_area span').text(Math.round(data.run_inputs.management_area * acre_to_meter_ratio));
+      $('#input_cost_per_meter_squared span').text(data.run_inputs.cost_per_meter_squared);
+      $('#input_weather span').text(data.run_inputs.weather);
+      $('#input_final_year span').text(data.run_inputs.final_year);
+      $('#input_management span').text(data.run_inputs.management_polygons);
+      $('#status span').text(data.run_inputs.status);
+      $('#output_years span').text(year_list);
+      $('#output_area span').text(infected_area_list);
+      $('#output_number span').text(infected_number_list); 
+      {% endcomment %}
+      var year_list = [],
+        infected_area_list = [],
+        infected_number_list = [];
+      for (var i = 0; i < data.all_steering_years.length; i++) {
+        console.log('Sanity check: ' + i)
+      };
+      $("#status-indicator").hide();
+      $("#status-indicator-shading").hide();
+      for (var i = 0; i < data.inputs.length; i++) {
+        console.log('Sanity check inputs: ' + i);
+        console.log('Steering: ' + data.steering)
+        if (data.steering) {
+          var treatment_outline = (data.inputs[i].steering_year.toString() + "_management");
+          var treatment_fill = (data.inputs[i].steering_year.toString() + "_fill");
+          console.log(treatment_outline);
+          if (map.getLayer(treatment_outline)) {
+            map.removeLayer(treatment_outline);
+          };
+          if (map.getLayer(treatment_fill)) {
+            map.removeLayer(treatment_fill);
+          };
+          if (map.getSource(treatment_outline)) {
+            map.removeSource(treatment_outline);
+          };
+          map.addSource(treatment_outline, {
+            'type': 'geojson',
+            /*many types of data can be added, such as geojson, vector tiles or raster data*/
+            'data': data.inputs[i].management_polygons,
+          });
+          /*here we are adding a source, then a layer based on that that source*/
+          map.addLayer({
+            "id": treatment_outline,
+            "type": 'line',
+            "source": treatment_outline,
+            'paint': {
+              'line-color': colors[i],
+              'line-width': 3
+            }
+          });
+          map.addLayer({
+            "id": treatment_fill,
+            "type": 'fill',
+            "source": treatment_outline,
+            'paint': {
+              'fill-color': colors[i],
+              'fill-opacity': 0.2,
+            }
+          });
+        };
+      };
+
+
+      //$( "#results-tab" ).trigger( "click" );
+      //$(side_plot("number_infected_side_plot", '# occurences', default_years, year_list, default_detections,infected_number_list, '#2598b8',error_bar=false));
+      //$(side_plot("area_infected_side_plot", 'Occurence area', default_years, year_list, default_area, infected_area_list, '#5fc2c2',error_bar=false));
+      //$(gauge_plot("money-results", data.run_inputs.management_cost, data.run_inputs.budget));
+
+      {% comment %}
+      if (!(document.getElementById("run_" + data.run_inputs.primary_key.toString()))) {
+        insertRunButton(data.run_inputs.primary_key, data.run_inputs.name, data.run_inputs.date_created, data.run_inputs.description, data.run_inputs.reproductive_rate, data.run_inputs.distance_scale, data.run_inputs.efficacy, button_number_infected, button_area, data.run_inputs.management_cost);
+      }; {% endcomment %}
+    },
+
+    error: function (xhr) {
+      alert(xhr.statusText)
+    }
+
+  });
+};
 
 
 
@@ -2308,10 +2214,10 @@ $(side_plot("area_infected_side_plot", 'Occurence area', [2011,2012,2013,2014,20
 
 $('#test-get-output').on('click', function(event) {
   console.log('Test get output clicked')
-  run_id=62;
+  run_id=153;//35;//62;
   get_output(run_id);
-
 });
+
 
 
   </script>

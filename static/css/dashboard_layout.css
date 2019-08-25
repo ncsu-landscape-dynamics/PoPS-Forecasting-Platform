@@ -130,6 +130,12 @@ div.timeline-active div a  {
   padding-top:0px;
 }
 
+.year-0 .timeline-year a {
+  color: #454545;
+  font-size: 25px;
+  padding-top:0px;
+}
+
 .submit_run_button button {
   background-color: transparent;
   border: none;
@@ -163,9 +169,11 @@ div.timeline-active div a  {
   padding-right:5px;
   border-radius: 7px;
 }
+.year-0.timeline-year-container .timeline-year a {
+  font-size:15px;
+}
 .year-0.management_complete.year_active .timeline-year a {
   background-color:#454545;
-  font-size: 15px;
 }
 .year-1.management_complete.year_active .timeline-year a {
   background-color:#C6F761;
