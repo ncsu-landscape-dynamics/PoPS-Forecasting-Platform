@@ -1117,7 +1117,7 @@ map.on('load', function() {
                             }
                             }, 'waterway-label'); 
   {% endfor %}
-    map.setLayoutProperty('2018', 'visibility', 'visible');
+    map.setLayoutProperty({{ historic_data.last.year }}, 'visibility', 'visible');
 
   console.log("Adding APHIS Perimeter Zone.");
     map.addSource('perimeter_zone', {
