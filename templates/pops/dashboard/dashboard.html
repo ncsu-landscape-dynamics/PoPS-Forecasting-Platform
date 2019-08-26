@@ -300,9 +300,9 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                           if ($(this).parents(".timeline-year-container").hasClass("management_complete")) {
                             console.log("Updating year.")
                             var run_id = $(this).parents(".timeline-year-container").attr('data-run-pk');
-                            get_output(run_id);
                             $(".timeline-year-container").removeClass("year_active");
                             $(this).parents(".timeline-year-container").addClass("year_active");
+                            get_output(run_id);
                           };
                         };
                       });
@@ -354,7 +354,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                             get_output(previous_run_id);
                           },
                           error : function(xhr,errmsg,err) {
-                          alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+                          alert("An error occured deleting the runs. An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
                           + "\n");
                               console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
                           }
@@ -1783,7 +1783,6 @@ function get_output(run_id) {
   $("#status-indicator").show();
   $("#status-indicator-shading").show();
   $("#year-slider").find('input').val('{{ historic_data.last.year }}'); //Need to add database info here
-
   $("#year-slider input").attr('max', '{{ historic_data.last.year }}');
   $("#displayYear").val('{{ historic_data.last.year }}');
   map.setLayoutProperty('{{ historic_data.last.year }}', 'visibility', 'visible');
@@ -1817,7 +1816,8 @@ function get_output(run_id) {
     },
     success: function (data) {
       console.log('Run ' + data.run_inputs.primary_key + ' data successfully retrieved from database.');
-
+      $(".timeline-year-container").find(".timeline-visibility").show();
+      $(".timeline-year-container.year_active").nextAll(".timeline-year-container").find(".timeline-visibility").hide();
       var year_list = [],
         infected_area_list = [],
         infected_number_list = [];

@@ -88,6 +88,10 @@ height:100%;
   font-size: 35px;
 }
 
+.timeline-buttons span.submit_run_button button{
+  outline: none;
+}
+
 .timeline-buttons span a{
   padding:2px;
   opacity: 0.8
@@ -96,17 +100,7 @@ height:100%;
   opacity: 1.0
 }
 
-div.timeline-active div span  {
-  bottom: -10px;
-  left: 20px;
-}
-.timeline-active div span a {
-  font-size: 35px;
-  color: green;
-}
-div.timeline-active div a  {
-  color: green;
-}
+
 .management_not_started .completed_management_buttons, 
 .management_active .completed_management_buttons, 
 .management_not_started .submit_run_button,
