@@ -280,6 +280,6 @@ class RunDetailSerializer(serializers.ModelSerializer):
 
     def get_output_initial_year(self, obj):
         if obj.output_set.exists():
-            return 'true'
+            return obj.output_set.order_by('pk')[0].pk
         else:
             return 'null'
