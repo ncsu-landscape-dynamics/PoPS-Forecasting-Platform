@@ -1896,6 +1896,9 @@ function get_output(run_id) {
         $("#displayYear").val(display_year.toString());
         $('#display_year_forecast').text('Forecast');
       };
+      var defaults = data.no_management_default;
+      var steering_outputs = data.all_steering_years;
+      area_plot(defaults, steering_outputs);
       for (var i = 0; i < data.all_steering_years.length; i++) {
         console.log('Sanity check: ' + i)
       };
@@ -2225,12 +2228,147 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
 });
 
 
+    
+function area_plot(defaults, steering_outputs) {
+  var initial_infected_area = 2000;
+  var initial_number_infected = 1900;
+  var data = [];
+  var year_list = [];
+  var infected_area_list = [];
+  var number_infected_list = [];
+  for (var j = -1; j < defaults.output.length; j++) {
+    if (j == -1) {
+      year_list.push(defaults.output[0].year);
+      infected_area_list.push(initial_infected_area);
+      number_infected_list.push(initial_number_infected);
+    } else {
+      year_list.push(defaults.output[j].year + 1);
+      infected_area_list.push(defaults.output[j].infected_area);
+      number_infected_list.push(defaults.output[j].number_infected);
+    }
+  };
+  var opacity = 0.7;
+  console.log('Default year list: ' + year_list);
+  data.push({
+    x: year_list,
+    y: infected_area_list,
+    name: 'No management',
+    type: 'scatter',
+    mode: 'lines',
+    opacity: 0.7,
+    line: {
+      color: 'grey',
+      width: 4,
+    }
+  });
+
+  for (var i = 0; i < steering_outputs.length; i++) {
+    console.log('Sanity check: ' + i);
+    console.log(steering_outputs[i]);
+    console.log('Steering year: ' + steering_outputs[i].steering_year);
+    var steering_year = steering_outputs[i].steering_year;
+    var year_list = [];
+    var infected_area_list = [];
+    var number_infected_list = [];
+
+    for (var j = -1; j < steering_outputs[i].output.length; j++) {
+      if (j == -1) {
+        if (i == 0) {
+          year_list.push(steering_outputs[i].output[0].year);
+          infected_area_list.push(initial_infected_area);
+          number_infected_list.push(initial_number_infected);
+
+        } else {
+          console.log('j=' + j);
+          year_list.push(steering_outputs[i].output[0].year);
+          infected_area_list.push(steering_outputs[i - 1].output[0].infected_area);
+          number_infected_list.push(steering_outputs[i - 1].output[0].number_infected);
+        }
+      } else {
+        year_list.push(steering_outputs[i].output[j].year + 1);
+        infected_area_list.push(steering_outputs[i].output[j].infected_area);
+        number_infected_list.push(steering_outputs[i].output[j].number_infected);
+      }
+    };
+
+    console.log('Year list: ' + year_list);
+    data.push({
+      x: year_list,
+      y: infected_area_list,
+      name: steering_year.toString(),
+      mode: 'lines',
+      opacity: opacity,
+      line: {
+        color: colors[i],
+        width: 4,
+      }
+    });
+  };
+
+  var layout = {
+    xaxis: {
+      showline: true,
+      showticklabels: true,
+      showgrid: true,
+      zeroline: true,
+      autotick: true,
+      ticks: '',
+      visible: true,
+      linewidth: 1,
+      tickwidth: 1,
+      gridcolor: "#4A5158",
+      gridwidth: 1,
+      tickfont: {
+        size: 12,
+        color: 'rgb(107, 107, 107)'
+      }
+    },
+    yaxis: {
+      showline: true,
+      showticklabels: false,
+      showgrid: true,
+      zeroline: true,
+      autotick: true,
+      ticks: '',
+      visible: true,
+      linewidth: 1,
+      tickwidth: 1,
+      gridcolor: "#4A5158",
+      gridwidth: 1,
+      title: 'Area infected',
+      titlefont: {
+        size: 12,
+        color: 'white',
+      },
+
+      tickfont: {
+        size: 12,
+        color: 'rgb(107, 107, 107)'
+      }
+    },
+    showlegend: false,
+    paper_bgcolor: 'transparent',
+    plot_bgcolor: '#2e3236',
+    margin: {
+      l: 30,
+      r: 20,
+      b: 25,
+      t: 10,
+      pad: 0
+    },
+  };
+
+  Plotly.newPlot("area_infected_side_plot", data, layout, {
+    displayModeBar: false,
+    responsive: true
+  });
+};
 
 $(function () {
   $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})
 })
 
-$(side_plot("area_infected_side_plot", 'Occurence area', [2011,2012,2013,2014,2015], [2011,2012,2013,2014,2015], [100,200,300,400,600], [100,180,270,360,400], colors[0],error_bar=false));
+//$(side_plot("area_infected_side_plot", 'Occurence area', [2011,2012,2013,2014,2015], [2011,2012,2013,2014,2015], [100,200,300,400,600], [100,180,270,360,400], colors[0],error_bar=false));
 
 $('#test-get-output').on('click', function(event) {
   console.log('Test get output clicked')
