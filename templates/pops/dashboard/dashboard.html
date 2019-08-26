@@ -299,6 +299,8 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                         if (!$(this).parents(".timeline-year-container").hasClass("year_active")) {
                           if ($(this).parents(".timeline-year-container").hasClass("management_complete")) {
                             console.log("Updating year.")
+                            var run_id = $(this).parents(".timeline-year-container").attr('data-run-pk');
+                            get_output(run_id);
                             $(".timeline-year-container").removeClass("year_active");
                             $(this).parents(".timeline-year-container").addClass("year_active");
                           };
@@ -339,25 +341,25 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                         console.log('Year count is:' + year_count);
                         console.log('Run pk of deleted run is: ' + run_id);
                         var run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
-    $.ajax({
-      url: "{% url 'delete_runs' %}",
-      dataType: "json",
-      data: {
-        'run_id': run_id,
-        'run_collection': run_collection_id,
-      },
-      success: function (data) {
-        console.log('Sanity Check! Success for delete runs AJAX call.');
-        console.log('The Run PK to be deleted is: ' + data.run_id);
-        get_output(previous_run_id);
-      },
-      error : function(xhr,errmsg,err) {
-      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
-      + "\n");
-          console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-      }
-    });
-          updateDrawColor(year_count);
+                        $.ajax({
+                          url: "{% url 'delete_runs' %}",
+                          dataType: "json",
+                          data: {
+                            'run_id': run_id,
+                            'run_collection': run_collection_id,
+                          },
+                          success: function (data) {
+                            console.log('Sanity Check! Success for delete runs AJAX call.');
+                            console.log('The Run PK to be deleted is: ' + data.run_id);
+                            get_output(previous_run_id);
+                          },
+                          error : function(xhr,errmsg,err) {
+                          alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+                          + "\n");
+                              console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                          }
+                        });
+                        updateDrawColor(year_count);
                       });
 
                   </script>                
@@ -1620,6 +1622,18 @@ $("#year-slider").change(function () {
     if (map.getLayer(i.toString())) {
       map.setLayoutProperty(i.toString(), 'visibility', 'none');
     };
+    var treatment_outline = (i.toString() + "_management");
+    var treatment_fill = (i.toString() + "_fill");
+    if (map.getLayer(treatment_outline)) {
+      if (year_id >= i) {
+        map.setLayoutProperty(treatment_outline, 'visibility','visible');
+        map.setLayoutProperty(treatment_fill, 'visibility','visible');
+      }
+      else {
+        map.setLayoutProperty(treatment_outline, 'visibility','none');
+        map.setLayoutProperty(treatment_fill, 'visibility','none');
+      }
+    };
   };
   map.setLayoutProperty(year_id, 'visibility', 'visible');
   $("#displayYear").val(year_id);
@@ -1844,12 +1858,7 @@ function get_output(run_id) {
           console.log("New min year = " + min_year);
         };
       }
-      var first_model_year = 2019;
-      map.setLayoutProperty('2018', 'visibility', 'none');
-      map.setLayoutProperty(first_model_year.toString(), 'visibility', 'visible');
-      $("#year-slider").find('input').val(first_model_year.toString());
-      $("#displayYear").val(first_model_year.toString());
-      $('#display_year_forecast').text('Forecast')
+
       $("#historic-legend-container").hide();
       $("#probability-legend-container").show(); 
       {% comment %}
@@ -1879,6 +1888,14 @@ function get_output(run_id) {
       var year_list = [],
         infected_area_list = [],
         infected_number_list = [];
+      if (data.steering) {
+        var display_year = data.run_inputs.steering_year;
+        map.setLayoutProperty('{{ historic_data.last.year }}', 'visibility', 'none');
+        map.setLayoutProperty(display_year.toString(), 'visibility', 'visible');
+        $("#year-slider").find('input').val(display_year.toString());
+        $("#displayYear").val(display_year.toString());
+        $('#display_year_forecast').text('Forecast');
+      };
       for (var i = 0; i < data.all_steering_years.length; i++) {
         console.log('Sanity check: ' + i)
       };
@@ -1888,7 +1905,9 @@ function get_output(run_id) {
         console.log('Sanity check inputs: ' + i);
         console.log('Steering: ' + data.steering)
         if (data.steering) {
+          if (data.run_inputs.steering_year >= data.inputs[i].steering_year) {
           var treatment_outline = (data.inputs[i].steering_year.toString() + "_management");
+          console.log(treatment_outline);
           var treatment_fill = (data.inputs[i].steering_year.toString() + "_fill");
           console.log(treatment_outline);
           if (map.getLayer(treatment_outline)) {
@@ -1924,6 +1943,7 @@ function get_output(run_id) {
               'fill-opacity': 0.2,
             }
           });
+          };
         };
       };
 
@@ -2214,7 +2234,7 @@ $(side_plot("area_infected_side_plot", 'Occurence area', [2011,2012,2013,2014,20
 
 $('#test-get-output').on('click', function(event) {
   console.log('Test get output clicked')
-  run_id=153;//35;//62;
+  run_id=175;//153;//35;//62;
   get_output(run_id);
 });
 
