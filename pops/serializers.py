@@ -185,7 +185,7 @@ class OutputSerializer(serializers.ModelSerializer):
     timetoboundary = TimeToBoundarySerializer()
     class Meta:
         model = Output
-        fields = ['pk', 'run', 'number_infected', 'infected_area', 'year', 'single_spread_map', 'probability_map', 'escape_probability', 'spreadrate', 'distancetoboundary', 'timetoboundary']
+        fields = ['pk', 'run', 'number_infected', 'infected_area', 'year', 'single_spread_map', 'probability_map', 'susceptible_map', 'escape_probability', 'spreadrate', 'distancetoboundary', 'timetoboundary']
 
     def create(self, validated_data):
         spreadrate_data = validated_data.pop('spreadrate')

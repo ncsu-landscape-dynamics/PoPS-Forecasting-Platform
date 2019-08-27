@@ -957,6 +957,7 @@ class Output(models.Model):
     year = models.PositiveIntegerField(verbose_name = _("year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
     single_spread_map = JSONField(null = True)
     probability_map = JSONField(null = True)
+    susceptible_map = JSONField(null = True)
     escape_probability = models.DecimalField(verbose_name = _("probability of escape"), help_text="Probability that the pest/pathogen escapes quarantine or other boundary.", blank=True, max_digits = 6, decimal_places = 2, default = 1, validators = [MinValueValidator(0), MaxValueValidator(10)])
 
     class Meta:
