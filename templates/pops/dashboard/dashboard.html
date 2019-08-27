@@ -1819,7 +1819,6 @@ function get_run_collection(run_collection_id) {
         console.log("Loading default run: " +default_run);
         get_output(default_run);        
         $(".timeline-year-container.year-1").removeClass("management_not_started").addClass("management_active");
-
       }
       //Loop through the steering years
       for (var i = 0; i < data.inputs.length; i++) {
@@ -1835,7 +1834,9 @@ function get_run_collection(run_collection_id) {
           $(".timeline-year-container[data-year-value="+next_steering_year+"]").removeClass("management_not_started").addClass("management_active");
           get_output(run_id);
         }
-      }
+      };
+    var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
+    updateDrawColor(year_count);
     },
     error: function (xhr) {
       console.log('Failed getting run collection.')
