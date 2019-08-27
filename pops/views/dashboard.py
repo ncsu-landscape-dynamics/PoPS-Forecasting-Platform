@@ -169,10 +169,10 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             #Get case study pk    
             case_study = session.case_study
 
-            #try:
-            #    runs = Run.objects.filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created').prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
-            #except:
-            #    runs = None   
+            try:
+                run_collections = RunCollection.objects.filter(session__pk=self.kwargs.get('pk'), default=False).order_by('-date_created')#.prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
+            except:
+                run_collections = None   
 
             try:
                 historic_data = HistoricData.objects.filter(case_study=case_study).order_by('year')
@@ -194,6 +194,7 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             context['historic_data'] = historic_data
             print(historic_data)
             context['steering_years'] = steering_years
+            context['run_collections'] = run_collections
             return context
 
 @method_decorator(csrf_exempt, name='post')

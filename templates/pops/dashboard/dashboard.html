@@ -836,6 +836,27 @@ function findMax(arr) {
     </div>
     </div>
     <div id="run-preview-container" class="row no-gutters flex-nowrap">
+{% for run_collection in run_collections %}
+<button type="button" class="btn text-right run-link pb-2" data-run-collection = {{ run_collection.pk }} >
+<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>{{ run_collection.name }}</strong></div><small><em> {{run_collection.date_created}} </em></small>" 
+data-content="" 
+data-placement="top"> 
+<i class="fas fa-plus-circle"></i>
+</a>
+<a class="load_run_text" data-toggle="tool" 
+                  title="Load results" data-placement="left"> 
+<i class="fas fa-play-circle"></i>
+</a>
+<div class="text-light" style="font-size:10px;">
+<p>{{ run_collection.pk }}: {{ run_collection.name }}</p>
+</div>
+<div id="run_{{ run_collection.pk }}" style="width:150px; height:120px;">
+</div>
+</button>
+
+{% endfor %} 
+
+{% comment %}
 {% for run in runs %}
 <button type="button" class="btn text-right run-link pb-2" data-run = {{ run.pk }} >
 <a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>{{ run.name }}</strong></div><small><em> {{run.date_created}} </em></small>" 
@@ -861,24 +882,8 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ o
  </script>
 
 {% endfor %} 
+{% endcomment %}
 
-<button type="button" class="btn text-right run-link pb-2" style="background-color: #1E2325; border-color:#393F46; color:#1E2325" data-run = 428 >
-<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>No management</strong></div><small><em> Default </em></small>" 
-data-content="<div>Default scenario with no management.</div><div>Reproductive rate: 2.1</div><div>Distance scale: 
-47</div><div>Efficacy: n/a</div>" 
-data-placement="top"> 
-<i class="fas fa-plus-circle"></i>
-</a>
-<a class="load_run_text" data-toggle="tool" 
-                  title="Load results" data-placement="left"> 
-<i class="fas fa-play-circle"></i>
-</a>
-<div id="run_428" style="width:150px; height:120px;">
-</div>
-</button>
-<script>
-$(run_comparison_plot('run_428','No management', 44201,4750000000*acre_to_meter_ratio,0)); 
- </script>    
     </div>
 </div>
 
@@ -1758,9 +1763,9 @@ $(function () {
   $("#run_button_"+ run_id.toString()).on('click', function () {
       $('#run-preview-container button').removeClass('active');
       $(this).addClass('active');
-      var run_id = $(this).attr('data-run');
-      displayRun(run_id);
-      console.log("Run " + run_id + "link clicked.");
+      var run_collection_id = $(this).attr('data-run-collection');
+      get_run_collection(run_collection_id);
+      console.log("Run collection" + run_id + "link clicked.");
   }); 
 
     $("#run_button_"+ run_id.toString() +' a.load_run_text').on('click', function(event) {
@@ -1807,6 +1812,11 @@ function get_run_collection(run_collection_id) {
       console.log('Number of steering years: ' + data.inputs.length);
       if (data.inputs.length == 0){
         $(".timeline-year-container.year-0").addClass("year_active");
+        default_run = {{ session.default_run }};
+        console.log("Loading default run: " +default_run);
+        get_output(default_run);        
+        $(".timeline-year-container.year-1").removeClass("management_not_started").addClass("management_active");
+
       }
       //Loop through the steering years
       for (var i = 0; i < data.inputs.length; i++) {
@@ -1816,12 +1826,12 @@ function get_run_collection(run_collection_id) {
         console.log('Steering year: ' + steering_year);
         $(".timeline-year-container[data-year-value="+steering_year+"]").attr('data-run-pk',run_id);
         $(".timeline-year-container[data-year-value="+steering_year+"]").removeClass("management_not_started").addClass("management_complete");
-      // Do something if is the last iteration of the array
+      // Do something if is the last iteration of the loop
         if((i + 1) == (data.inputs.length)){
           $(".timeline-year-container[data-year-value="+steering_year+"]").addClass("year_active")
           $(".timeline-year-container[data-year-value="+next_steering_year+"]").removeClass("management_not_started").addClass("management_active");
           get_output(run_id);
-    }
+        }
       }
     },
     error: function (xhr) {
@@ -2110,9 +2120,9 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
     $(".run-link").on('click', function () {
       $('#run-preview-container button').removeClass('active');
       $(this).addClass('active');
-      var run_id = $(this).attr('data-run');
-      console.log("Run " + run_id + " link clicked.");
-      displayRun(run_id);
+      var run_collection_id = $(this).attr('data-run-collection');
+      console.log("Run " + run_collection_id + " link clicked.");
+      get_run_collection(run_collection_id);
     });    
     
     $("#results-tab").on('click', function () {
