@@ -258,6 +258,25 @@ class DashboardTestView(AjaxableResponseMixin, CreateView):
             context['historic_data'] = ['2014','2015','2016','2017','2018']
             return context
 
+def get_run_collection(request):
+    run_collection_id = request.GET.get('run_collection_id', None)
+    run_collection = RunCollection.objects.get(pk=run_collection_id)
+    inputs = Run.objects.filter(run_collection=run_collection)
+    data = {
+        'pk': run_collection.pk,
+        'name': run_collection.name,
+        'description': run_collection.description,
+        'status': run_collection.status,
+        'random_seed': run_collection.random_seed,
+        'date_created': run_collection.date_created,
+        'budget': run_collection.budget,
+        'efficacy': run_collection.efficacy,
+        'tangible_landscape': run_collection.tangible_landscape,
+        'cost_per_meter_squared': run_collection.cost_per_meter_squared,
+        "inputs": list(inputs.order_by('steering_year').values("pk","date_created","id","steering_year")),
+    }    
+    return JsonResponse(data)
+
 def get_output_view(request):
     run_id = request.GET.get('new_run_id', None)
  

@@ -23,6 +23,7 @@ urlpatterns = [
     path('plots', TemplateView.as_view(template_name="pops/dashboard/plotting_test.html")),
     path('output/<int:pk>', views.OutputDetailView.as_view(), name='output_detail'),
     path('get_output', views.get_output_view, name='get_output'),
+    path('get_run_collection', views.get_run_collection, name='get_run_collection'),
     path('check_status', views.check_status, name='check_status'),
     path('delete_runs', views.delete_runs, name='delete_runs'),
     path('save_run_data', views.NewRunView.as_view(), name='save_run_data'),

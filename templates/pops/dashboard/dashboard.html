@@ -1777,6 +1777,60 @@ $(function () {
 
   };
 
+function get_run_collection(run_collection_id) {
+  console.log('Clicked get run collection for run_collection:' + run_collection_id);
+  $.ajax({
+    url: "{% url 'get_run_collection' %}",
+    dataType: "json",
+    data: {
+      'run_collection_id': run_collection_id
+    },
+    success: function (data) {
+      console.log('Success getting run collection.')
+      console.log('Run collection id: ' + run_collection_id)
+      $('#run-collection-name span').text(data.name);
+      $('#run-collection-name').attr('data-run-collection-pk',data.pk);
+      $('#input_run_name span').text(data.name);
+      $('#input_run_pk span').text(data.pk);
+      $('#input_description span').text(data.description);
+      $('#input_status span').text(data.status);
+      $('#input_random_seed span').text(data.random_seed);
+      $('#input_date_created span').text(data.date_created);
+      $('#input_budget span').text(data.budget);
+      $('#input_cost_per_meter_squared span').text(data.cost_per_meter_squared);
+      $('#input_efficacy span').text(data.efficacy);
+      $('#input_tangible_landscape span').text(data.tangible_landscape);
+      $('#id_run_collection').val(data.pk);    
+      $(".timeline-year-container").removeClass("year_active").addClass("management_not_started").removeClass("management_active").removeClass("management_complete");
+      //$(".timeline-year-container.management_active").removeClass("management_active").addClass("management_complete").addClass("year_active").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
+      $(".timeline-year-container.year-0").addClass("management_complete").removeClass("management_not_started");
+      console.log('Number of steering years: ' + data.inputs.length);
+      if (data.inputs.length == 0){
+        $(".timeline-year-container.year-0").addClass("year_active");
+      }
+      //Loop through the steering years
+      for (var i = 0; i < data.inputs.length; i++) {
+        var steering_year = data.inputs[i].steering_year;
+        var next_steering_year = steering_year + 1;
+        var run_id = data.inputs[i].pk;
+        console.log('Steering year: ' + steering_year);
+        $(".timeline-year-container[data-year-value="+steering_year+"]").attr('data-run-pk',run_id);
+        $(".timeline-year-container[data-year-value="+steering_year+"]").removeClass("management_not_started").addClass("management_complete");
+      // Do something if is the last iteration of the array
+        if((i + 1) == (data.inputs.length)){
+          $(".timeline-year-container[data-year-value="+steering_year+"]").addClass("year_active")
+          $(".timeline-year-container[data-year-value="+next_steering_year+"]").removeClass("management_not_started").addClass("management_active");
+          get_output(run_id);
+    }
+      }
+    },
+    error: function (xhr) {
+      console.log('Failed getting run collection.')
+      alert(xhr.statusText)
+    }
+  });
+};
+
 function get_output(run_id) {
   $('#new_run_redirect').remove();
   $('#status-text span').text('Loading...');
@@ -2371,9 +2425,9 @@ $(function () {
 //$(side_plot("area_infected_side_plot", 'Occurence area', [2011,2012,2013,2014,2015], [2011,2012,2013,2014,2015], [100,200,300,400,600], [100,180,270,360,400], colors[0],error_bar=false));
 
 $('#test-get-output').on('click', function(event) {
-  console.log('Test get output clicked')
-  run_id=175;//153;//35;//62;
-  get_output(run_id);
+  console.log('Test get_run_collection clicked')
+  run_collection_id=172;//153;//35;//62;
+  get_run_collection(run_collection_id);
 });
 
 
