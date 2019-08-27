@@ -709,8 +709,9 @@ $("#status-indicator").hide();
                   </div>
 
                       <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
-                      <div id="cost_output">
-                      </div>
+                      <div>Spread rate:</div>
+                      <div id="spread_plot" style="width:100%; height:180px;"></div>
+                      
 {% comment %}                   <h5 class="py-0">
                     <!-- Button trigger modal -->
                    Parameters<a class="btn" data-toggle="modal" data-target="#editInputParameters" href="#"><i
@@ -2090,6 +2091,32 @@ function poll(new_run_id) {
   }, 2000);
 };
 
+function listen_for_new_runs(run_collection_id,most_recent_run) {
+  setTimeout(function () {
+    $.ajax({
+      url: "{% url 'check_for_new_TL_run' %}",
+      dataType: "json",
+      data: {
+        'run_collection_id': run_collection_id
+      },
+      success: function (data) {
+        console.log("The most recent run for run_collection " + run_collection_id + " is: " + data.most_recent_run_pk);
+        //Check if the most_recent_run has changed, update dashboard if it has.
+        if (most_recent_run != data.most_recent_run_pk) {
+          get_run_collection(run_collection_id);
+        }
+        //Setup the next poll recursively
+        listen_for_new_runs(run_collection_id,data.most_recent_run_pk);
+      },
+      error : function(xhr,errmsg,err) {
+      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+      + "\nThere was a problem listening for the results of the model run... the simulation is most likely still running. Try refreshing the page in 1-2 minutes.");
+          console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+      }
+    });
+  }, 2000);
+};
+
 //Changes to the page for tangible landscape.
 $("input#id_tangible_landscape").on('change', function () {
   if ($('input#id_tangible_landscape').prop('checked')){
@@ -2201,6 +2228,20 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           $('#input_efficacy span').text(data.efficacy);
           $('#input_tangible_landscape span').text(data.tangible_landscape);
           $('#id_run_collection').val(data.pk);
+          get_run_collection(new_run_collection_id);
+          console.log('Tangible landscape value: ' + data.tangible_landscape);
+          if (data.tangible_landscape) {
+            console.log('Tangible landscape is on.')
+            //hide run buttons
+            $(".timeline-year-container").find(".submit_run_button").hide();
+            listen_for_new_runs(new_run_collection_id,0);
+            //listen for new runs
+            //if new run, get output for new run
+          }
+          else {
+            $(".timeline-year-container").find(".submit_run_button").show();
+
+          }
         },
                 // handle a non-successful response
         error : function(xhr,errmsg,err) {
@@ -2440,6 +2481,79 @@ $('#test-get-output').on('click', function(event) {
   get_run_collection(run_collection_id);
 });
 
+var data = [];
+for (var i = 0; i < 3; i++) {
+  data.push({
+    type: "scatterpolar",
+    name: "2019",
+    r: [10 - i, 9 - i, 7 - i, 3 - i, 10 - i],
+    theta: ["E", "N", "W", "S", "E"],
+    fill: "toself",
+    marker: {
+      color: colors[i],
+      size: 2,
+    },
+    line: {
+      width: 2,
+    },
+
+
+  });
+};
+
+
+var layout = {
+  font: {
+    size: 15,
+    color: "white",
+    border: "transparent"
+  },
+  showlegend: false,
+  legend: {
+    font: {
+      size: 16
+    }
+  },
+  polar: {
+    bgcolor: "#2e3236",
+    angularaxis: {
+      tickwidth: 2,
+      linewidth: 3,
+      showline: false,
+
+      layer: "below traces"
+    },
+    radialaxis: {
+      showline: false,
+      showticklabels: false,
+      showgrid: true,
+      zeroline: false,
+      autotick: true,
+      ticks: '',
+
+      visible: true,
+      linewidth: 2,
+      tickwidth: 2,
+      gridcolor: "#4A5158",
+      gridwidth: 2
+    }
+  },
+  orientation: 0,
+  paper_bgcolor: 'transparent',
+  plot_bgcolor: 'black',
+  margin: {
+    l: 40,
+    r: 40,
+    b: 50,
+    t: 50,
+    pad: 0
+  },
+};
+
+Plotly.newPlot('spread_plot', data, layout,  {
+    displayModeBar: false,
+    responsive: true
+  });
 
 
   </script>

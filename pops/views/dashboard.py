@@ -418,6 +418,21 @@ def check_status(request):
         }
     return JsonResponse(data)
 
+def check_for_new_TL_run(request):
+    run_collection_id = request.GET.get('run_collection_id', None)
+    print('Run collection id: ' + run_collection_id)
+    run_collection = RunCollection.objects.get(pk=run_collection_id)
+    most_recent_run = Run.objects.filter(run_collection=run_collection, status="SUCCESS").order_by('pk').last()
+    if most_recent_run is not None:
+        print(most_recent_run)
+        data = {
+            "most_recent_run_pk":most_recent_run.pk,
+            "steering_year":most_recent_run.steering_year
+            }
+    else:
+        data = {"most_recent_run_pk": 0 }
+    return JsonResponse(data)
+
 def delete_runs(request):
     run_id = request.GET.get('run_id', None)
     run_collection = request.GET.get('run_collection', None)

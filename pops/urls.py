@@ -25,6 +25,7 @@ urlpatterns = [
     path('get_output', views.get_output_view, name='get_output'),
     path('get_run_collection', views.get_run_collection, name='get_run_collection'),
     path('check_status', views.check_status, name='check_status'),
+    path('check_for_new_TL_run', views.check_for_new_TL_run, name='check_for_new_TL_run'),
     path('delete_runs', views.delete_runs, name='delete_runs'),
     path('save_run_data', views.NewRunView.as_view(), name='save_run_data'),
     path('save_run_collection_data', views.DashboardView.as_view(), name='save_run_collection_data'),
