@@ -461,7 +461,18 @@ div#run-preview-container {
     #draw-controls button.active {
       border-style: inset;
     }
-
+    #tangible-landscape-indicator {
+      position: absolute;
+      color:white;
+      font-size:20px;
+      left: 50%;
+      top: 0px;
+      width: 400px;
+      margin-top:0px;
+      margin-left: -200px;
+      height: 250px;
+            }
+        
     #status-indicator-shading {
       position: absolute;
       background: black;

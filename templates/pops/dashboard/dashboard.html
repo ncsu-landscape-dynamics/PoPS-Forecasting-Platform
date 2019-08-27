@@ -509,6 +509,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   </script>
                   <div id="status-indicator-shading">
                   </div>
+                  <div id="tangible-landscape-indicator" class="text-center">Waiting for Tangible Landscape...</div>
                   <div id="status-indicator" class="text-center">
                   <a id="status-close-button"  href="#">&times;</a>
                   <div id="status-logo">
@@ -521,6 +522,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   </div>
 <script>
 $("#probability-legend-container").hide();
+$("#tangible-landscape-indicator").hide();
 
 $("button#cancel-polling").hide();
 
@@ -2092,6 +2094,7 @@ function poll(new_run_id) {
 };
 
 function listen_for_new_runs(run_collection_id,most_recent_run) {
+  $('#tangible-landscape-indicator').fadeIn();
   setTimeout(function () {
     $.ajax({
       url: "{% url 'check_for_new_TL_run' %}",
@@ -2106,6 +2109,7 @@ function listen_for_new_runs(run_collection_id,most_recent_run) {
           get_run_collection(run_collection_id);
         }
         //Setup the next poll recursively
+        $('#tangible-landscape-indicator').fadeOut("slow");
         listen_for_new_runs(run_collection_id,data.most_recent_run_pk);
       },
       error : function(xhr,errmsg,err) {
