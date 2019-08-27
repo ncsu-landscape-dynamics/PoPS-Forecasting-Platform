@@ -288,90 +288,39 @@ def get_output_view(request):
     steering_year = this_run.steering_year
     print('Steering year:')
     print(steering_year)
-    defaults = { 
+    default_run=run_collection.session.default_run
+    default_run_outputs = Output.objects.filter(run_id=default_run)
+    print(default_run)
+    print(default_run_outputs)
+    defaults= {
             'steering_year' : 0,
             'management_cost' : 0,
             'management_area' : 0,	
-            'output' : [
-            {
-                'year': 2019,	
-                'number_infected': 1000,
-                'infected_area': 15000,
-                'escape_probability' : 50,
-            },
-            {
-                'year': 2020,	
-                'number_infected': 20000,
-                'infected_area': 35000,
-                'escape_probability' : 70,
-            },	
-            {
-                'year': 2021,	
-                'number_infected': 30000,
-                'infected_area': 58000,
-                'escape_probability' : 90,
-            }
-        ]
-        }
-    steering_outputs = [
-        { 
-            'steering_year' : 2019,
-            'management_cost' : 1000000,
-            'management_area' : 2000,	
-            'output' : [
-            {
-                'year': 2019,	
-                'number_infected': 1000,
-                'infected_area': 10000,
-                'escape_probability' : 50,
-            },
-            {
-                'year': 2020,	
-                'number_infected': 2000,
-                'infected_area': 20000,
-                'escape_probability' : 70,
-            },	
-            {
-                'year': 2021,	
-                'number_infected': 3000,
-                'infected_area': 40000,
-                'escape_probability' : 90,
-            }
-        ]
-        },
-        { 
-            'steering_year' : 2020,
-            'management_cost' : 2000000,
-            'management_area' : 4000,	
-            'output' : [
-            {
-                'year': 2020,	
-                'number_infected': 1800,
-                'infected_area': 15000,
-                'escape_probability' : 50,
-            },	
-            {
-                'year': 2021,	
-                'number_infected': 2500,
-                'infected_area': 20000,
-                'escape_probability' : 60,
-            }
-        ]
-        },
-        { 
-            'steering_year' : 2021,
-            'management_cost' : 3000000,
-            'management_area' : 5000,		
-            'output' : [
-            {
-                'year': 2021,	
-                'number_infected': 2200,
-                'infected_area': 10000,
-                'escape_probability' : 40,
-            }
-        ]
-        }
-        ]
+            'output': list(default_run_outputs.order_by('year').values("pk","date_created","id","number_infected", "infected_area", "year","escape_probability")),
+             }
+    steering_outputs = []
+    if steering_year:
+        for x in range(first_year, steering_year+1):
+            print("Steering year: ")
+            print(x)
+            run = Run.objects.get(run_collection=run_collection, steering_year=x)
+            run_outputs = Output.objects.filter(run_id=run)
+            steering_year_output = {
+            'steering_year' : run.steering_year,
+            'management_cost' : run.management_cost,
+            'management_area' : run.management_area,	
+            'output': list(run_outputs.order_by('year').values("pk","date_created","id","number_infected", "infected_area", "year","escape_probability")),
+             }
+            steering_outputs.append(steering_year_output)      
+            #print(run)
+            #print(steering_year_output)
+
+            #outputs = outputs | Output.objects.filter(run_id=run,year=x)
+    else:
+        print('Steering year false')
+    print(steering_outputs)
+
+    #print(steering_outputs)
     #get all inputs for runs in this collection (management polygons)
     inputs = Run.objects.filter(run_collection=run_collection)
     #get the outputs for this run
