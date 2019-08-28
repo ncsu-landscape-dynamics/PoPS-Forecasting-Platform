@@ -417,28 +417,6 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                     <div class="legend-color" style="background-color:#FFDF4C; opacity:0.733"></div>
                     <div class="legend-color" style="background-color:#FFFF66; opacity:0.767"></div>
                     <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
-                    
-{% comment %}   Viridis color palette:                <div class="legend-color" style="background-color:#440154; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#481567; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#453781; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#39568C; opacity:0.65"></div>
-                    <div class="legend-color" style="background-color:#2D708E; opacity:0.66"></div>
-                    <div class="legend-color" style="background-color:#238A8D; opacity:0.7"></div>
-                    <div class="legend-color" style="background-color:#20A387; opacity:0.7"></div>
-                    <div class="legend-color" style="background-color:#3CBB75; opacity:0.75"></div>
-                    <div class="legend-color" style="background-color:#73D055; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#B8DE29; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FDE725; opacity:0.8"></div> {% endcomment %}
-{% comment %}Magma color palette:                     <div class="legend-color" style="background-color:#080616; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#1E0848; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#43006A; opacity:0.65"></div>
-                    <div class="legend-color" style="background-color:#6B116F; opacity:0.66"></div>
-                    <div class="legend-color" style="background-color:#981D69; opacity:0.7"></div>
-                    <div class="legend-color" style="background-color:#C92D59; opacity:0.7"></div>
-                    <div class="legend-color" style="background-color:#ED504A; opacity:0.75"></div>
-                    <div class="legend-color" style="background-color:#FA8657; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FBC17D; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FCFFB2; opacity:0.8"></div> {% endcomment %}
                     <div style="clear: left;">
                       <p class="legend-label" style="float:left; margin-right:170px;">0%</p>
                       <p class="legend-label">100%</p>
@@ -1080,32 +1058,32 @@ map.on('load', function() {
                             ['linear'],
                             ['get', 'outputs'],
                             0, '#CC0000',
-                            0.5, '#D61900',
-                            1, '#E03300',
-                            1.5, '#EA4C00',
-                            2, '#F46600',
-                            2.5, '#FF8000',
-                            3, '#FF9F19',
-                            3.5, '#FFBF33',
-                            4, '#FFDF4C',
-                            4.5, '#FFFF66',
-                            5, '#FFFFCC'
+                            10, '#D61900',
+                            20, '#E03300',
+                            30, '#EA4C00',
+                            40, '#F46600',
+                            50, '#FF8000',
+                            60, '#FF9F19',
+                            70, '#FFBF33',
+                            80, '#FFDF4C',
+                            90, '#FFFF66',
+                            100, '#FFFFCC'
                             ],
                             'fill-outline-color': [
                                 'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
                             0, '#CC0000',
-                            0.5, '#D61900',
-                            1, '#E03300',
-                            1.5, '#EA4C00',
-                            2, '#F46600',
-                            2.5, '#FF8000',
-                            3, '#FF9F19',
-                            3.5, '#FFBF33',
-                            4, '#FFDF4C',
-                            4.5, '#FFFF66',
-                            5, '#FFFFCC'
+                            10, '#D61900',
+                            20, '#E03300',
+                            30, '#EA4C00',
+                            40, '#F46600',
+                            50, '#FF8000',
+                            60, '#FF9F19',
+                            70, '#FFBF33',
+                            80, '#FFDF4C',
+                            90, '#FFFF66',
+                            100, '#FFFFCC'
                                 ],
                                 'fill-opacity': [
                                     'interpolate',
@@ -1624,6 +1602,7 @@ updateArea();
 $("#year-slider").change(function () {
   year_id = $(this).find('input').val();
   //$("#year-value").text(year_id);
+  var steering_year = parseInt($(".timeline-year-container.year_active").attr('data-year-value'));
   var min_year = $("#year-slider input").attr('min');
   var max_year = $("#year-slider input").attr('max');
   console.log("Hiding years: " + min_year + " - " + max_year);
@@ -1646,8 +1625,13 @@ $("#year-slider").change(function () {
   };
   map.setLayoutProperty(year_id, 'visibility', 'visible');
   $("#displayYear").val(year_id);
-  if (year_id > {{ historic_data.last.year }}){
+  if (year_id > steering_year){
     $('#display_year_forecast').text('Forecast')
+    $("#probability-legend-container").show();
+    $("#historic-legend-container").hide();
+  }
+  else if (year_id > {{ historic_data.last.year }}){
+    $('#display_year_forecast').text('Current state of the system')
     $("#probability-legend-container").show();
     $("#historic-legend-container").hide();
   }
@@ -1969,7 +1953,7 @@ function get_output(run_id) {
         map.setLayoutProperty(display_year.toString(), 'visibility', 'visible');
         $("#year-slider").find('input').val(display_year.toString());
         $("#displayYear").val(display_year.toString());
-        $('#display_year_forecast').text('Forecast');
+        $('#display_year_forecast').text('Current state of the system');
       };
       var defaults = data.no_management_default;
       var steering_outputs = data.all_steering_years;
