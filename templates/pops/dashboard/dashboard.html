@@ -1894,13 +1894,19 @@ function get_output(run_id) {
       var min_year = {{ historic_data.first.year }};
       var button_area = 0;
       var button_number_infected = 0;
+      var steering_year = data.run_inputs.steering_year;
       for (var i = 0; i < data.results.length; i++) {
         var year = data.results[i].year;
         console.log("Output ID: " + data.results[i].pk);
         console.log("Year: " + year);
         var year_string = year.toString();
         console.log("Year string: " + year_string);
-        var map_data = data.results[i].single_spread_map;
+        if (year > steering_year) {
+          var map_data = data.results[i].probability_map;
+        }
+        else {
+          var map_data = data.results[i].single_spread_map;
+        }
         year_list.push(data.results[i].year);
         infected_area_list.push(data.results[i].infected_area * acre_to_meter_ratio);
         infected_number_list.push(data.results[i].number_infected);
