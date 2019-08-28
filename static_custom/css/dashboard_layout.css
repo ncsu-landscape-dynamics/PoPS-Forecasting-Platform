@@ -134,24 +134,23 @@ div.timeline-active div a  {
   background-color: transparent;
   border: none;
 }
+
 .year-1 .timeline-year a, .year-1 .timeline-visibility, .year-1 .submit_run_button button {
   color:#C6F761;
 }
 .year-2 .timeline-year a, .year-2 .timeline-visibility, .year-2 .submit_run_button button {
-  color:#61F785;
+  color:#60f781;
 }
 .year-3 .timeline-year a, .year-3 .timeline-visibility, .year-3 .submit_run_button button {
-  color:#61F7E8;
+  color:#60e8f7;
 }
 .year-4 .timeline-year a, .year-4 .timeline-visibility, .year-4 .submit_run_button button {
-  color:#61A4F7;
+  color:#be89fa;
 }
 .year-5 .timeline-year a, .year-5 .timeline-visibility, .year-5 .submit_run_button button {
-  color:#8D61F7;
+  color:#fa89d2;
 }
-.year-6 .timeline-year a, .year-6 .timeline-visibility, .year-6 .submit_run_button button {
-  color:#E361F7;
-}
+
 
 .management_not_started .timeline-year a, .management_not_started .timeline-visibility {
   color: #454545;
@@ -170,20 +169,18 @@ div.timeline-active div a  {
   background-color:#C6F761;
 }
 .year-2.management_complete.year_active .timeline-year a {
-  background-color:#61F785;
+  background-color:#60f781;
 }
 .year-3.management_complete.year_active .timeline-year a {
-  background-color:#61F7E8;
+  background-color:#60e8f7;
 }
 .year-4.management_complete.year_active .timeline-year a {
-  background-color:#61A4F7;
+  background-color:#be89fa;
 }
 .year-5.management_complete.year_active .timeline-year a {
-  background-color:#8D61F7;
+  background-color:#fa89d2;
 }
-.year-6.management_complete.year_active .timeline-year a {
-  background-color:#E361F7;
-}
+
 .management_active .timeline-year a, .management_not_started .timeline-year a {
   pointer-events: none;
   cursor: default;
