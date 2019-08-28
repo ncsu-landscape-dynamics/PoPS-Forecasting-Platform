@@ -710,9 +710,10 @@ $("#status-indicator").hide();
                     </div>
                   </div>
 
+                      <div id="budget_plot" style="width:100%; height:180px;"></div>
                       <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
                       <div>Spread rate:</div>
-                      <div id="spread_plot" style="width:100%; height:180px;"></div>
+                      <div id="spread_plot" style="width:100%; height:220px;"></div>
                       
 {% comment %}                   <h5 class="py-0">
                     <!-- Button trigger modal -->
@@ -1966,6 +1967,7 @@ function get_output(run_id) {
       };
       var defaults = data.no_management_default;
       var steering_outputs = data.all_steering_years;
+      budget_plot(defaults, steering_outputs);
       area_plot(defaults, steering_outputs);
       for (var i = 0; i < data.all_steering_years.length; i++) {
         console.log('Sanity check: ' + i)
@@ -2340,6 +2342,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
 
     
 function area_plot(defaults, steering_outputs) {
+
   var initial_infected_area = 2000;
   var initial_number_infected = 1900;
   var data = [];
@@ -2417,6 +2420,7 @@ function area_plot(defaults, steering_outputs) {
 
   var layout = {
     xaxis: {
+      range: [{{ steering_years | first }}-0.5, {{ steering_years | last }}+1.5],
       showline: true,
       showticklabels: true,
       showgrid: true,
@@ -2445,7 +2449,7 @@ function area_plot(defaults, steering_outputs) {
       tickwidth: 1,
       gridcolor: "#4A5158",
       gridwidth: 1,
-      title: 'Area infected',
+      title: 'Occurrence area',
       titlefont: {
         size: 12,
         color: 'white',
@@ -2473,6 +2477,132 @@ function area_plot(defaults, steering_outputs) {
     responsive: true
   });
 };
+
+function budget_plot(defaults, steering_outputs) {
+  var max_budget = parseInt($('#input_budget span').text());
+  var max_budget_million = max_budget/1000000;
+  var data = [];
+  var color_list = [];
+    var year_list = [];
+    var budget_list = [];
+  for (var i = 0; i < steering_outputs.length; i++) {
+    year_list.push(steering_outputs[i].steering_year);
+    budget_list.push(steering_outputs[i].management_cost);
+    color_list.push(colors[i]);
+  };
+      console.log('Year list: ' + year_list);
+    console.log('Budget list: ' + budget_list);
+    data.push({
+      x: year_list,
+      y: budget_list,
+  marker:{
+    color: colors,
+  },
+  type: 'bar'
+    });
+
+
+
+var layout = {
+        showlegend:false,
+        shapes: [
+    {
+        type: 'line',
+        xref: 'paper',
+        x0: 0,
+        y0: max_budget,
+        x1: 1,
+        y1: max_budget,
+        line:{
+            color: 'grey',
+            width: 2,
+            dash:'dot'
+        }
+    }
+    ],
+        annotations: [
+    {
+      x: 0.5,
+      y: max_budget,
+      xref: 'paper',
+      yref: 'y',
+      font: {
+            color: 'grey',
+          size: 12
+        },
+      text: 'Max budget: $'+ max_budget_million.toString() + 'mil',
+      showarrow: true,
+      arrowhead: 1,
+      ax: 0,
+      ay: -10
+    }
+  ],
+    xaxis: {
+      range: [{{ steering_years | first }}-0.5, {{ steering_years | last }}+1.5],
+      showline: true,
+      showticklabels: true,
+      showgrid: true,
+      zeroline: true,
+      autotick: true,
+      ticks: '',
+      visible: true,
+      linewidth: 1,
+      tickwidth: 1,
+      gridcolor: "#4A5158",
+      gridwidth: 1,
+      tickfont: {
+        size: 12,
+        color: 'rgb(107, 107, 107)'
+      }
+    },
+        yaxis: {
+          range: [0, 1.2*max_budget],
+      showline: true,
+      showticklabels: false,
+      showgrid: true,
+      zeroline: true,
+      autotick: true,
+      ticks: '',
+      visible: true,
+      linewidth: 1,
+      tickwidth: 1,
+      gridcolor: "#4A5158",
+      gridwidth: 1,
+      title: 'Area infected',
+          tickprefix:'$',
+          overlaying: 'y',
+          showticklabels: false,
+          title: 'Management cost',
+          titlefont: {
+            size: 12,
+            color: 'white',
+          },
+
+          tickfont: {
+            size: 12,
+            color: 'rgb(107, 107, 107)'
+          }      
+          },
+
+        paper_bgcolor:'rgba(0,0,0,0)',
+    plot_bgcolor: '#2e3236',
+        margin: {
+      l: 30,
+      r: 20,
+      b: 25,
+      t: 10,
+      pad: 0
+        },
+        bargap: 0.3,
+        };
+
+
+  Plotly.newPlot("budget_plot", data, layout, {
+    displayModeBar: false,
+    responsive: true
+  });
+};
+
 
 $(function () {
   $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})
