@@ -285,6 +285,7 @@ def get_output_view(request):
     this_run = Run.objects.get(pk=run_id)
     first_year = this_run.run_collection.session.case_study.end_year+1
     run_collection = this_run.run_collection
+    number_of_steering_runs = Run.objects.filter(run_collection=run_collection).count()
     steering_year = this_run.steering_year
     print('Steering year:')
     print(steering_year)
@@ -300,7 +301,7 @@ def get_output_view(request):
              }
     steering_outputs = []
     if steering_year:
-        for x in range(first_year, steering_year+1):
+        for x in range(first_year, first_year+number_of_steering_runs):
             print("Steering year: ")
             print(x)
             run = Run.objects.get(run_collection=run_collection, steering_year=x)
