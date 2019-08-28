@@ -710,8 +710,9 @@ $("#status-indicator").hide();
                     </div>
                   </div>
 
-                      <div id="budget_plot" style="width:100%; height:180px;"></div>
+                      <div id="budget_plot" style="width:100%; height:140px;"></div>
                       <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
+                      <div id="number_infected_side_plot" style="width:100%; height:180px;"></div>
                       <div>Spread rate:</div>
                       <div id="spread_plot" style="width:100%; height:220px;"></div>
                       
@@ -736,7 +737,6 @@ $("#status-indicator").hide();
                           <div id="run_details_management_area">
                           Management area: <span></span> acres
                           </div>
-                      <div id="number_infected_side_plot" style="height:180px;"></div>
 
                                   <!-- Modal -->
 
@@ -2345,7 +2345,8 @@ function area_plot(defaults, steering_outputs) {
 
   var initial_infected_area = 2000;
   var initial_number_infected = 1900;
-  var data = [];
+  var data_area = [];
+  var data_number = [];
   var year_list = [];
   var infected_area_list = [];
   var number_infected_list = [];
@@ -2362,9 +2363,21 @@ function area_plot(defaults, steering_outputs) {
   };
   var opacity = 0.7;
   console.log('Default year list: ' + year_list);
-  data.push({
+  data_area.push({
     x: year_list,
     y: infected_area_list,
+    name: 'No management',
+    type: 'scatter',
+    mode: 'lines',
+    opacity: 0.7,
+    line: {
+      color: 'grey',
+      width: 4,
+    }
+  });  
+  data_number.push({
+    x: year_list,
+    y: number_infected_list,
     name: 'No management',
     type: 'scatter',
     mode: 'lines',
@@ -2405,7 +2418,7 @@ function area_plot(defaults, steering_outputs) {
     };
 
     console.log('Year list: ' + year_list);
-    data.push({
+    data_area.push({
       x: year_list,
       y: infected_area_list,
       name: steering_year.toString(),
@@ -2415,11 +2428,20 @@ function area_plot(defaults, steering_outputs) {
         color: colors[i],
         width: 4,
       }
+    });   
+    data_number.push({
+      x: year_list,
+      y: number_infected_list,
+      name: steering_year.toString(),
+      mode: 'lines',
+      opacity: opacity,
+      line: {
+        color: colors[i],
+        width: 4,
+      }
     });
   };
-
-  var layout = {
-    xaxis: {
+    var xaxis_template = {
       range: [{{ steering_years | first }}-0.5, {{ steering_years | last }}+1.5],
       showline: true,
       showticklabels: true,
@@ -2436,8 +2458,8 @@ function area_plot(defaults, steering_outputs) {
         size: 12,
         color: 'rgb(107, 107, 107)'
       }
-    },
-    yaxis: {
+    };
+    var yaxis_template = {
       showline: true,
       showticklabels: false,
       showgrid: true,
@@ -2449,17 +2471,41 @@ function area_plot(defaults, steering_outputs) {
       tickwidth: 1,
       gridcolor: "#4A5158",
       gridwidth: 1,
-      title: 'Occurrence area',
       titlefont: {
         size: 12,
         color: 'white',
       },
-
       tickfont: {
         size: 12,
         color: 'rgb(107, 107, 107)'
       }
+    };
+  var yaxis_area={
+      title: 'Occurrence area',
+  }
+  var yaxis_number={
+      title: 'Number of occurences',
+  }
+  
+  var layout_area = {
+        xaxis: xaxis_template,
+        yaxis: $.extend({}, yaxis_template, yaxis_area),
+
+    showlegend: false,
+    paper_bgcolor: 'transparent',
+    plot_bgcolor: '#2e3236',
+    margin: {
+      l: 30,
+      r: 20,
+      b: 25,
+      t: 10,
+      pad: 0
     },
+  };  
+  var layout_number= {
+        xaxis: xaxis_template,
+        yaxis: $.extend({}, yaxis_template, yaxis_number),
+
     showlegend: false,
     paper_bgcolor: 'transparent',
     plot_bgcolor: '#2e3236',
@@ -2472,7 +2518,11 @@ function area_plot(defaults, steering_outputs) {
     },
   };
 
-  Plotly.newPlot("area_infected_side_plot", data, layout, {
+  Plotly.newPlot("area_infected_side_plot", data_area, layout_area, {
+    displayModeBar: false,
+    responsive: true
+  });
+  Plotly.newPlot("number_infected_side_plot", data_number, layout_number, {
     displayModeBar: false,
     responsive: true
   });
