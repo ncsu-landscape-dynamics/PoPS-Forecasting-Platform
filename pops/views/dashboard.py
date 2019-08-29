@@ -235,7 +235,7 @@ class NewRunView(CreateView):
 @method_decorator(ensure_csrf_cookie, name='get')
 class DashboardTestView(AjaxableResponseMixin, CreateView):
     template_name = 'pops/dashboard/dashboard_test.html'
-    form_class = RunForm
+    form_class = RunCollectionForm
     success_url = 'new_session'
 
     def get_initial(self):
@@ -245,19 +245,40 @@ class DashboardTestView(AjaxableResponseMixin, CreateView):
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
             context = super(DashboardTestView, self).get_context_data(**kwargs)
-            try:
+            try:                
                 session = Session.objects.get(pk=self.kwargs.get('pk'))
             except:
                 session = None
+            #Get case study pk    
+            case_study = session.case_study
+
             try:
-                runs = Run.objects.filter(session__pk=self.kwargs.get('pk')).filter(status='SUCCESS').order_by('-date_created').prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
-
+                last_output = Output.objects.filter(run__run_collection=OuterRef('pk')).order_by('-year')[:1]
+                run_collections = RunCollection.objects.annotate(overall_cost=Sum('run__management_cost')).annotate(infected_area=Subquery(last_output.values('infected_area')[:1])).annotate(number_infected=Subquery(last_output.values('number_infected')[:1])).filter(session__pk=self.kwargs.get('pk'), default=False, status='SUCCESS').order_by('-date_created')#.prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
             except:
-                runs = None                
+                run_collections = None   
 
+            try:
+                historic_data = HistoricData.objects.filter(case_study=case_study).order_by('year')
+            except:
+                historic_data = None   
+            try:
+                mapbox_parameters = MapBoxParameters.objects.get(case_study=case_study)
+            except:
+                historic_data = None   
+
+            print(session)
+            print(case_study)
+            print(mapbox_parameters)
+            steering_years = range(case_study.end_year +1, session.final_year+1)
             context['session'] = session
-            context['runs'] = runs
-            context['historic_data'] = ['2014','2015','2016','2017','2018']
+            context['case_study'] = case_study
+            context['mapbox_parameters'] = mapbox_parameters
+            #context['runs'] = runs
+            context['historic_data'] = historic_data
+            print(historic_data)
+            context['steering_years'] = steering_years
+            context['run_collections'] = run_collections
             return context
 
 def get_run_collection(request):
