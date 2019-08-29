@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Sum, Count, Max, Min, OuterRef, Subquery
 
 from ..models import *
 from ..forms import *
@@ -170,7 +170,8 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             case_study = session.case_study
 
             try:
-                run_collections = RunCollection.objects.filter(session__pk=self.kwargs.get('pk'), default=False).order_by('-date_created')#.prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
+                last_output = Output.objects.filter(run__run_collection=OuterRef('pk')).order_by('-year')[:1]
+                run_collections = RunCollection.objects.annotate(overall_cost=Sum('run__management_cost')).annotate(infected_area=Subquery(last_output.values('infected_area')[:1])).annotate(number_infected=Subquery(last_output.values('number_infected')[:1])).filter(session__pk=self.kwargs.get('pk'), default=False, status='SUCCESS').order_by('-date_created')#.prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
             except:
                 run_collections = None   
 
@@ -182,7 +183,7 @@ class DashboardView(AjaxableResponseMixin, CreateView):
                 mapbox_parameters = MapBoxParameters.objects.get(case_study=case_study)
             except:
                 historic_data = None   
-                
+
             print(session)
             print(case_study)
             print(mapbox_parameters)
