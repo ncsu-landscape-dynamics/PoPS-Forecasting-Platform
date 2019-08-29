@@ -367,27 +367,9 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   <button id="show_details_button" type="button" class="btn" style="display: none" data-toggle="tool" title="Show details."><i class="fas fa-chevron-left"></i></button>
                   <h4 id="display_year_forecast">Field observations</h4>
 
-{% comment %}                   <div id="historic-legend-container" class="pb-0">
-                    <div><strong>Number of detections (per km<sup>2</sup>):</strong></div>
-                    <div class="legend-color" style="background-color:#FF2000; opacity:0.4"></div>
-                    <div class="legend-color" style="background-color:#FF3600; opacity:0.45"></div>
-                    <div class="legend-color" style="background-color:#FF4C00; opacity:0.5"></div>
-                    <div class="legend-color" style="background-color:#FF6200; opacity:0.55"></div>
-                    <div class="legend-color" style="background-color:#FF7900; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#FF8F00; opacity:0.65"></div>
-                    <div class="legend-color" style="background-color:#FFA500; opacity:0.7"></div>
-                    <div class="legend-color" style="background-color:#FFBC00; opacity:0.75"></div>
-                    <div class="legend-color" style="background-color:#FFD200; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FFE800; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FFFF00; opacity:0.8"></div>
-                    <div style="clear: left;">
-                      <p class="legend-label" style="float:left; margin-right:180px;">0</p>
-                      <p class="legend-label">10+</p>
-                    </div>
-                  </div>
- {% endcomment %}                  
-                   <div id="historic-legend-container" class="pb-0">
-                    <div><strong>Number of detections (per km<sup>2</sup>):</strong></div>
+            
+                   <div id="legend-container" class="pb-0">
+                    <div id="legend_description"><strong>Number of detections:</strong></div>
                     <div class="legend-color" style="background-color:#CC0000; opacity:0.467"></div>
                     <div class="legend-color" style="background-color:#D61900; opacity:0.5"></div>
                     <div class="legend-color" style="background-color:#E03300; opacity:0.533"></div>
@@ -400,28 +382,11 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                     <div class="legend-color" style="background-color:#FFFF66; opacity:0.767"></div>
                     <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
                     <div style="clear: left;">
-                      <p class="legend-label" style="float:left; margin-right:180px;">0</p>
-                      <p class="legend-label">5+</p>
+                      <p id="legend_label_left" class="legend-label" style="float:left; margin-right:170px;">0</p>
+                      <p id="legend_label_right" class="legend-label">5+</p>
                     </div>
                   </div>
-                  <div id="probability-legend-container" class="pb-0">
-                    <div><strong>Probability of occurence:</strong></div>             
-                    <div class="legend-color" style="background-color:#CC0000; opacity:0.467"></div>
-                    <div class="legend-color" style="background-color:#D61900; opacity:0.5"></div>
-                    <div class="legend-color" style="background-color:#E03300; opacity:0.533"></div>
-                    <div class="legend-color" style="background-color:#EA4C00; opacity:0.567"></div>
-                    <div class="legend-color" style="background-color:#F46600; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#FF8000; opacity:0.633"></div>
-                    <div class="legend-color" style="background-color:#FF9F19; opacity:0.676"></div>
-                    <div class="legend-color" style="background-color:#FFBF33; opacity:0.7"></div>
-                    <div class="legend-color" style="background-color:#FFDF4C; opacity:0.733"></div>
-                    <div class="legend-color" style="background-color:#FFFF66; opacity:0.767"></div>
-                    <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
-                    <div style="clear: left;">
-                      <p class="legend-label" style="float:left; margin-right:170px;">0%</p>
-                      <p class="legend-label">100%</p>
-                    </div>
-                  </div>
+
                   <div>
                   <div id="SLF_buffer_zone_checkbox" class="form-check">
                     <input class="form-check-input" type="checkbox" value="" checked>
@@ -499,7 +464,6 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   <button id="cancel-polling" class="btn btn-dark" type="button" data-value='false' >Cancel</button>
                   </div>
 <script>
-$("#probability-legend-container").hide();
 $("#tangible-landscape-indicator").hide();
 
 $("button#cancel-polling").hide();
@@ -1626,19 +1590,22 @@ $("#year-slider").change(function () {
   map.setLayoutProperty(year_id, 'visibility', 'visible');
   $("#displayYear").val(year_id);
   if (year_id > steering_year){
-    $('#display_year_forecast').text('Forecast')
-    $("#probability-legend-container").show();
-    $("#historic-legend-container").hide();
+    $('#display_year_forecast').text('Forecast');
+    $('#legend_description').text('Probability of occurence');
+    $('#legend_label_left').text('0%');
+    $('#legend_label_right').text('100%');
   }
   else if (year_id > {{ historic_data.last.year }}){
-    $('#display_year_forecast').text('Current state of the system')
-    $("#probability-legend-container").show();
-    $("#historic-legend-container").hide();
+    $('#display_year_forecast').text('Current state');
+    $('#legend_description').text('Predicted occurrences');
+    $('#legend_label_left').text('0');
+    $('#legend_label_right').text('100');
   }
   else {
-    $('#display_year_forecast').text('Field observations')
-    $("#probability-legend-container").hide();
-    $("#historic-legend-container").show();
+    $('#display_year_forecast').text('Field observations');
+    $('#legend_description').text('Number of detections');
+    $('#legend_label_left').text('0');
+    $('#legend_label_right').text('5+');
   }
   console.log("Current displayed year: " + year_id);
 });
@@ -1879,6 +1846,8 @@ function get_output(run_id) {
       var button_area = 0;
       var button_number_infected = 0;
       var steering_year = data.run_inputs.steering_year;
+      console.log('Number of outputs:');
+      console.log(data.results.length);
       for (var i = 0; i < data.results.length; i++) {
         var year = data.results[i].year;
         console.log("Output ID: " + data.results[i].pk);
@@ -1891,6 +1860,7 @@ function get_output(run_id) {
         else {
           var map_data = data.results[i].single_spread_map;
         }
+        console.log(map_data);
         year_list.push(data.results[i].year);
         infected_area_list.push(data.results[i].infected_area * acre_to_meter_ratio);
         infected_number_list.push(data.results[i].number_infected);
@@ -1918,8 +1888,6 @@ function get_output(run_id) {
         };
       }
 
-      $("#historic-legend-container").hide();
-      $("#probability-legend-container").show(); 
       {% comment %}
       $('#input_run_name span').text(data.run_inputs.name);
       $('#input_run_pk span').text(data.run_inputs.primary_key);
@@ -1953,8 +1921,11 @@ function get_output(run_id) {
         map.setLayoutProperty(display_year.toString(), 'visibility', 'visible');
         $("#year-slider").find('input').val(display_year.toString());
         $("#displayYear").val(display_year.toString());
-        $('#display_year_forecast').text('Current state of the system');
-      };
+        $('#display_year_forecast').text('Current state');
+        $('#legend_description').text('Predicted occurrences');
+        $('#legend_label_left').text('0');
+        $('#legend_label_right').text('100');
+          };
       var defaults = data.no_management_default;
       var steering_outputs = data.all_steering_years;
       budget_plot(defaults, steering_outputs);
@@ -1966,11 +1937,12 @@ function get_output(run_id) {
       $("#status-indicator-shading").hide();
       for (var i = 0; i < data.inputs.length; i++) {
         console.log('Sanity check inputs: ' + i);
-        console.log('Steering: ' + data.steering)
+        console.log('Steering: ' + data.steering);
+        console.log('data.inputs[i].steering_year : ' + data.inputs[i].steering_year);
+        console.log('data.inputs[i].management_polygons :' + data.inputs[i].management_polygons);
         if (data.steering) {
           if (data.run_inputs.steering_year >= data.inputs[i].steering_year) {
           var treatment_outline = (data.inputs[i].steering_year.toString() + "_management");
-          console.log(treatment_outline);
           var treatment_fill = (data.inputs[i].steering_year.toString() + "_fill");
           console.log(treatment_outline);
           if (map.getLayer(treatment_outline)) {
