@@ -31,11 +31,12 @@
 
 var colors = ['#C6F761', '#60f781','#60e8f7','#be89fa','#fa89d2'];//['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
 var acre_to_meter_ratio=0.000247105;
+var max_number=100;
+var max_area=100*acre_to_meter_ratio;
+var max_cost=100;
 
-    function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
-var max_infected=44201;
-var max_area=4750000000*acre_to_meter_ratio;
-var max_money=50000000;
+function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
+
 var max_a=1;
 var max_b=1;
 
@@ -104,7 +105,7 @@ var xaxis ={
       },
 };
 var yaxis = {
-        range: [0,max_infected],
+        range: [0,max_number],
   };
 var yaxis2= {
   ticksuffix:' acres',
@@ -114,7 +115,7 @@ var yaxis2= {
 var yaxis3= {
   tickprefix:'$',
   overlaying: 'y',
-  range: [0,max_money],
+  range: [0,max_cost],
   };
 var yaxis4= {
   overlaying: 'y',
@@ -704,10 +705,7 @@ $("#status-indicator").hide();
 $('#editInputParameters').modal('show');
 
 $( "#run-output-details" ).hide();
-$( document ).ready(function() {
-  $( "#status-indicator" ).hide();
-  $( "#status-indicator-shading" ).hide();
-});
+
 
 
 
@@ -783,7 +781,7 @@ function findMax(arr) {
     <div id="run-preview-container" class="row no-gutters flex-nowrap">
 {% for run_collection in run_collections %}
 <button type="button" class="btn text-right run-link pb-2" data-run-collection = {{ run_collection.pk }} >
-<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>{{ run_collection.name }}</strong></div><small><em> {{run_collection.date_created}} </em></small>" 
+<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>{{ run_collection.name }}</strong> ({{ run_collection.pk }})</div><small><em> {{run_collection.date_created}} </em></small>" 
 data-content="" 
 data-placement="top"> 
 <i class="fas fa-plus-circle"></i>
@@ -793,17 +791,24 @@ data-placement="top">
 <i class="fas fa-play-circle"></i>
 </a>
 <div class="text-light" style="font-size:10px;">
-<p>{{ run_collection.pk }}: {{ run_collection.name }}</p>
-<p> Total Cost: ${{ run_collection.overall_cost }} </p>
-<p> Infected area: {{ run_collection.infected_area }} </p>
-<p> Number infected: {{ run_collection.number_infected }} </p>
 </div>
-<div id="run_{{ run_collection.pk }}" style="width:150px; height:120px;">
+<div id="run_{{ run_collection.pk }}" class="comparison_plot" style="width:150px; height:120px;">
 </div>
 </button>
 
 <script>
-
+if ({{run_collection.overall_cost}} > max_cost){
+  max_cost = {{run_collection.overall_cost}};
+  console.log('Cost is greater' + max_cost);
+};
+if ({{run_collection.number_infected}} > max_number){
+  max_number = {{run_collection.number_infected}};
+  console.log('number_infected is greater' + max_number);
+};
+if ({{run_collection.infected_area}} > max_area){
+  max_area = {{run_collection.infected_area}}*acre_to_meter_ratio;
+  console.log('infected_area is greater' +max_area);
+};
 $(run_comparison_plot('run_{{ run_collection.pk }}','{{ run_collection.name|truncatechars:18 }}', {{ run_collection.number_infected }},{{ run_collection.infected_area }}*acre_to_meter_ratio,{{run_collection.overall_cost}}));
  
  </script>
@@ -2334,11 +2339,11 @@ function area_plot(defaults, steering_outputs) {
   for (var j = -1; j < defaults.output.length; j++) {
     if (j == -1) {
       year_list.push(defaults.output[0].year);
-      infected_area_list.push(initial_infected_area);
+      infected_area_list.push(initial_infected_area*acre_to_meter_ratio);
       number_infected_list.push(initial_number_infected);
     } else {
       year_list.push(defaults.output[j].year + 1);
-      infected_area_list.push(defaults.output[j].infected_area);
+      infected_area_list.push(defaults.output[j].infected_area*acre_to_meter_ratio);
       number_infected_list.push(defaults.output[j].number_infected);
     }
   };
@@ -2382,18 +2387,18 @@ function area_plot(defaults, steering_outputs) {
       if (j == -1) {
         if (i == 0) {
           year_list.push(steering_outputs[i].output[0].year);
-          infected_area_list.push(initial_infected_area);
+          infected_area_list.push(initial_infected_area*acre_to_meter_ratio);
           number_infected_list.push(initial_number_infected);
 
         } else {
           console.log('j=' + j);
           year_list.push(steering_outputs[i].output[0].year);
-          infected_area_list.push(steering_outputs[i - 1].output[0].infected_area);
+          infected_area_list.push(steering_outputs[i - 1].output[0].infected_area*acre_to_meter_ratio);
           number_infected_list.push(steering_outputs[i - 1].output[0].number_infected);
         }
       } else {
         year_list.push(steering_outputs[i].output[j].year + 1);
-        infected_area_list.push(steering_outputs[i].output[j].infected_area);
+        infected_area_list.push(steering_outputs[i].output[j].infected_area*acre_to_meter_ratio);
         number_infected_list.push(steering_outputs[i].output[j].number_infected);
       }
     };
@@ -2462,7 +2467,7 @@ function area_plot(defaults, steering_outputs) {
       }
     };
   var yaxis_area={
-      title: 'Occurrence area',
+      title: 'Occurence area',
   }
   var yaxis_number={
       title: 'Number of occurences',
@@ -2645,12 +2650,7 @@ $('#test-get-output').on('click', function(event) {
   //console.log('Test get_run_collection clicked')
   //run_collection_id=172;//153;//35;//62;
   //get_run_collection(run_collection_id);
-  var update = {
-	'yaxis.range': [0,1000000],
-	'yaxis2.range': [0,60000000],
-	'yaxis3.range': [0,300000000],
-}
-Plotly.relayout('run_212', update);
+relayout_buttons(1000000,200000,300000);
 });
 
 function spread_rate_plot() {
@@ -2763,6 +2763,31 @@ function spread_rate_plot() {
     responsive: true
   });
 };
+
+function relayout_buttons(max_number,max_area,max_cost) {
+  var update = {
+    'yaxis.range': [0, max_number],
+    'yaxis2.range': [0, max_area],
+    'yaxis3.range': [0, max_cost],
+  };
+  var idArray = [];
+  $('.comparison_plot').each(function () {
+    idArray.push(this.id);
+  });
+  console.log('Updating yaxis values with:' + max_number + ' ' + max_area + ' $'+max_cost)
+  console.log(idArray);
+
+  for (i = 0; i < idArray.length; i++) {
+    console.log('Updating ' + idArray[i]);
+    Plotly.relayout(idArray[i], update);
+  }
+};
+
+$( document ).ready(function() {
+  $( "#status-indicator" ).hide();
+  $( "#status-indicator-shading" ).hide();
+  relayout_buttons(max_number,max_area,max_cost);
+});
 
   </script>
   {% endblock %}

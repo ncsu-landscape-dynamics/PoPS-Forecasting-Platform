@@ -175,6 +175,14 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             except:
                 run_collections = None   
 
+            for run_collection in run_collections:
+                if run_collection.overall_cost == None:
+                    run_collection.overall_cost = 0
+                if run_collection.infected_area == None:
+                    run_collection.infected_area = 0
+                if run_collection.number_infected == None:
+                    run_collection.number_infected = 0
+
             try:
                 historic_data = HistoricData.objects.filter(case_study=case_study).order_by('year')
             except:
