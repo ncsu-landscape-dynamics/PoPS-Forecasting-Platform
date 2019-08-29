@@ -39,6 +39,15 @@ var max_money=50000000;
 var max_a=1;
 var max_b=1;
 
+if (infected == 'None') {
+  infected=0;
+};
+if (area == 'None') {
+  area=0;
+}
+if (money == 'None') {
+  money=0;
+}
 var trace1 = {
   x: ['# Occurences'],
   y: [infected],
@@ -768,17 +777,7 @@ function findMax(arr) {
     <div class="col">
     Other runs in this session:
     </div>
-      <div class="col-auto">
-        <select disabled id="run_preview_year_selector" class="custom-select custom-select-sm">
-          <option >Show year:</option>
-          <option value="2019" selected>2019</option>
-          <option value="2020">2020</option>
-          <option value="2021" >2021</option>
-          <option value="2022">2022</option>
-          <option value="2023">2023</option>
-        </select>
 
-      </div>
     </div>
     </div>
     <div id="run-preview-container" class="row no-gutters flex-nowrap">
@@ -802,6 +801,12 @@ data-placement="top">
 <div id="run_{{ run_collection.pk }}" style="width:150px; height:120px;">
 </div>
 </button>
+
+<script>
+
+$(run_comparison_plot('run_{{ run_collection.pk }}','{{ run_collection.name|truncatechars:18 }}', {{ run_collection.number_infected }},{{ run_collection.infected_area }}*acre_to_meter_ratio,{{run_collection.overall_cost}}));
+ 
+ </script>
 
 {% endfor %} 
 
@@ -2637,9 +2642,15 @@ $(function () {
 //$(side_plot("area_infected_side_plot", 'Occurence area', [2011,2012,2013,2014,2015], [2011,2012,2013,2014,2015], [100,200,300,400,600], [100,180,270,360,400], colors[0],error_bar=false));
 
 $('#test-get-output').on('click', function(event) {
-  console.log('Test get_run_collection clicked')
-  run_collection_id=172;//153;//35;//62;
-  get_run_collection(run_collection_id);
+  //console.log('Test get_run_collection clicked')
+  //run_collection_id=172;//153;//35;//62;
+  //get_run_collection(run_collection_id);
+  var update = {
+	'yaxis.range': [0,1000000],
+	'yaxis2.range': [0,60000000],
+	'yaxis3.range': [0,300000000],
+}
+Plotly.relayout('run_212', update);
 });
 
 function spread_rate_plot() {
