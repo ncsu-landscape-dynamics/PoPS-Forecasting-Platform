@@ -338,6 +338,9 @@ def get_output_view(request):
     else:
         print('Steering year false')
         steering_boolean=False
+    #all_spread_rate = SpreadRate.objects.filter(output__run__pk=default_run.pk).order_by('title', 'pub_date')
+    #print('All spread rates:')
+    #print(all_spread_rate)
     print('Data:')
     #print(all_steering_years)
     print(first_year)
@@ -354,9 +357,11 @@ def get_output_view(request):
         },
     "inputs": list(inputs.order_by('steering_year').values("pk","date_created","id","steering_year", "management_cost", "management_polygons", "management_area")),
     "results": list(outputs.order_by('year').values("pk","date_created","id","number_infected", "infected_area", "year", "single_spread_map","probability_map","escape_probability")),
+    "spread_rate": list(outputs.order_by('year').values("year","spreadrate__west_rate","spreadrate__north_rate","spreadrate__south_rate","spreadrate__east_rate")),
     "all_steering_years": steering_outputs,
     "no_management_default": defaults,
-    "steering": steering_boolean
+    "steering": steering_boolean,
+    "max_spread_rate": 10
     }
     return JsonResponse(data)
 
