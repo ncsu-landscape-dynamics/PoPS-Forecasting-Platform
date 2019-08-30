@@ -970,10 +970,10 @@ class Output(models.Model):
 class SpreadRate(models.Model):
 
     output = models.OneToOneField(Output, verbose_name = _("output"), on_delete = models.CASCADE, primary_key = True)
-    west_rate = models.DecimalField(verbose_name = _("westerly spread rate"), help_text="Spread rate in westerly direction", blank=True, null=True, max_digits = 6, decimal_places = 2)
-    east_rate = models.DecimalField(verbose_name = _("easterly spread rate"), help_text="Spread rate in easterly direction", blank=True, null=True, max_digits = 6, decimal_places = 2)
-    north_rate = models.DecimalField(verbose_name = _("northerly spread rate"), help_text="Spread rate in northerly direction", blank=True, null=True, max_digits = 6, decimal_places = 2)
-    south_rate = models.DecimalField(verbose_name = _("southerly spread rate"), help_text="Spread rate in southerly direction", blank=True, null=True, max_digits = 6, decimal_places = 2)
+    west_rate = models.DecimalField(verbose_name = _("westerly spread rate"), help_text="Spread rate in westerly direction", blank=True, null=True, max_digits = 16, decimal_places = 2)
+    east_rate = models.DecimalField(verbose_name = _("easterly spread rate"), help_text="Spread rate in easterly direction", blank=True, null=True, max_digits = 16, decimal_places = 2)
+    north_rate = models.DecimalField(verbose_name = _("northerly spread rate"), help_text="Spread rate in northerly direction", blank=True, null=True, max_digits = 16, decimal_places = 2)
+    south_rate = models.DecimalField(verbose_name = _("southerly spread rate"), help_text="Spread rate in southerly direction", blank=True, null=True, max_digits = 16, decimal_places = 2)
 
     class Meta:
         verbose_name = _("spread rate")
