@@ -2515,12 +2515,18 @@ function area_plot(defaults, steering_outputs) {
 };
 
 function budget_plot(defaults, steering_outputs) {
+  if ($('#input_budget span').text()) {
   var max_budget = parseInt($('#input_budget span').text());
+  }
+  else {
+    max_budget = 0;
+  }
   var max_budget_million = max_budget/1000000;
   var data = [];
   var color_list = [];
     var year_list = [];
     var budget_list = [];
+    if (steering_outputs.length>0) {
   for (var i = 0; i < steering_outputs.length; i++) {
     year_list.push(steering_outputs[i].steering_year);
     budget_list.push(steering_outputs[i].management_cost);
@@ -2536,6 +2542,18 @@ function budget_plot(defaults, steering_outputs) {
   },
   type: 'bar'
     });
+    }
+    else {
+      console.log('There is no steering for the budget plot.')
+          data.push({
+      x: [0,1],
+      y: [0,0],
+  marker:{
+    color: colors,
+  },
+  type: 'bar'
+    });
+    }
 
 
 
