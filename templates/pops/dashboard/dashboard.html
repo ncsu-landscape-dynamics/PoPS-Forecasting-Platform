@@ -32,7 +32,7 @@
 var colors = ['#C6F761', '#60f781','#60e8f7','#be89fa','#fa89d2'];//['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
 var acre_to_meter_ratio=0.000247105;
 var max_number=100;
-var max_area=100*acre_to_meter_ratio;
+var max_area=100;
 var max_cost=100;
 
 function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
@@ -62,7 +62,7 @@ var trace1 = {
 }; 
 var trace2 = {
   x: ['Occurence area'],
-  y: [area],
+  y: [area*acre_to_meter_ratio],
   type: 'bar',
   text: ['Additional info'],
   hoverinfo: ['x+y+text'],
@@ -110,7 +110,7 @@ var yaxis = {
 var yaxis2= {
   ticksuffix:' acres',
   overlaying: 'y',
-  range: [0,max_area],
+  range: [0,max_area*acre_to_meter_ratio],
   };
 var yaxis3= {
   tickprefix:'$',
@@ -150,6 +150,78 @@ var layout = {
 
 
 return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, responsive: true});
+
+};
+
+function insertRunButton(run_id, name, date, description, efficacy, infected_number, infected_area, cost) {
+  var run_pk = run_id.toString();
+    if (cost > max_cost){
+      max_cost = cost;
+      console.log('Cost is greater' + max_cost);
+    };
+    if (infected_number > max_number){
+      max_number = infected_number;
+      console.log('number_infected is greater' + max_number);
+    };
+    if (infected_area > max_area){
+      max_area = infected_area;
+      console.log('infected_area is greater' +max_area);
+    };
+  console.log('Creating run button: '+run_pk);
+
+      if (name.length > 18) {
+      var short_name = name.substring(0, 18) + '...';
+    } else {
+      short_name = name;
+    }
+    console.log('Short name: ' + short_name);
+    
+  if (!(document.getElementById("run_" + run_pk))) {
+
+    $('<button id="run_button_' + run_pk +
+      '" type="button" class="btn text-right run-link pb-2" data-run-collection = "' + run_pk +
+      '"><a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>' + name +
+      '</strong></div><small><em>' + date +
+      '</em></small>" data-content="<div>' + description +
+      '</div><div>Efficacy: ' + efficacy +
+      '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a>' +
+      '<div id="run_' + run_pk +
+      '" class="comparison_plot" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));
+
+    $(function () {
+      $('[data-toggle="popover"]').popover({
+        boundary: 'viewport',
+        html: true,
+        trigger: 'hover focus',
+        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'
+      })
+    })
+
+
+    $("#run_button_" + run_pk).on('click', function () {
+      $('#run-preview-container button').removeClass('active');
+      $(this).addClass('active');
+      var run_collection_id = $(this).attr('data-run-collection');
+      get_run_collection(run_collection_id);
+      console.log("Run collection" + run_id + "link clicked.");
+    });
+
+    $("#run_button_" + run_pk + ' a.load_run_text').on('click', function (event) {
+      event.stopPropagation();
+      console.log('Run button icon clicked.')
+      $(this).parent().trigger("click");
+      console.log('Triggered parent button click.')
+    });
+    $("#run_button_" + run_pk + ' a.run_info_button').on('click', function (event) {
+      event.stopPropagation();
+      console.log('Run info icon clicked.')
+    });
+    $('[data-toggle="tooltip"]').tooltip({
+      trigger: 'hover'
+    })
+
+  };
+  $(run_comparison_plot('run_' + run_pk, short_name, infected_number, infected_area, cost));
 
 };
 </script>
@@ -780,7 +852,7 @@ function findMax(arr) {
     </div>
     <div id="run-preview-container" class="row no-gutters flex-nowrap">
 {% for run_collection in run_collections %}
-<button type="button" class="btn text-right run-link pb-2" data-run-collection = {{ run_collection.pk }} >
+{% comment %} <button type="button" class="btn text-right run-link pb-2" data-run-collection = {{ run_collection.pk }} >
 <a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>{{ run_collection.name }}</strong> ({{ run_collection.pk }})</div><small><em> {{run_collection.date_created}} </em></small>" 
 data-content="" 
 data-placement="top"> 
@@ -794,22 +866,12 @@ data-placement="top">
 </div>
 <div id="run_{{ run_collection.pk }}" class="comparison_plot" style="width:150px; height:120px;">
 </div>
-</button>
+</button> {% endcomment %}
 
 <script>
-if ({{run_collection.overall_cost}} > max_cost){
-  max_cost = {{run_collection.overall_cost}};
-  console.log('Cost is greater' + max_cost);
-};
-if ({{run_collection.number_infected}} > max_number){
-  max_number = {{run_collection.number_infected}};
-  console.log('number_infected is greater' + max_number);
-};
-if ({{run_collection.infected_area}} > max_area){
-  max_area = {{run_collection.infected_area}}*acre_to_meter_ratio;
-  console.log('infected_area is greater' +max_area);
-};
-$(run_comparison_plot('run_{{ run_collection.pk }}','{{ run_collection.name|truncatechars:18 }}', {{ run_collection.number_infected }},{{ run_collection.infected_area }}*acre_to_meter_ratio,{{run_collection.overall_cost}}));
+
+insertRunButton({{ run_collection.pk }},'{{ run_collection.name|truncatechars:18 }}','{{run_collection.date_created}}','{{run_collection.description}}',{{run_collection.efficacy}},{{ run_collection.number_infected }},{{ run_collection.infected_area }},{{run_collection.overall_cost}});
+//$(run_comparison_plot('run_{{ run_collection.pk }}','{{ run_collection.name|truncatechars:18 }}',{{ run_collection.number_infected }},{{ run_collection.infected_area }}*acre_to_meter_ratio,{{run_collection.overall_cost}}));
  
  </script>
 
@@ -1700,56 +1762,7 @@ function enableDrawTools(){
   }
 };
 
-function insertRunButton(run_id,name,date,description,reproductive_rate,distance_scale,efficacy,infected_number,infected_area,budget) { 
-  var run_pk = run_id.toString();
-  console.log(run_pk);
-if (name.length > 18) {
-    var short_name = name.substring(0, 18) + '...';
-    } else {
-      short_name = name;
-    }
 
-  $('<button id="run_button_' + run_id.toString()  
-      + '" type="button" class="btn text-right run-link pb-2" data-run = "'+run_id.toString()
-      + '"><a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>' + name 
-      + '</strong></div><small><em>' + date
-      + '</em></small>" data-content="<div>' + description
-      + '</div><div>Reproductive rate: ' + reproductive_rate 
-      + '</div><div>Distance scale: ' + distance_scale
-      + '</div><div>Efficacy: ' + efficacy
-      + '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a>'
-      + '<div id="run_'+run_id.toString()
-      + '" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));  
-
-
-  $(run_comparison_plot('run_'+run_id.toString(),short_name,infected_number,infected_area,budget));
-
-$(function () {
-  $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})
-})
-
-
-  $("#run_button_"+ run_id.toString()).on('click', function () {
-      $('#run-preview-container button').removeClass('active');
-      $(this).addClass('active');
-      var run_collection_id = $(this).attr('data-run-collection');
-      get_run_collection(run_collection_id);
-      console.log("Run collection" + run_id + "link clicked.");
-  }); 
-
-    $("#run_button_"+ run_id.toString() +' a.load_run_text').on('click', function(event) {
-  event.stopPropagation();
-  console.log('Run button icon clicked.')
-  $(this).parent().trigger( "click" );
-  console.log('Triggered parent button click.')
-});
-  $("#run_button_"+ run_id.toString() + ' a.run_info_button').on('click', function(event) {
-  event.stopPropagation();
-  console.log('Run info icon clicked.')
-}); 
-  $('[data-toggle="tooltip"]').tooltip({trigger : 'hover'})
-
-  };
 
 function get_run_collection(run_collection_id) {
   console.log('Clicked get run collection for run_collection:' + run_collection_id);
@@ -1885,12 +1898,22 @@ function get_output(run_id) {
         }
         console.log(map_data);
         year_list.push(data.results[i].year);
-        infected_area_list.push(data.results[i].infected_area * acre_to_meter_ratio);
+        infected_area_list.push(data.results[i].infected_area );
         infected_number_list.push(data.results[i].number_infected);
-        if (year == 2019) {
-          button_area = data.results[i].infected_area * acre_to_meter_ratio;
-          button_number_infected = data.results[i].number_infected;
+        //Add new run button if there is steering or update existing button
+        if (data.steering) {
+          if((i + 1) == (data.results.length)){
+            console.log('This is the last loop of the results.')
+            var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
+            var run_collection_name = $('#input_run_name span').text();
+            var run_collection_description = $('#input_description span').text();
+            var run_collection_date = $('#input_date_created span').text(data.date_created);
+            var run_collection_budget = $('#input_budget span').text(data.budget);
+            var run_collection_efficacy = $('#input_efficacy span').text(data.efficacy);
+            insertRunButton(run_collection_pk, run_collection_name, run_collection_date, run_collection_description, run_collection_efficacy, data.results[i].number_infected, data.results[i].infected_area, 10000000);
+          }
         }
+
 
         if (map.getLayer(year_string)) {
           map.removeLayer(year_string);
@@ -1948,6 +1971,7 @@ function get_output(run_id) {
         $('#legend_description').text('Predicted occurrences');
         $('#legend_label_left').text('0');
         $('#legend_label_right').text('100');
+
           };
       var defaults = data.no_management_default;
       var steering_outputs = data.all_steering_years;
@@ -2516,7 +2540,7 @@ function area_plot(defaults, steering_outputs) {
 
 function budget_plot(defaults, steering_outputs) {
   if ($('#input_budget span').text()) {
-  var max_budget = parseInt($('#input_budget span').text());
+    var max_budget = parseInt($('#input_budget span').text());
   }
   else {
     max_budget = 0;
@@ -2785,7 +2809,7 @@ function spread_rate_plot() {
 function relayout_buttons(max_number,max_area,max_cost) {
   var update = {
     'yaxis.range': [0, max_number],
-    'yaxis2.range': [0, max_area],
+    'yaxis2.range': [0, max_area*acre_to_meter_ratio],
     'yaxis3.range': [0, max_cost],
   };
   var idArray = [];
