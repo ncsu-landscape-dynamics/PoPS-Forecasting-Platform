@@ -872,7 +872,6 @@ data-placement="top">
 
 insertRunButton({{ run_collection.pk }},'{{ run_collection.name|truncatechars:18 }}','{{run_collection.date_created}}','{{run_collection.description}}',{{run_collection.efficacy}},{{ run_collection.number_infected }},{{ run_collection.infected_area }},{{run_collection.overall_cost}});
 //$(run_comparison_plot('run_{{ run_collection.pk }}','{{ run_collection.name|truncatechars:18 }}',{{ run_collection.number_infected }},{{ run_collection.infected_area }}*acre_to_meter_ratio,{{run_collection.overall_cost}}));
- 
  </script>
 
 {% endfor %} 
@@ -1911,6 +1910,7 @@ function get_output(run_id) {
             var run_collection_budget = $('#input_budget span').text(data.budget);
             var run_collection_efficacy = $('#input_efficacy span').text(data.efficacy);
             insertRunButton(run_collection_pk, run_collection_name, run_collection_date, run_collection_description, run_collection_efficacy, data.results[i].number_infected, data.results[i].infected_area, 10000000);
+            relayout_buttons(max_number,max_area,max_cost);
           }
         }
 
