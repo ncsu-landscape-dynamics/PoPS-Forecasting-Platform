@@ -535,6 +535,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   <div id="status-indicator-shading">
                   </div>
                   <div id="tangible-landscape-indicator" class="text-center">Waiting for Tangible Landscape...</div>
+                  <div id="tangible-landscape-listener-button"><a href="#" data-value='true'>Stop Listening</a></div>
                   <div id="status-indicator" class="text-center">
                   <a id="status-close-button"  href="#">&times;</a>
                   <div id="status-logo">
@@ -547,6 +548,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   </div>
 <script>
 $("#tangible-landscape-indicator").hide();
+$("#tangible-landscape-listener-button").hide();
 
 $("button#cancel-polling").hide();
 
@@ -555,6 +557,23 @@ $("button#cancel-polling").on('click', function () {
       console.log("Cancel polling clicked.");
       $(this).hide();
     });   
+
+$("#tangible-landscape-listener-button a").on('click', function () {
+  if ($(this).attr('data-value') == 'true') {
+      $(this).attr('data-value','false');
+      console.log("Changing value of TL listener to false.");
+      $(this).text('Resume listening');
+  }
+  else {
+      $(this).attr('data-value','true');
+      $(this).text('Stop listening');
+      console.log("Changing value of TL listener to true.");
+      var run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
+      listen_for_new_runs(run_collection_id,0);
+  }
+
+    });   
+
 $("a#status-close-button").on('click', function () {
       console.log("Close button clicked.");
 $("#status-indicator-shading").hide();
@@ -648,9 +667,10 @@ $("#status-indicator").hide();
                   <button id="hide_details_button" type="button" class="btn" data-toggle="tool" title="Hide details."><i class="fas fa-chevron-right"></i></button>
                   <div id="run-button-set" class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm" data-toggle="tool" title="View run and session details."><i class="fas fa-info"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Save this run."><i class="fas fa-save"></i></button>
                     <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editInputParameters" title="Start a new run in this session."><i class="fas fa-plus"></i></button>
                     <button type="button" class="btn btn-sm" id="test-get-output" data-toggle="tool" title="Duplicate this run."><i class="fas fa-copy"></i></button>
-                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Delete this run."><i class="fas fa-trash-alt"></i></button>
+                    <button type="button" id="delete_run_collection" class="btn btn-sm" data-toggle="tool" title="Delete this run."><i class="fas fa-trash-alt"></i></button>
                     <button type="button" class="btn btn-sm" data-toggle="tool" title="Go to the PoPS instructions"><i class="fas fa-question"></i></button>
                   </div>
                   </div>
@@ -1798,23 +1818,42 @@ function get_run_collection(run_collection_id) {
         get_output(default_run);        
         $(".timeline-year-container.year-1").removeClass("management_not_started").addClass("management_active");
       }
-      //Loop through the steering years
-      for (var i = 0; i < data.inputs.length; i++) {
-        var steering_year = data.inputs[i].steering_year;
-        var next_steering_year = steering_year + 1;
-        var run_id = data.inputs[i].pk;
-        console.log('Steering year: ' + steering_year);
-        $(".timeline-year-container[data-year-value="+steering_year+"]").attr('data-run-pk',run_id);
-        $(".timeline-year-container[data-year-value="+steering_year+"]").removeClass("management_not_started").addClass("management_complete");
-      // Do something if is the last iteration of the loop
-        if((i + 1) == (data.inputs.length)){
-          $(".timeline-year-container[data-year-value="+steering_year+"]").addClass("year_active")
-          $(".timeline-year-container[data-year-value="+next_steering_year+"]").removeClass("management_not_started").addClass("management_active");
-          get_output(run_id);
-        }
-      };
-    var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
-    updateDrawColor(year_count);
+      else {
+        //Loop through the steering years
+        for (var i = 0; i < data.inputs.length; i++) {
+          var steering_year = data.inputs[i].steering_year;
+          var next_steering_year = steering_year + 1;
+          var run_id = data.inputs[i].pk;
+          console.log('Steering year: ' + steering_year);
+          $(".timeline-year-container[data-year-value="+steering_year+"]").attr('data-run-pk',run_id);
+          $(".timeline-year-container[data-year-value="+steering_year+"]").removeClass("management_not_started").addClass("management_complete");
+        // Do something if is the last iteration of the loop
+          if((i + 1) == (data.inputs.length)){
+            $(".timeline-year-container[data-year-value="+steering_year+"]").addClass("year_active")
+            $(".timeline-year-container[data-year-value="+next_steering_year+"]").removeClass("management_not_started").addClass("management_active");
+            get_output(run_id);
+          }
+        };
+        var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
+        updateDrawColor(year_count);
+      }
+
+    if (data.tangible_landscape) {
+      console.log('Tangible landscape is on.')
+      //hide run buttons
+      $(".timeline-year-container").find(".submit_run_button").hide();
+      listen_for_new_runs(new_run_collection_id,0);
+      $("#tangible-landscape-listener-button").show();
+      //listen for new runs
+      //if new run, get output for new run
+    }
+    else {
+      console.log('Tangible landscape is false.')
+      $(".timeline-year-container").find(".submit_run_button").show();
+      $("#tangible-landscape-listener-button").hide();
+
+
+    }
     },
     error: function (xhr) {
       console.log('Failed getting run collection.')
@@ -2108,6 +2147,7 @@ function poll(new_run_id) {
 
 function listen_for_new_runs(run_collection_id,most_recent_run) {
   $('#tangible-landscape-indicator').fadeIn();
+  var continue_listening = $('#tangible-landscape-listener-button a').attr('data-value');
   setTimeout(function () {
     $.ajax({
       url: "{% url 'check_for_new_TL_run' %}",
@@ -2121,9 +2161,16 @@ function listen_for_new_runs(run_collection_id,most_recent_run) {
         if (most_recent_run != data.most_recent_run_pk) {
           get_run_collection(run_collection_id);
         }
-        //Setup the next poll recursively
         $('#tangible-landscape-indicator').fadeOut("slow");
+
+        if (continue_listening == 'false') {
+          console.log("Exiting TL listening loop.")
+          $('#tangible-landscape-listener-button a').attr('data-value');
+        }
+        else {
+        //Setup the next poll recursively
         listen_for_new_runs(run_collection_id,data.most_recent_run_pk);
+        }
       },
       error : function(xhr,errmsg,err) {
       alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
@@ -2161,12 +2208,34 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
 
 
 
-    $(".run-link").on('click', function () {
+{% comment %}     $(".run-link").on('click', function () {
       $('#run-preview-container button').removeClass('active');
       $(this).addClass('active');
       var run_collection_id = $(this).attr('data-run-collection');
-      console.log("Run " + run_collection_id + " link clicked.");
+      console.log("Run collection " + run_collection_id + " link clicked.");
       get_run_collection(run_collection_id);
+    });     {% endcomment %}    
+    
+    $("#delete_run_collection").on('click', function () {
+      var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
+      console.log("Deleting run_collection " + run_collection_pk);
+        $.ajax({
+          url: "{% url 'delete_run_collection' %}",
+          dataType: "json",
+          data: {
+            'run_collection': run_collection_pk,
+          },
+          success: function (data) {
+            console.log('Sanity Check! Success for delete runs AJAX call.');
+            console.log('Run Collection ' + data.run_collection_id + ' was deleted.');
+            //get_output(previous_run_id);
+          },
+          error : function(xhr,errmsg,err) {
+          alert("An error occured deleting the runs. An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+          + "\n");
+              console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+          }
+        });
     });    
     
     $("#results-tab").on('click', function () {
@@ -2246,19 +2315,6 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           $('#input_tangible_landscape span').text(data.tangible_landscape);
           $('#id_run_collection').val(data.pk);
           get_run_collection(new_run_collection_id);
-          console.log('Tangible landscape value: ' + data.tangible_landscape);
-          if (data.tangible_landscape) {
-            console.log('Tangible landscape is on.')
-            //hide run buttons
-            $(".timeline-year-container").find(".submit_run_button").hide();
-            listen_for_new_runs(new_run_collection_id,0);
-            //listen for new runs
-            //if new run, get output for new run
-          }
-          else {
-            $(".timeline-year-container").find(".submit_run_button").show();
-
-          }
         },
                 // handle a non-successful response
         error : function(xhr,errmsg,err) {
@@ -2689,9 +2745,6 @@ $(function () {
 //$(side_plot("area_infected_side_plot", 'Occurence area', [2011,2012,2013,2014,2015], [2011,2012,2013,2014,2015], [100,200,300,400,600], [100,180,270,360,400], colors[0],error_bar=false));
 
 $('#test-get-output').on('click', function(event) {
-  //console.log('Test get_run_collection clicked')
-  //run_collection_id=172;//153;//35;//62;
-  //get_run_collection(run_collection_id);
 relayout_buttons(1000000,200000,300000);
 });
 

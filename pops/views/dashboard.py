@@ -171,7 +171,7 @@ class DashboardView(AjaxableResponseMixin, CreateView):
 
             try:
                 last_output = Output.objects.filter(run__run_collection=OuterRef('pk')).order_by('-year')[:1]
-                run_collections = RunCollection.objects.annotate(overall_cost=Sum('run__management_cost')).annotate(infected_area=Subquery(last_output.values('infected_area')[:1])).annotate(number_infected=Subquery(last_output.values('number_infected')[:1])).filter(session__pk=self.kwargs.get('pk'), default=False, status='SUCCESS').order_by('-date_created')#.prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
+                run_collections = RunCollection.objects.annotate(overall_cost=Sum('run__management_cost')).annotate(infected_area=Subquery(last_output.values('infected_area')[:1])).annotate(number_infected=Subquery(last_output.values('number_infected')[:1])).filter(session__pk=self.kwargs.get('pk'), default=False).order_by('date_created')#.prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
             except:
                 run_collections = None   
 
@@ -428,6 +428,17 @@ def delete_runs(request):
     runs.delete()
     data = {
         "run_id":run_id,
+        }
+    return JsonResponse(data)
+
+
+def delete_run_collection(request):
+    run_collection_id = request.GET.get('run_collection', None)
+    run_collection = RunCollection.objects.get(pk=run_collection_id)
+    print('Run collection is:' + run_collection_id)
+    run_collection.delete()
+    data = {
+        "run_collection_id":run_collection_id,
         }
     return JsonResponse(data)
 
