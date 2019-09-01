@@ -461,6 +461,20 @@ def delete_run_collection(request):
         }
     return JsonResponse(data)
 
+def edit_run_collection(request):
+    run_collection_id = request.GET.get('run_collection', None)
+    run_collection_name = request.GET.get('name', None)
+    run_collectiond_description = request.GET.get('description', None)
+    run_collection = RunCollection.objects.get(pk=run_collection_id)
+    print('Run collection is:' + run_collection_id)
+    run_collection.name = run_collection_name
+    run_collection.description = run_collectiond_description
+    run_collection.save()
+    data = {
+        "run_collection_id":run_collection_id,
+        }
+    return JsonResponse(data)
+
 class OutputDetailView(DetailView):
     template_name = 'pops/dashboard/detail_output.html'
     model = Output

@@ -180,11 +180,15 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
 
     $('<button id="run_button_' + run_pk +
       '" type="button" class="btn text-right run-link pb-2" data-run-collection = "' + run_pk +
-      '"><a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>' + name +
+      '">'+
+      '<a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left">'+
+      '<i class="fas fa-play-circle"></i></a>' +
+      '<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>' + name +
       '</strong></div><small><em>' + date +
       '</em></small>" data-content="<div>' + description +
       '</div><div>Efficacy: ' + efficacy +
-      '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a>' +
+      '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a> '+
+      '<a class="delete_run_collection" data-toggle="tooltip" title="Delete" data-placement="left"><i class="fas fa-trash-alt"></i></a>' +
       '<div id="run_' + run_pk +
       '" class="comparison_plot" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));
 
@@ -666,18 +670,16 @@ $("#status-indicator").hide();
                   <div class="">
                   <button id="hide_details_button" type="button" class="btn" data-toggle="tool" title="Hide details."><i class="fas fa-chevron-right"></i></button>
                   <div id="run-button-set" class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-sm" data-toggle="tool" title="View run and session details."><i class="fas fa-info"></i></button>
-                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Save this run."><i class="fas fa-save"></i></button>
-                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editInputParameters" title="Start a new run in this session."><i class="fas fa-plus"></i></button>
-                    <button type="button" class="btn btn-sm" id="test-get-output" data-toggle="tool" title="Duplicate this run."><i class="fas fa-copy"></i></button>
-                    <button type="button" id="delete_run_collection" class="btn btn-sm" data-toggle="tool" title="Delete this run."><i class="fas fa-trash-alt"></i></button>
-                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Go to the PoPS instructions"><i class="fas fa-question"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#viewParameters" title="View run and session details."><i class="fas fa-info"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editInputParameters" title="Start a new run collection in this session."><i class="fas fa-plus"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#edit_run_name_modal" title="Edit this run collection's name and description."><i class="fas fa-pencil-alt"></i></button>
+                    <button type="button" class="btn btn-sm" id="" data-toggle="tool" title="Duplicate this run. (Coming Soon)"><i class="fas fa-copy"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Go to the PoPS instructions. (Coming Soon)"><i class="fas fa-question"></i></button>
                   </div>
                   </div>
                   <div id="run-collection-name" data-run-collection-pk=0>
                   <strong>Run name:</strong> <span></span>
-                  <a class="btn" data-toggle="modal" data-target="#viewParameters" href="#"><i
-                        style="font-size:0.6em" class="fas fa-plus-circle align-top text-light"></i></a>
+
                   </div>
                   <div class="modal fade" id="viewParameters" tabindex="-1" role="dialog"
                     aria-labelledby="viewParameters" aria-hidden="true">
@@ -754,10 +756,51 @@ $("#status-indicator").hide();
                     </div>
                   </div>
 
+                  <div class="modal fade" id="edit_run_name_modal" tabindex="-1" role="dialog"
+                    aria-labelledby="viewParameters" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">Run details</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <h5>Edit run collection name and description</h5>
+                          <div class="row">
+                            <div class="form-group col-12">
+                              <label for="new_run_collection_name">Run name</label>
+                              <div class="input-group ">
+                                <input type="text" name="name" maxlength="45" class="form-control" required
+                                  id="new_run_collection_name" value="">
+                              </div>
+                            </div>
+
+                            <div class="form-group col-12">
+                              <label for="new_run_collection_description">Run description</label>
+                              <div class="input-group ">
+                                <textarea name="description" cols="40" rows="10" maxlength="300" data-toggle="tooltip"
+                                  data-placement="top" title="Give your run a description." data-container="body"
+                                  class="form-control" id="new_run_collection_description">Give your run a description. 
+                                </textarea>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                        <div class="modal-footer">
+                          <button id ="edit_run_collection" type="button" class="btn btn-secondary" data-dismiss="modal">Save and Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
                       <div id="budget_plot" style="width:100%; height:140px;"></div>
                       <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
                       <div id="number_infected_side_plot" style="width:100%; height:180px;"></div>
-                      <div>Spread rate:</div>
+                      <div id="spread_rate_title"><span></span> spread rate (m/year):</div>
                       <div id="spread_plot" style="width:100%; height:220px;"></div>
                       
 {% comment %}                   <h5 class="py-0">
@@ -890,7 +933,7 @@ data-placement="top">
 
 <script>
 
-insertRunButton({{ run_collection.pk }},'{{ run_collection.name|truncatechars:18 }}','{{run_collection.date_created}}','{{run_collection.description}}',{{run_collection.efficacy}},{{ run_collection.number_infected }},{{ run_collection.infected_area }},{{run_collection.overall_cost}});
+insertRunButton({{ run_collection.pk }},'{{ run_collection.name }}','{{run_collection.date_created}}','{{run_collection.description}}',{{run_collection.efficacy}},{{ run_collection.number_infected }},{{ run_collection.infected_area }},{{run_collection.overall_cost}});
 //$(run_comparison_plot('run_{{ run_collection.pk }}','{{ run_collection.name|truncatechars:18 }}',{{ run_collection.number_infected }},{{ run_collection.infected_area }}*acre_to_meter_ratio,{{run_collection.overall_cost}}));
  </script>
 
@@ -1798,8 +1841,10 @@ function get_run_collection(run_collection_id) {
       $('#run-collection-name span').text(data.name);
       $('#run-collection-name').attr('data-run-collection-pk',data.pk);
       $('#input_run_name span').text(data.name);
+      $("#new_run_collection_name").val(data.name);
       $('#input_run_pk span').text(data.pk);
       $('#input_description span').text(data.description);
+      $('#new_run_collection_description').val(data.description);
       $('#input_status span').text(data.status);
       $('#input_random_seed span').text(data.random_seed);
       $('#input_date_created span').text(data.date_created);
@@ -1837,10 +1882,6 @@ function get_run_collection(run_collection_id) {
             most_recent_run=run_id;
           }
         };
-        var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
-        if (!data.tangible_landscape) {
-          updateDrawColor(year_count);
-        }
       }
 
     if (data.tangible_landscape) {
@@ -1856,8 +1897,9 @@ function get_run_collection(run_collection_id) {
       console.log('Tangible landscape is false.')
       $(".timeline-year-container").find(".submit_run_button").show();
       $("#tangible-landscape-listener-button").hide();
-
-
+        var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
+      console.log('Updating draw color to ' + year_count);
+      updateDrawColor(year_count);
     }
     },
     error: function (xhr) {
@@ -2221,8 +2263,10 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
       get_run_collection(run_collection_id);
     });     {% endcomment %}    
     
-    $("#delete_run_collection").on('click', function () {
-      var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
+    $(".delete_run_collection").on('click', function () {
+   //var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
+        event.stopPropagation(); 
+      var run_collection_pk = $(this).parent('.run-link').attr('data-run-collection');
       console.log("Deleting run_collection " + run_collection_pk);
         $.ajax({
           url: "{% url 'delete_run_collection' %}",
@@ -2231,8 +2275,8 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
             'run_collection': run_collection_pk,
           },
           success: function (data) {
-            console.log('Sanity Check! Success for delete runs AJAX call.');
             console.log('Run Collection ' + data.run_collection_id + ' was deleted.');
+            $(".run-link[data-run-collection='" + data.run_collection_id +"']").remove();
             //get_output(previous_run_id);
           },
           error : function(xhr,errmsg,err) {
@@ -2242,7 +2286,35 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           }
         });
     });    
-    
+
+    $("#edit_run_collection").on('click', function () {
+   //var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
+        event.stopPropagation(); 
+      var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
+      var run_collection_name = $('#new_run_collection_name').val();
+      var run_collection_description = $('#new_run_collection_description').val();
+      console.log("Editing run_collection " + run_collection_pk);
+        $.ajax({
+          url: "{% url 'edit_run_collection' %}",
+          dataType: "json",
+          data: {
+            'run_collection': run_collection_pk,
+            'name': run_collection_name,
+            'description': run_collection_description
+          },
+          success: function (data) {
+            console.log('Run Collection ' + data.run_collection_id + ' was edited.');
+            get_run_collection(data.run_collection_id);
+            $('#edit_run_name_modal').modal('hide');
+          },
+          error : function(xhr,errmsg,err) {
+          alert("An error occured deleting the runs. An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+          + "\n");
+              console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+          }
+        });
+    });    
+
     $("#results-tab").on('click', function () {
       $("#submit-run-button").attr("disabled", true);
       $("input#id_name").prop('disabled', true);
@@ -2552,7 +2624,7 @@ function area_plot(defaults, steering_outputs) {
       }
     };
   var yaxis_area={
-      title: 'Occurence area',
+      title: 'Occurence area (acres)',
   }
   var yaxis_number={
       title: 'Number of occurences',
@@ -2768,6 +2840,7 @@ function spread_rate_plot() {
   console.log(slider_year)
 
   if (slider_year > {{historic_data.last.year}}) {
+    $('#spread_rate_title span').text(slider_year);
     for (var i = 0; i < spread_rate.length; i++) {
       if (spread_rate[i].year == slider_year) {
         console.log(spread_rate[i]);
@@ -2790,6 +2863,7 @@ function spread_rate_plot() {
       };
     };
   } else {
+    $('#spread_rate_title span').text('');
     data.push({
       type: "scatterpolar",
       r: [0, 0, 0, 0],
@@ -2853,7 +2927,7 @@ function spread_rate_plot() {
       l: 40,
       r: 40,
       b: 50,
-      t: 50,
+      t: 30,
       pad: 0
     },
   };
