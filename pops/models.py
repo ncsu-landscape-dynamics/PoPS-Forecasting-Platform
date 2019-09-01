@@ -175,6 +175,7 @@ class HostData(models.Model):
 
     host = models.OneToOneField(Host, verbose_name = _("host"), on_delete = models.CASCADE, primary_key=True)
     user_file = models.FileField(verbose_name = _("host data"), help_text="Upload your host data as a raster file.", upload_to=host_directory, max_length=100, blank=True)
+    host_map = JSONField(null = True)
 
     objects = MyManager()
 
