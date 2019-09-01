@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 
+from django.db.models.functions import Greatest
 from django.db.models import Prefetch, Sum, Count, Max, Min, OuterRef, Subquery
 
 from ..models import *
@@ -315,12 +316,20 @@ def get_output_view(request):
     this_run = Run.objects.get(pk=run_id)
     first_year = this_run.run_collection.session.case_study.end_year+1
     run_collection = this_run.run_collection
+    total_management_cost = Run.objects.filter(run_collection=run_collection).aggregate(Sum('management_cost'))
+    print('TOTAL MANAGEMENT COST')
+    print(total_management_cost)
     number_of_steering_runs = Run.objects.filter(run_collection=run_collection).count()
     steering_year = this_run.steering_year
     print('Steering year:')
     print(steering_year)
     default_run=run_collection.session.default_run
     default_run_outputs = Output.objects.filter(run_id=default_run)
+    spread_rate = default_run_outputs.annotate(max_spread=Greatest('spreadrate__west_rate', 'spreadrate__north_rate','spreadrate__south_rate','spreadrate__east_rate'))
+    max_spreadrate = spread_rate.aggregate(Max('max_spread'))
+    print('MAX SPREAD RATE ')
+    print(max_spreadrate['max_spread__max']) 
+    maximum_spread_rate = max_spreadrate['max_spread__max']
     print(default_run)
     print(default_run_outputs)
     defaults= {
@@ -342,7 +351,14 @@ def get_output_view(request):
             'management_area' : run.management_area,	
             'output': list(run_outputs.order_by('year').values("pk","date_created","id","number_infected", "infected_area", "year","escape_probability")),
              }
-            steering_outputs.append(steering_year_output)      
+            steering_outputs.append(steering_year_output)     
+            
+        all_outputs = Output.objects.filter(run__run_collection=run_collection)
+        spread_rate = all_outputs.annotate(max_spread=Greatest('spreadrate__west_rate', 'spreadrate__north_rate','spreadrate__south_rate','spreadrate__east_rate'))
+        max_steering_spreadrate = spread_rate.aggregate(Max('max_spread'))
+        print('MAX SPREAD RATE ')
+        print(max_steering_spreadrate['max_spread__max']) 
+        maximum_spread_rate = max(maximum_spread_rate, max_steering_spreadrate['max_spread__max'])
             #print(run)
             #print(steering_year_output)
 
@@ -376,6 +392,8 @@ def get_output_view(request):
     print(first_year)
     #print(steering_year)
     print(outputs)
+    print('MAX SPREAD RATE ')
+    print(maximum_spread_rate)
     data = {"run_inputs": {
         "primary_key": this_run.pk,
         "date_created":this_run.date_created,
@@ -391,7 +409,8 @@ def get_output_view(request):
     "all_steering_years": steering_outputs,
     "no_management_default": defaults,
     "steering": steering_boolean,
-    "max_spread_rate": 10
+    "max_spread_rate": maximum_spread_rate,
+    "total_management_cost": total_management_cost['management_cost__sum']
     }
     return JsonResponse(data)
 
