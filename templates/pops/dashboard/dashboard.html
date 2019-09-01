@@ -1782,9 +1782,10 @@ function enableDrawTools(){
 };
 
 
+var most_recent_run = 0;
 
 function get_run_collection(run_collection_id) {
-  console.log('Clicked get run collection for run_collection:' + run_collection_id);
+  console.log('Getting run collection for run_collection:' + run_collection_id);
   $.ajax({
     url: "{% url 'get_run_collection' %}",
     dataType: "json",
@@ -1817,6 +1818,7 @@ function get_run_collection(run_collection_id) {
         console.log("Loading default run: " +default_run);
         get_output(default_run);        
         $(".timeline-year-container.year-1").removeClass("management_not_started").addClass("management_active");
+        most_recent_run = 0;
       }
       else {
         //Loop through the steering years
@@ -1832,17 +1834,20 @@ function get_run_collection(run_collection_id) {
             $(".timeline-year-container[data-year-value="+steering_year+"]").addClass("year_active")
             $(".timeline-year-container[data-year-value="+next_steering_year+"]").removeClass("management_not_started").addClass("management_active");
             get_output(run_id);
+            most_recent_run=run_id;
           }
         };
         var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
-        updateDrawColor(year_count);
+        if (!data.tangible_landscape) {
+          updateDrawColor(year_count);
+        }
       }
 
     if (data.tangible_landscape) {
       console.log('Tangible landscape is on.')
       //hide run buttons
       $(".timeline-year-container").find(".submit_run_button").hide();
-      listen_for_new_runs(new_run_collection_id,0);
+      listen_for_new_runs(run_collection_id,most_recent_run);
       $("#tangible-landscape-listener-button").show();
       //listen for new runs
       //if new run, get output for new run
@@ -1948,7 +1953,8 @@ function get_output(run_id) {
             var run_collection_date = $('#input_date_created span').text(data.date_created);
             var run_collection_budget = $('#input_budget span').text(data.budget);
             var run_collection_efficacy = $('#input_efficacy span').text(data.efficacy);
-            insertRunButton(run_collection_pk, run_collection_name, run_collection_date, run_collection_description, run_collection_efficacy, data.results[i].number_infected, data.results[i].infected_area, 10000000);
+            var overall_management_cost = 1000000;
+            insertRunButton(run_collection_pk, run_collection_name, run_collection_date, run_collection_description, run_collection_efficacy, data.results[i].number_infected, data.results[i].infected_area, data.total_management_cost);
             relayout_buttons(max_number,max_area,max_cost);
           }
         }
@@ -2158,12 +2164,11 @@ function listen_for_new_runs(run_collection_id,most_recent_run) {
       success: function (data) {
         console.log("The most recent run for run_collection " + run_collection_id + " is: " + data.most_recent_run_pk);
         //Check if the most_recent_run has changed, update dashboard if it has.
+        $('#tangible-landscape-indicator').fadeOut("slow");
         if (most_recent_run != data.most_recent_run_pk) {
           get_run_collection(run_collection_id);
         }
-        $('#tangible-landscape-indicator').fadeOut("slow");
-
-        if (continue_listening == 'false') {
+        else if (continue_listening == 'false') {
           console.log("Exiting TL listening loop.")
           $('#tangible-landscape-listener-button a').attr('data-value');
         }
