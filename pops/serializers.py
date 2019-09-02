@@ -75,7 +75,7 @@ class HostDataSerializer(serializers.ModelSerializer):
 class MortalitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Mortality
-        fields = ['method','user_file','rate','rate_standard_deviation','time_lag','time_lag_standard_deviation']
+        fields = ['method','user_file','rate','time_lag']
 
 class HostSerializer(serializers.ModelSerializer):
     hostdata = HostDataSerializer()
