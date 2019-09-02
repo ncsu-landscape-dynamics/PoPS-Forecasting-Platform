@@ -31,11 +31,12 @@
 
 var colors = ['#C6F761', '#60f781','#60e8f7','#be89fa','#fa89d2'];//['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
 var acre_to_meter_ratio=0.000247105;
+var max_number=100;
+var max_area=100;
+var max_cost=100;
 
-    function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
-var max_infected=44201;
-var max_area=4750000000*acre_to_meter_ratio;
-var max_money=50000000;
+function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
+
 var max_a=1;
 var max_b=1;
 
@@ -61,7 +62,7 @@ var trace1 = {
 }; 
 var trace2 = {
   x: ['Occurence area'],
-  y: [area],
+  y: [area*acre_to_meter_ratio],
   type: 'bar',
   text: ['Additional info'],
   hoverinfo: ['x+y+text'],
@@ -104,17 +105,17 @@ var xaxis ={
       },
 };
 var yaxis = {
-        range: [0,max_infected],
+        range: [0,max_number],
   };
 var yaxis2= {
   ticksuffix:' acres',
   overlaying: 'y',
-  range: [0,max_area],
+  range: [0,max_area*acre_to_meter_ratio],
   };
 var yaxis3= {
   tickprefix:'$',
   overlaying: 'y',
-  range: [0,max_money],
+  range: [0,max_cost],
   };
 var yaxis4= {
   overlaying: 'y',
@@ -149,6 +150,82 @@ var layout = {
 
 
 return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, responsive: true});
+
+};
+
+function insertRunButton(run_id, name, date, description, efficacy, infected_number, infected_area, cost) {
+  var run_pk = run_id.toString();
+    if (cost > max_cost){
+      max_cost = cost;
+      console.log('Cost is greater' + max_cost);
+    };
+    if (infected_number > max_number){
+      max_number = infected_number;
+      console.log('number_infected is greater' + max_number);
+    };
+    if (infected_area > max_area){
+      max_area = infected_area;
+      console.log('infected_area is greater' +max_area);
+    };
+  console.log('Creating run button: '+run_pk);
+
+      if (name.length > 18) {
+      var short_name = name.substring(0, 18) + '...';
+    } else {
+      short_name = name;
+    }
+    console.log('Short name: ' + short_name);
+    
+  if (!(document.getElementById("run_" + run_pk))) {
+
+    $('<button id="run_button_' + run_pk +
+      '" type="button" class="btn text-right run-link pb-2" data-run-collection = "' + run_pk +
+      '">'+
+      '<a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left">'+
+      '<i class="fas fa-play-circle"></i></a>' +
+      '<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>' + name +
+      '</strong></div><small><em>' + date +
+      '</em></small>" data-content="<div>' + description +
+      '</div><div>Efficacy: ' + efficacy +
+      '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a> '+
+      '<a class="delete_run_collection" data-toggle="tooltip" title="Delete" data-placement="left"><i class="fas fa-trash-alt"></i></a>' +
+      '<div id="run_' + run_pk +
+      '" class="comparison_plot" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));
+
+    $(function () {
+      $('[data-toggle="popover"]').popover({
+        boundary: 'viewport',
+        html: true,
+        trigger: 'hover focus',
+        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'
+      })
+    })
+
+
+    $("#run_button_" + run_pk).on('click', function () {
+      $('#run-preview-container button').removeClass('active');
+      $(this).addClass('active');
+      var run_collection_id = $(this).attr('data-run-collection');
+      get_run_collection(run_collection_id);
+      console.log("Run collection" + run_id + "link clicked.");
+    });
+
+    $("#run_button_" + run_pk + ' a.load_run_text').on('click', function (event) {
+      event.stopPropagation();
+      console.log('Run button icon clicked.')
+      $(this).parent().trigger("click");
+      console.log('Triggered parent button click.')
+    });
+    $("#run_button_" + run_pk + ' a.run_info_button').on('click', function (event) {
+      event.stopPropagation();
+      console.log('Run info icon clicked.')
+    });
+    $('[data-toggle="tooltip"]').tooltip({
+      trigger: 'hover'
+    })
+
+  };
+  $(run_comparison_plot('run_' + run_pk, short_name, infected_number, infected_area, cost));
 
 };
 </script>
@@ -397,11 +474,19 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   </div>
 
                   <div>
+                  <div id="additional_map_checkboxes">
                   <div id="SLF_buffer_zone_checkbox" class="form-check">
                     <input class="form-check-input" type="checkbox" value="" checked>
                     <label class="form-check-label" for="defaultCheck1">
                       SLF buffer zone
                     </label>
+                  </div>
+                  <div id="host_map_checkbox" class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" checked>
+                    <label class="form-check-label" for="host_map_checkbox">
+                      Host Map
+                    </label>
+                  </div>
                   </div>
 
                   </div>
@@ -462,6 +547,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   <div id="status-indicator-shading">
                   </div>
                   <div id="tangible-landscape-indicator" class="text-center">Waiting for Tangible Landscape...</div>
+                  <div id="tangible-landscape-listener-button"><a href="#" data-value='true'>Stop Listening</a></div>
                   <div id="status-indicator" class="text-center">
                   <a id="status-close-button"  href="#">&times;</a>
                   <div id="status-logo">
@@ -474,6 +560,7 @@ return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, 
                   </div>
 <script>
 $("#tangible-landscape-indicator").hide();
+$("#tangible-landscape-listener-button").hide();
 
 $("button#cancel-polling").hide();
 
@@ -482,6 +569,23 @@ $("button#cancel-polling").on('click', function () {
       console.log("Cancel polling clicked.");
       $(this).hide();
     });   
+
+$("#tangible-landscape-listener-button a").on('click', function () {
+  if ($(this).attr('data-value') == 'true') {
+      $(this).attr('data-value','false');
+      console.log("Changing value of TL listener to false.");
+      $(this).text('Resume listening');
+  }
+  else {
+      $(this).attr('data-value','true');
+      $(this).text('Stop listening');
+      console.log("Changing value of TL listener to true.");
+      var run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
+      listen_for_new_runs(run_collection_id,0);
+  }
+
+    });   
+
 $("a#status-close-button").on('click', function () {
       console.log("Close button clicked.");
 $("#status-indicator-shading").hide();
@@ -574,17 +678,16 @@ $("#status-indicator").hide();
                   <div class="">
                   <button id="hide_details_button" type="button" class="btn" data-toggle="tool" title="Hide details."><i class="fas fa-chevron-right"></i></button>
                   <div id="run-button-set" class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-sm" data-toggle="tool" title="View run and session details."><i class="fas fa-info"></i></button>
-                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editInputParameters" title="Start a new run in this session."><i class="fas fa-plus"></i></button>
-                    <button type="button" class="btn btn-sm" id="test-get-output" data-toggle="tool" title="Duplicate this run."><i class="fas fa-copy"></i></button>
-                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Delete this run."><i class="fas fa-trash-alt"></i></button>
-                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Go to the PoPS instructions"><i class="fas fa-question"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#viewParameters" title="View run and session details."><i class="fas fa-info"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editInputParameters" title="Start a new run collection in this session."><i class="fas fa-plus"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#edit_run_name_modal" title="Edit this run collection's name and description."><i class="fas fa-pencil-alt"></i></button>
+                    <button type="button" class="btn btn-sm" id="" data-toggle="tool" title="Duplicate this run. (Coming Soon)"><i class="fas fa-copy"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="tool" title="Go to the PoPS instructions. (Coming Soon)"><i class="fas fa-question"></i></button>
                   </div>
                   </div>
                   <div id="run-collection-name" data-run-collection-pk=0>
                   <strong>Run name:</strong> <span></span>
-                  <a class="btn" data-toggle="modal" data-target="#viewParameters" href="#"><i
-                        style="font-size:0.6em" class="fas fa-plus-circle align-top text-light"></i></a>
+
                   </div>
                   <div class="modal fade" id="viewParameters" tabindex="-1" role="dialog"
                     aria-labelledby="viewParameters" aria-hidden="true">
@@ -661,10 +764,51 @@ $("#status-indicator").hide();
                     </div>
                   </div>
 
+                  <div class="modal fade" id="edit_run_name_modal" tabindex="-1" role="dialog"
+                    aria-labelledby="viewParameters" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">Run details</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <h5>Edit run collection name and description</h5>
+                          <div class="row">
+                            <div class="form-group col-12">
+                              <label for="new_run_collection_name">Run name</label>
+                              <div class="input-group ">
+                                <input type="text" name="name" maxlength="45" class="form-control" required
+                                  id="new_run_collection_name" value="">
+                              </div>
+                            </div>
+
+                            <div class="form-group col-12">
+                              <label for="new_run_collection_description">Run description</label>
+                              <div class="input-group ">
+                                <textarea name="description" cols="40" rows="10" maxlength="300" data-toggle="tooltip"
+                                  data-placement="top" title="Give your run a description." data-container="body"
+                                  class="form-control" id="new_run_collection_description">Give your run a description. 
+                                </textarea>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                        <div class="modal-footer">
+                          <button id ="edit_run_collection" type="button" class="btn btn-secondary" data-dismiss="modal">Save and Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
                       <div id="budget_plot" style="width:100%; height:140px;"></div>
                       <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
                       <div id="number_infected_side_plot" style="width:100%; height:180px;"></div>
-                      <div>Spread rate:</div>
+                      <div id="spread_rate_title"><span></span> spread rate (m/year):</div>
                       <div id="spread_plot" style="width:100%; height:220px;"></div>
                       
 {% comment %}                   <h5 class="py-0">
@@ -704,10 +848,7 @@ $("#status-indicator").hide();
 $('#editInputParameters').modal('show');
 
 $( "#run-output-details" ).hide();
-$( document ).ready(function() {
-  $( "#status-indicator" ).hide();
-  $( "#status-indicator-shading" ).hide();
-});
+
 
 
 
@@ -782,8 +923,8 @@ function findMax(arr) {
     </div>
     <div id="run-preview-container" class="row no-gutters flex-nowrap">
 {% for run_collection in run_collections %}
-<button type="button" class="btn text-right run-link pb-2" data-run-collection = {{ run_collection.pk }} >
-<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>{{ run_collection.name }}</strong></div><small><em> {{run_collection.date_created}} </em></small>" 
+{% comment %} <button type="button" class="btn text-right run-link pb-2" data-run-collection = {{ run_collection.pk }} >
+<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>{{ run_collection.name }}</strong> ({{ run_collection.pk }})</div><small><em> {{run_collection.date_created}} </em></small>" 
 data-content="" 
 data-placement="top"> 
 <i class="fas fa-plus-circle"></i>
@@ -793,19 +934,15 @@ data-placement="top">
 <i class="fas fa-play-circle"></i>
 </a>
 <div class="text-light" style="font-size:10px;">
-<p>{{ run_collection.pk }}: {{ run_collection.name }}</p>
-<p> Total Cost: ${{ run_collection.overall_cost }} </p>
-<p> Infected area: {{ run_collection.infected_area }} </p>
-<p> Number infected: {{ run_collection.number_infected }} </p>
 </div>
-<div id="run_{{ run_collection.pk }}" style="width:150px; height:120px;">
+<div id="run_{{ run_collection.pk }}" class="comparison_plot" style="width:150px; height:120px;">
 </div>
-</button>
+</button> {% endcomment %}
 
 <script>
 
-$(run_comparison_plot('run_{{ run_collection.pk }}','{{ run_collection.name|truncatechars:18 }}', {{ run_collection.number_infected }},{{ run_collection.infected_area }}*acre_to_meter_ratio,{{run_collection.overall_cost}}));
- 
+insertRunButton({{ run_collection.pk }},'{{ run_collection.name }}','{{run_collection.date_created}}','{{run_collection.description}}',{{run_collection.efficacy}},{{ run_collection.number_infected }},{{ run_collection.infected_area }},{{run_collection.overall_cost}});
+//$(run_comparison_plot('run_{{ run_collection.pk }}','{{ run_collection.name|truncatechars:18 }}',{{ run_collection.number_infected }},{{ run_collection.infected_area }}*acre_to_meter_ratio,{{run_collection.overall_cost}}));
  </script>
 
 {% endfor %} 
@@ -1102,6 +1239,35 @@ map.on('load', function() {
                             }
                             }, 'waterway-label'); 
 
+{% comment %} 
+console.log('Adding host map')
+    map.addSource('host_map', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': {{ host_map|safe }}
+  });
+  /*here we are adding a source, then a layer based on that that source*/
+    map.addLayer({
+                            "id": 'host_map',
+                            "type": 'fill',
+                            "source": 'host_map',
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'outputs'],
+                            1, '#63f542'
+                            ],
+                                'fill-opacity': [
+                                    'interpolate',
+                                    ['linear'],
+                                    ['get', 'outputs'],
+                                    0, 0.00,
+                                    100, 0.4,
+                                ]
+                            }
+                            }, 'waterway-label'); 
+ {% endcomment %}
   default_run = {{ session.default_run }};
   console.log(default_run);
   get_output(default_run);                      
@@ -1695,59 +1861,11 @@ function enableDrawTools(){
   }
 };
 
-function insertRunButton(run_id,name,date,description,reproductive_rate,distance_scale,efficacy,infected_number,infected_area,budget) { 
-  var run_pk = run_id.toString();
-  console.log(run_pk);
-if (name.length > 18) {
-    var short_name = name.substring(0, 18) + '...';
-    } else {
-      short_name = name;
-    }
 
-  $('<button id="run_button_' + run_id.toString()  
-      + '" type="button" class="btn text-right run-link pb-2" data-run = "'+run_id.toString()
-      + '"><a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>' + name 
-      + '</strong></div><small><em>' + date
-      + '</em></small>" data-content="<div>' + description
-      + '</div><div>Reproductive rate: ' + reproductive_rate 
-      + '</div><div>Distance scale: ' + distance_scale
-      + '</div><div>Efficacy: ' + efficacy
-      + '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a><a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left"> <i class="fas fa-play-circle"></i></a>'
-      + '<div id="run_'+run_id.toString()
-      + '" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));  
-
-
-  $(run_comparison_plot('run_'+run_id.toString(),short_name,infected_number,infected_area,budget));
-
-$(function () {
-  $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})
-})
-
-
-  $("#run_button_"+ run_id.toString()).on('click', function () {
-      $('#run-preview-container button').removeClass('active');
-      $(this).addClass('active');
-      var run_collection_id = $(this).attr('data-run-collection');
-      get_run_collection(run_collection_id);
-      console.log("Run collection" + run_id + "link clicked.");
-  }); 
-
-    $("#run_button_"+ run_id.toString() +' a.load_run_text').on('click', function(event) {
-  event.stopPropagation();
-  console.log('Run button icon clicked.')
-  $(this).parent().trigger( "click" );
-  console.log('Triggered parent button click.')
-});
-  $("#run_button_"+ run_id.toString() + ' a.run_info_button').on('click', function(event) {
-  event.stopPropagation();
-  console.log('Run info icon clicked.')
-}); 
-  $('[data-toggle="tooltip"]').tooltip({trigger : 'hover'})
-
-  };
+var most_recent_run = 0;
 
 function get_run_collection(run_collection_id) {
-  console.log('Clicked get run collection for run_collection:' + run_collection_id);
+  console.log('Getting run collection for run_collection:' + run_collection_id);
   $.ajax({
     url: "{% url 'get_run_collection' %}",
     dataType: "json",
@@ -1760,8 +1878,10 @@ function get_run_collection(run_collection_id) {
       $('#run-collection-name span').text(data.name);
       $('#run-collection-name').attr('data-run-collection-pk',data.pk);
       $('#input_run_name span').text(data.name);
+      $("#new_run_collection_name").val(data.name);
       $('#input_run_pk span').text(data.pk);
       $('#input_description span').text(data.description);
+      $('#new_run_collection_description').val(data.description);
       $('#input_status span').text(data.status);
       $('#input_random_seed span').text(data.random_seed);
       $('#input_date_created span').text(data.date_created);
@@ -1780,24 +1900,44 @@ function get_run_collection(run_collection_id) {
         console.log("Loading default run: " +default_run);
         get_output(default_run);        
         $(".timeline-year-container.year-1").removeClass("management_not_started").addClass("management_active");
+        most_recent_run = 0;
       }
-      //Loop through the steering years
-      for (var i = 0; i < data.inputs.length; i++) {
-        var steering_year = data.inputs[i].steering_year;
-        var next_steering_year = steering_year + 1;
-        var run_id = data.inputs[i].pk;
-        console.log('Steering year: ' + steering_year);
-        $(".timeline-year-container[data-year-value="+steering_year+"]").attr('data-run-pk',run_id);
-        $(".timeline-year-container[data-year-value="+steering_year+"]").removeClass("management_not_started").addClass("management_complete");
-      // Do something if is the last iteration of the loop
-        if((i + 1) == (data.inputs.length)){
-          $(".timeline-year-container[data-year-value="+steering_year+"]").addClass("year_active")
-          $(".timeline-year-container[data-year-value="+next_steering_year+"]").removeClass("management_not_started").addClass("management_active");
-          get_output(run_id);
-        }
-      };
-    var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
-    updateDrawColor(year_count);
+      else {
+        //Loop through the steering years
+        for (var i = 0; i < data.inputs.length; i++) {
+          var steering_year = data.inputs[i].steering_year;
+          var next_steering_year = steering_year + 1;
+          var run_id = data.inputs[i].pk;
+          console.log('Steering year: ' + steering_year);
+          $(".timeline-year-container[data-year-value="+steering_year+"]").attr('data-run-pk',run_id);
+          $(".timeline-year-container[data-year-value="+steering_year+"]").removeClass("management_not_started").addClass("management_complete");
+        // Do something if is the last iteration of the loop
+          if((i + 1) == (data.inputs.length)){
+            $(".timeline-year-container[data-year-value="+steering_year+"]").addClass("year_active")
+            $(".timeline-year-container[data-year-value="+next_steering_year+"]").removeClass("management_not_started").addClass("management_active");
+            get_output(run_id);
+            most_recent_run=run_id;
+          }
+        };
+      }
+
+    if (data.tangible_landscape) {
+      console.log('Tangible landscape is on.')
+      //hide run buttons
+      $(".timeline-year-container").find(".submit_run_button").hide();
+      listen_for_new_runs(run_collection_id,most_recent_run);
+      $("#tangible-landscape-listener-button").show();
+      //listen for new runs
+      //if new run, get output for new run
+    }
+    else {
+      console.log('Tangible landscape is false.')
+      $(".timeline-year-container").find(".submit_run_button").show();
+      $("#tangible-landscape-listener-button").hide();
+        var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
+      console.log('Updating draw color to ' + year_count);
+      updateDrawColor(year_count);
+    }
     },
     error: function (xhr) {
       console.log('Failed getting run collection.')
@@ -1880,12 +2020,24 @@ function get_output(run_id) {
         }
         console.log(map_data);
         year_list.push(data.results[i].year);
-        infected_area_list.push(data.results[i].infected_area * acre_to_meter_ratio);
+        infected_area_list.push(data.results[i].infected_area );
         infected_number_list.push(data.results[i].number_infected);
-        if (year == 2019) {
-          button_area = data.results[i].infected_area * acre_to_meter_ratio;
-          button_number_infected = data.results[i].number_infected;
+        //Add new run button if there is steering or update existing button
+        if (data.steering) {
+          if((i + 1) == (data.results.length)){
+            console.log('This is the last loop of the results.')
+            var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
+            var run_collection_name = $('#input_run_name span').text();
+            var run_collection_description = $('#input_description span').text();
+            var run_collection_date = $('#input_date_created span').text(data.date_created);
+            var run_collection_budget = $('#input_budget span').text(data.budget);
+            var run_collection_efficacy = $('#input_efficacy span').text(data.efficacy);
+            var overall_management_cost = 1000000;
+            insertRunButton(run_collection_pk, run_collection_name, run_collection_date, run_collection_description, run_collection_efficacy, data.results[i].number_infected, data.results[i].infected_area, data.total_management_cost);
+            relayout_buttons(max_number,max_area,max_cost);
+          }
         }
+
 
         if (map.getLayer(year_string)) {
           map.removeLayer(year_string);
@@ -1943,6 +2095,7 @@ function get_output(run_id) {
         $('#legend_description').text('Predicted occurrences');
         $('#legend_label_left').text('0');
         $('#legend_label_right').text('100');
+
           };
       var defaults = data.no_management_default;
       var steering_outputs = data.all_steering_years;
@@ -2079,6 +2232,7 @@ function poll(new_run_id) {
 
 function listen_for_new_runs(run_collection_id,most_recent_run) {
   $('#tangible-landscape-indicator').fadeIn();
+  var continue_listening = $('#tangible-landscape-listener-button a').attr('data-value');
   setTimeout(function () {
     $.ajax({
       url: "{% url 'check_for_new_TL_run' %}",
@@ -2089,12 +2243,18 @@ function listen_for_new_runs(run_collection_id,most_recent_run) {
       success: function (data) {
         console.log("The most recent run for run_collection " + run_collection_id + " is: " + data.most_recent_run_pk);
         //Check if the most_recent_run has changed, update dashboard if it has.
+        $('#tangible-landscape-indicator').fadeOut("slow");
         if (most_recent_run != data.most_recent_run_pk) {
           get_run_collection(run_collection_id);
         }
+        else if (continue_listening == 'false') {
+          console.log("Exiting TL listening loop.")
+          $('#tangible-landscape-listener-button a').attr('data-value');
+        }
+        else {
         //Setup the next poll recursively
-        $('#tangible-landscape-indicator').fadeOut("slow");
         listen_for_new_runs(run_collection_id,data.most_recent_run_pk);
+        }
       },
       error : function(xhr,errmsg,err) {
       alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
@@ -2130,16 +2290,78 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
   }
 });
 
+$("#host_map_checkbox input").on('change', function () {
+  if ($('#host_map_checkbox input').prop('checked')){
+    console.log('Show host map');
+    map.setLayoutProperty('host_map','visibility','visible');
+  }
+  else {
+    console.log('Hide host map');
+    map.setLayoutProperty('host_map','visibility','none');
+  }
+});
 
 
-    $(".run-link").on('click', function () {
+{% comment %}     $(".run-link").on('click', function () {
       $('#run-preview-container button').removeClass('active');
       $(this).addClass('active');
       var run_collection_id = $(this).attr('data-run-collection');
-      console.log("Run " + run_collection_id + " link clicked.");
+      console.log("Run collection " + run_collection_id + " link clicked.");
       get_run_collection(run_collection_id);
-    });    
+    });     {% endcomment %}    
     
+    $(".delete_run_collection").on('click', function () {
+   //var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
+        event.stopPropagation(); 
+      var run_collection_pk = $(this).parent('.run-link').attr('data-run-collection');
+      console.log("Deleting run_collection " + run_collection_pk);
+        $.ajax({
+          url: "{% url 'delete_run_collection' %}",
+          dataType: "json",
+          data: {
+            'run_collection': run_collection_pk,
+          },
+          success: function (data) {
+            console.log('Run Collection ' + data.run_collection_id + ' was deleted.');
+            $(".run-link[data-run-collection='" + data.run_collection_id +"']").remove();
+            //get_output(previous_run_id);
+          },
+          error : function(xhr,errmsg,err) {
+          alert("An error occured deleting the runs. An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+          + "\n");
+              console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+          }
+        });
+    });    
+
+    $("#edit_run_collection").on('click', function () {
+   //var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
+        event.stopPropagation(); 
+      var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
+      var run_collection_name = $('#new_run_collection_name').val();
+      var run_collection_description = $('#new_run_collection_description').val();
+      console.log("Editing run_collection " + run_collection_pk);
+        $.ajax({
+          url: "{% url 'edit_run_collection' %}",
+          dataType: "json",
+          data: {
+            'run_collection': run_collection_pk,
+            'name': run_collection_name,
+            'description': run_collection_description
+          },
+          success: function (data) {
+            console.log('Run Collection ' + data.run_collection_id + ' was edited.');
+            get_run_collection(data.run_collection_id);
+            $('#edit_run_name_modal').modal('hide');
+          },
+          error : function(xhr,errmsg,err) {
+          alert("An error occured deleting the runs. An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+          + "\n");
+              console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+          }
+        });
+    });    
+
     $("#results-tab").on('click', function () {
       $("#submit-run-button").attr("disabled", true);
       $("input#id_name").prop('disabled', true);
@@ -2217,19 +2439,6 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
           $('#input_tangible_landscape span').text(data.tangible_landscape);
           $('#id_run_collection').val(data.pk);
           get_run_collection(new_run_collection_id);
-          console.log('Tangible landscape value: ' + data.tangible_landscape);
-          if (data.tangible_landscape) {
-            console.log('Tangible landscape is on.')
-            //hide run buttons
-            $(".timeline-year-container").find(".submit_run_button").hide();
-            listen_for_new_runs(new_run_collection_id,0);
-            //listen for new runs
-            //if new run, get output for new run
-          }
-          else {
-            $(".timeline-year-container").find(".submit_run_button").show();
-
-          }
         },
                 // handle a non-successful response
         error : function(xhr,errmsg,err) {
@@ -2273,6 +2482,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
             console.log('New run collection id: ' + new_run_collection_id); 
             console.log('New run id: ' + new_run_id); 
             var base_url = "https://testing2-dot-pops-model-api.appspot.com/status?"
+            //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = (base_url + "run_id=" + new_run_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&session_id=" + session_id.toString() + "&case_study_id=" + case_study_id.toString()); //base_url.concat(new_run_id.toString());
             console.log(run_url);
             $.ajax({
@@ -2333,11 +2543,11 @@ function area_plot(defaults, steering_outputs) {
   for (var j = -1; j < defaults.output.length; j++) {
     if (j == -1) {
       year_list.push(defaults.output[0].year);
-      infected_area_list.push(initial_infected_area);
+      infected_area_list.push(initial_infected_area*acre_to_meter_ratio);
       number_infected_list.push(initial_number_infected);
     } else {
       year_list.push(defaults.output[j].year + 1);
-      infected_area_list.push(defaults.output[j].infected_area);
+      infected_area_list.push(defaults.output[j].infected_area*acre_to_meter_ratio);
       number_infected_list.push(defaults.output[j].number_infected);
     }
   };
@@ -2381,18 +2591,18 @@ function area_plot(defaults, steering_outputs) {
       if (j == -1) {
         if (i == 0) {
           year_list.push(steering_outputs[i].output[0].year);
-          infected_area_list.push(initial_infected_area);
+          infected_area_list.push(initial_infected_area*acre_to_meter_ratio);
           number_infected_list.push(initial_number_infected);
 
         } else {
           console.log('j=' + j);
           year_list.push(steering_outputs[i].output[0].year);
-          infected_area_list.push(steering_outputs[i - 1].output[0].infected_area);
+          infected_area_list.push(steering_outputs[i - 1].output[0].infected_area*acre_to_meter_ratio);
           number_infected_list.push(steering_outputs[i - 1].output[0].number_infected);
         }
       } else {
         year_list.push(steering_outputs[i].output[j].year + 1);
-        infected_area_list.push(steering_outputs[i].output[j].infected_area);
+        infected_area_list.push(steering_outputs[i].output[j].infected_area*acre_to_meter_ratio);
         number_infected_list.push(steering_outputs[i].output[j].number_infected);
       }
     };
@@ -2461,7 +2671,7 @@ function area_plot(defaults, steering_outputs) {
       }
     };
   var yaxis_area={
-      title: 'Occurrence area',
+      title: 'Occurence area (acres)',
   }
   var yaxis_number={
       title: 'Number of occurences',
@@ -2509,12 +2719,18 @@ function area_plot(defaults, steering_outputs) {
 };
 
 function budget_plot(defaults, steering_outputs) {
-  var max_budget = parseInt($('#input_budget span').text());
+  if ($('#input_budget span').text()) {
+    var max_budget = parseInt($('#input_budget span').text());
+  }
+  else {
+    max_budget = 0;
+  }
   var max_budget_million = max_budget/1000000;
   var data = [];
   var color_list = [];
     var year_list = [];
     var budget_list = [];
+    if (steering_outputs.length>0) {
   for (var i = 0; i < steering_outputs.length; i++) {
     year_list.push(steering_outputs[i].steering_year);
     budget_list.push(steering_outputs[i].management_cost);
@@ -2530,6 +2746,18 @@ function budget_plot(defaults, steering_outputs) {
   },
   type: 'bar'
     });
+    }
+    else {
+      console.log('There is no steering for the budget plot.')
+          data.push({
+      x: [0,1],
+      y: [0,0],
+  marker:{
+    color: colors,
+  },
+  type: 'bar'
+    });
+    }
 
 
 
@@ -2641,15 +2869,7 @@ $(function () {
 //$(side_plot("area_infected_side_plot", 'Occurence area', [2011,2012,2013,2014,2015], [2011,2012,2013,2014,2015], [100,200,300,400,600], [100,180,270,360,400], colors[0],error_bar=false));
 
 $('#test-get-output').on('click', function(event) {
-  //console.log('Test get_run_collection clicked')
-  //run_collection_id=172;//153;//35;//62;
-  //get_run_collection(run_collection_id);
-  var update = {
-	'yaxis.range': [0,1000000],
-	'yaxis2.range': [0,60000000],
-	'yaxis3.range': [0,300000000],
-}
-Plotly.relayout('run_212', update);
+relayout_buttons(1000000,200000,300000);
 });
 
 function spread_rate_plot() {
@@ -2667,6 +2887,7 @@ function spread_rate_plot() {
   console.log(slider_year)
 
   if (slider_year > {{historic_data.last.year}}) {
+    $('#spread_rate_title span').text(slider_year);
     for (var i = 0; i < spread_rate.length; i++) {
       if (spread_rate[i].year == slider_year) {
         console.log(spread_rate[i]);
@@ -2689,6 +2910,7 @@ function spread_rate_plot() {
       };
     };
   } else {
+    $('#spread_rate_title span').text('');
     data.push({
       type: "scatterpolar",
       r: [0, 0, 0, 0],
@@ -2752,7 +2974,7 @@ function spread_rate_plot() {
       l: 40,
       r: 40,
       b: 50,
-      t: 50,
+      t: 30,
       pad: 0
     },
   };
@@ -2762,6 +2984,31 @@ function spread_rate_plot() {
     responsive: true
   });
 };
+
+function relayout_buttons(max_number,max_area,max_cost) {
+  var update = {
+    'yaxis.range': [0, max_number],
+    'yaxis2.range': [0, max_area*acre_to_meter_ratio],
+    'yaxis3.range': [0, max_cost],
+  };
+  var idArray = [];
+  $('.comparison_plot').each(function () {
+    idArray.push(this.id);
+  });
+  console.log('Updating yaxis values with:' + max_number + ' ' + max_area + ' $'+max_cost)
+  console.log(idArray);
+
+  for (i = 0; i < idArray.length; i++) {
+    console.log('Updating ' + idArray[i]);
+    Plotly.relayout(idArray[i], update);
+  }
+};
+
+$( document ).ready(function() {
+  $( "#status-indicator" ).hide();
+  $( "#status-indicator-shading" ).hide();
+  relayout_buttons(max_number,max_area,max_cost);
+});
 
   </script>
   {% endblock %}

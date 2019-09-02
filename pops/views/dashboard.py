@@ -192,19 +192,23 @@ class DashboardView(AjaxableResponseMixin, CreateView):
                 mapbox_parameters = MapBoxParameters.objects.get(case_study=case_study)
             except:
                 historic_data = None   
+            
+            #try:
+                #host = HostData.objects.filter(host__case_study=case_study).values('host_map').first()
+                #host_map = host['host_map']
+            #except:
+                #host = None
+                #host_map = None
 
             print(session)
-            print(case_study)
-            print(mapbox_parameters)
             steering_years = range(case_study.end_year +1, session.final_year+1)
             context['session'] = session
             context['case_study'] = case_study
             context['mapbox_parameters'] = mapbox_parameters
-            #context['runs'] = runs
             context['historic_data'] = historic_data
-            print(historic_data)
             context['steering_years'] = steering_years
             context['run_collections'] = run_collections
+            #context['host_map'] = host_map
             return context
 
 @method_decorator(csrf_exempt, name='post')
@@ -243,7 +247,7 @@ class NewRunView(CreateView):
 
 @method_decorator(ensure_csrf_cookie, name='get')
 class DashboardTestView(AjaxableResponseMixin, CreateView):
-    template_name = 'pops/dashboard/dashboard_test.html'
+    template_name = 'pops/dashboard/dashboard.html'
     form_class = RunCollectionForm
     success_url = 'new_session'
 
@@ -263,9 +267,17 @@ class DashboardTestView(AjaxableResponseMixin, CreateView):
 
             try:
                 last_output = Output.objects.filter(run__run_collection=OuterRef('pk')).order_by('-year')[:1]
-                run_collections = RunCollection.objects.annotate(overall_cost=Sum('run__management_cost')).annotate(infected_area=Subquery(last_output.values('infected_area')[:1])).annotate(number_infected=Subquery(last_output.values('number_infected')[:1])).filter(session__pk=self.kwargs.get('pk'), default=False, status='SUCCESS').order_by('-date_created')#.prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
+                run_collections = RunCollection.objects.annotate(overall_cost=Sum('run__management_cost')).annotate(infected_area=Subquery(last_output.values('infected_area')[:1])).annotate(number_infected=Subquery(last_output.values('number_infected')[:1])).filter(session__pk=self.kwargs.get('pk'), default=False).order_by('date_created')#.prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
             except:
                 run_collections = None   
+
+            for run_collection in run_collections:
+                if run_collection.overall_cost == None:
+                    run_collection.overall_cost = 0
+                if run_collection.infected_area == None:
+                    run_collection.infected_area = 0
+                if run_collection.number_infected == None:
+                    run_collection.number_infected = 0
 
             try:
                 historic_data = HistoricData.objects.filter(case_study=case_study).order_by('year')
@@ -275,19 +287,23 @@ class DashboardTestView(AjaxableResponseMixin, CreateView):
                 mapbox_parameters = MapBoxParameters.objects.get(case_study=case_study)
             except:
                 historic_data = None   
+            
+            #try:
+                #host = HostData.objects.filter(host__case_study=case_study).values('host_map').first()
+                #host_map = host['host_map']
+            #except:
+                #host = None
+                #host_map = None
 
             print(session)
-            print(case_study)
-            print(mapbox_parameters)
             steering_years = range(case_study.end_year +1, session.final_year+1)
             context['session'] = session
             context['case_study'] = case_study
             context['mapbox_parameters'] = mapbox_parameters
-            #context['runs'] = runs
             context['historic_data'] = historic_data
-            print(historic_data)
             context['steering_years'] = steering_years
             context['run_collections'] = run_collections
+            #context['host_map'] = host_map
             return context
 
 def get_run_collection(request):

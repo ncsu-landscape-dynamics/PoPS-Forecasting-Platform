@@ -474,11 +474,19 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   </div>
 
                   <div>
+                  <div id="additional_map_checkboxes">
                   <div id="SLF_buffer_zone_checkbox" class="form-check">
                     <input class="form-check-input" type="checkbox" value="" checked>
                     <label class="form-check-label" for="defaultCheck1">
                       SLF buffer zone
                     </label>
+                  </div>
+                  <div id="host_map_checkbox" class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" checked>
+                    <label class="form-check-label" for="host_map_checkbox">
+                      Host Map
+                    </label>
+                  </div>
                   </div>
 
                   </div>
@@ -1231,6 +1239,35 @@ map.on('load', function() {
                             }
                             }, 'waterway-label'); 
 
+{% comment %} 
+console.log('Adding host map')
+    map.addSource('host_map', {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': {{ host_map|safe }}
+  });
+  /*here we are adding a source, then a layer based on that that source*/
+    map.addLayer({
+                            "id": 'host_map',
+                            "type": 'fill',
+                            "source": 'host_map',
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'outputs'],
+                            1, '#63f542'
+                            ],
+                                'fill-opacity': [
+                                    'interpolate',
+                                    ['linear'],
+                                    ['get', 'outputs'],
+                                    0, 0.00,
+                                    100, 0.4,
+                                ]
+                            }
+                            }, 'waterway-label'); 
+ {% endcomment %}
   default_run = {{ session.default_run }};
   console.log(default_run);
   get_output(default_run);                      
@@ -2253,6 +2290,16 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
   }
 });
 
+$("#host_map_checkbox input").on('change', function () {
+  if ($('#host_map_checkbox input').prop('checked')){
+    console.log('Show host map');
+    map.setLayoutProperty('host_map','visibility','visible');
+  }
+  else {
+    console.log('Hide host map');
+    map.setLayoutProperty('host_map','visibility','none');
+  }
+});
 
 
 {% comment %}     $(".run-link").on('click', function () {

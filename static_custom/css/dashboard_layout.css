@@ -320,12 +320,21 @@ div#run-preview-container {
     top: 90px;
     left: 10px;
   }
-  #SLF_buffer_zone_checkbox {
+
+  #additional_map_checkboxes {
     position: absolute;
     bottom: 40px;
     left: 10px; 
     background-color: rgb(65, 223, 244, 0.1)
   }
+
+  #SLF_buffer_zone_checkbox {
+    background-color: rgb(65, 223, 244, 0.1)
+  }
+  #host_map_checkbox {
+    background-color: rgb(99,245,66, 0.3)
+  }
+
 
 .legend-color {
       height: 10px;
