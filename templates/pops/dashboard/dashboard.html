@@ -852,19 +852,6 @@ $( "#run-output-details" ).hide();
 
 
 
-function findMax(arr) {
-  let max = arr[0];
-
-  for (let i = 1, len=arr.length; i < len; i++) {
-    let v = arr[i];
-    max = (v > max) ? v : max;
-  }
-
-  return [max];
-}
-
-
-
 
     
     </script>
@@ -1605,89 +1592,6 @@ map.on('draw.modechange', e => {
 
     gauge_plot("money-new", 0, $("input#id_budget").val());
 
-    function side_plot(myDiv, title, x1, x2, y1, y2, color, error_bar=true) {
-      var trace1 = {
-        x: x1,
-        y: y1,
-        error_y: {
-      type: 'percent',
-      value: 20,
-      visible: error_bar,
-    },
-        name: 'No management',
-        marker: {
-          color: 'grey'
-        },
-        fill: 'tozeroy',
-        type: 'scatter'
-      };
-
-      var trace2 = {
-        x: x2,
-        y: y2,
-    error_y: {
-      type: 'percent',
-      value: 30,
-      visible: error_bar,
-    },
-
-        name: 'Current run',
-        marker: {
-          color: color
-        },
-        fill: 'tozeroy',
-        type: 'scatter'
-      };
-
-      var data = [trace1, trace2];
-
-
-      var layout = {
-        xaxis: {
-          tickfont: {
-            size: 12,
-            color: 'rgb(107, 107, 107)'
-          }
-        },
-        yaxis: {
-          showticklabels: false,
-          title: title,
-          titlefont: {
-            size: 12,
-            color: 'white',
-          },
-
-          tickfont: {
-            size: 12,
-            color: 'rgb(107, 107, 107)'
-          }
-        },
-        showlegend: false,
-        paper_bgcolor: '#0b0d0e',
-        plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
-        margin: {
-          l: 30,
-          r: 20,
-          b: 25,
-          t: 10,
-          pad: 0
-        },
-      };
-
-      return Plotly.newPlot(myDiv, data, layout, {
-        displayModeBar: false,
-        responsive: true
-      });
-    };
-
-
-    var default_years = [2019, 2020, 2021];// 2022, 2023];
-    var x2 = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
-    var default_detections = [44201,159916,368383];//,599897,893903];
-    var default_area = [4750000000*acre_to_meter_ratio,12500000000*acre_to_meter_ratio,22200000000*acre_to_meter_ratio]; //,32900000000,48900000000]*acre_to_meter_ratio;
-    var y2 = [20, 30, 50, 100, 300, 400];
-    $(side_plot("main_plot1", '# occurences', default_years, x2, default_detections, y2, '#2598b8',error_bar=false));
-    $(side_plot("main_plot2", 'Occurence area', default_years, x2, default_area, y2, '#5fc2c2',error_bar=false));
 
     $('#hide_details_button').on('click', function () {
       var bounds = map.getBounds();
@@ -1716,8 +1620,6 @@ map.on('draw.modechange', e => {
 
 //Not sure if this is used anymore either
   $('#chart-view-tab').on('shown.bs.tab', function () {
-    $(side_plot("main_plot1", '# occurences', default_years, x2, default_detections, y2, '#2598b8'));
-    $(side_plot("main_plot2", 'Occurence area', default_years, x2, default_area, y2, '#5fc2c2'));
     });
 
 
@@ -1816,10 +1718,6 @@ $.ajaxSetup({
         }
     },
 });
-
-function displayRun(run_id) {
-            get_output(run_id);
-};
 
 function disableDrawTools(){
   if ($("#draw-controls").is(":visible")){
@@ -2032,7 +1930,6 @@ function get_output(run_id) {
             var run_collection_date = $('#input_date_created span').text(data.date_created);
             var run_collection_budget = $('#input_budget span').text(data.budget);
             var run_collection_efficacy = $('#input_efficacy span').text(data.efficacy);
-            var overall_management_cost = 1000000;
             insertRunButton(run_collection_pk, run_collection_name, run_collection_date, run_collection_description, run_collection_efficacy, data.results[i].number_infected, data.results[i].infected_area, data.total_management_cost);
             relayout_buttons(max_number,max_area,max_cost);
           }
@@ -2155,10 +2052,6 @@ function get_output(run_id) {
       };
 
 
-      //$( "#results-tab" ).trigger( "click" );
-      //$(side_plot("number_infected_side_plot", '# occurences', default_years, year_list, default_detections,infected_number_list, '#2598b8',error_bar=false));
-      //$(side_plot("area_infected_side_plot", 'Occurence area', default_years, year_list, default_area, infected_area_list, '#5fc2c2',error_bar=false));
-      //$(gauge_plot("money-results", data.run_inputs.management_cost, data.run_inputs.budget));
 
       {% comment %}
       if (!(document.getElementById("run_" + data.run_inputs.primary_key.toString()))) {
@@ -2300,15 +2193,6 @@ $("#host_map_checkbox input").on('change', function () {
     map.setLayoutProperty('host_map','visibility','none');
   }
 });
-
-
-{% comment %}     $(".run-link").on('click', function () {
-      $('#run-preview-container button').removeClass('active');
-      $(this).addClass('active');
-      var run_collection_id = $(this).attr('data-run-collection');
-      console.log("Run collection " + run_collection_id + " link clicked.");
-      get_run_collection(run_collection_id);
-    });     {% endcomment %}    
     
     $(".delete_run_collection").on('click', function () {
    //var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
@@ -2866,10 +2750,9 @@ $(function () {
   $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})
 })
 
-//$(side_plot("area_infected_side_plot", 'Occurence area', [2011,2012,2013,2014,2015], [2011,2012,2013,2014,2015], [100,200,300,400,600], [100,180,270,360,400], colors[0],error_bar=false));
 
 $('#test-get-output').on('click', function(event) {
-relayout_buttons(1000000,200000,300000);
+//relayout_buttons(1000000,200000,300000);
 });
 
 function spread_rate_plot() {
