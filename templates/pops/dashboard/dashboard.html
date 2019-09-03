@@ -309,7 +309,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                 <div id="timeline" class="text-center">
                   <div id="flex-container">
                     <div class="timeline-year-container year-0 management_complete year_active management_visible"
-                    data-year-counter=0 data-run-pk={{ session.default_run }}>
+                    data-year-counter=0 data-year-value={{ historic_data.last.year }} data-run-pk={{ session.default_run }}>
                       <div class="timeline-buttons">
                         <span class="completed_management_buttons">
                         </span>
