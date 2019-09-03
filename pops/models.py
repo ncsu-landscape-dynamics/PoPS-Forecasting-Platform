@@ -602,7 +602,7 @@ class Weather(models.Model):
         verbose_name_plural = _("weathers")
 
     def __str__(self):
-        return "Weather"
+        return str(self.pk)
 
 class Wind(models.Model):
 
@@ -645,7 +645,7 @@ class Wind(models.Model):
         verbose_name_plural = _("winds")
 
     def __str__(self):
-        return 'Wind: %s' (self.weather)
+        return str(self.pk)
 
 
 class Seasonality(models.Model):
