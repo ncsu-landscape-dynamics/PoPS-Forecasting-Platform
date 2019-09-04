@@ -117,7 +117,8 @@ class HistoricData(models.Model):
     year = models.PositiveIntegerField(verbose_name = _("year"), default = 2015, null = True, validators = [MinValueValidator(1900)])
     data = JSONField(null = True)
     infected_area = models.DecimalField(verbose_name = _("infected_area (m^2)"), help_text="Overall infected area from the run.", blank=True, max_digits = 16, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
-    
+    number_infected = models.IntegerField(verbose_name = _("number_infected"), default = 0, null = True, validators = [MinValueValidator(0)])
+
     class Meta:
         verbose_name = _("historic data")
         verbose_name_plural = _("historic datas")
