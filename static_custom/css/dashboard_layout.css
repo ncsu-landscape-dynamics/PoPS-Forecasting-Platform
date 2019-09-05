@@ -303,7 +303,7 @@ div#run-preview-container {
     z-index: 100;
   }
       
-  #legend-container, #probability-legend-container {
+  #historic-legend-container, #occurence-legend-container , #probability-legend-container {
     position: absolute;
     top: 120px;
     left: 10px;
