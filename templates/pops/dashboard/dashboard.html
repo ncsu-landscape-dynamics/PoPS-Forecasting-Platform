@@ -468,7 +468,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                     <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
                     <div style="clear: left;">
                       <p id="legend_label_left" class="legend-label" style="float:left; margin-right:190px;">0</p>
-                      <p id="legend_label_right" class="legend-label">10+</p>
+                      <p id="legend_label_right" class="legend-label">{{ session.max_value }}+</p>
                     </div>
                   </div>                  
                   <div id="occurence-legend-container" class="pb-0">
@@ -486,7 +486,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                     <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
                     <div style="clear: left;">
                       <p id="legend_label_left" class="legend-label" style="float:left; margin-right:190px;">0</p>
-                      <p id="legend_label_right" class="legend-label">10+</p>
+                      <p id="legend_label_right" class="legend-label">{{ session.max_value }}+</p>
                     </div>
                   </div>
                   <div id="probability-legend-container" class="pb-0">
@@ -1045,7 +1045,7 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ o
 
 
 var year_id = '0';
-var max_occurence_number_for_legend = 10;
+var max_occurence_number_for_legend = {{ session.max_value }};
 
 function newFireLayer(map_data,year,max_legend_value) {
 console.log("Adding new layer for year " + year);
