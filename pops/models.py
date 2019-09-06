@@ -878,6 +878,8 @@ class Session(models.Model):
                     choices = WEATHER_CHOICES,
                     default = "AVERAGE", blank=True)
     default_run = models.OneToOneField('Run', verbose_name = _("default run"), help_text="Default no management run for this session and default run_collection parameters.", on_delete = models.CASCADE, blank=True, null = True)
+    max_value = models.PositiveSmallIntegerField(verbose_name = _("maximum value within a cell in default run"), help_text="Maximum value of number of infected in a cell for final year of the default run", default = 0, null = True, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
+
 
     class Meta:
         verbose_name = _("session")
