@@ -1839,9 +1839,11 @@ function get_run_collection(run_collection_id) {
       console.log('Tangible landscape is on.')
       //hide run buttons
       $(".timeline-year-container").find(".submit_run_button").hide();
-      listen_for_new_runs(run_collection_id,most_recent_run);
       $("#tangible-landscape-listener-button").show();
-      //listen for new runs
+      $("#tangible-landscape-listener-button a").attr('data-value','true');
+      $("#tangible-landscape-listener-button a").text('Stop listening');     
+      listen_for_new_runs(run_collection_id,most_recent_run);
+ 
       //if new run, get output for new run
     }
     else {
