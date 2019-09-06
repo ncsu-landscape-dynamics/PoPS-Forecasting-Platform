@@ -307,7 +307,9 @@ class DashboardTestView(AjaxableResponseMixin, CreateView):
             return context
 
 def get_run_collection(request):
+    print('GETTING RUN COLLECTION:')
     run_collection_id = request.GET.get('run_collection_id', None)
+    print(run_collection_id)
     run_collection = RunCollection.objects.get(pk=run_collection_id)
     inputs = Run.objects.filter(run_collection=run_collection)
     data = {
@@ -327,6 +329,7 @@ def get_run_collection(request):
 
 def get_output_view(request):
     run_id = request.GET.get('new_run_id', None)
+    print('GETTING OUTPUT FOR RUN: ' + run_id)
  
     #outputs = Output.objects.filter(run_id = run_id)
     this_run = Run.objects.get(pk=run_id)
