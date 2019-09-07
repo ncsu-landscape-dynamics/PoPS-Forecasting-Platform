@@ -309,7 +309,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                 <div id="timeline" class="text-center">
                   <div id="flex-container">
                     <div class="timeline-year-container year-0 management_complete year_active management_visible"
-                    data-year-counter=0 data-run-pk={{ session.default_run }}>
+                    data-year-counter=0 data-year-value={{ historic_data.last.year }} data-run-pk={{ session.default_run }}>
                       <div class="timeline-buttons">
                         <span class="completed_management_buttons">
                         </span>
@@ -450,44 +450,79 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
 
                   </script>                
                   <div id="map" class="large_map"></div>
-                  <button id="show_details_button" type="button" class="btn" style="display: none" data-toggle="tool" title="Show details."><i class="fas fa-chevron-left"></i></button>
+                  <button id="show_details_button" type="button" class="btn" style="display: none" data-toggle="tool"
+                    title="Show details."><i class="fas fa-chevron-left"></i></button>
                   <h4 id="display_year_forecast">Field observations</h4>
-
-            
-                   <div id="legend-container" class="pb-0">
+                  <div id="historic-legend-container" class="pb-0">
                     <div id="legend_description"><strong>Number of detections:</strong></div>
-                    <div class="legend-color" style="background-color:#CC0000; opacity:0.467"></div>
-                    <div class="legend-color" style="background-color:#D61900; opacity:0.5"></div>
-                    <div class="legend-color" style="background-color:#E03300; opacity:0.533"></div>
-                    <div class="legend-color" style="background-color:#EA4C00; opacity:0.567"></div>
-                    <div class="legend-color" style="background-color:#F46600; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#FF8000; opacity:0.633"></div>
-                    <div class="legend-color" style="background-color:#FF9F19; opacity:0.676"></div>
-                    <div class="legend-color" style="background-color:#FFBF33; opacity:0.7"></div>
-                    <div class="legend-color" style="background-color:#FFDF4C; opacity:0.733"></div>
-                    <div class="legend-color" style="background-color:#FFFF66; opacity:0.767"></div>
+                    <div class="legend-color" style="background-color:#CC0000; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#D61900; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#E03300; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#EA4C00; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#F46600; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FF8000; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FF9F19; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFBF33; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFDF4C; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFFF66; opacity:0.8"></div>
                     <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
                     <div style="clear: left;">
+                      <p id="legend_label_left" class="legend-label" style="float:left; margin-right:190px;">0</p>
+                      <p id="legend_label_right" class="legend-label">{{ session.max_value }}+</p>
+                    </div>
+                  </div>                  
+                  <div id="occurence-legend-container" class="pb-0">
+                    <div id="legend_description"><strong>Predicted occurences:</strong></div>
+                    <div class="legend-color" style="background-color:#CC0000; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#D61900; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#E03300; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#EA4C00; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#F46600; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FF8000; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FF9F19; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFBF33; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFDF4C; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFFF66; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
+                    <div style="clear: left;">
+                      <p id="legend_label_left" class="legend-label" style="float:left; margin-right:190px;">0</p>
+                      <p id="legend_label_right" class="legend-label">{{ session.max_value }}+</p>
+                    </div>
+                  </div>
+                  <div id="probability-legend-container" class="pb-0">
+                    <div id="legend_description"><strong>Probability of occurence:</strong></div>
+                    <div class="legend-color" style="background-color:#000005; opacity:0.467"></div>
+                    <div class="legend-color" style="background-color:#080616; opacity:0.5"></div>
+                    <div class="legend-color" style="background-color:#1E0848; opacity:0.533"></div>
+                    <div class="legend-color" style="background-color:#43006A; opacity:0.567"></div>
+                    <div class="legend-color" style="background-color:#6B116F; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#981D69; opacity:0.633"></div>
+                    <div class="legend-color" style="background-color:#C92D59; opacity:0.676"></div>
+                    <div class="legend-color" style="background-color:#ED504A; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#FA8657; opacity:0.733"></div>
+                    <div class="legend-color" style="background-color:#FBC17D; opacity:0.767"></div>
+                    <div class="legend-color" style="background-color:#FCFFB2; opacity:0.8"></div>
+                    <div style="clear: left;">
                       <p id="legend_label_left" class="legend-label" style="float:left; margin-right:170px;">0</p>
-                      <p id="legend_label_right" class="legend-label">5+</p>
+                      <p id="legend_label_right" class="legend-label">100%</p>
                     </div>
                   </div>
 
                   <div>
-                  <div id="additional_map_checkboxes">
-                  <div id="SLF_buffer_zone_checkbox" class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" checked>
-                    <label class="form-check-label" for="defaultCheck1">
-                      SLF buffer zone
-                    </label>
-                  </div>
-                  <div id="host_map_checkbox" class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" checked>
-                    <label class="form-check-label" for="host_map_checkbox">
-                      Host Map
-                    </label>
-                  </div>
-                  </div>
+                    <div id="additional_map_checkboxes">
+                      <div id="SLF_buffer_zone_checkbox" class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" checked>
+                        <label class="form-check-label" for="defaultCheck1">
+                          SLF buffer zone
+                        </label>
+                      </div>
+                      <div id="host_map_checkbox" class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" checked>
+                        <label class="form-check-label" for="host_map_checkbox">
+                          Host Map
+                        </label>
+                      </div>
+                    </div>
 
                   </div>
                   <div id="budget_background_layer"></div>
@@ -514,6 +549,10 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   title="Draw management tool" data-placement="left">
                   <i class="fas fa-draw-polygon"></i>
                   </button>
+                  <button id="circle-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
+                  title="Draw circle tool" data-placement="left">
+                  <i class="far fa-dot-circle"></i>
+                  </button>
                   <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
                   title="Selection tool" data-placement="left">
                   <i class="fas fa-hand-paper"></i>
@@ -525,11 +564,22 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
 
                   </div>
                   <script>
+
+                      $('#historic-legend-container').show();
+                      $('#occurence-legend-container').hide();
+                      $('#probability-legend-container').hide();
+
                       $("#polygon-tool").on('click', function () {
                         $('.drawing-tool').removeClass('active');
                         $(this).addClass('active');
                         draw.changeMode('draw_polygon');
                         console.log("Polygon tool selected to draw management.")
+                      }); 
+                      $("#circle-tool").on('click', function () {
+                        $('.drawing-tool').removeClass('active');
+                        $(this).addClass('active');
+                        draw.changeMode('draw_point');
+                        console.log("Circle tool selected to draw management.")
                       }); 
 
                       $("#select-tool").on('click', function () {
@@ -607,7 +657,7 @@ $("#status-indicator").hide();
                           </button>
                         </div>
                         <div class="modal-body">
-                        <form id="submit-run-collection" method="post" submit-run-collection-url="{% url 'save_run_data_test' %}">
+                        <form id="submit-run-collection" method="post" submit-run-collection-url="{% url 'save_run_collection_data_test' %}">
                               {% csrf_token %}
                 {{ form.session.as_hidden }}
 
@@ -852,19 +902,6 @@ $( "#run-output-details" ).hide();
 
 
 
-function findMax(arr) {
-  let max = arr[0];
-
-  for (let i = 1, len=arr.length; i < len; i++) {
-    let v = arr[i];
-    max = (v > max) ? v : max;
-  }
-
-  return [max];
-}
-
-
-
 
     
     </script>
@@ -1019,10 +1056,81 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ o
 
 
 var year_id = '0';
+var max_occurence_number_for_legend = {{ session.max_value }};
 
-
-function newLayer(map_data,year) {
+function newFireLayer(map_data,year,max_legend_value) {
 console.log("Adding new layer for year " + year);
+  map.addSource(year, {
+    'type': 'geojson',
+    /*many types of data can be added, such as geojson, vector tiles or raster data*/
+    'data': map_data
+  });
+
+map.addLayer({
+                            "id": year,
+                            "type": 'fill',
+                            "source": year,
+                            "layout": {
+                              'visibility':'none',
+                            },
+                            'paint': {
+                            'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'outputs'],
+                            0.0*max_legend_value, '#CC0000',
+                            0.1*max_legend_value, '#D61900',
+                            0.2*max_legend_value, '#E03300',
+                            0.3*max_legend_value, '#EA4C00',
+                            0.4*max_legend_value, '#F46600',
+                            0.5*max_legend_value, '#FF8000',
+                            0.6*max_legend_value, '#FF9F19',
+                            0.7*max_legend_value, '#FFBF33',
+                            0.8*max_legend_value, '#FFDF4C',
+                            0.9*max_legend_value, '#FFFF66',
+                            1.0*max_legend_value, '#FFFFCC'
+                     ],
+                            'fill-outline-color': [
+                                'interpolate',
+                                    ['linear'],
+                                    ['get', 'outputs'],
+                            0.0*max_legend_value, '#CC0000',
+                            0.1*max_legend_value, '#D61900',
+                            0.2*max_legend_value, '#E03300',
+                            0.3*max_legend_value, '#EA4C00',
+                            0.4*max_legend_value, '#F46600',
+                            0.5*max_legend_value, '#FF8000',
+                            0.6*max_legend_value, '#FF9F19',
+                            0.7*max_legend_value, '#FFBF33',
+                            0.8*max_legend_value, '#FFDF4C',
+                            0.9*max_legend_value, '#FFFF66',
+                            1.0*max_legend_value, '#FFFFCC'
+
+                            ],
+                                'fill-opacity': [
+                                    'interpolate',
+                                    ['linear'],
+                                    ['get', 'outputs'],
+                            0.0*max_legend_value, 0.6,
+                            0.2*max_legend_value, 0.6,
+                            0.3*max_legend_value, 0.6,
+                            0.4*max_legend_value, 0.6,
+                            0.5*max_legend_value, 0.6,
+                            0.6*max_legend_value, 0.6,
+                            0.7*max_legend_value, 0.6,
+                            0.8*max_legend_value, 0.6,
+                            0.9*max_legend_value, 0.6,
+                            1.0*max_legend_value, 0.6
+
+                                ]
+
+                            }
+                            }, 'waterway-label'); 
+
+};
+
+function newMagmaLayer(map_data,year,max_legend_value) {
+console.log("Adding new magma layer for year " + year);
   map.addSource(year, {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
@@ -1042,45 +1150,17 @@ map.addLayer({
                             'interpolate',
                             ['linear'],
                             ['get', 'outputs'],
-                            0, '#CC0000',
-                            10, '#D61900',
-                            20, '#E03300',
-                            30, '#EA4C00',
-                            40, '#F46600',
-                            50, '#FF8000',
-                            60, '#FF9F19',
-                            70, '#FFBF33',
-                            80, '#FFDF4C',
-                            90, '#FFFF66',
-                            100, '#FFFFCC'
-
-                            /* Fire color palette
-                            0, '#FF2000',
-                            95, '#FFFF00',
-                            100, '#FFFFCC'
-                                                        */                         
-                            /* Magma color palette
-                            0, '#000005',
-                            10, '#080616',
-                            15, '#110B2D',
-                            20, '#1E0848',
-                            25, '#300060',
-                            30, '#43006A',
-                            35, '#57096E',
-                            40, '#6B116F',
-                            45, '#81176D',
-                            50, '#981D69',
-                            55, '#B02363',
-                            60, '#C92D59',
-                            65, '#E03B50',
-                            70, '#ED504A',
-                            75, '#F66B4D',
-                            80, '#FA8657',
-                            85, '#FBA368',
-                            90, '#FBC17D',
-                            95, '#FCDF96',
-                            100, '#FCFFB2',       
-                            */                     
+                            0.0*max_legend_value, '#000005',
+                            0.1*max_legend_value, '#080616',
+                            0.2*max_legend_value, '#1E0848',
+                            0.3*max_legend_value, '#43006A',
+                            0.4*max_legend_value, '#6B116F',
+                            0.5*max_legend_value, '#981D69',
+                            0.6*max_legend_value, '#C92D59',
+                            0.7*max_legend_value, '#ED504A',
+                            0.8*max_legend_value, '#FA8657',
+                            0.9*max_legend_value, '#FBC17D',
+                            1.0*max_legend_value, '#FCFFB2'  
                            /* Viridis color palette 
                             0, '#440154',
                             10, '#481567',
@@ -1107,35 +1187,33 @@ map.addLayer({
                                 'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
-                            0, '#CC0000',
-                            10, '#D61900',
-                            20, '#E03300',
-                            30, '#EA4C00',
-                            40, '#F46600',
-                            50, '#FF8000',
-                            60, '#FF9F19',
-                            70, '#FFBF33',
-                            80, '#FFDF4C',
-                            90, '#FFFF66',
-                            100, '#FFFFCC'
+                                      0.0*max_legend_value, '#000005',
+                                      0.1*max_legend_value, '#080616',
+                                      0.2*max_legend_value, '#1E0848',
+                                      0.3*max_legend_value, '#43006A',
+                                      0.4*max_legend_value, '#6B116F',
+                                      0.5*max_legend_value, '#981D69',
+                                      0.6*max_legend_value, '#C92D59',
+                                      0.7*max_legend_value, '#ED504A',
+                                      0.8*max_legend_value, '#FA8657',
+                                      0.9*max_legend_value, '#FBC17D',
+                                      1.0*max_legend_value, '#FCFFB2'
 
                             ],
                                 'fill-opacity': [
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
-                                    0, 0.00,
-                                    10,0.5,
-                                    20,0.533,
-                                    30,0.567,
-                                    40,0.6,
-                                    50,0.633,
-                                    60,0.667,
-                                    70,0.7,
-                                    80,0.733,
-                                    90,0.767,
-                                    100, 0.8,
-
+                            0.0*max_legend_value, 0.6,
+                            0.2*max_legend_value, 0.6,
+                            0.3*max_legend_value, 0.6,
+                            0.4*max_legend_value, 0.6,
+                            0.5*max_legend_value, 0.6,
+                            0.6*max_legend_value, 0.6,
+                            0.7*max_legend_value, 0.6,
+                            0.8*max_legend_value, 0.6,
+                            0.9*max_legend_value, 0.6,
+                            1.0*max_legend_value, 0.6
                                 ]
 
                             }
@@ -1144,77 +1222,13 @@ map.addLayer({
 };
 
 
-
 map.on('load', function() {
   console.log("Adding initial data.");
   {% get_static_prefix as STATIC_URL %}
-{% for year in historic_data %}
-  map.addSource('{{year.year}}', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': {{ year.data|safe }}
-  });
-  map.addLayer({
-                            "id": '{{year.year}}',
-                            "type": 'fill',
-                            "source": '{{year.year}}',
-                            "layout": {
-                              'visibility':'none',
-                            },
-                            'paint': {
-                            'fill-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'outputs'],
-                            0, '#CC0000',
-                            10, '#D61900',
-                            20, '#E03300',
-                            30, '#EA4C00',
-                            40, '#F46600',
-                            50, '#FF8000',
-                            60, '#FF9F19',
-                            70, '#FFBF33',
-                            80, '#FFDF4C',
-                            90, '#FFFF66',
-                            100, '#FFFFCC'
-                            ],
-                            'fill-outline-color': [
-                                'interpolate',
-                                    ['linear'],
-                                    ['get', 'outputs'],
-                            0, '#CC0000',
-                            10, '#D61900',
-                            20, '#E03300',
-                            30, '#EA4C00',
-                            40, '#F46600',
-                            50, '#FF8000',
-                            60, '#FF9F19',
-                            70, '#FFBF33',
-                            80, '#FFDF4C',
-                            90, '#FFFF66',
-                            100, '#FFFFCC'
-                                ],
-                                'fill-opacity': [
-                                    'interpolate',
-                                    ['linear'],
-                                    ['get', 'outputs'],
-                                    0, 0.00,
-                                    0.5,0.5,
-                                    1,0.533,
-                                    1.5,0.567,
-                                    2,0.6,
-                                    2.5,0.633,
-                                    3,0.667,
-                                    3.5,0.7,
-                                    4,0.733,
-                                    4.5,0.767,
-                                    5, 0.8,
+    {% for year in historic_data %}
 
-                                ]
-
-                            }
-                            }, 'waterway-label'); 
-  {% endfor %}
+      newFireLayer({{ year.data|safe }}, '{{ year.year}}', max_occurence_number_for_legend);
+    {% endfor %}
     map.setLayoutProperty({{ historic_data.last.year }}, 'visibility', 'visible');
 
   console.log("Adding APHIS Perimeter Zone.");
@@ -1274,16 +1288,57 @@ console.log('Adding host map')
   });
 
 
+const CircleMode = MapboxDraw.modes.draw_point ;
 
 function set_draw_color(draw_color) {
   var draw = new MapboxDraw({
     keybindings: true,
     displayControlsDefault: false,
+    modes: Object.assign({
+      draw_circle: CircleMode,
+    }, MapboxDraw.modes),
     controls: {
       //polygon: true,
       //trash: true
     },
     styles: [
+    {
+      'id': 'circle-active',
+      'type': 'circle',
+      'filter': ['all',
+        ['==', '$type', 'Point'],
+        ['==', 'meta', 'feature'],
+        ['==', 'active', 'true']],
+      'paint': {
+        'circle-radius': 7,
+        'circle-color': draw_color,
+      }
+    },        
+    {
+      'id': 'circle-static',
+      'type': 'circle',
+      'filter': ['all',
+        ['==', '$type', 'Point'],
+        ['==', 'meta', 'feature'],
+        ['==', 'active', 'false']],
+      'paint': {
+        'circle-radius': 7,
+        'circle-color': draw_color,
+      }
+    },    
+    {
+      'id': 'highlight-active-points',
+      'type': 'circle',
+      'filter': ['all',
+        ['==', '$type', 'Point'],
+        ['==', 'meta', 'feature'],
+        ['==', 'active', 'true']],
+      'paint': {
+        'circle-radius': 7,
+        'circle-color': draw_color,
+      }
+    },
+
       // ACTIVE (being drawn)
       // line stroke
       {
@@ -1605,89 +1660,6 @@ map.on('draw.modechange', e => {
 
     gauge_plot("money-new", 0, $("input#id_budget").val());
 
-    function side_plot(myDiv, title, x1, x2, y1, y2, color, error_bar=true) {
-      var trace1 = {
-        x: x1,
-        y: y1,
-        error_y: {
-      type: 'percent',
-      value: 20,
-      visible: error_bar,
-    },
-        name: 'No management',
-        marker: {
-          color: 'grey'
-        },
-        fill: 'tozeroy',
-        type: 'scatter'
-      };
-
-      var trace2 = {
-        x: x2,
-        y: y2,
-    error_y: {
-      type: 'percent',
-      value: 30,
-      visible: error_bar,
-    },
-
-        name: 'Current run',
-        marker: {
-          color: color
-        },
-        fill: 'tozeroy',
-        type: 'scatter'
-      };
-
-      var data = [trace1, trace2];
-
-
-      var layout = {
-        xaxis: {
-          tickfont: {
-            size: 12,
-            color: 'rgb(107, 107, 107)'
-          }
-        },
-        yaxis: {
-          showticklabels: false,
-          title: title,
-          titlefont: {
-            size: 12,
-            color: 'white',
-          },
-
-          tickfont: {
-            size: 12,
-            color: 'rgb(107, 107, 107)'
-          }
-        },
-        showlegend: false,
-        paper_bgcolor: '#0b0d0e',
-        plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
-        margin: {
-          l: 30,
-          r: 20,
-          b: 25,
-          t: 10,
-          pad: 0
-        },
-      };
-
-      return Plotly.newPlot(myDiv, data, layout, {
-        displayModeBar: false,
-        responsive: true
-      });
-    };
-
-
-    var default_years = [2019, 2020, 2021];// 2022, 2023];
-    var x2 = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
-    var default_detections = [44201,159916,368383];//,599897,893903];
-    var default_area = [4750000000*acre_to_meter_ratio,12500000000*acre_to_meter_ratio,22200000000*acre_to_meter_ratio]; //,32900000000,48900000000]*acre_to_meter_ratio;
-    var y2 = [20, 30, 50, 100, 300, 400];
-    $(side_plot("main_plot1", '# occurences', default_years, x2, default_detections, y2, '#2598b8',error_bar=false));
-    $(side_plot("main_plot2", 'Occurence area', default_years, x2, default_area, y2, '#5fc2c2',error_bar=false));
 
     $('#hide_details_button').on('click', function () {
       var bounds = map.getBounds();
@@ -1716,8 +1688,6 @@ map.on('draw.modechange', e => {
 
 //Not sure if this is used anymore either
   $('#chart-view-tab').on('shown.bs.tab', function () {
-    $(side_plot("main_plot1", '# occurences', default_years, x2, default_detections, y2, '#2598b8'));
-    $(side_plot("main_plot2", 'Occurence area', default_years, x2, default_area, y2, '#5fc2c2'));
     });
 
 
@@ -1765,21 +1735,21 @@ $("#year-slider").change(function () {
   $("#displayYear").val(year_id);
   if (year_id > steering_year){
     $('#display_year_forecast').text('Forecast');
-    $('#legend_description').text('Probability of occurence');
-    $('#legend_label_left').text('0%');
-    $('#legend_label_right').text('100%');
+    $('#historic-legend-container').hide();
+    $('#occurence-legend-container').hide();
+    $('#probability-legend-container').show();
   }
   else if (year_id > {{ historic_data.last.year }}){
     $('#display_year_forecast').text('Current state');
-    $('#legend_description').text('Predicted occurrences');
-    $('#legend_label_left').text('0');
-    $('#legend_label_right').text('100');
+    $('#historic-legend-container').hide();
+    $('#occurence-legend-container').show();
+    $('#probability-legend-container').hide();  
   }
   else {
     $('#display_year_forecast').text('Field observations');
-    $('#legend_description').text('Number of detections');
-    $('#legend_label_left').text('0');
-    $('#legend_label_right').text('5+');
+    $('#historic-legend-container').show();
+    $('#occurence-legend-container').hide();
+    $('#probability-legend-container').hide();
   }
   console.log("Current displayed year: " + year_id);
   spread_rate_plot();
@@ -1816,10 +1786,6 @@ $.ajaxSetup({
         }
     },
 });
-
-function displayRun(run_id) {
-            get_output(run_id);
-};
 
 function disableDrawTools(){
   if ($("#draw-controls").is(":visible")){
@@ -1925,9 +1891,11 @@ function get_run_collection(run_collection_id) {
       console.log('Tangible landscape is on.')
       //hide run buttons
       $(".timeline-year-container").find(".submit_run_button").hide();
-      listen_for_new_runs(run_collection_id,most_recent_run);
       $("#tangible-landscape-listener-button").show();
-      //listen for new runs
+      $("#tangible-landscape-listener-button a").attr('data-value','true');
+      $("#tangible-landscape-listener-button a").text('Stop listening');     
+      listen_for_new_runs(run_collection_id,most_recent_run);
+ 
       //if new run, get output for new run
     }
     else {
@@ -1954,12 +1922,12 @@ function get_output(run_id) {
   $('#status-text span').text('Loading...');
   $("#status-indicator").show();
   $("#status-indicator-shading").show();
-  $("#year-slider").find('input').val('{{ historic_data.last.year }}'); //Need to add database info here
+  $("#year-slider").find('input').val('{{ historic_data.last.year }}'); 
   $("#year-slider input").attr('max', '{{ historic_data.last.year }}');
   $("#displayYear").val('{{ historic_data.last.year }}');
   map.setLayoutProperty('{{ historic_data.last.year }}', 'visibility', 'visible');
   //Make this loop a function of current slider max
-  for (i = {{steering_years | first }}; i < ({{ steering_years | last }} + 1); i++) { //Need to add database info here
+  for (i = {{steering_years | first }}; i < ({{ steering_years | last }} + 1); i++) { 
     if (map.getLayer(i.toString())) {
       map.removeLayer(i.toString());
     };
@@ -2014,9 +1982,12 @@ function get_output(run_id) {
         console.log("Year string: " + year_string);
         if (year > steering_year) {
           var map_data = data.results[i].probability_map;
+          newMagmaLayer(map_data, year_string,100);
+
         }
         else {
           var map_data = data.results[i].single_spread_map;
+          newFireLayer(map_data, year_string,max_occurence_number_for_legend);
         }
         console.log(map_data);
         year_list.push(data.results[i].year);
@@ -2032,20 +2003,13 @@ function get_output(run_id) {
             var run_collection_date = $('#input_date_created span').text(data.date_created);
             var run_collection_budget = $('#input_budget span').text(data.budget);
             var run_collection_efficacy = $('#input_efficacy span').text(data.efficacy);
-            var overall_management_cost = 1000000;
             insertRunButton(run_collection_pk, run_collection_name, run_collection_date, run_collection_description, run_collection_efficacy, data.results[i].number_infected, data.results[i].infected_area, data.total_management_cost);
             relayout_buttons(max_number,max_area,max_cost);
           }
         }
 
 
-        if (map.getLayer(year_string)) {
-          map.removeLayer(year_string);
-        };
-        if (map.getSource(year_string)) {
-          map.removeSource(year_string);
-        };
-        newLayer(map_data, year_string);
+
         if (year > max_year) {
           $("#year-slider input").attr('max', year.toString());
           max_year = year;
@@ -2092,11 +2056,10 @@ function get_output(run_id) {
         $("#year-slider").find('input').val(display_year.toString());
         $("#displayYear").val(display_year.toString());
         $('#display_year_forecast').text('Current state');
-        $('#legend_description').text('Predicted occurrences');
-        $('#legend_label_left').text('0');
-        $('#legend_label_right').text('100');
-
-          };
+        $('#historic-legend-container').hide();
+        $('#occurence-legend-container').show();
+        $('#probability-legend-container').hide();        
+      };
       var defaults = data.no_management_default;
       var steering_outputs = data.all_steering_years;
       budget_plot(defaults, steering_outputs);
@@ -2155,10 +2118,6 @@ function get_output(run_id) {
       };
 
 
-      //$( "#results-tab" ).trigger( "click" );
-      //$(side_plot("number_infected_side_plot", '# occurences', default_years, year_list, default_detections,infected_number_list, '#2598b8',error_bar=false));
-      //$(side_plot("area_infected_side_plot", 'Occurence area', default_years, year_list, default_area, infected_area_list, '#5fc2c2',error_bar=false));
-      //$(gauge_plot("money-results", data.run_inputs.management_cost, data.run_inputs.budget));
 
       {% comment %}
       if (!(document.getElementById("run_" + data.run_inputs.primary_key.toString()))) {
@@ -2300,15 +2259,6 @@ $("#host_map_checkbox input").on('change', function () {
     map.setLayoutProperty('host_map','visibility','none');
   }
 });
-
-
-{% comment %}     $(".run-link").on('click', function () {
-      $('#run-preview-container button').removeClass('active');
-      $(this).addClass('active');
-      var run_collection_id = $(this).attr('data-run-collection');
-      console.log("Run collection " + run_collection_id + " link clicked.");
-      get_run_collection(run_collection_id);
-    });     {% endcomment %}    
     
     $(".delete_run_collection").on('click', function () {
    //var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
@@ -2533,8 +2483,8 @@ $("#host_map_checkbox input").on('change', function () {
     
 function area_plot(defaults, steering_outputs) {
 
-  var initial_infected_area = 2000;
-  var initial_number_infected = 1900;
+  var initial_infected_area = {{historic_data.last.infected_area}};
+  var initial_number_infected = {{historic_data.last.number_infected}};
   var data_area = [];
   var data_number = [];
   var year_list = [];
@@ -2866,10 +2816,9 @@ $(function () {
   $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})
 })
 
-//$(side_plot("area_infected_side_plot", 'Occurence area', [2011,2012,2013,2014,2015], [2011,2012,2013,2014,2015], [100,200,300,400,600], [100,180,270,360,400], colors[0],error_bar=false));
 
 $('#test-get-output').on('click', function(event) {
-relayout_buttons(1000000,200000,300000);
+//relayout_buttons(1000000,200000,300000);
 });
 
 function spread_rate_plot() {
@@ -3010,7 +2959,9 @@ $( document ).ready(function() {
   relayout_buttons(max_number,max_area,max_cost);
 });
 
+
   </script>
+
   {% endblock %}
 
 </body>

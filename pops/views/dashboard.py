@@ -247,7 +247,7 @@ class NewRunView(CreateView):
 
 @method_decorator(ensure_csrf_cookie, name='get')
 class DashboardTestView(AjaxableResponseMixin, CreateView):
-    template_name = 'pops/dashboard/dashboard.html'
+    template_name = 'pops/dashboard/dashboard_test.html'
     form_class = RunCollectionForm
     success_url = 'new_session'
 
