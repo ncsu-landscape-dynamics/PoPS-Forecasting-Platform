@@ -431,20 +431,14 @@ div#run-preview-container {
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ebf1f6), color-stop(50%,#abd3ee), color-stop(51%,#89c3eb), color-stop(100%,#d5ebfb));
 }
 
-#draw-controls {
-      position: absolute;
-      top: 315px;
-      right: 10px;
-    }
-
     #money-new {
       position: absolute;
-      top: 170px;
+      top: 220px;
       right: 0px;
     }
     #displayed_management_area {
       position: absolute;
-      top: 355px;
+      top: 170px;
       width: 132px;
       right: 10px;
       font-size: 12px;
@@ -452,7 +446,7 @@ div#run-preview-container {
 #budget_background_layer {
   position: absolute;
   width: 132px;
-  height: 300px;
+  height: 270px;
   top: 95px;
   right: 10px;
   background-color: #191a1a;
@@ -463,7 +457,11 @@ div#run-preview-container {
       border-width: 2px;
       border-style: outset;
     }
-
+    #draw-controls {
+      position: absolute;
+      top: 375px;
+      right: 10px;
+    }
     #draw-controls button.active {
       border-style: inset;
     }

@@ -509,20 +509,20 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   </div>
 
                   <div>
-                  <div id="additional_map_checkboxes">
-                  <div id="SLF_buffer_zone_checkbox" class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" checked>
-                    <label class="form-check-label" for="defaultCheck1">
-                      SLF buffer zone
-                    </label>
-                  </div>
-                  <div id="host_map_checkbox" class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" checked>
-                    <label class="form-check-label" for="host_map_checkbox">
-                      Host Map
-                    </label>
-                  </div>
-                  </div>
+                    <div id="additional_map_checkboxes">
+                      <div id="SLF_buffer_zone_checkbox" class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" checked>
+                        <label class="form-check-label" for="defaultCheck1">
+                          SLF buffer zone
+                        </label>
+                      </div>
+                      <div id="host_map_checkbox" class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" checked>
+                        <label class="form-check-label" for="host_map_checkbox">
+                          Host Map
+                        </label>
+                      </div>
+                    </div>
 
                   </div>
                   <div id="budget_background_layer"></div>
@@ -544,10 +544,14 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   <div id="polygon-info">0.0 acres</div> 
                   </div>
                   <div id="money-new" class="col py-0" style="width:180px; height:140px"></div>
-                  <div id="draw-controls" class="btn-group" role="group" >
+                  <div id="draw-controls" class="btn-group-vertical" role="group" >
                   <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
-                  title="Draw management tool" data-placement="left">
+                  title="Draw management polygon" data-placement="left">
                   <i class="fas fa-draw-polygon"></i>
+                  </button>
+                  <button id="circle-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
+                  title="Draw 300m diameter circle" data-placement="left">
+                  <i class="far fa-dot-circle"></i>
                   </button>
                   <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
                   title="Selection tool" data-placement="left">
@@ -560,6 +564,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
 
                   </div>
                   <script>
+
                       $('#historic-legend-container').show();
                       $('#occurence-legend-container').hide();
                       $('#probability-legend-container').hide();
@@ -569,6 +574,12 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                         $(this).addClass('active');
                         draw.changeMode('draw_polygon');
                         console.log("Polygon tool selected to draw management.")
+                      }); 
+                      $("#circle-tool").on('click', function () {
+                        $('.drawing-tool').removeClass('active');
+                        $(this).addClass('active');
+                        draw.changeMode('draw_point');
+                        console.log("Circle tool selected to draw management.")
                       }); 
 
                       $("#select-tool").on('click', function () {
@@ -1026,7 +1037,7 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ o
   <script>
 
 </script>
-
+  <script src="{% static 'js/dashboard/custom_draw.js' %}"></script>
   <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
   <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
@@ -1214,10 +1225,10 @@ map.addLayer({
 map.on('load', function() {
   console.log("Adding initial data.");
   {% get_static_prefix as STATIC_URL %}
-{% for year in historic_data %}
+    {% for year in historic_data %}
 
       newFireLayer({{ year.data|safe }}, '{{ year.year}}', max_occurence_number_for_legend);
-  {% endfor %}
+    {% endfor %}
     map.setLayoutProperty({{ historic_data.last.year }}, 'visibility', 'visible');
 
   console.log("Adding APHIS Perimeter Zone.");
@@ -1277,16 +1288,80 @@ console.log('Adding host map')
   });
 
 
+const CircleMode = MapboxDraw.modes.draw_point ;
+
+CircleMode.onSetup = function(opts) {
+  var state = {};
+  return state;
+};
+
+CircleMode.onClick = function(state,e) {
+  console.log('CIRCLE MODE CLICKED')
+  const circleFeature = createGeoJSONCircle([e.lngLat.lng, e.lngLat.lat], 0.15);
+  var circle1 = this.newFeature(circleFeature);
+  this.addFeature(circle1); // puts the point on the map
+  this.map.fire("draw.create");
+};
+
+CircleMode.onStop = function(state,e) {
+  this.map.fire("draw.create");
+  console.log('CIRCLE MODE STOPPED');
+};
+
+CircleMode.toDisplayFeatures = function(state, geojson, display) {
+  display(geojson);
+};
+
 
 function set_draw_color(draw_color) {
   var draw = new MapboxDraw({
     keybindings: true,
     displayControlsDefault: false,
+    modes: Object.assign({
+      draw_circle: CircleMode,
+    }, MapboxDraw.modes),
     controls: {
       //polygon: true,
       //trash: true
     },
     styles: [
+    {
+      'id': 'circle-active',
+      'type': 'circle',
+      'filter': ['all',
+        ['==', '$type', 'Point'],
+        ['==', 'meta', 'feature'],
+        ['==', 'active', 'true']],
+      'paint': {
+        'circle-radius': 7,
+        'circle-color': draw_color,
+      }
+    },        
+    {
+      'id': 'circle-static',
+      'type': 'circle',
+      'filter': ['all',
+        ['==', '$type', 'Point'],
+        ['==', 'meta', 'feature'],
+        ['==', 'active', 'false']],
+      'paint': {
+        'circle-radius': 7,
+        'circle-color': draw_color,
+      }
+    },    
+    {
+      'id': 'highlight-active-points',
+      'type': 'circle',
+      'filter': ['all',
+        ['==', '$type', 'Point'],
+        ['==', 'meta', 'feature'],
+        ['==', 'active', 'true']],
+      'paint': {
+        'circle-radius': 7,
+        'circle-color': draw_color,
+      }
+    },
+
       // ACTIVE (being drawn)
       // line stroke
       {
@@ -2007,7 +2082,7 @@ function get_output(run_id) {
         $('#historic-legend-container').hide();
         $('#occurence-legend-container').show();
         $('#probability-legend-container').hide();        
-          };
+      };
       var defaults = data.no_management_default;
       var steering_outputs = data.all_steering_years;
       budget_plot(defaults, steering_outputs);
@@ -2907,7 +2982,9 @@ $( document ).ready(function() {
   relayout_buttons(max_number,max_area,max_cost);
 });
 
+
   </script>
+
   {% endblock %}
 
 </body>
