@@ -549,10 +549,16 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   title="Draw management polygon" data-placement="left">
                   <i class="fas fa-draw-polygon"></i>
                   </button>
-                  <button id="circle-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
-                  title="Draw 300m diameter circle" data-placement="left">
-                  <i class="far fa-dot-circle"></i>
-                  </button>
+                  <div class="btn-group" role="group" data-toggle="tool" 
+                  title="Draw circle" data-placement="left">
+                    <button id="btnGroupCircles" type="button" class="btn btn-default drawing-tool dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="far fa-dot-circle"></i>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupCircles">
+                      <a id="300ft-circle-tool" class="dropdown-item" href="#">300ft</a>
+                      <a id="600ft-circle-tool" class="dropdown-item" href="#">600ft</a>
+                    </div>
+                  </div>
                   <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
                   title="Selection tool" data-placement="left">
                   <i class="fas fa-hand-paper"></i>
@@ -575,10 +581,19 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                         draw.changeMode('draw_polygon');
                         console.log("Polygon tool selected to draw management.")
                       }); 
-                      $("#circle-tool").on('click', function () {
+                      $("#300ft-circle-tool").on('click', function () {
                         $('.drawing-tool').removeClass('active');
-                        $(this).addClass('active');
-                        draw.changeMode('draw_point');
+                        $('#btnGroupCircles').addClass('active');
+                        management_circle_radius = 0.09144; //300ft in km
+                        draw.changeMode('draw_circle');
+                        console.log("Circle tool selected to draw management.")
+                      }); 
+
+                      $("#600ft-circle-tool").on('click', function () {
+                        $('.drawing-tool').removeClass('active');
+                        $('#btnGroupCircles').addClass('active');
+                        management_circle_radius = 0.18288; //600ft in km
+                        draw.changeMode('draw_circle');
                         console.log("Circle tool selected to draw management.")
                       }); 
 
@@ -1288,7 +1303,8 @@ console.log('Adding host map')
   });
 
 
-const CircleMode = MapboxDraw.modes.draw_point ;
+var management_circle_radius = 0.04572; //default management radius in km
+const CircleMode = {};
 
 CircleMode.onSetup = function(opts) {
   var state = {};
@@ -1297,7 +1313,7 @@ CircleMode.onSetup = function(opts) {
 
 CircleMode.onClick = function(state,e) {
   console.log('CIRCLE MODE CLICKED')
-  const circleFeature = createGeoJSONCircle([e.lngLat.lng, e.lngLat.lat], 0.15);
+  const circleFeature = createGeoJSONCircle([e.lngLat.lng, e.lngLat.lat], management_circle_radius);
   var circle1 = this.newFeature(circleFeature);
   this.addFeature(circle1); // puts the point on the map
   this.map.fire("draw.create");
