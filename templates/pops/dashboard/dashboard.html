@@ -510,12 +510,12 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
 
                   <div>
                     <div id="additional_map_checkboxes">
-                      <div id="SLF_buffer_zone_checkbox" class="form-check">
+{% comment %}                       <div id="SLF_buffer_zone_checkbox" class="form-check">
                         <input class="form-check-input" type="checkbox" value="" checked>
                         <label class="form-check-label" for="defaultCheck1">
                           SLF buffer zone
                         </label>
-                      </div>
+                      </div> {% endcomment %}
                       <div id="host_map_checkbox" class="form-check">
                         <input class="form-check-input" type="checkbox" value="" checked>
                         <label class="form-check-label" for="host_map_checkbox">
@@ -1246,7 +1246,7 @@ map.on('load', function() {
     {% endfor %}
     map.setLayoutProperty({{ historic_data.last.year }}, 'visibility', 'visible');
 
-  console.log("Adding APHIS Perimeter Zone.");
+  {% comment %} console.log("Adding APHIS Perimeter Zone.");
     map.addSource('perimeter_zone', {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
@@ -1266,9 +1266,8 @@ map.on('load', function() {
                             ],
                             'fill-opacity': 0.1
                             }
-                            }, 'waterway-label'); 
+                            }, 'waterway-label');  {% endcomment %}
 
-{% comment %} 
 console.log('Adding host map')
     map.addSource('host_map', {
     'type': 'geojson',
@@ -1296,7 +1295,6 @@ console.log('Adding host map')
                                 ]
                             }
                             }, 'waterway-label'); 
- {% endcomment %}
   default_run = {{ session.default_run }};
   console.log(default_run);
   get_output(default_run);                      
@@ -2277,7 +2275,7 @@ $("input#id_tangible_landscape").on('change', function () {
   }
 });
 
-$("#SLF_buffer_zone_checkbox input").on('change', function () {
+{% comment %} $("#SLF_buffer_zone_checkbox input").on('change', function () {
   if ($('#SLF_buffer_zone_checkbox input').prop('checked')){
     console.log('Show SLF buffer zone');
     map.setLayoutProperty('perimeter_zone_layer','visibility','visible');
@@ -2286,7 +2284,7 @@ $("#SLF_buffer_zone_checkbox input").on('change', function () {
     console.log('Hide SLF buffer zone');
     map.setLayoutProperty('perimeter_zone_layer','visibility','none');
   }
-});
+}); {% endcomment %}
 
 $("#host_map_checkbox input").on('change', function () {
   if ($('#host_map_checkbox input').prop('checked')){

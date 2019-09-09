@@ -193,12 +193,12 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             except:
                 historic_data = None   
             
-            #try:
-                #host = HostData.objects.filter(host__case_study=case_study).values('host_map').first()
-                #host_map = host['host_map']
-            #except:
-                #host = None
-                #host_map = None
+            try:
+                host = HostData.objects.filter(host__case_study=case_study).values('host_map').first()
+                host_map = host['host_map']
+            except:
+                host = None
+                host_map = None
 
             print(session)
             steering_years = range(case_study.end_year +1, session.final_year+1)
@@ -208,7 +208,7 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             context['historic_data'] = historic_data
             context['steering_years'] = steering_years
             context['run_collections'] = run_collections
-            #context['host_map'] = host_map
+            context['host_map'] = host_map
             return context
 
 @method_decorator(csrf_exempt, name='post')
