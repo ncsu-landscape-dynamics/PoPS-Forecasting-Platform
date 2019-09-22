@@ -698,7 +698,7 @@ $("#status-indicator").hide();
                                 <div class="input-group-prepend">
                                   <span class="input-group-text">$</span>
                                 </div>
-                                <input type="number" name="budget" value="30000000" min="0" step="0.01" data-toggle="tooltip"
+                                <input type="number" name="budget" value="1500000" min="0" step="0.01" data-toggle="tooltip"
                                   data-placement="top" title="Allowed budget" data-container="body" class="form-control"
                                   id="id_budget">
                               </div>
@@ -709,7 +709,7 @@ $("#status-indicator").hide();
                                 <div class="input-group-prepend">
                                   <span class="input-group-text">$</span>
                                 </div>
-                                <input type="number" name="display_cost" value="1530" min="0" data-toggle="tooltip"
+                                <input type="number" name="display_cost" value="5000" min="0" data-toggle="tooltip"
                                   data-placement="top" title="Cost per area" data-container="body"
                                   class="form-control" id="id_cost">
                               </div>
@@ -1729,7 +1729,22 @@ map.on('draw.modechange', e => {
 
 
 
-$( "input#id_budget, input#id_cost, select#id_area_unit" ).on( "click blur", function() {
+$( "input#id_budget, input#id_cost, select#id_area_unit" ).on( "click blur load", function() {
+  var displayed_cost_per_area = $('input#id_cost').val();
+  console.log("The displayed cost is: " + displayed_cost_per_area);
+  var cost_modifier =  $("select#id_area_unit").children("option:selected").val();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
+  var area_unit =  $("select#id_area_unit").children("option:selected").text();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
+  console.log("The cost modifier is: " + cost_modifier);
+  var actual_cost_per_meter_squared = Math.round(displayed_cost_per_area*cost_modifier*100000000)/100000000;
+  console.log("The actual cost per meter squared is: " + actual_cost_per_meter_squared);
+  $('input#id_cost_per_meter_squared').val(actual_cost_per_meter_squared);
+  $('span.displayed_area_unit').text(area_unit);
+updateArea();
+});
+
+//Redundant function here doing the same thing as above, just on load to make sure 
+// the budget and cost are correct. Need to clean this up later.
+$(document).ready(function(){
   var displayed_cost_per_area = $('input#id_cost').val();
   console.log("The displayed cost is: " + displayed_cost_per_area);
   var cost_modifier =  $("select#id_area_unit").children("option:selected").val();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
