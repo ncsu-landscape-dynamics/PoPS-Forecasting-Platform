@@ -2431,7 +2431,7 @@ $("#host_map_checkbox input").on('change', function () {
             console.log('New session id: ' + session_id); 
             console.log('New run collection id: ' + new_run_collection_id); 
             console.log('New run id: ' + new_run_id); 
-            var base_url = "https://testing2-dot-pops-model-api.appspot.com/status?"
+            var base_url = "https://pops-model-api.appspot.com/status?"
             //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = (base_url + "run_id=" + new_run_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&session_id=" + session_id.toString() + "&case_study_id=" + case_study_id.toString()); //base_url.concat(new_run_id.toString());
             console.log(run_url);
