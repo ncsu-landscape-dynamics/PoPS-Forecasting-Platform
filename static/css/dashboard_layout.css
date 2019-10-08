@@ -1,3 +1,16 @@
+
+#session_title, #case_study_title, #main_menu a, #session_title a {
+  color:#a0a8bd;
+}
+
+#main_menu div {
+  border-color: #a0a8bd;
+}
+
+#main_menu a:hover, #session_title a:hover {
+  color:white;
+}
+
 #side-bar a.nav-link, #side-bar-filler {
   padding:0.5;
   color:#a0a8bd;
@@ -28,9 +41,157 @@
 height:100%;
 }
 
+#timeline {
+  height: 90px;
+  max-height: 90px;
+  background-color: #191a1a;
+}
+
+#flex-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 0 auto;
+  padding-top: 10px;
+}
+
+.timeline-year-container {
+  width: 80px;
+}
+.timeline-arrow {
+  color: #454545;
+  width: 40px;
+  padding-top:32px;
+  font-size:28px;
+}
+
+.management_complete + .timeline-arrow {
+  color: white;
+}
+
+.timeline-buttons {
+  height: 30px;
+  width: 80px;
+  margin-bottom:0px;
+  position: relative;
+}
+.timeline-buttons span.completed_management_buttons{
+  position: absolute;
+  bottom: -5px;
+  left:15px;
+  font-size: 16px;
+}
+.timeline-buttons span.submit_run_button{
+  position: absolute;
+  bottom: -10px;
+  left:20px;
+  font-size: 35px;
+}
+
+.timeline-buttons span.submit_run_button button{
+  outline: none;
+}
+
+.timeline-buttons span a{
+  padding:2px;
+  opacity: 0.8
+}
+.timeline-buttons span a:hover{
+  opacity: 1.0
+}
+
+
+.management_not_started .completed_management_buttons, 
+.management_active .completed_management_buttons, 
+.management_not_started .submit_run_button,
+.management_complete .submit_run_button {
+  visibility: hidden;
+}
+
+.timeline-visibility {
+  color: #454545;
+}
+.timeline-edit, .timeline-edit:hover {
+  color: #454545;
+}
+
+.timeline-year {
+  margin:0px;  
+}
+.timeline-year a {
+  color: #454545;
+  font-size: 30px;
+  padding-top:0px;
+}
+
+
+
+.submit_run_button button {
+  background-color: transparent;
+  border: none;
+}
+.year-1 .timeline-year a, .year-1 .timeline-visibility, .year-1 .submit_run_button button {
+  color:#C6F761;
+}
+.year-2 .timeline-year a, .year-2 .timeline-visibility, .year-2 .submit_run_button button {
+  color:#61F785;
+}
+.year-3 .timeline-year a, .year-3 .timeline-visibility, .year-3 .submit_run_button button {
+  color:#61F7E8;
+}
+.year-4 .timeline-year a, .year-4 .timeline-visibility, .year-4 .submit_run_button button {
+  color:#61A4F7;
+}
+.year-5 .timeline-year a, .year-5 .timeline-visibility, .year-5 .submit_run_button button {
+  color:#8D61F7;
+}
+.year-6 .timeline-year a, .year-6 .timeline-visibility, .year-6 .submit_run_button button {
+  color:#E361F7;
+}
+
+.management_not_started .timeline-year a, .management_not_started .timeline-visibility {
+  color: #454545;
+}
+
+.management_complete.year_active .timeline-year a {
+  color: #0b0d0e;
+  padding-left:5px;
+  padding-right:5px;
+  border-radius: 7px;
+}
+
+.year-0.management_complete.year_active .timeline-year a {
+  background-color:#454545;
+}
+.year-1.management_complete.year_active .timeline-year a {
+  background-color:#C6F761;
+}
+.year-2.management_complete.year_active .timeline-year a {
+  background-color:#61F785;
+}
+.year-3.management_complete.year_active .timeline-year a {
+  background-color:#61F7E8;
+}
+.year-4.management_complete.year_active .timeline-year a {
+  background-color:#61A4F7;
+}
+.year-5.management_complete.year_active .timeline-year a {
+  background-color:#8D61F7;
+}
+.year-6.management_complete.year_active .timeline-year a {
+  background-color:#E361F7;
+}
+.management_active .timeline-year a, .management_not_started .timeline-year a {
+  pointer-events: none;
+  cursor: default;
+}
+
+.management_hidden .timeline-visibility, .management_hidden .timeline-year a {
+  opacity: 0.5;
+}
 #map.large_map {
-  height: calc(100vh - 60px);
-  max-height: calc(800px - 60px)
+  height: calc(100vh - 150px);
+  max-height: calc(800px - 150px)
 }
 
 #run-title, #run-preview-description {
@@ -64,6 +225,20 @@ height:100%;
   height: 100%;
 }
 
+#run-button-set button, #hide_details_button {
+  background-color: transparent;
+  color:#a0a8bd;
+}
+#run-button-set {
+float:right;
+}
+#run-button-set button:hover, #hide_details_button:hover {
+  background-color: transparent;
+  color: white;
+}
+div#run-collection-name {
+  color:#a0a8bd;
+}
 .box .row {
   border: 1px dotted grey;
 }
@@ -130,13 +305,19 @@ div#run-preview-container {
       
   #historic-legend-container, #probability-legend-container {
     position: absolute;
-    top: 40px;
+    top: 120px;
     left: 10px;
   }
-
+#show_details_button {
+    position: absolute;
+    top: 5px;
+    right: 0px;
+    background-color: transparent;
+    color:#a0a8bd;
+  }
   #display_year_forecast {
     position: absolute;
-    top: 10px;
+    top: 90px;
     left: 10px;
   }
   #SLF_buffer_zone_checkbox {
@@ -156,19 +337,118 @@ div#run-preview-container {
     font-size:0.8em;
     }
 
-    #year-slider, #year-slider2 {
+    #year-slider-container {
       position: absolute;
-      top: 10px;
-      right: 60px;
-      width:200px;
+      width: 132px;
+      height: 100px;
+      top: 95px;
+      right: 10px;    
     }
+    #year-slider {
+      width: 120px;
+	height: 17px;
+  position: relative;
+  margin: auto;
+	
+	
+	-webkit-border-radius: 40px;
+	-moz-border-radius: 40px;
+	border-radius: 40px;
+    }
+#display_year_label {
+  text-align: center;
+  color: white;
+  font-size: 30px;
+}
 
-    #draw-controls {
+#year-slider .year-range {
+  width: 110px;
+  height: 5px;
+	position: absolute;
+	top: 6px;
+	left: 5px;	
+	-webkit-border-radius: 40px;
+	-moz-border-radius: 40px;
+  border-radius: 40px;
+}
+#year-slider .slider-bar {
+	height: 5px;
+	position: absolute;
+	width: 110px;
+	top: 6px;
+	left: 5px;
+	background: #555555;
+}
+.slider-bar-colors {
+  float:left;
+  height:5px;
+}
+#year-slider .historic-years {
+  background: #555555;
+}
+#year-slider .managed-years {
+  background: #555555;
+}
+#year-slider .forecast-years {
+  background: #555555;
+}
+
+
+#year-slider input[type="range"] {
+	-webkit-appearance: none;
+	background-color: transparent;
+  height: 5px;
+  border-radius: 10px;
+}
+
+#year-slider input[type="range"]:focus{
+  outline:none;
+}
+
+#year-slider input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+  position: relative;
+	top: 0px;
+	z-index: 1;
+	width: 12px;
+	height: 12px;
+	cursor: pointer;
+	-webkit-box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.6);
+	-moz-box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.6);
+	box-shadow: 0px 6px 5px 0px rgba(0,0,0,0.6);
+	-webkit-border-radius: 40px;
+	-moz-border-radius: 40px;
+	border-radius: 40px;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ebf1f6), color-stop(50%,#abd3ee), color-stop(51%,#89c3eb), color-stop(100%,#d5ebfb));
+}
+
+#draw-controls {
       position: absolute;
-      top: 10px;
+      top: 315px;
       right: 10px;
     }
 
+    #money-new {
+      position: absolute;
+      top: 170px;
+      right: 0px;
+    }
+    #displayed_management_area {
+      position: absolute;
+      top: 355px;
+      width: 132px;
+      right: 10px;
+      font-size: 12px;
+    }
+#budget_background_layer {
+  position: absolute;
+  width: 132px;
+  height: 300px;
+  top: 95px;
+  right: 10px;
+  background-color: #191a1a;
+  opacity: 0.7;
+}
     .drawing-tool {
       border-radius: 0px;
       border-width: 2px;
@@ -188,6 +468,19 @@ div#run-preview-container {
       width: 100%;
       height: 100%;
             }
+
+    #tangible-landscape-indicator {
+      position: absolute;
+      color:white;
+      font-size:25px;
+      left: 50%;
+      top: 50%;
+      width: 400px;
+      margin-top:-125px;
+      margin-left: -200px;
+      height: 250px;
+            }
+        
     #status-indicator {
       position: absolute;
       font-size: 1.5em;
@@ -230,8 +523,11 @@ div#run-preview-container {
     background-color: grey;
     border-width: 2px;
     border-color: #212529;
-
   }
+#efficiency input {
+  background-color: transparent;
+  border-width: 0px;
+}
 
 #budget label.btn.active {
     background-color: #5fc782;

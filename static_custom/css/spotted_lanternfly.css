@@ -1,0 +1,54 @@
+#budget {
+    background-color: #0b0d0e;
+
+  }
+
+#budget label.btn, #management-area label.btn, #efficiency label.btn {
+    padding:0.5;
+    color:white;
+    background-color: grey;
+    border-width: 3px;
+    border-color: #212529;
+
+  }
+
+#budget label.btn.active {
+    background-color: #5fc782;
+    border-color: #5fc782;
+}
+
+#management-area label.btn.active {
+    background-color: #f5a61d;
+    border-color: #f5a61d;
+}
+#efficiency label.btn.active {
+    background-color: #f55949;
+    border-color: #f55949;
+}
+
+#legend-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+
+}
+.legend-color {
+  height: 10px;
+  width: 20px;
+  float:left;
+}
+
+.legend-label {
+font-size:0.8em;
+}
+
+#run-details {
+  background-color: #0b0d0e;
+  border-width: 3px;
+  border-style: outset;
+  border-color: #212529;
+  height: calc(100vh - 60px);
+  max-height: calc(800px - 60px);
+  overflow-y: auto;
+
+}
