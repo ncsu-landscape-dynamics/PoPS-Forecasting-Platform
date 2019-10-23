@@ -205,7 +205,7 @@ class SessionSerializer(serializers.ModelSerializer):
 class RunSerializer(serializers.ModelSerializer):
     class Meta:
         model = Run
-        fields = '__all__'
+        exclude = ['management_polygons']
 
 class RunCollectionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -260,6 +260,7 @@ class RunCollectionDetailSerializer(serializers.ModelSerializer):
         model = RunCollection
         fields = '__all__'
 
+    run_set=RunSerializer(many=True)
     second_most_recent_run = serializers.SerializerMethodField()
 
     def get_second_most_recent_run(self, obj):
