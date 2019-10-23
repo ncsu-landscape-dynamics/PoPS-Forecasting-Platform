@@ -235,7 +235,7 @@ class SessionDetailSerializer(serializers.ModelSerializer):
 
     runcollection_count = serializers.SerializerMethodField()
     most_recent_runcollection = serializers.SerializerMethodField()
-    #runcollection_set=RunCollectionSerializer(many=True)
+    runcollection_set=RunCollectionSerializer(many=True)
     #second_most_recent_runcollection = serializers.SerializerMethodField()
 
     def get_runcollection_count(self, obj):
