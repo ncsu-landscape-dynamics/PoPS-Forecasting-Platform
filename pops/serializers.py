@@ -235,6 +235,7 @@ class SessionDetailSerializer(serializers.ModelSerializer):
 
     runcollection_count = serializers.SerializerMethodField()
     most_recent_runcollection = serializers.SerializerMethodField()
+    runcollection_set=RunCollectionSerializer(many=True)
     #second_most_recent_runcollection = serializers.SerializerMethodField()
 
     def get_runcollection_count(self, obj):
@@ -272,13 +273,21 @@ class RunCollectionDetailSerializer(serializers.ModelSerializer):
         else:
             return 'null'
 
+
+class OutputPKSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Output
+        fields = ['pk', 'number_infected', 'infected_area', 'year', 'escape_probability', 'spreadrate', 'distancetoboundary', 'timetoboundary']
+
 class RunDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Run
         fields = '__all__'
 
     output_initial_year = serializers.SerializerMethodField()
-
+    output_set=OutputPKSerializer(many=True)
+            
     def get_output_initial_year(self, obj):
         if obj.output_set.exists():
             return obj.output_set.order_by('pk')[0].pk
