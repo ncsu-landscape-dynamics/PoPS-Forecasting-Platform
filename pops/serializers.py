@@ -256,6 +256,33 @@ class SessionDetailSerializer(serializers.ModelSerializer):
             else:
                 return 'null'
 
+class SessionModelWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Session
+        fields = '__all__'
+
+    runcollection_count = serializers.SerializerMethodField()
+    most_recent_runcollection = serializers.SerializerMethodField()
+    #second_most_recent_runcollection = serializers.SerializerMethodField()
+
+    def get_runcollection_count(self, obj):
+        return obj.runcollection_set.count()
+
+    def get_most_recent_runcollection(self, obj):
+        if obj.runcollection_set.exists():
+            return obj.runcollection_set.order_by('-pk')[0].pk
+        else:
+            return 'null'
+
+    def get_second_most_recent_runcollection(self, obj):
+            if obj.runcollection_set.exists():
+                if obj.runcollection_set.count() > 1:
+                    return obj.runcollection_set.order_by('-pk')[1].pk
+                else: 
+                    return obj.runcollection_set.order_by('-pk')[0].pk
+            else:
+                return 'null'
+
 class RunCollectionDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = RunCollection
@@ -273,6 +300,21 @@ class RunCollectionDetailSerializer(serializers.ModelSerializer):
         else:
             return 'null'
 
+class RunCollectionModelWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RunCollection
+        fields = '__all__'
+
+    second_most_recent_run = serializers.SerializerMethodField()
+
+    def get_second_most_recent_run(self, obj):
+        if obj.run_set.exists():
+            if obj.run_set.count() > 1:
+                return obj.run_set.order_by('-pk')[1].pk
+            else: 
+                return obj.run_set.order_by('-pk')[0].pk
+        else:
+            return 'null'
 
 class OutputPKSerializer(serializers.ModelSerializer):
 
@@ -287,6 +329,19 @@ class RunDetailSerializer(serializers.ModelSerializer):
 
     output_initial_year = serializers.SerializerMethodField()
     output_set=OutputPKSerializer(many=True)
+            
+    def get_output_initial_year(self, obj):
+        if obj.output_set.exists():
+            return obj.output_set.order_by('pk')[0].pk
+        else:
+            return 'null'
+            
+class RunModelWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Run
+        fields = '__all__'
+
+    output_initial_year = serializers.SerializerMethodField()
             
     def get_output_initial_year(self, obj):
         if obj.output_set.exists():
