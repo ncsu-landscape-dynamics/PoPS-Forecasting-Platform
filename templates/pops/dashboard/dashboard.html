@@ -1883,6 +1883,9 @@ function enableDrawTools(){
 var most_recent_run = 0;
 
 function get_run_collection(run_collection_id) {
+  $('#tangible-landscape-listener-button a').attr('data-value','false');
+  console.log("Changing value of TL listener to false.");
+  $('#tangible-landscape-listener-button a').text('Resume listening');  
   console.log('Getting run collection for run_collection:' + run_collection_id);
   $.ajax({
     url: "{% url 'get_run_collection' %}",
@@ -2241,39 +2244,41 @@ function poll(new_run_id) {
   }, 2000);
 };
 
-function listen_for_new_runs(run_collection_id,most_recent_run) {
+function listen_for_new_runs(run_collection_id, most_recent_run) {
   $('#tangible-landscape-indicator').fadeIn();
+  var active_run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
+  console.log('Active run collection id = ' + active_run_collection_id);
   var continue_listening = $('#tangible-landscape-listener-button a').attr('data-value');
-  setTimeout(function () {
-    $.ajax({
-      url: "{% url 'check_for_new_TL_run' %}",
-      dataType: "json",
-      data: {
-        'run_collection_id': run_collection_id
-      },
-      success: function (data) {
-        console.log("The most recent run for run_collection " + run_collection_id + " is: " + data.most_recent_run_pk);
-        //Check if the most_recent_run has changed, update dashboard if it has.
-        $('#tangible-landscape-indicator').fadeOut("slow");
-        if (most_recent_run != data.most_recent_run_pk) {
-          get_run_collection(run_collection_id);
-        }
-        else if (continue_listening == 'false') {
-          console.log("Exiting TL listening loop.")
-          $('#tangible-landscape-listener-button a').attr('data-value');
-        }
-        else {
-        //Setup the next poll recursively
-        listen_for_new_runs(run_collection_id,data.most_recent_run_pk);
-        }
-      },
-      error : function(xhr,errmsg,err) {
-      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
-      + "\nThere was a problem listening for the results of the model run... the simulation is most likely still running. Try refreshing the page in 1-2 minutes.");
+  if (active_run_collection_id == run_collection_id) {
+    setTimeout(function () {
+      $.ajax({
+        url: "{% url 'check_for_new_TL_run' %}",
+        dataType: "json",
+        data: {
+          'run_collection_id': run_collection_id
+        },
+        success: function (data) {
+          console.log("The most recent run for run_collection " + run_collection_id + " is: " + data.most_recent_run_pk);
+          //Check if the most_recent_run has changed, update dashboard if it has.
+          $('#tangible-landscape-indicator').fadeOut("slow");
+          if (most_recent_run != data.most_recent_run_pk) {
+            get_run_collection(run_collection_id);
+          } else if (continue_listening == 'false') {
+            console.log("Exiting TL listening loop.")
+            $('#tangible-landscape-listener-button a').attr('data-value');
+          } else {
+            //Setup the next poll recursively
+            listen_for_new_runs(run_collection_id, data.most_recent_run_pk);
+          }
+        },
+        error: function (xhr, errmsg, err) {
+          alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText +
+            "\nThere was a problem listening for the results of the model run... the simulation is most likely still running. Try refreshing the page in 1-2 minutes.");
           console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-      }
-    });
-  }, 2000);
+        }
+      });
+    }, 2000);
+  };
 };
 
 //Changes to the page for tangible landscape.
