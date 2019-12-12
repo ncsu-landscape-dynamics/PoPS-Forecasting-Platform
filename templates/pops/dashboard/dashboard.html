@@ -508,6 +508,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                     </div>
                   </div>
 
+
                   <div>
                     <div id="additional_map_checkboxes">
 {% comment %}                       <div id="SLF_buffer_zone_checkbox" class="form-check">
@@ -574,6 +575,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                       $('#historic-legend-container').show();
                       $('#occurence-legend-container').hide();
                       $('#probability-legend-container').hide();
+                      $('#eradication_container').hide();
 
                       $("#polygon-tool").on('click', function () {
                         $('.drawing-tool').removeClass('active');
@@ -623,9 +625,23 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   </div>
                   <button id="cancel-polling" class="btn btn-dark" type="button" data-value='false' >Cancel</button>
                   </div>
-<script>
+                  
+                  <div id="eradication-status-indicator" class="text-center">
+                  <div id="eradication_container" class="">
+                      Eradication successful in <span></span> <sup><a id="eradication-status-close-button"  href="#">&times;</a></sup>
+
+                  </div>
+                  </div>
+                  
+                  <script>
 $("#tangible-landscape-indicator").hide();
 $("#tangible-landscape-listener-button").hide();
+$("#eradication-status-indicator").hide();
+$("a#eradication-status-close-button").on('click', function () {
+      console.log("Close button clicked.");
+$("#eradication-status-indicator").hide();
+
+    });   
 
 $("button#cancel-polling").hide();
 
@@ -2542,6 +2558,7 @@ $("#host_map_checkbox input").on('change', function () {
 
     
 function area_plot(defaults, steering_outputs) {
+$("#eradication-status-indicator").hide();
 
   var initial_infected_area = {{historic_data.last.infected_area}};
   var initial_number_infected = {{historic_data.last.number_infected}};
@@ -2550,6 +2567,7 @@ function area_plot(defaults, steering_outputs) {
   var year_list = [];
   var infected_area_list = [];
   var number_infected_list = [];
+  var eradication_check = false;
   for (var j = -1; j < defaults.output.length; j++) {
     if (j == -1) {
       year_list.push(defaults.output[0].year);
@@ -2614,6 +2632,19 @@ function area_plot(defaults, steering_outputs) {
         year_list.push(steering_outputs[i].output[j].year + 1);
         infected_area_list.push(steering_outputs[i].output[j].infected_area*acre_to_meter_ratio);
         number_infected_list.push(steering_outputs[i].output[j].number_infected);
+        if (eradication_check == false) {
+          console.log('ERADICATION IS FALSE');
+          console.log(steering_outputs[i].output[j].number_infected);
+          if (steering_outputs[i].output[j].number_infected == 0) {
+            console.log('NUMBER INFECTED IS ZERO')
+            console.log('YEAR IT HAPPENED IS' + steering_outputs[i].output[j].year)
+            eradication_check = true;
+            $("#eradication-status-indicator").show();
+            $('#eradication_container span').text(steering_outputs[i].output[j].year);
+            
+
+          }
+        };
       }
     };
 
