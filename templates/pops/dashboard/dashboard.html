@@ -1072,6 +1072,7 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ o
 
 var year_id = '0';
 var max_occurence_number_for_legend = {{ session.max_value }};
+var map_fill_opacity = 0.6;
 
 function newFireLayer(map_data,year,max_legend_value) {
 console.log("Adding new layer for year " + year);
@@ -1126,16 +1127,17 @@ map.addLayer({
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
-                            0.0*max_legend_value, 0.6,
-                            0.2*max_legend_value, 0.6,
-                            0.3*max_legend_value, 0.6,
-                            0.4*max_legend_value, 0.6,
-                            0.5*max_legend_value, 0.6,
-                            0.6*max_legend_value, 0.6,
-                            0.7*max_legend_value, 0.6,
-                            0.8*max_legend_value, 0.6,
-                            0.9*max_legend_value, 0.6,
-                            1.0*max_legend_value, 0.6
+                            0.0*max_legend_value, 0.0,
+                            0.001*max_legend_value, map_fill_opacity,
+                            0.2*max_legend_value, map_fill_opacity,
+                            0.3*max_legend_value, map_fill_opacity,
+                            0.4*max_legend_value, map_fill_opacity,
+                            0.5*max_legend_value, map_fill_opacity,
+                            0.6*max_legend_value, map_fill_opacity,
+                            0.7*max_legend_value, map_fill_opacity,
+                            0.8*max_legend_value, map_fill_opacity,
+                            0.9*max_legend_value, map_fill_opacity,
+                            1.0*max_legend_value, map_fill_opacity
 
                                 ]
 
@@ -1219,16 +1221,17 @@ map.addLayer({
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
-                            0.0*max_legend_value, 0.6,
-                            0.2*max_legend_value, 0.6,
-                            0.3*max_legend_value, 0.6,
-                            0.4*max_legend_value, 0.6,
-                            0.5*max_legend_value, 0.6,
-                            0.6*max_legend_value, 0.6,
-                            0.7*max_legend_value, 0.6,
-                            0.8*max_legend_value, 0.6,
-                            0.9*max_legend_value, 0.6,
-                            1.0*max_legend_value, 0.6
+                            0.0*max_legend_value, 0.0,
+                            0.001*max_legend_value, map_fill_opacity,
+                            0.2*max_legend_value, map_fill_opacity,
+                            0.3*max_legend_value, map_fill_opacity,
+                            0.4*max_legend_value, map_fill_opacity,
+                            0.5*max_legend_value, map_fill_opacity,
+                            0.6*max_legend_value, map_fill_opacity,
+                            0.7*max_legend_value, map_fill_opacity,
+                            0.8*max_legend_value, map_fill_opacity,
+                            0.9*max_legend_value, map_fill_opacity,
+                            1.0*max_legend_value, map_fill_opacity
                                 ]
 
                             }
