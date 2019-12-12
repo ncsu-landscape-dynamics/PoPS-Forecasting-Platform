@@ -308,6 +308,15 @@ div#run-preview-container {
     top: 120px;
     left: 10px;
   }
+
+  #eradication_container_ {
+    position: absolute;
+    top: 180px;
+    left: 10px;
+    color:#a0a8bd;
+    font-size: 30px;
+  }
+
 #show_details_button {
     position: absolute;
     top: 5px;
@@ -512,6 +521,21 @@ div#run-preview-container {
           color: white;
           opacity: 0.3;
         }
+
+        #eradication-status-indicator {
+          position: absolute;
+          font-size: 1.5em;
+          left: 50%;
+          top: 50%;
+          width: 400px;
+          margin-top:-25px;
+          margin-left: -200px;
+          height: 50px;
+            }
+            #eradication-status-close-button {
+              color: white;
+              opacity: 0.8;
+            }
     
 .parameter-selector-plot input {
   padding-right: 25px;
