@@ -2426,12 +2426,20 @@ $("#host_map_checkbox input").on('change', function () {
       //$("#submit-run-button").attr("disabled", true);
       //$('#run-preview-container button').removeClass('active');
         var form = $("#submit-run-collection");
+        if ($('input[name="name"]').val() == "Default_name") {
+          console.log('DEFAULT NAME DETECTED... CHANGING')
+          var now_date = new Date();
+          var now_time =  now_date.getHours() + ':' + now_date.getMinutes() + ':' + now_date.getSeconds();
+          var date_time_name = 'New name';
+          $('input[name="name"]').val(now_time);
+        }
       $.ajax({
         url: form.attr("submit-run-collection-url"),
         data: form.serialize(),
         type : "POST", // http method
         success: function (data) {
           console.log('New run collection parameters successfully posted to database!');
+          $('input[name="name"]').val("Default_name");
           var new_run_collection_id = data.pk;
           console.log('New run collection id: ' + new_run_collection_id);
           $('#editInputParameters').modal('hide');
