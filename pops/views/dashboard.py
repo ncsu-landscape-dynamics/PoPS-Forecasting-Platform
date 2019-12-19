@@ -50,10 +50,10 @@ class SessionAjaxableResponseMixin:
         else:
             return response
  
-class NewSessionView(SessionAjaxableResponseMixin, CreateView):
+class NewSessionView(LoginRequiredMixin, SessionAjaxableResponseMixin, CreateView):
     template_name = 'pops/dashboard/new_session.html'
     form_class = SessionForm
-
+    login_url = 'login'
 
     def get_success_url(self, **kwargs):
         # obj = form.instance or self.object
@@ -73,8 +73,9 @@ class NewSessionView(SessionAjaxableResponseMixin, CreateView):
         # obj = form.instance or self.object
         return reverse("dashboard", kwargs={'pk': self.object.pk})
  """
-class WorkspaceView(TemplateView):
+class WorkspaceView(LoginRequiredMixin,TemplateView):
     template_name = 'pops/dashboard/workspace.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
