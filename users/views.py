@@ -33,7 +33,7 @@ def sign_up(request):
             # confirmed via email)
             user = form.save(commit=False)
             #set is_active to false
-            user.is_active = True # THIS SHOULD BE FALSE IN PRODUCTION!!
+            user.is_active = False # THIS SHOULD BE FALSE IN PRODUCTION!!
             #save the inactive user data
             user.save()
             #grab the domain name of our site to use in our email link
@@ -61,7 +61,7 @@ def sign_up(request):
                 'token': account_activation_token.make_token(user),
             })
             #email the user using their provided email address
-            #user.email_user(subject, message)
+            user.email_user(subject, message)
             #redirect user to account_activation_sent view
             return redirect('account_activation_sent')
     #If the request method is not a POST (i.e. the user hasn't submitted data yet)
@@ -73,7 +73,7 @@ def sign_up(request):
     #the form will be populated with the user's content and error messages will be 
     #displayed
     return render(request, 'signup.html', {'form': form})
-
+ 
 # Show user a page saying that the account_activation email has been sent
 def account_activation_sent(request):
     return render(request, 'account_activation_sent.html',)
