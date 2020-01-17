@@ -19,8 +19,32 @@ at North Carolina State University. It has since grown into a team of scientists
   <div id="core-team" class="container-fluid p-4 text-center ">
 
 <h2>Core Developers</h2>
-
+<div>
+</div>
 <div id="people" class="card-deck ">
+{% for member in members %}
+  <div class="card">
+    <img class="card-img-top" src="{{ member.picture.url }}" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="person-name card-title">{{ member.first_name }} {{ member.last_name }}</h5>
+      <div class="person-title">{{ member.title }}</div>
+      <p class="person-description card-text text-justify">{{ member.role }}</p>
+    </div>
+    <div class=" person-contact card-footer text-left">
+    <div class="email">
+    <i class="fas fa-envelope"></i> cmjone25@ncsu.edu
+    </div>
+    <div class="website">
+    <i class="fas fa-globe"></i> {{ member.link }}
+    </div>
+    <div class="github-repo">
+    <i class="fab fa-github"></i> <a href="{{ member.github }}">{{ member.github }}</a>
+    </div>
+    </div>
+  </div>  
+{% empty %}
+    <li>No members.</li>
+{% endfor %}
   <div class="card">
     <img class="card-img-top" src="{% static 'images/chris_jones.png' %}" alt="Card image cap">
     <div class="card-body">
