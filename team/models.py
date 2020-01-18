@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator 
 
 
 # Create your models here.
@@ -24,7 +25,7 @@ class Member(models.Model):
     # picture
     picture = models.FileField(verbose_name = "team member's picture", help_text="Upload team member image.",upload_to="team_images", max_length=100, blank=False, null=True)
     # role
-    role = models.CharField(verbose_name = "team member role", help_text="What is the team member's role in the project?", max_length = 200, blank=False, null=True)
+    role = models.CharField(verbose_name = "team member role", help_text="What is the team member's role in the project?", max_length = 250, blank=False, null=True)
     # title
     title = models.CharField(verbose_name = "team member title", help_text="What is the team member's title (e.g. Graduate Student, Research Associate, etc.)?", max_length = 100, blank=False, null=True)
     # category
@@ -46,6 +47,8 @@ class Member(models.Model):
     link = models.URLField(verbose_name = "team member web page URL", help_text="What is member's web page?", blank=True, null=True)
     # github link(?) 
     github = models.URLField(verbose_name = "team member github URL", help_text="What is member's GitHub URL?", blank=True, null=True)
+    rank =  models.PositiveSmallIntegerField(verbose_name = "relative position in the member list", help_text="relative position in the member list (1 - top of list, 10 - bottom of list). If 2 members have same rank, they will then be sorted by most recently changed.", blank=True, null=True, default = 2, validators = [MinValueValidator(1), MaxValueValidator(10)])
+
 
     def __str__(self):
         return str(self.last_name + ", " + self.first_name)
