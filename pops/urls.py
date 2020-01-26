@@ -52,7 +52,7 @@ urlpatterns = [
     path('case_study/list', views.ApprovedAndUserCaseStudyListView.as_view(), name='case_study_list'),
     path('case_study/<int:pk>/review', views.CaseStudyReview.as_view(), name='case_study_review'),
     path('case_study/submitted', views.case_study_submitted, name='case_study_submitted'),
-    path('<int:pk>/', views.CaseStudyDetailView.as_view(), name='case-study'),
+    path('cs/<int:pk>/', views.CaseStudyDetailView.as_view(), name='case-study'),
     path('api/', include(router.urls)),
     #path('case_study/<int:pk>/edit', views.case_study_edit, name='case_study_edit'),
     #path('myaccount', views.CaseStudyListView.as_view(), name='case-study-list'),
