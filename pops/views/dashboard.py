@@ -82,9 +82,9 @@ class WorkspaceView(LoginRequiredMixin,TemplateView):
             context = super(WorkspaceView, self).get_context_data(**kwargs)
             current_user=self.request.user
             context['current_user']=current_user
-            context['user_case_studies'] = CaseStudy.objects.prefetch_related('host_set','pest_set__pest_information').filter(created_by = current_user).order_by('-date_created')[:5]
-            context['user_sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(created_by = current_user).order_by('-date_created')[:5]
-            context['number_of_sessions'] = Session.objects.filter(created_by = current_user).count()
+            context['user_case_studies'] = CaseStudy.objects.filter(created_by = current_user).order_by('-date_created')[:5]
+            context['user_sessions'] = Session.objects.prefetch_related('runcollection_set','created_by','case_study').filter(created_by = current_user).order_by('-date_created')[:5]
+            context['number_of_sessions'] = Session.objects.filter(created_by = current_user).count() 
             return context
 
 class SessionListView(LoginRequiredMixin, TemplateView):
