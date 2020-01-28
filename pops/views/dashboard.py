@@ -1,7 +1,10 @@
-from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, View
+from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, View, DeleteView
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.mixins import UserPassesTestMixin
 
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -103,6 +106,23 @@ class SessionListView(LoginRequiredMixin, TemplateView):
 
     # def get_queryset(self):
     #     return CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
+class DeleteSessionView(DeleteView):
+    model = Session
+    success_url = reverse_lazy('session_list')
+
+    def get_queryset(self):
+        owner = self.request.user
+        return self.model.objects.filter(created_by=owner)
+ 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.created_by == request.user:
+            success_url = self.get_success_url()
+            self.object.delete()
+            return HttpResponseRedirect(success_url)
+        else:
+            raise PermissionDenied
+
 
 class DashboardTempView(TemplateView):
     template_name = 'pops/dashboard/dashboard.html'
