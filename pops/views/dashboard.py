@@ -93,7 +93,7 @@ class SessionListView(LoginRequiredMixin, TemplateView):
     template_name = 'pops/dashboard/session_list.html'
 
     def get_queryset(self):
-        return Session.objects.prefetch_related('run_set','created_by','case_study').filter(created_by = self.request.user).order_by('-date_created')
+        return Session.objects.annotate(number_runs=Count('runcollection')).annotate(most_recent_run=Max('runcollection__date_created')).prefetch_related('created_by','case_study').filter(created_by = self.request.user).order_by('-date_created')
 
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
