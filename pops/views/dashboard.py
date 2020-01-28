@@ -83,8 +83,7 @@ class WorkspaceView(LoginRequiredMixin,TemplateView):
             current_user=self.request.user
             context['current_user']=current_user
             context['user_case_studies'] = CaseStudy.objects.filter(created_by = current_user).order_by('-date_created')[:5]
-            context['user_sessions'] = Session.objects.prefetch_related('runcollection_set','created_by','case_study').filter(created_by = current_user).order_by('-date_created')[:5]
-            context['number_of_sessions'] = Session.objects.filter(created_by = current_user).count() 
+            context['user_sessions'] = Session.objects.annotate(number_runs=Count('runcollection')).annotate(most_recent_run=Max('runcollection__date_created')).prefetch_related('created_by','case_study').filter(created_by = self.request.user).order_by('-date_created')[:5]
             return context
 
 class SessionListView(LoginRequiredMixin, TemplateView):
