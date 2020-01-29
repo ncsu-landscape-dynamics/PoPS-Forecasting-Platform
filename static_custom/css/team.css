@@ -1,25 +1,28 @@
 body {
-  font-size: 1.2em;
-
+  font-size: 1.1em;
 }
+
 #header {
-  background-color: #3d7878;
+  background-color: #328080;
 }
 
 #core-team {
-  background-color: #19191a;
+  background-color:#212529;
 }
 
 #affiliates {
-  background-color: #484a4f;
+  background-color: #464e57;
 }
 
-#past-team {
-  background-color: #3d7878;
+#employment {
+  font-size:0.9em;
 }
-
 
 #funding {
+  font-size:0.9em;
+}
+
+#opportunities {
 }
 
 div#people .card {
@@ -34,17 +37,16 @@ div#people .card {
 }
 
 .person-title {
-  font-size: 0.8em;
+  font-size: 1.0em;
   padding:0;
   margin:0;
 }
-.person-organization, .person-department {
+.person-department, .person-organization {
   font-size: 0.7em;
-  padding:0;
-  margin:0;
 }
+
 .person-description {
-  font-size: 0.8em;
+  font-size: 0.85em;
   padding:10px 0;
   margin:0;
 }
@@ -57,4 +59,3 @@ div#people .card {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   grid-gap: 3rem 1rem;
 }
-
