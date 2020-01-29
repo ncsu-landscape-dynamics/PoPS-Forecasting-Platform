@@ -241,42 +241,39 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
 
   <div class=" container-fluid p-0 ">
 
-    <nav class="navbar navbar-dark pl-0">
-      <div class="container-fluid ">
-        <a href="{% url 'landing_page' %}" class="navbar-brand d-none d-inline-block">
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+        <a href="{% url 'landing_page' %}" class="navbar-brand">
           <img src="{% static 'images/PoPSlogo_simple.svg' %}" style="width: 80px;" class="d-inline-block align-middle "
             alt="Pest or Pathogen Spread Simulation">
         </a>
-        <span id="session_title" class="pb-0 navbar-text d-none d-md-inline-block mr-auto text-bottom" style="font-size:1.2em;">
+  <div class="collapse navbar-collapse mb-0 mt-0" id="navbarTogglerDemo03">
+        <span id="session_title" class="pb-0 navbar-text d-none d-md-inline-block mr-auto text-bottom" >
           <strong>Session:</strong> {{ session.name|truncatechars:55  }} <a href="#" data-toggle="tooltip" title="Edit session name will be available in the future" data-placement="right"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top"></i></a>
-          <span id="case_study_title" class="text-muted d-none d-lg-inline-block" style="font-size:0.6em;">
-            {{ session.case_study }} {{ session.case_study.end_year }} <a href="{% url 'case_study_review' pk=session.case_study.pk %}" data-toggle="tooltip" title="View case study detail page" data-placement="right" ><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
+          <span id="case_study_title" class="text-muted d-none d-lg-inline-block" style="font-size:0.8em;">
+            ({{ session.case_study }} {{ session.case_study.end_year }} <a href="{% url 'case_study_review' pk=session.case_study.pk %}" data-toggle="tooltip" title="View case study detail page" data-placement="right" ><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>)
           </span>
 
         </span>
-
-        <div id="main_menu" class="dropdown show ml-auto">
-          <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
+    <ul class="nav mt-2 mt-lg-0 mb-0 pb-0">
+      <li id="share-link" class="nav-item">
+        <a class="nav-link" href="#" data-toggle="tooltip" title="Share this session with other users" data-placement="bottom"><i class="fas fa-user-friends"></i> Share</a>
+      </li>
+      <li id="main_menu" class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Menu
           </a>
-
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" href="{% url 'workspace' %}">My Workspace</a>
             <a class="dropdown-item" href="{% url 'new_session' %}">New Session</a>
-            
+            <a class="dropdown-item" href="{% url 'FAQs' %}">FAQs</a>
           </div>
+      </li>
+    </ul>    
         </div>
-
-
-
-
-      </div>
-
     </nav>
-
-
-
 
     <div class="row no-gutters">
       <div id="side-bar-container" class="col-auto text-center ">

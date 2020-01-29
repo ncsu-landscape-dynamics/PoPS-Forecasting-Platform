@@ -1,13 +1,13 @@
 
-#session_title, #case_study_title, #main_menu a, #session_title a {
-  color:#a0a8bd;
+#session_title, #case_study_title, #main_menu a, #session_title a, #share-link a {
+  color:#adadad;
 }
 
 #main_menu div {
-  border-color: #a0a8bd;
+  border-color: #adadad;
 }
 
-#main_menu a:hover, #session_title a:hover {
+#main_menu a:hover, #session_title a:hover, #share-link a:hover {
   color:white;
 }
 
