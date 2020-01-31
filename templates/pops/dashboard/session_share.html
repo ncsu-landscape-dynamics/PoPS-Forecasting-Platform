@@ -45,18 +45,21 @@
 <strong>Share this session with specific PoPS users:</strong>
 
 <form method="post">{% csrf_token %}
-
-    {{ form.user }}
 <input type="hidden" id="id_session" name="session" value="{{ session.pk }}">
-    <input type="submit" value="Save">
+{% for user in users %}
+<div>
+<button class="btn btn-sm btn-info" type="submit" name="user" id="id_user" value="{{ user.pk }}">+</button>
+{{ user.username }} ({{ user.first_name }} {{ user.last_name }} - {{ user.pk }})
+</div>
+{% endfor %}
 </form>
 <div>
-Active users:
+Currently shared with:
 {% for allowed_user in allowed_users %}
 <div>
-<a class="btn btn-info btn-sm" 
+<a class="btn btn-danger btn-sm" 
 href="#" 
-role="button">+</a>
+role="button">remove</a>
 {{ allowed_user.user.username }} ({{ allowed_user.user.first_name }} {{ allowed_user.user.last_name }} - {{ allowed_user.user.pk }})
 </div>
 {% endfor %}
