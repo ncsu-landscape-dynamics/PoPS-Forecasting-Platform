@@ -101,8 +101,10 @@ class SessionListView(LoginRequiredMixin, TemplateView):
             context['sessions']=self.get_queryset()
             return context
 
-    # def get_queryset(self):
-    #     return CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
+class SessionShareView(LoginRequiredMixin, TemplateView):
+    login_url = 'login'
+    template_name = 'pops/dashboard/session_share.html'
+
 
 class DashboardTempView(TemplateView):
     template_name = 'pops/dashboard/dashboard.html'

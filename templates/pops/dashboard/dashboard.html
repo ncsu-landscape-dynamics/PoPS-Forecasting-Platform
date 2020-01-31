@@ -259,7 +259,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
         </span>
     <ul class="nav mt-2 mt-lg-0 mb-0 pb-0">
       <li id="share-link" class="nav-item">
-        <a class="nav-link" href="#" data-toggle="tooltip" title="Share this session with other users" data-placement="bottom"><i class="fas fa-user-friends"></i> Share</a>
+        <a class="nav-link" href="{% url 'session_share' pk=session.pk %}" data-toggle="tooltip" title="Share this session with other users" data-placement="bottom"><i class="fas fa-user-friends"></i> Share</a>
       </li>
       <li id="main_menu" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
