@@ -101,8 +101,9 @@ class SessionListView(LoginRequiredMixin, TemplateView):
             context['sessions']=self.get_queryset()
             return context
 
-class SessionShareView(LoginRequiredMixin, TemplateView):
+class SessionShareView(LoginRequiredMixin, DetailView):
     login_url = 'login'
+    model = Session
     template_name = 'pops/dashboard/session_share.html'
 
 

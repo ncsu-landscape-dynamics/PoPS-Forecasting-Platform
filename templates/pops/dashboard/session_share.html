@@ -16,8 +16,78 @@
 </style>
 
 <div class="container py-2 pb-4">
-    <h3>Share session: </h3>
+    <div class="row">
+        <div class="col-8">
+            <h4>Share session "<strong>{{ object.name }}</strong>" with other PoPS users:</h4>
+            <div>What does sharing mean?</div>
+            <div>
+                <strong>Share settings:</strong>
+            </div>
+<div class="custom-control custom-radio custom-control-inline">
+  <input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input" checked>
+  <label class="custom-control-label" for="customRadioInline1">Private</label>
+</div>
+<div class="custom-control custom-radio custom-control-inline">
+  <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
+  <label class="custom-control-label" for="customRadioInline2">Public (not recommended)</label>
+</div>
 
 
+            <div id="public_help">
+                <p>Are you sure you want to make this session public? This will allow any PoPS
+                    user with your session ID to make changes to your session. We recommend public sessions for
+                    for educational purposes, however we do NOT recommend using a public
+                    session if you care about your data and results.</p>
+                    <p> You can select specific PoPS users to share your session with.</p>
+            </div>
+<div id="sharing"> 
+<div>
+<strong>Share this session with specific PoPS users:</strong>
+</div>
+<form class="form-inline md-form form-sm mt-0">
+  <i class="fas fa-search" aria-hidden="true"></i>
+  <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search for users"
+    aria-label="Search">
+</form>
+<div id="shared_user_list">
+<ul>
+<li>
+User 1 (remove)
+</li>
+<li>
+User 2 (remove)
+</li>
+</ul>
+</div>
+</div>
+        <div id="sharing_help">
+            <p>Sharing will allow other users to:</p>
+            <ul>
+                <li>View your dashboard session</li>
+                <li>Edit your dashboard session</li>
+                <li>Create new runs in your session</li>
+                <li>Delete runs in your session</li>
+            </ul>
+            <p>Sharing will NOT allow other users to:</p>
+            <ul>
+                <li>Delete your session</li>
+                <li>View your workspace</li>
+                <li>View sessions other than this one</li>
+            </ul>
+        </div>
+
+    <div class="row pb-4">
+        <div class="col-auto">
+            <div class="d-inline text-center p-2">
+                <a class="btn btn-secondary btn" href="{% url 'dashboard' pk=session.pk %}" role="button">Save and return to
+                    dashboard</a>
+            </div>
+        </div>
+    </div>
+    
+
+    <p>They say sharing is caring. </p>
+</div>
+</div>
 </div>
     {% endblock %}
