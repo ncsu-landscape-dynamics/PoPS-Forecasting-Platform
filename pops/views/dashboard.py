@@ -13,6 +13,8 @@ from django.db.models import Prefetch, Sum, Count, Max, Min, OuterRef, Subquery
 from ..models import *
 from ..forms import *
 
+from users.models import CustomUser
+
 class SessionAjaxableResponseMixin:
     """
     Mixin to add AJAX support to a form.
@@ -101,10 +103,64 @@ class SessionListView(LoginRequiredMixin, TemplateView):
             context['sessions']=self.get_queryset()
             return context
 
-class SessionShareView(LoginRequiredMixin, DetailView):
+class SessionShareView(LoginRequiredMixin, CreateView):
     login_url = 'login'
-    model = Session
     template_name = 'pops/dashboard/session_share.html'
+    model = AllowedUsers
+    fields = ['session','user']
+
+    def get_success_url(self, **kwargs):
+        return reverse("session_share", kwargs={'pk': self.object.session.pk})
+
+    """     def post(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        my_forms, database_content=self.initialize_forms(request, pk=pk)
+        required_models, success, optional_models = self.validate_forms(my_forms)
+        if success:
+            required_models = self.save_forms(request, required_models, success, optional_models)
+            return redirect('case_study_review', pk=required_models['new_case_study'].pk)
+        else:
+            my_forms['error_message'] = "Please correct the errors below:"    
+        context ={**my_forms, **database_content}
+        return self.render_to_response(context) 
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        #AllowedUserFormSet = formset_factory(AllowedUserForm, formset=BaseAllowedUserFormSet)
+        #my_forms, database_content =self.initialize_forms(request, pk=pk)
+        #context ={allowed_user_formset}
+        #allowed_user_formset = AllowedUserFormSet(initial=None)
+
+        context=self.get_context_data(pk=pk)
+        return self.render_to_response(context)  """
+        
+    def get_context_data(self, **kwargs):
+            # Call the base implementation first to get the context
+            context = super(SessionShareView, self).get_context_data(**kwargs)
+            try:
+                session = Session.objects.get(pk=self.kwargs.get('pk'))
+            except:
+                session = None
+            users = CustomUser.objects.filter(is_active=True)
+            allowed_users = AllowedUsers.objects.filter(session=self.kwargs.get('pk'))
+            context['allowed_users'] = allowed_users
+            context['users'] = users
+            context['session'] = session
+            return context
+
+    def check_permissions(self, request, pk):
+        session = get_object_or_404(Session, pk=pk)
+        if session.created_by == request.user:
+            return True
+        return
 
 
 class DashboardTempView(TemplateView):

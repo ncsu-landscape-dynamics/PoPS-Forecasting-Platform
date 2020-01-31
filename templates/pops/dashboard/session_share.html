@@ -18,7 +18,7 @@
 <div class="container py-2 pb-4">
     <div class="row">
         <div class="col-8">
-            <h4>Share session "<strong>{{ object.name }}</strong>" with other PoPS users:</h4>
+            <h4>Share session "<strong>{{ session.name }}</strong>" with other PoPS users:</h4>
             <div>What does sharing mean?</div>
             <div>
                 <strong>Share settings:</strong>
@@ -43,22 +43,30 @@
 <div id="sharing"> 
 <div>
 <strong>Share this session with specific PoPS users:</strong>
+
+<form method="post">{% csrf_token %}
+
+    {{ form.user }}
+<input type="hidden" id="id_session" name="session" value="{{ session.pk }}">
+    <input type="submit" value="Save">
+</form>
+<div>
+Active users:
+{% for allowed_user in allowed_users %}
+<div>
+<a class="btn btn-info btn-sm" 
+href="#" 
+role="button">+</a>
+{{ allowed_user.user.username }} ({{ allowed_user.user.first_name }} {{ allowed_user.user.last_name }} - {{ allowed_user.user.pk }})
+</div>
+{% endfor %}
+</div>
 </div>
 <form class="form-inline md-form form-sm mt-0">
   <i class="fas fa-search" aria-hidden="true"></i>
   <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search for users"
     aria-label="Search">
 </form>
-<div id="shared_user_list">
-<ul>
-<li>
-User 1 (remove)
-</li>
-<li>
-User 2 (remove)
-</li>
-</ul>
-</div>
 </div>
         <div id="sharing_help">
             <p>Sharing will allow other users to:</p>
