@@ -1015,3 +1015,15 @@ class TimeToBoundary(models.Model):
 
     def __str__(self):
         return self.output
+
+class AllowedUsers(models.Model):
+
+    session = models.ForeignKey(Session, verbose_name = _("session id"), on_delete = models.CASCADE)
+    user = models.ForeignKey(CustomUser, verbose_name = _('user id'), on_delete = models.CASCADE)
+
+    class Meta:
+        verbose_name = _("allowed user")
+        verbose_name_plural = _("allowed users")
+
+    def __str__(self):
+        return str(self.pk)
