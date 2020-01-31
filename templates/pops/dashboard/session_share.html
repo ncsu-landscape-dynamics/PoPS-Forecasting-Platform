@@ -44,11 +44,11 @@
 <div>
 <strong>Share this session with specific PoPS users:</strong>
 
-<form method="post">{% csrf_token %}
+<form id="add-allowed-users" method="post">{% csrf_token %}
 <input type="hidden" id="id_session" name="session" value="{{ session.pk }}">
 {% for user in users %}
 <div>
-<button class="btn btn-sm btn-info" type="submit" name="user" id="id_user" value="{{ user.pk }}">+</button>
+<button form="add-allowed-users" class="btn btn-sm btn-info" type="submit" name="user" id="id_user" value="{{ user.pk }}">+</button>
 {{ user.username }} ({{ user.first_name }} {{ user.last_name }} - {{ user.pk }})
 </div>
 {% endfor %}
@@ -58,18 +58,18 @@ Currently shared with:
 {% for allowed_user in allowed_users %}
 <div>
 <a class="btn btn-danger btn-sm" 
-href="#" 
+href="{% url 'delete_allowed_user' pk=allowed_user.pk %}" 
 role="button">remove</a>
 {{ allowed_user.user.username }} ({{ allowed_user.user.first_name }} {{ allowed_user.user.last_name }} - {{ allowed_user.user.pk }})
 </div>
 {% endfor %}
 </div>
 </div>
-<form class="form-inline md-form form-sm mt-0">
-  <i class="fas fa-search" aria-hidden="true"></i>
-  <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search for users"
-    aria-label="Search">
-</form>
+<form id="search-users">
+{% csrf_token %}
+      <input type="text" placeholder="Search.." name="search">
+      <button form="search-users" type="submit"><i class="fa fa-search"></i></button>
+    </form>
 </div>
         <div id="sharing_help">
             <p>Sharing will allow other users to:</p>
@@ -101,4 +101,25 @@ role="button">remove</a>
 </div>
 </div>
 </div>
+<script>
+    $("#search-users").on('click', function () {
+      event.preventDefault();
+      console.log("search form submitted!") // sanity check
+      var form = $(this).closest("form");
+      $.ajax({
+        url: "{% url 'user_list' %}",
+        data: form.serialize(),
+        type : "GET", // http method
+        success: function (data) {
+          alert('It worked');
+          console.log(data.pk)
+        },
+                // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+      });
+</script>
     {% endblock %}

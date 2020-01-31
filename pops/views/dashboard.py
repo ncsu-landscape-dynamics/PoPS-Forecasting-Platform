@@ -1,4 +1,4 @@
-from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, View
+from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, View, DeleteView
 from django.shortcuts import render, get_object_or_404
 
 from django.http import JsonResponse, HttpResponse
@@ -162,6 +162,15 @@ class SessionShareView(LoginRequiredMixin, CreateView):
             return True
         return
 
+
+class DeleteAllowedUserView(DeleteView):
+    model = AllowedUsers
+
+    def get_success_url(self, **kwargs):
+        return reverse("session_share", kwargs={'pk': self.object.session.pk})
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 class DashboardTempView(TemplateView):
     template_name = 'pops/dashboard/dashboard.html'

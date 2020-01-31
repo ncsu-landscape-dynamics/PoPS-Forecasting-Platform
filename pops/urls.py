@@ -39,6 +39,7 @@ urlpatterns = [
     path('session/new', views.NewSessionView.as_view(), name='new_session'),
     path('session/list', views.SessionListView.as_view(), name='session_list'),
     path('session/share/<int:pk>', views.SessionShareView.as_view(), name='session_share'),
+    path('session/share/delete/<int:pk>', views.DeleteAllowedUserView.as_view(), name='delete_allowed_user'),
     path('case_study/help', TemplateView.as_view(template_name="pops/case_study_instructions.html"), name='case_study_help'),
     path('dashboard_layout', TemplateView.as_view(template_name="pops/dashboard/dashboard_layout.html")),
     path('spotted_lanternfly', TemplateView.as_view(template_name="pops/dashboard/spotted_lanternfly.html")),
