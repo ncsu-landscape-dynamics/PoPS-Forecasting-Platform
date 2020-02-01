@@ -3,17 +3,11 @@
 {% load get_staff_approved %}
 {% block page_styles %}
 <link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+<script src="{% static 'js/jquery.min.js' %}"></script>
+
 {% endblock %}
 {% block content %}
 
-<style type="text/css" media="screen">
-    .table-wrapper-scroll-y {
-        display: block;
-        max-height: 30em;
-        overflow-y: auto;
-        -ms-overflow-style: -ms-autohiding-scrollbar;
-    }
-</style>
 
 <div class="container py-2 pb-4">
     <div class="row">
@@ -43,15 +37,14 @@
 <div id="sharing"> 
 <div>
 <strong>Share this session with specific PoPS users:</strong>
+<form id="search"  action="{% url 'search_results' %}">
+  <input name="q" type="text" placeholder="Search...">
+</form>
 
 <form id="add-allowed-users" method="post">{% csrf_token %}
 <input type="hidden" id="id_session" name="session" value="{{ session.pk }}">
-{% for user in users %}
-<div>
-<button form="add-allowed-users" class="btn btn-sm btn-info" type="submit" name="user" id="id_user" value="{{ user.pk }}">+</button>
-{{ user.username }} ({{ user.first_name }} {{ user.last_name }} - {{ user.pk }})
+<div id="user-search-results">
 </div>
-{% endfor %}
 </form>
 <div>
 Currently shared with:
@@ -65,11 +58,6 @@ role="button">remove</a>
 {% endfor %}
 </div>
 </div>
-<form id="search-users">
-{% csrf_token %}
-      <input type="text" placeholder="Search.." name="search">
-      <button form="search-users" type="submit"><i class="fa fa-search"></i></button>
-    </form>
 </div>
         <div id="sharing_help">
             <p>Sharing will allow other users to:</p>
@@ -102,24 +90,39 @@ role="button">remove</a>
 </div>
 </div>
 <script>
-    $("#search-users").on('click', function () {
-      event.preventDefault();
-      console.log("search form submitted!") // sanity check
-      var form = $(this).closest("form");
-      $.ajax({
-        url: "{% url 'user_list' %}",
-        data: form.serialize(),
-        type : "GET", // http method
-        success: function (data) {
-          alert('It worked');
-          console.log(data.pk)
-        },
-                // handle a non-successful response
-        error : function(xhr,errmsg,err) {
-            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        }
-      });
+
+    $("#search").on('submit', function () {
+        event.preventDefault();
+                console.log("search form submitted!") // sanity check
+                var form = $(this).closest("form");
+                $.ajax({
+                    url: "{% url 'search_results' %}",
+                    data: form.serialize(),
+                    type: "GET", // http method
+                    success: function (data) {
+                        console.log(data.users[0].pk)
+                        console.log(data.users[0].first_name)
+                        var container = $('<div />');
+                        for(var i = 0; i < data.users.length; i++) {
+                            var available_users = '<div><button form="add-allowed-users" class="btn btn-sm btn-info" type="submit" name="user" id="id_user" value="'
+                            +data.users[i].pk+'">+</button>' 
+                            + data.users[i].username + ' (' 
+                            + data.users[i].first_name + ' ' 
+                            + data.users[i].last_name + ')</div>';
+                            
+                            container.append(available_users);
+                            console.log(container);
+                            console.log('loop')
+                        }
+                        $('#user-search-results').html(container);
+                    },
+                    // handle a non-successful response
+                    error: function (xhr, errmsg, err) {
+                        $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
+                            " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                    }
+                });
+    });
 </script>
     {% endblock %}

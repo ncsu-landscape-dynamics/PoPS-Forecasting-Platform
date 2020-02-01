@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container py-4">
+<h2 class="text-center">Search users</h2>
+<p>This is a test of searching for users.</p>
+<form action="{% url 'search_results' %}" method="get">
+  <input name="q" type="text" placeholder="Search...">
+</form>
+
+</div>
+{% endblock %}

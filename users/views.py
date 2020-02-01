@@ -1,4 +1,5 @@
 # users/views.py
+from django.views.generic import ListView, TemplateView
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.sites.shortcuts import get_current_site
@@ -6,7 +7,10 @@ from django.shortcuts import render, redirect
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
+from django.db.models import Q 
 from .tokens import account_activation_token
+from django.http import JsonResponse, HttpResponse
+
 
 from django.contrib.auth import login, authenticate
 from .forms import CustomUserCreationForm
@@ -107,3 +111,30 @@ def activate(request, uidb64, token):
     #If the user and/or token do not work, direct the user to an invalid page
     else:
         return render(request, 'account_activation_invalid.html')
+
+class UserListView(ListView):
+    model = CustomUser
+
+class SearchView(TemplateView):
+    template_name = 'search_users.html'
+
+class SearchResultsView(ListView):
+    model = CustomUser
+    template_name = 'search_results.html'
+
+    def get_queryset(self): # new
+        query = self.request.GET.get('q')
+        object_list = CustomUser.objects.filter(
+            Q(first_name__icontains=query) | Q(last_name__icontains=query)
+        )
+        return object_list
+    
+def get_users(request):
+    query = request.GET.get('q')
+    object_list = CustomUser.objects.filter(
+        Q(first_name__icontains=query) | Q(last_name__icontains=query)
+    )
+    data = {
+        "users": list(object_list.order_by('last_name').values("pk","first_name","last_name","username")),
+    }    
+    return JsonResponse(data)
