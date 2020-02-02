@@ -2,7 +2,8 @@
 {% load static %}
 {% load get_staff_approved %}
 {% block page_styles %}
-<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard_layout.css' %}">
+<link rel="stylesheet" href="{% static 'css/session_share.css' %}">
 <script src="{% static 'js/jquery.min.js' %}"></script>
 
 {% endblock %}
@@ -13,32 +14,55 @@
     <div class="row">
         <div class="col-8">
             <h4>Share session "<strong>{{ session.name }}</strong>" with other PoPS users:</h4>
-            <div>What does sharing mean?</div>
+            <a href="#" data-toggle="modal" data-target="#sharing_help">
+  What is sharing?
+</a>
             <div>
                 <strong>Share settings:</strong>
             </div>
 <div class="custom-control custom-radio custom-control-inline">
-  <input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input" checked>
-  <label class="custom-control-label" for="customRadioInline1">Private</label>
+  <input type="radio" id="private_sharing" name="inlineRadioOptions" class="custom-control-input" checked>
+  <label class="custom-control-label" for="private_sharing">Private</label>
 </div>
-<div class="custom-control custom-radio custom-control-inline">
-  <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
-  <label class="custom-control-label" for="customRadioInline2">Public (not recommended)</label>
+<div class="custom-control custom-radio custom-control-inline" data-toggle="modal" data-target="#public_help">
+  <input type="radio" id="public_sharing" name="inlineRadioOptions" class="custom-control-input">
+  <label class="custom-control-label" for="public_sharing">Public (not recommended)</label>
 </div>
 
-
-            <div id="public_help">
-                <p>Are you sure you want to make this session public? This will allow any PoPS
+<div class="modal fade" id="public_help" tabindex="-1" role="dialog" aria-labelledby="public_help" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Session privacy settings</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <p>Are you sure you want to make this session public? This will allow any PoPS
                     user with your session ID to make changes to your session. We recommend public sessions for
                     for educational purposes, however we do NOT recommend using a public
                     session if you care about your data and results.</p>
                     <p> You can select specific PoPS users to share your session with.</p>
-            </div>
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div id="sharing"> 
 <div>
 <strong>Share this session with specific PoPS users:</strong>
-<form id="search"  action="{% url 'search_results' %}">
-  <input name="q" type="text" placeholder="Search...">
+
+
+
+<form id="search"  action="{% url 'user_search_results' %}">
+    <input name="q" type="text" placeholder="Search...">
+    <input type="hidden" name="session" value="{{ session.pk }}">
 </form>
 
 <form id="add-allowed-users" method="post">{% csrf_token %}
@@ -59,21 +83,57 @@ role="button">remove</a>
 </div>
 </div>
 </div>
-        <div id="sharing_help">
-            <p>Sharing will allow other users to:</p>
+
+<div class="modal fade" id="sharing_help" tabindex="-1" role="dialog" aria-labelledby="sharing_help" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">What is sharing?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Sharing is a way for users to collaborate in a single PoPS session.</p>
+        <p>By sharing your session, you allow other user(s) to access and make 
+        changes to your session dashboard. Multiple users may participate in the
+        session from multiple computers.</p>
+        <p>There are two ways to share your session:</p>
+        <ol>
+        <li><strong>Changing the share setting to public (not recommended).</strong></li>
+               <p> This will allow <em>ANY</em> PoPS user to access your session. 
+               This is generally not recommended, but can be useful in large groups
+               or educational settings.</p>
+               <p>Once a session is public, the session owner needs to share the dashboard 
+               URL with any participants.</p>
+        <li><strong>Sharing with specific users (recommended).</strong></li>
+               <p>Specific users may be added to a session by searching for their
+               name or PoPS username. Click the add icon to add them to the session. Users
+               may also be removed at anytime. </p>
+               <p>Once a session is shared with a specific user, the session will appear in the user's 
+               workspace.</p>
+        </ol>
+            <div><strong>Sharing will allow other users to:</strong></div>
             <ul>
                 <li>View your dashboard session</li>
                 <li>Edit your dashboard session</li>
                 <li>Create new runs in your session</li>
                 <li>Delete runs in your session</li>
+                <li>Work collaboratively on different computers</li>
             </ul>
-            <p>Sharing will NOT allow other users to:</p>
+            <div><strong>Sharing will NOT allow other users to:</strong></div>
             <ul>
                 <li>Delete your session</li>
                 <li>View your workspace</li>
                 <li>View sessions other than this one</li>
             </ul>
         </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
     <div class="row pb-4">
         <div class="col-auto">
@@ -94,15 +154,16 @@ role="button">remove</a>
     $("#search").on('submit', function () {
         event.preventDefault();
                 console.log("search form submitted!") // sanity check
-                var form = $(this).closest("form");
+                var form = $(this).closest("form");               
                 $.ajax({
-                    url: "{% url 'search_results' %}",
+                    url: "{% url 'user_search_results' %}",
                     data: form.serialize(),
                     type: "GET", // http method
                     success: function (data) {
-                        console.log(data.users[0].pk)
-                        console.log(data.users[0].first_name)
+                        console.log(data.users);
+                        console.log(data.users.length);
                         var container = $('<div />');
+                        if (data.users.length > 0) { 
                         for(var i = 0; i < data.users.length; i++) {
                             var available_users = '<div><button form="add-allowed-users" class="btn btn-sm btn-info" type="submit" name="user" id="id_user" value="'
                             +data.users[i].pk+'">+</button>' 
@@ -114,7 +175,12 @@ role="button">remove</a>
                             console.log(container);
                             console.log('loop')
                         }
+                        }
+                        else {
+                            container.append('<small>No users meet those requirements.</small>')
+                        }
                         $('#user-search-results').html(container);
+                    
                     },
                     // handle a non-successful response
                     error: function (xhr, errmsg, err) {
@@ -124,5 +190,7 @@ role="button">remove</a>
                     }
                 });
     });
+
+
 </script>
     {% endblock %}

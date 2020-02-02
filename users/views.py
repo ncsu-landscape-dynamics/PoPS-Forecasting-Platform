@@ -129,12 +129,3 @@ class SearchResultsView(ListView):
         )
         return object_list
     
-def get_users(request):
-    query = request.GET.get('q')
-    object_list = CustomUser.objects.filter(
-        Q(first_name__icontains=query) | Q(last_name__icontains=query)
-    )
-    data = {
-        "users": list(object_list.order_by('last_name').values("pk","first_name","last_name","username")),
-    }    
-    return JsonResponse(data)
