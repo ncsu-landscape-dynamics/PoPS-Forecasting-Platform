@@ -149,17 +149,25 @@ class SessionShareView(LoginRequiredMixin, CreateView):
             return True
         return
 
+#Send a list of PoPS users that meet the search criteria on the session share page
 def get_users(request):
-    query = request.GET.get('q')
-    session = request.GET.get('session')
-    existing_allowed_users = AllowedUsers.objects.filter(session=session)
-    existing_allowed_users=CustomUser.objects.filter(allowedusers__in=AllowedUsers.objects.filter(session=session))
-    print(existing_allowed_users)
-    object_list = CustomUser.objects.exclude(allowedusers__in=AllowedUsers.objects.filter(session=session)).filter(
-        Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query)
-    )
+    user_search = request.GET.get('q') #string entered by the user
+    splitquery= user_search.split() #split the query into individual words
+    session = request.GET.get('session') #get session
+    q_objects = Q() # init our q objects variable to use .add() on it
+    #create a complex Q object to query for the users based on any
+    #matches to first name, last name or username
+    for words in splitquery:
+        search_fields = ['first_name', 'last_name', 'username']
+        for term in splitquery:
+            for field_name in search_fields:
+                q_objects.add(Q(**{"%s__icontains" % field_name: term}), Q.OR) 
+    #create object list of user matches, excluding users already in this shared session             
+    user_matches = CustomUser.objects.exclude(allowedusers__in=AllowedUsers.objects
+        .filter(session=session)).filter(q_objects)
+    #create a list to send via json response
     data = {
-        "users": list(object_list.order_by('last_name').values("pk","first_name","last_name","username")),
+        "users": list(user_matches.order_by('last_name').values("pk","first_name","last_name","username")),
     }    
     return JsonResponse(data)
 
