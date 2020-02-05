@@ -1,0 +1,14 @@
+<!-- templates/account_activation_sent.html -->
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="p-4">
+<form method="post">{% csrf_token %}
+    <p>Are you sure you want to delete "{{ object }}"?</p>
+    <input type="submit" value="Confirm">
+</form>
+</div>
+{% endblock %}
+
+

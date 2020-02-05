@@ -1,7 +1,10 @@
-from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, View
+from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, View, DeleteView
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.mixins import UserPassesTestMixin
 
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -82,9 +85,9 @@ class WorkspaceView(LoginRequiredMixin,TemplateView):
             context = super(WorkspaceView, self).get_context_data(**kwargs)
             current_user=self.request.user
             context['current_user']=current_user
-            context['user_case_studies'] = CaseStudy.objects.prefetch_related('host_set','pest_set__pest_information').filter(created_by = current_user).order_by('-date_created')[:5]
-            context['user_sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(created_by = current_user).order_by('-date_created')[:5]
-            context['number_of_sessions'] = Session.objects.filter(created_by = current_user).count()
+            context['user_case_studies'] = CaseStudy.objects.filter(created_by = current_user).order_by('-date_created')[:5]
+            context['user_sessions'] = Session.objects.annotate(number_runs=Count('runcollection')).annotate(most_recent_run=Max('runcollection__date_created')).prefetch_related('created_by','case_study').filter(created_by = self.request.user).order_by('-date_created')[:5]
+            context['number_of_sessions'] = Session.objects.filter(created_by = current_user).count() 
             return context
 
 class SessionListView(LoginRequiredMixin, TemplateView):
@@ -93,7 +96,7 @@ class SessionListView(LoginRequiredMixin, TemplateView):
     template_name = 'pops/dashboard/session_list.html'
 
     def get_queryset(self):
-        return Session.objects.prefetch_related('run_set','created_by','case_study').filter(created_by = self.request.user).order_by('-date_created')
+        return Session.objects.annotate(number_runs=Count('runcollection')).annotate(most_recent_run=Max('runcollection__date_created')).prefetch_related('created_by','case_study').filter(created_by = self.request.user).order_by('-date_created')
 
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
@@ -103,6 +106,23 @@ class SessionListView(LoginRequiredMixin, TemplateView):
 
     # def get_queryset(self):
     #     return CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
+class DeleteSessionView(DeleteView):
+    model = Session
+    success_url = reverse_lazy('session_list')
+
+    def get_queryset(self):
+        owner = self.request.user
+        return self.model.objects.filter(created_by=owner)
+ 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.created_by == request.user:
+            success_url = self.get_success_url()
+            self.object.delete()
+            return HttpResponseRedirect(success_url)
+        else:
+            raise PermissionDenied
+
 
 class DashboardTempView(TemplateView):
     template_name = 'pops/dashboard/dashboard.html'

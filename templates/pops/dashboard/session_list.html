@@ -16,7 +16,7 @@
 </style>
 
 <div class="container py-2 pb-4">
-    <h3>Available case studies: </h3>
+    <h3>Available sessions: </h3>
     <div class="row">
         <div class="col-12">
             <div class="panel-container">
@@ -41,7 +41,14 @@
                                         <h5 class="col-auto">{{ session.name }}</h5>
 
                                         <div class="col-auto px-2">
-                                            <span class="badge badge-pill badge-light">{{ session.run_set.count }} runs</span>
+                                            <span class="badge badge-pill badge-light">{{ session.number_runs }} runs</span>
+                                                                    <a class="text-light"
+                                                                        href="{% url 'delete_session' pk=session.pk %}"
+                                                                        role="button"><i class="fas fa-trash-alt"
+                                                                                data-toggle="tooltip"
+                                                                                data-placement="top"
+                                                                                title="Delete session."></i>
+                                                                    </a>
                                         </div>
                                     </div>
 
@@ -49,7 +56,7 @@
                                 </td>
                                 <td> <a class="text-light" href="{% url 'case_study_review' pk=session.case_study.pk %}"
                                         >{{ session.case_study.name }}</a> </td>
-                                <td>{{ session.run_set.last.date_created }}</td>
+                                <td>{{ session.most_recent_run }}</td>
                                 <td>
                                     <a class="btn btn-info btn-sm btn-block" href="{% url 'dashboard' pk=session.pk %}"
                                         role="button">Go to session</a>

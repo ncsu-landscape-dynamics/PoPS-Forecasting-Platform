@@ -37,6 +37,7 @@ urlpatterns = [
     path('save_session_data', views.NewSessionView.as_view(), name='save_session_data'),
     path('save_run_collection_data_test', views.DashboardTestView.as_view(), name='save_run_collection_data_test'),
     path('session/new', views.NewSessionView.as_view(), name='new_session'),
+    path('session/delete/<int:pk>', views.DeleteSessionView.as_view(), name='delete_session'),
     path('session/list', views.SessionListView.as_view(), name='session_list'),
     path('case_study/help', TemplateView.as_view(template_name="pops/case_study_instructions.html"), name='case_study_help'),
     path('dashboard_layout', TemplateView.as_view(template_name="pops/dashboard/dashboard_layout.html")),
