@@ -188,7 +188,18 @@ class DeleteAllowedUserView(DeleteView):
         return reverse("session_share", kwargs={'pk': self.object.session.pk})
 
     def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
         return self.post(request, *args, **kwargs)
+    
+    def check_permissions(self, request, pk):
+        self.object = self.get_object() 
+        session = get_object_or_404(Session, pk=self.object.session.pk)
+        if session.created_by == request.user:
+            return True
 
 class DashboardTempView(TemplateView):
     template_name = 'pops/dashboard/dashboard.html'
@@ -238,10 +249,29 @@ class AjaxableResponseMixin:
         else:
             return response
  
-class DashboardView(AjaxableResponseMixin, CreateView):
+class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
     template_name = 'pops/dashboard/dashboard.html'
     form_class = RunCollectionForm
     success_url = 'new_session'
+    login_url = 'login'
+
+    def get(self, request,*args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        return super().get(request,*args, **kwargs)
+
+    def check_permissions(self, request, pk):
+        session = get_object_or_404(Session, pk=pk)        
+        if session.created_by == request.user:
+            return True
+        elif session.public == True:
+            return True
+        elif session.allowedusers_set.filter(user=request.user).exists():
+            return True
+        return
 
     def get_initial(self):
             # call super if needed
