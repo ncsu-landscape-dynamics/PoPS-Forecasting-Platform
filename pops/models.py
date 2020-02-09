@@ -879,7 +879,7 @@ class Session(models.Model):
                     default = "AVERAGE", blank=True)
     default_run = models.OneToOneField('Run', verbose_name = _("default run"), help_text="Default no management run for this session and default run_collection parameters.", on_delete = models.CASCADE, blank=True, null = True)
     max_value = models.PositiveSmallIntegerField(verbose_name = _("maximum value within a cell in default run"), help_text="Maximum value of number of infected in a cell for final year of the default run", default = 0, null = True, blank=True, validators = [MinValueValidator(0), MaxValueValidator(100)])
-
+    public = models.BooleanField(verbose_name = _("public"), help_text="Is the session sharing set to public (any user can view and edit the session)?", default = False)
 
     class Meta:
         verbose_name = _("session")

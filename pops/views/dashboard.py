@@ -1,7 +1,7 @@
-from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, View, DeleteView
+from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, UpdateView, View, DeleteView
 from django.shortcuts import render, get_object_or_404
 
-from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -126,7 +126,17 @@ class SessionShareView(LoginRequiredMixin, CreateView):
              permission = self.check_permissions(request, pk=pk)
              if not permission:
                  return HttpResponseForbidden()
-        return super().post(request,*args, **kwargs)
+        if 'user' in request.POST:
+            return super().post(request,*args, **kwargs)
+        elif 'public' in request.POST:
+            data = request.POST.copy()
+            obj = Session.objects.get(pk=pk)
+            obj.public = data.get('public')
+            obj.save()
+            return HttpResponseRedirect(reverse("session_share", kwargs={'pk': pk}))
+        else:
+            return HttpResponseRedirect(reverse("session_share", kwargs={'pk': pk}))
+
         
     def get_context_data(self,**kwargs):
         # Call the base implementation first to get the context
