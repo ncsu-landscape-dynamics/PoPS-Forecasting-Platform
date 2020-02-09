@@ -91,8 +91,8 @@
                                 <p> You can select specific PoPS users to share your session with.</p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
+                                <button id="cancel_public" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button id="save_public" type="button" class="btn btn-primary">Save changes</button>
                             </div>
                         </div>
                     </div>
@@ -165,22 +165,27 @@
     </div>
 </div>
 <script>
-    $("#public_setting").on('change', function () {
-        console.log('Form changed')
+    $("#private_sharing").on('click', function () {
+        $("#public_setting").submit();
+    });
+
+    $("#cancel_public").on('click', function () {
+        $("#private_sharing"). prop("checked", true);
+        $("#public_sharing"). prop("checked", false);
+    });
+
+    $("#save_public").on('click', function () {
         $("#public_setting").submit();
     });
 
     $("#search").on('submit', function () {
         event.preventDefault();
-                console.log("search form submitted!") // sanity check
                 var form = $(this).closest("form");               
                 $.ajax({
                     url: "{% url 'user_search_results' %}",
                     data: form.serialize(),
                     type: "GET", // http method
                     success: function (data) {
-                        console.log(data.users);
-                        console.log(data.users.length);
                         var container = $('<div />');
                         if (data.users.length > 0) { 
                         for(var i = 0; i < data.users.length; i++) {
@@ -189,10 +194,7 @@
                             + data.users[i].username + ' (' 
                             + data.users[i].first_name + ' ' 
                             + data.users[i].last_name + ')</div>';
-                            
                             container.append(available_users);
-                            console.log(container);
-                            console.log('loop')
                         }
                         }
                         else {
