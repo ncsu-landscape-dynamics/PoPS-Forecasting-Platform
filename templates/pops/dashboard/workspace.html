@@ -37,9 +37,9 @@
                                                         </td>
                                                         <td>
                                                                 <span
-                                                                        class="badge badge-pill badge-light">{{ session.run_set.count }}</span>
+                                                                        class="badge badge-pill badge-light">{{ session.number_runs }}</span>
                                                         </td>
-                                                        <td>{{ session.run_set.last.date_created }}</td>
+                                                        <td>{{ session.most_recent_run }}</td>
                                                         <td><a class="text-info"
                                                                         href="{% url 'dashboard' pk=session.pk %}"
                                                                         role="button"><i
