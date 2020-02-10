@@ -1,4 +1,4 @@
-from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, View, DeleteView
+from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, UpdateView, View, DeleteView
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
@@ -11,10 +11,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from django.db.models.functions import Greatest
-from django.db.models import Prefetch, Sum, Count, Max, Min, OuterRef, Subquery
+from django.db.models import Prefetch, Sum, Count, Max, Min, OuterRef, Subquery, Q
 
 from ..models import *
 from ..forms import *
+
+from users.models import CustomUser
 
 class SessionAjaxableResponseMixin:
     """
@@ -104,8 +106,105 @@ class SessionListView(LoginRequiredMixin, TemplateView):
             context['sessions']=self.get_queryset()
             return context
 
-    # def get_queryset(self):
-    #     return CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
+
+class SessionShareView(LoginRequiredMixin, CreateView):
+    login_url = 'login'
+    template_name = 'pops/dashboard/session_share.html'
+    model = AllowedUsers
+    fields = ['session','user']
+
+    def get_success_url(self, **kwargs):
+        return reverse("session_share", kwargs={'pk': self.object.session.pk})
+
+    def get(self, request,*args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        return super().get(request,*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        if 'user' in request.POST:
+            return super().post(request,*args, **kwargs)
+        elif 'public' in request.POST:
+            data = request.POST.copy()
+            obj = Session.objects.get(pk=pk)
+            obj.public = data.get('public')
+            obj.save()
+            return HttpResponseRedirect(reverse("session_share", kwargs={'pk': pk}))
+        else:
+            return HttpResponseRedirect(reverse("session_share", kwargs={'pk': pk}))
+
+        
+    def get_context_data(self,**kwargs):
+        # Call the base implementation first to get the context
+        context = super(SessionShareView, self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        try:
+            session = Session.objects.get(pk=pk)
+        except:
+            session = None
+        users = CustomUser.objects.filter(is_active=True)
+        allowed_users = AllowedUsers.objects.filter(session=self.kwargs.get('pk'))
+        context['allowed_users'] = allowed_users
+        #context['users'] = users
+        context['session'] = session
+        return context
+
+    def check_permissions(self, request, pk):
+        session = get_object_or_404(Session, pk=pk)
+        if session.created_by == request.user:
+            return True
+        return
+
+#Send a list of PoPS users that meet the search criteria on the session share page
+def get_users(request):
+    user_search = request.GET.get('q') #string entered by the user
+    splitquery= user_search.split() #split the query into individual words
+    session = request.GET.get('session') #get session
+    q_objects = Q() # init our q objects variable to use .add() on it
+    #create a complex Q object to query for the users based on any
+    #matches to first name, last name or username
+    for words in splitquery:
+        search_fields = ['first_name', 'last_name', 'username']
+        for term in splitquery:
+            for field_name in search_fields:
+                q_objects.add(Q(**{"%s__icontains" % field_name: term}), Q.OR) 
+    #create object list of user matches, excluding users already in this shared session             
+    user_matches = CustomUser.objects.exclude(allowedusers__in=AllowedUsers.objects
+        .filter(session=session)).filter(q_objects)
+    #create a list to send via json response
+    data = {
+        "users": list(user_matches.order_by('last_name').values("pk","first_name","last_name","username")),
+    }    
+    return JsonResponse(data)
+
+class DeleteAllowedUserView(DeleteView):
+    model = AllowedUsers
+
+    def get_success_url(self, **kwargs):
+        return reverse("session_share", kwargs={'pk': self.object.session.pk})
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        return self.post(request, *args, **kwargs)
+    
+    def check_permissions(self, request, pk):
+        self.object = self.get_object() 
+        session = get_object_or_404(Session, pk=self.object.session.pk)
+        if session.created_by == request.user:
+            return True
+
 class DeleteSessionView(DeleteView):
     model = Session
     success_url = reverse_lazy('session_list')
@@ -122,7 +221,6 @@ class DeleteSessionView(DeleteView):
             return HttpResponseRedirect(success_url)
         else:
             raise PermissionDenied
-
 
 class DashboardTempView(TemplateView):
     template_name = 'pops/dashboard/dashboard.html'
@@ -172,10 +270,29 @@ class AjaxableResponseMixin:
         else:
             return response
  
-class DashboardView(AjaxableResponseMixin, CreateView):
+class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
     template_name = 'pops/dashboard/dashboard.html'
     form_class = RunCollectionForm
     success_url = 'new_session'
+    login_url = 'login'
+
+    def get(self, request,*args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        return super().get(request,*args, **kwargs)
+
+    def check_permissions(self, request, pk):
+        session = get_object_or_404(Session, pk=pk)        
+        if session.created_by == request.user:
+            return True
+        elif session.public == True:
+            return True
+        elif session.allowedusers_set.filter(user=request.user).exists():
+            return True
+        return
 
     def get_initial(self):
             # call super if needed

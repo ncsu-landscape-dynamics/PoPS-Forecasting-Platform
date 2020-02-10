@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CaseStudy, MapBoxParameters, AllPlantsData, Host, HostData, Mortality, MortalityRate, MortalityTimeLag, Creation, PestInformation, Pest, Vector, VectorHostTransmissionRate, VectorReproductiveRate, VectorNaturalDistance, HostVectorTransmissionRate, ReproductiveRate, PercentNaturalDistance,  NaturalDistance, AnthropogenicDistance, AnthropogenicDirection, CrypticToInfected, InfectedToDiseased, PriorTreatment, PriorTreatmentYear, Weather, Wind, Seasonality, LethalTemperature, Temperature, Precipitation, TemperatureReclass, PrecipitationReclass, TemperaturePolynomial, PrecipitationPolynomial, Session, Run, RunCollection, Output, CalibrationInfestation, ValidationInfestation, InitialInfestation, HistoricData, MapBoxParameters
+from .models import CaseStudy, MapBoxParameters, AllPlantsData, Host, HostData, Mortality, MortalityRate, MortalityTimeLag, Creation, PestInformation, Pest, Vector, VectorHostTransmissionRate, VectorReproductiveRate, VectorNaturalDistance, HostVectorTransmissionRate, ReproductiveRate, PercentNaturalDistance,  NaturalDistance, AnthropogenicDistance, AnthropogenicDirection, CrypticToInfected, InfectedToDiseased, PriorTreatment, PriorTreatmentYear, Weather, Wind, Seasonality, LethalTemperature, Temperature, Precipitation, TemperatureReclass, PrecipitationReclass, TemperaturePolynomial, PrecipitationPolynomial, Session, Run, RunCollection, Output, CalibrationInfestation, ValidationInfestation, InitialInfestation, HistoricData, MapBoxParameters, AllowedUsers
 
 class CaseStudyAdmin(admin.ModelAdmin):
     list_display = ('name', 'number_of_pests', 'number_of_hosts', 'start_year', 'end_year', 'time_step', 'created_by', 'date_created', 'model_api')
@@ -34,6 +34,9 @@ class RunCollectionAdmin(admin.ModelAdmin):
 class RunAdmin(admin.ModelAdmin):
     list_display = ('run_collection', 'steering_year','date_created','status')
     
+class AllowedUsersAdmin(admin.ModelAdmin):
+    list_display = ('user', 'session')
+
 admin.site.register(CaseStudy, CaseStudyAdmin)
 admin.site.register(Host, HostAdmin)
 admin.site.register(AllPlantsData)
@@ -77,3 +80,4 @@ admin.site.register(ValidationInfestation)
 admin.site.register(InitialInfestation)
 admin.site.register(HistoricData)
 admin.site.register(MapBoxParameters)
+admin.site.register(AllowedUsers, AllowedUsersAdmin)
