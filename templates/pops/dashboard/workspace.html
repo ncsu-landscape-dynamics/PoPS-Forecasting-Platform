@@ -10,9 +10,9 @@
                 <div class="col-lg-12">
                         <div class="panel-container">
 
-                                <h4>My sessions ({% if shared_sessions.count < 5 %} {{ shared_sessions.count }}
+                                <h4>My sessions ({% if sessions.count < 5 %} {{ sessions.count }}
                                         {% else %} 5 {% endif %} / {{ number_of_sessions }} ):</h4>
-                                {% if shared_sessions %}
+                                {% if sessions %}
                                 <table class="table table-hover table-dark table-sm ">
                                         <thead>
                                                 <th class="w-30">Name</th>
@@ -23,7 +23,7 @@
                                         </thead>
 
                                         <tbody>
-                                                {% for session in shared_sessions %}
+                                                {% for session in sessions %}
                                                 <tr>
                                                         <td><a class="text-light"
                                                                         href="{% url 'dashboard' pk=session.pk %}">
