@@ -32,17 +32,25 @@
                                                                                 {{ session.name }}
                                                                                 </span>
                                                                 </a>
-                                                                {% if session.shared %}
-                                                                                {% if session.created_by.username != user.username %}
-                                                                                 <span class="badge badge-pill badge-info" data-toggle="tooltip" data-placement="right"
-                                                                                title="Shared with you by {{ session.created_by.username }}">
-                                                                                <i class="fas fa-user-friends"></i> {{ session.shared }}</span>
-                                                                                {% else %}
-                                                                                <span class="badge badge-pill badge-dark" data-toggle="tooltip" data-placement="right"
-                                                                                title="Shared with {{session.shared}} users">
-                                                                                <i class="fas fa-user-friends"></i> {{ session.shared }}</span>                                                                                {% endif %}
-
-                                                                                {% endif %}
+                                            {% if session.shared %}
+                                                {% if session.created_by.username != user.username %}
+                                                <span class="badge badge-pill badge-info" data-toggle="tooltip" data-placement="right"
+                                                title="Shared with you by {{ session.created_by.username }}.">
+                                                <i class="fas fa-user-friends"></i> {{ session.shared }}</span>
+                                                {% else %}
+                                                <span class="badge badge-pill badge-light" data-toggle="tooltip" data-placement="right"
+                                                title="Session shared with {{ session.shared }} users.">
+                                                <i class="fas fa-user-friends"></i> {{ session.shared }}</span>  
+                                                {% endif %}
+                                            {% elif session.public == True %}
+                                                <span class="badge badge-pill badge-warning" href="{% url 'session_share' pk=session.pk %}" data-toggle="tooltip" data-placement="right"
+                                                title="Session public.">
+                                                <i class="fas fa-unlock-alt"></i></span>                                              
+                                            {% else %}
+                                                <span class="badge badge-pill badge-dark" href="{% url 'session_share' pk=session.pk %}" data-toggle="tooltip" data-placement="right"
+                                                title="Session private.">
+                                                <i class="fas fa-lock"></i></span>                                              
+                                            {% endif %}
                                                                 </td>
                                                         <td><a class="text-light"
                                                                         href="{% url 'case_study_review' pk=session.case_study.pk %}">{{ session.case_study.name }}
