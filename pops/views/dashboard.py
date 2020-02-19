@@ -183,7 +183,7 @@ def get_users(request):
         .filter(session=session)).filter(q_objects)
     #create a list to send via json response
     data = {
-        "users": list(user_matches.order_by('last_name').values("pk","first_name","last_name","username")),
+        "users": list(user_matches.order_by('last_name').values("pk","first_name","last_name","username","organization")),
     }    
     return JsonResponse(data)
 
