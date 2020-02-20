@@ -57,12 +57,14 @@
                                 <td>
                                     <a class="btn btn-info btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
                                         role="button">View Details</a>
+                                {% comment %}
                                     {% if not cs.use_external_calibration %}
                                     <a class="btn btn-secondary btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
                                         role="button" style="white-space: normal;" data-toggle="tooltip" data-placement="top"
                                         title="Tooltip on top">Extend Case Study</a>
                                     {% endif %}
-                                    <a class="btn btn-success btn-sm btn-block" href="{% url 'new_session' %}"
+                                    {% endcomment %}
+                                    <a class="btn btn-success btn-sm btn-block" href="{% url 'new_session_case_study_specific' case_study=cs.pk %}"
                                         role="button" style="white-space: normal;">Create Session</a>
                                 </td>
                             </tr>
@@ -117,12 +119,14 @@
                                 <td>
                                     <a class="btn btn-info btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
                                         role="button">View Details</a>
+                                {% comment %}
                                     {% if not cs.use_external_calibration %}
                                     <a class="btn btn-secondary btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
                                         role="button" style="white-space: normal;" data-toggle="tooltip" data-placement="top"
                                         title="Tooltip on top">Extend Case Study</a>
                                     {% endif %}
-                                    <a class="btn btn-success btn-sm btn-block" href="{% url 'case_study_edit' pk=cs.pk %}"
+                                    {% endcomment %}
+                                    <a class="btn btn-success btn-sm btn-block" href="{% url 'new_session_case_study_specific' case_study=cs.pk %}"
                                         role="button" style="white-space: normal;">Create Session</a>
                                 </td>
                             </tr>
