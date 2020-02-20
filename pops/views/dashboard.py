@@ -185,7 +185,7 @@ def get_users(request):
     }    
     return JsonResponse(data)
 
-class DeleteAllowedUserView(DeleteView):
+class DeleteAllowedUserView(LoginRequiredMixin, DeleteView):
     model = AllowedUsers
 
     def get_success_url(self, **kwargs):
@@ -205,7 +205,7 @@ class DeleteAllowedUserView(DeleteView):
         if session.created_by == request.user:
             return True
 
-class DeleteSessionView(DeleteView):
+class DeleteSessionView(LoginRequiredMixin, DeleteView):
     model = Session
     success_url = reverse_lazy('session_list')
 
@@ -377,8 +377,7 @@ class NewRunView(CreateView):
             else:
                 return self.render_to_response(
                 self.get_context_data(
-                        answer_form=answer_form,
-                        question_form=question_form
+                        success=False
                 )
         )
     
@@ -632,7 +631,7 @@ def edit_run_collection(request):
         }
     return JsonResponse(data)
 
-class OutputDetailView(DetailView):
+class OutputDetailView(LoginRequiredMixin, DetailView):
     template_name = 'pops/dashboard/detail_output.html'
     model = Output
 
