@@ -1,5 +1,5 @@
 # users/views.py
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, UpdateView
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.sites.shortcuts import get_current_site
@@ -16,6 +16,18 @@ from django.contrib.auth import login, authenticate
 from .forms import CustomUserCreationForm
 from .models import CustomUser
 #from google.appengine.api import mail
+
+class UpdateAccount(UpdateView):
+    model = CustomUser
+    fields = ['first_name', 'last_name', 'email', 'organization','user_type']
+    success_url = reverse_lazy('my_account')
+    template_name = 'accounts/update_account.html'
+
+    def get_object(self, queryset=None):
+        '''This method will load the object
+        that will be used to load the form
+        that will be edited'''
+        return self.request.user
 
 
 def my_account(request):
@@ -107,7 +119,7 @@ def activate(request, uidb64, token):
         # Go ahead and log the user in
         login(request, user)
         # Redirect to the desired page
-        return redirect('landing_page')
+        return redirect('workspace')
     #If the user and/or token do not work, direct the user to an invalid page
     else:
         return render(request, 'account_activation_invalid.html')
