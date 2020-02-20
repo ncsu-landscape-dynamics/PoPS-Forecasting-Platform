@@ -43,7 +43,20 @@
                         <label class="custom-control-label" for="public_sharing">Public (not recommended)</label>
                     </div>
                     </form>
+                    <div id="copy_link">
+                    <em><small>Use this shareable link to share your dashboard with other users:</small></em>
+                    <div class="row">
+                    <div class="col-9">
+                    <input class="form-control mr-sm-2" type="text" value="{{ request.get_host }}{% url 'dashboard' pk=session.pk %}" id="myInput">
+                    </div>
+                    <div class="col-3">
+                    <button class="btn btn-outline-info my-2 my-sm-0" onclick="copyToClipboard()">Copy link</button>
+                    </div>                
+                                    </div>
+                    </div>
                 </div>
+            </div>
+<div class="row" id="share_section">
                 <div id="sharing" class="col-lg-6 pt-4">
                     <strong>Add PoPS users to this session:</strong>
                     <form class="form-inline" id="search" action="{% url 'user_search_results' %}">
@@ -72,6 +85,18 @@
                     </div>
                     {% endfor %}
                 </div>
+                </div>
+
+                <script>
+                    if ($("#private_sharing").prop("checked") == true) {
+                        $("#copy_link").hide();
+                    }                    
+                    else {
+                        $("#share_section").hide();
+                    }
+
+                </script>
+
                 <div class="modal fade" id="public_help" tabindex="-1" role="dialog" aria-labelledby="public_help"
                     aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -88,7 +113,7 @@
                                     sessions
                                     for educational purposes, however we do NOT recommend using a public
                                     session if you care about your data and results.</p>
-                                <p> You can select specific PoPS users to share your session with.</p>
+                                <p> With a private session, you can share your session with specific PoPS users.</p>
                             </div>
                             <div class="modal-footer">
                                 <button id="cancel_public" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -99,7 +124,6 @@
                 </div>
 
 
-            </div>
 
             <div class="modal fade" id="sharing_help" tabindex="-1" role="dialog" aria-labelledby="sharing_help"
                 aria-hidden="true">
@@ -156,8 +180,14 @@
             <div class="row">
                 <div class="col-auto pt-4">
                     <div class="d-inline text-center">
-                        <a class="btn btn-secondary btn" href="{% url 'dashboard' pk=session.pk %}" role="button">
-                            Return to dashboard</a>
+                        <a class="btn btn-info btn" href="{% url 'dashboard' pk=session.pk %}" role="button">
+                            Go to dashboard</a>
+                    </div>
+                </div>                
+                <div class="col-auto pt-4">
+                    <div class="d-inline text-center">
+                        <a class="btn btn-dark btn" href="{% url 'session_list' %}" role="button">
+                            View all sessions</a>
                     </div>
                 </div>
             </div>
@@ -165,6 +195,9 @@
     </div>
 </div>
 <script>
+
+
+
     $("#private_sharing").on('click', function () {
         $("#public_setting").submit();
     });
@@ -177,6 +210,7 @@
     $("#save_public").on('click', function () {
         $("#public_setting").submit();
     });
+
 
     $("#search").on('submit', function () {
         event.preventDefault();
@@ -191,9 +225,10 @@
                         for(var i = 0; i < data.users.length; i++) {
                             var available_users = '<div><button form="add-allowed-users" class="btn btn-sm btn-link" type="submit" name="user" id="id_user" data-toggle="tooltip" title="Add user" data-placement="left" value="'
                             +data.users[i].pk+'"><i class="fas fa-plus-circle"></i></button>' 
-                            + data.users[i].username + ' (' 
+                            + data.users[i].username + ' (<em>' 
                             + data.users[i].first_name + ' ' 
-                            + data.users[i].last_name + ')</div>';
+                            + data.users[i].last_name + '</em> - '
+                            + data.users[i].organization + ')</div>';
                             container.append(available_users);
                         }
                         }
@@ -212,6 +247,18 @@
                 });
     });
 
+function copyToClipboard() {
+  /* Get the text field */
+  var copyText = document.getElementById("myInput");
+
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+}
 
 </script>
     {% endblock %}

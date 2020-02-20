@@ -7,29 +7,51 @@
 <div class="container py-2 pb-4">
         <h3>Welcome to your PoPS workspace, {{ user }} </h3>
         <div class="row">
-                <div class="col-lg-7">
+                <div class="col-lg-12">
                         <div class="panel-container">
-                                <h4>My recent sessions ({% if user_sessions.count < 5 %} {{ user_sessions.count }}
+
+                                <h4>My sessions ({% if sessions.count < 5 %} {{ sessions.count }}
                                         {% else %} 5 {% endif %} / {{ number_of_sessions }} ):</h4>
-                                {% if user_sessions %}
+                                {% if sessions %}
                                 <table class="table table-hover table-dark table-sm ">
                                         <thead>
-                                                <th class="w-25">Name</th>
-                                                <th class="w-30">Case study</th>
+                                                <th class="w-30">Name</th>
+                                                <th class="w-25">Case study</th>
                                                 <th class="w-5">Runs</th>
                                                 <th class="w-20">Last run</th>
                                                 <th></th>
                                         </thead>
 
                                         <tbody>
-                                                {% for session in user_sessions %}
+                                                {% for session in sessions %}
                                                 <tr>
                                                         <td><a class="text-light"
                                                                         href="{% url 'dashboard' pk=session.pk %}">
-                                                                        <p data-toggle="tooltip" data-placement="right"
+                                                                        <span data-toggle="tooltip" data-placement="right"
                                                                                 title="{{ session.description }}">
-                                                                                {{ session.name }}</p>
-                                                                </a></td>
+                                                                                {{ session.name }}
+                                                                                </span>
+                                                                </a>
+                                            {% if session.shared %}
+                                                {% if session.created_by.username != user.username %}
+                                                <span class="badge badge-pill badge-info" data-toggle="tooltip" data-placement="right"
+                                                title="Shared with you by {{ session.created_by.username }}.">
+                                                <i class="fas fa-user-friends"></i> {{ session.shared }}</span>
+                                                {% else %}
+                                                <span class="badge badge-pill badge-light" data-toggle="tooltip" data-placement="right"
+                                                title="Session shared with {{ session.shared }} users.">
+                                                <i class="fas fa-user-friends"></i> {{ session.shared }}</span>  
+                                                {% endif %}
+                                            {% elif session.public == True %}
+                                                <span class="badge badge-pill badge-warning" href="{% url 'session_share' pk=session.pk %}" data-toggle="tooltip" data-placement="right"
+                                                title="Session public.">
+                                                <i class="fas fa-unlock-alt"></i></span>                                              
+                                            {% else %}
+                                                <span class="badge badge-pill badge-dark" href="{% url 'session_share' pk=session.pk %}" data-toggle="tooltip" data-placement="right"
+                                                title="Session private.">
+                                                <i class="fas fa-lock"></i></span>                                              
+                                            {% endif %}
+                                                                </td>
                                                         <td><a class="text-light"
                                                                         href="{% url 'case_study_review' pk=session.case_study.pk %}">{{ session.case_study.name }}
                                                                         <i
@@ -53,7 +75,7 @@
                                         </tbody>
                                 </table>
                                 {% else %}
-                                You have no sessions yet.
+                                You have no shared sessions yet.
                                 {% endif %}
 
                                 <div class="row">
@@ -74,7 +96,7 @@
 
                         </div>
                 </div>
-                <div class="col-lg-5">
+                <div class="col-lg-12">
                         <div class="panel-container">
                                 <h4>My case studies:</h4>
                                 {% if user_case_studies %}
@@ -126,18 +148,23 @@
                                 {% else %}
                                 You have no custom case studies yet.
                                 {% endif %}
+                                <div class="row">
+                                        <div class="col-6">
                                 <a class="btn btn-secondary  btn-block" href="{% url 'case_study_list' %}" role="button"
                                         style="white-space: normal;"><i class="fas fa-search"></i> Browse All Case
                                         Studies
                                 </a>
+                                        </div>
+                                        <div class="col-6">
                                 <a class="btn btn-success  btn-block" href="{% url 'create_case_study' %}" role="button"
                                         style="white-space: normal;"><i class="fas fa-plus-circle"></i> Create New Case
                                         Study
                                 </a>
+                                        </div>
+                                </div>
+
                         </div>
                 </div>
-
-
         </div>
 
 </div>
