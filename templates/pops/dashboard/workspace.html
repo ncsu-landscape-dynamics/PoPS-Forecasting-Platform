@@ -62,7 +62,7 @@
                                                                         class="badge badge-pill badge-light">{{ session.number_runs }}</span>
                                                         </td>
                                                         <td>{{ session.most_recent_run }}</td>
-                                                        <td><a class="text-info"
+                                                        <td class="text-right pr-3"><a class="text-info"
                                                                         href="{% url 'dashboard' pk=session.pk %}"
                                                                         role="button"><i
                                                                                 class="fas fa-arrow-alt-circle-right"
@@ -155,7 +155,7 @@
                                                                 {% endif %}
 
                                                         </td>
-                                                        <td><a class="text-info"
+                                                        <td class="text-right pr-3"><a class="text-info"
                                                                         href="{% url 'new_session_case_study_specific' case_study=cs.pk %}"
                                                                         role="button"><i
                                                                                 class="fas fa-plus-circle"
