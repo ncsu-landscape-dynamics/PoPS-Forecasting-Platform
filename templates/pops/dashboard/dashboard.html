@@ -295,19 +295,14 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
     <div class="row no-gutters">
       <div id="side-bar-container" class="col-auto text-center ">
         <div class="nav " id="side-bar" aria-orientation="vertical">
-          <a class="nav-link active" id="map-tab" data-toggle="pill" title="Create new run" data-placement="right" 
-             href="#" aria-controls="v-pills-home" aria-selected="true"><i class="align-middle fas fa-plus-circle"></i></a>
-          <a class="nav-link " id="results-tab" data-toggle="pill" title="View map results for selected run"
-            href="#" data-placement="right"  aria-controls="v-pills-profile" aria-selected="false"><i
-              class="align-middle fas fa-globe-americas"></i></a>
-          <a class="nav-link" id="chart-view-tab" data-toggle="pill" title="View detailed analytics for selected run"
+          <a class="nav-link" id="new-tab" data-toggle="modal" data-target="#editInputParameters"
+             href="#" aria-controls="v-pills-new" aria-selected="false"><i class="align-middle fas fa-plus-circle " data-toggle="tooltip" title="Create new run" data-placement="right" ></i></a>
+          <a class="nav-link active" id="map-tab" data-toggle="pill" title="View map" data-placement="right" 
+             href="#" aria-controls="v-pills-home" aria-selected="true"><i class="align-middle fas fa-globe-americas"></i></a>
+          <a class="nav-link" id="chart-view-tab" data-toggle="tooltip" title="View detailed analytics for selected run (Coming soon!)"
             href="#" data-placement="right" aria-controls="v-pills-messages" aria-selected="false"><i
               class=" align-middle fas fa-chart-bar"></i></a>
-          <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" title="Session summary (Coming soon!)" data-placement="right"
-            href="#v-pills-settings"  aria-controls="v-pills-settings" aria-selected="false"><i class="align-midd far fa-list-alt"></i></a>
-          <a class="nav-link align-middle" id="v-pills-settings-tab" data-toggle="pill" title="Compare two runs (Coming soon!)"
-            data-placement="right" href="#v-pills-settings"  aria-controls="v-pills-settings" aria-selected="false">vs</a>
-          <a class="nav-link" id="report-tab" data-toggle="pill" title="Generate report (Coming soon!)" data-placement="right" href="#v-pills-messages"
+          <a class="nav-link" id="report-tab" data-toggle="tooltip" title="Generate report (Coming soon!)" data-placement="right" href="#"
              aria-controls="v-pills-messages" aria-selected="false"><i class="align-middle fas fa-file-pdf"></i></a>
           <div class="" id="side-bar-filler"> </div>
         </div>
@@ -2402,36 +2397,11 @@ $("#host_map_checkbox input").on('change', function () {
         });
     });    
 
-    $("#results-tab").on('click', function () {
-      $("#submit-run-button").attr("disabled", true);
-      $("input#id_name").prop('disabled', true);
-        disableDrawTools();
-      if (map.getLayer("treatment")) {
-        map.setLayoutProperty('treatment','visibility','visible');
-      };
-      if (map.getLayer("treatment-fill")) {
-        map.setLayoutProperty('treatment-fill','visibility','visible');
-      };
 
-      $( "#run-details" ).hide();
-      $( "#run-output-details" ).show();
-      $("a.nav-link").removeClass("active");
-      $("a#results-tab").addClass("active");
-      $(".tab-pane").removeClass("active");
-      $("#v-pills-map").addClass("active");
-
-    });
 
     $("#map-tab, #new_run_redirect a").on('click', function () {
       $("#submit-run-button").attr("disabled", false);
       $("input#id_name").prop('disabled', false);
-                        if (map.getLayer("treatment")) {
-      map.setLayoutProperty('treatment','visibility','none');
-                        };
-      if (map.getLayer("treatment-fill")) {
-        map.setLayoutProperty('treatment-fill','visibility','none');
-      };
-
       $( "#run-details" ).show();
       $( "#run-output-details" ).hide();
       $("a.nav-link").removeClass("active");
@@ -2442,12 +2412,12 @@ $("#host_map_checkbox input").on('change', function () {
     });
 
     $("#chart-view-tab").on('click', function () {
-        disableDrawTools();
-      $("a.nav-link").removeClass("active");
-      $("a#chart-view-tab").addClass("active");
-      $(".tab-pane").removeClass("active");
-      $("#v-pills-chart-view").addClass("active");
-      $("#v-pills-chart-view").addClass("show");
+        //disableDrawTools();
+      //$("a.nav-link").removeClass("active");
+      //$("a#chart-view-tab").addClass("active");
+      //$(".tab-pane").removeClass("active");
+      //$("#v-pills-chart-view").addClass("active");
+      //$("#v-pills-chart-view").addClass("show");
     });
 
     $("#submit-run-collection").on('submit', function () {
