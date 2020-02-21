@@ -14,7 +14,7 @@
     <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-6">
       <form id="submit-session" submit-session-url="{% url 'save_session_data' %}" method="post">{% csrf_token %} 
-            {% include "pops/include/form_field.html" with field=form.case_study form_class="col-12 dark_input" %}
+            {% include "pops/include/form_field.html" with field=form.case_study form_class="col-12 dark_input" %} 
             {% include "pops/include/form_field.html" with field=form.name form_class="col-12 dark_input" %}
             {% include "pops/include/form_field.html" with field=form.description form_class="col-12 dark_input" %}
             {% include "pops/include/form_field.html" with field=form.reproductive_rate form_class="col-12 dark_input" %}

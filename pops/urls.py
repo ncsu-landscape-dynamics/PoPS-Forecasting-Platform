@@ -37,6 +37,7 @@ urlpatterns = [
     path('save_session_data', views.NewSessionView.as_view(), name='save_session_data'),
     path('save_run_collection_data_test', views.DashboardTestView.as_view(), name='save_run_collection_data_test'),
     path('session/new', views.NewSessionView.as_view(), name='new_session'),
+    path('session/new/<int:case_study>', views.NewSessionView.as_view(), name='new_session_case_study_specific'),
     path('session/delete/<int:pk>', views.DeleteSessionView.as_view(), name='delete_session'),
     path('session/list', views.SessionListView.as_view(), name='session_list'),
     path('session/share/<int:pk>', views.SessionShareView.as_view(), name='session_share'),

@@ -87,7 +87,6 @@ class SessionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SessionForm, self).__init__(*args, **kwargs)
-        self.fields['case_study'].queryset = CaseStudy.objects.filter(staff_approved=True)
         for field in self.fields:
             help_text = self.fields[field].help_text
             input_type=self.fields[field].widget.__class__.__name__

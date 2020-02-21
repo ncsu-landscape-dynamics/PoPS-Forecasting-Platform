@@ -55,14 +55,14 @@
                                                         <td><a class="text-light"
                                                                         href="{% url 'case_study_review' pk=session.case_study.pk %}">{{ session.case_study.name }}
                                                                         <i
-                        style="font-size:0.6em" class="fas fa-plus-circle align-top text-light"></i></a>
+                        style="font-size:0.6em" class="fas fa-info-circle align-top text-light"></i></a>
                                                         </td>
                                                         <td>
                                                                 <span
                                                                         class="badge badge-pill badge-light">{{ session.number_runs }}</span>
                                                         </td>
                                                         <td>{{ session.most_recent_run }}</td>
-                                                        <td><a class="text-info"
+                                                        <td class="text-right pr-3"><a class="text-info"
                                                                         href="{% url 'dashboard' pk=session.pk %}"
                                                                         role="button"><i
                                                                                 class="fas fa-arrow-alt-circle-right"
@@ -98,25 +98,40 @@
                 </div>
                 <div class="col-lg-12">
                         <div class="panel-container">
-                                <h4>My case studies:</h4>
+                                <h4>My case studies ({% if user_case_studies.count < 5 %} {{ user_case_studies.count }}
+                                        {% else %} 5 {% endif %} / {{ number_of_case_studies }} ):</h4>                                
                                 {% if user_case_studies %}
                                 <table class="table table-hover table-dark table-sm ">
                                         <thead>
                                                 <th>Name</th>
-                                                <th>Date</th>
+                                                <th>Pest(s)</th>
+                                                <th>Date created</th>
+                                                <th>Status</th>
                                                 <th></th>
                                         </thead>
 
                                         <tbody>
                                                 {% for cs in user_case_studies %}
                                                 <tr>
-                                                        <td>{{ cs.name }}
+                                                        <td>
                                                                 <a class="text-light"
                                                                         href="{% url 'case_study_review' pk=cs.pk %}"
-                                                                        role="button"><i
-                                                                                class="fas fa-info-circle"></i></a>
+                                                                        role="button">
+                                                                        <span data-toggle="tooltip" data-placement="right"
+                                                                                title="{{ cs.description }}">
+                                                                                {{ cs.name }}
+                                                                                </span> 
+                                                                                <span data-toggle="tooltip" data-placement="right"
+                                                                                title="Click to see case study details.">
+                                                                                <i style="font-size:0.6em" class="fas fa-info-circle align-top text-light"></i>
+                                                                                </span></a>
                                                         </td>
-                                                        <td class="w-25">{{ cs.date_created|date:'M. j, Y'  }}</td>
+                                                        {% with pests=cs.pest_set.all %}
+                                                        <td>{% for pest in pests %}{% firstof pest.pest_information pest.name %}
+                                                        {% endfor %} </td>
+                                                        {% endwith %}
+                                                        <td>{{ cs.date_created|date:'M. j, Y'  }}</td>
+
                                                         <td>
                                                                 {% if cs.calibration_status == "NO START" %}
                                                                 <i class="fas fa-question-circle text-light"
@@ -140,7 +155,14 @@
                                                                 {% endif %}
 
                                                         </td>
-                                                </tr>
+                                                        <td class="text-right pr-3"><a class="text-info"
+                                                                        href="{% url 'new_session_case_study_specific' case_study=cs.pk %}"
+                                                                        role="button"><i
+                                                                                class="fas fa-plus-circle"
+                                                                                data-toggle="tooltip"
+                                                                                data-placement="top"
+                                                                                title="Create session from this case study."></i></a></td>
+                        </tr>
                                                 {% endfor %}
 
                                         </tbody>
