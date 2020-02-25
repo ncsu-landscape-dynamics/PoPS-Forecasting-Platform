@@ -16,13 +16,18 @@
   }
 
 
-.dark_input input, .dark_input textarea, .dark_input select  {
+  input:disabled {
+    background: red;
+  }
+  
+.dark_input input, .dark_input textarea, .dark_input select, .dark_input select:disabled {
   width:50%; 
   border-radius: 4px; 
   border: 3px solid #555;
   background-color: #2e3236; 
   color: white;
 }
+
 .dark_input input:focus, .dark_input textarea:focus, .dark_input select:focus  {
   background-color: #4A5158; 
   color: white;

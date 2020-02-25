@@ -5,6 +5,7 @@
   {% endblock %}
 {% block page_styles %}
   <link rel="stylesheet" href="{% static 'css/new_session.css' %}">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}
 {% block content %}
 <div class="container py-4">
@@ -32,6 +33,49 @@
 
       </div>
       </form>
+
+
+<div>
+case_study = {{ case_study }}
+</div>
+<div>
+{{ pest }}
+{% for rr in reproductive_rates %}
+{% if forloop.last %}
+<p>
+{{ rr.value }} -- 
+{{ rr.probability }}
+</p>
+{% else %}
+<p>
+{{ rr.value }} -- 
+{{ rr.probability }},
+</p>
+{% endif %}
+{% endfor %}
+
+Expected = {{ expected_reproductive_rate.value }}
+Min = {{ min_reproductive_rate.value }}
+Max = {{ max_reproductive_rate.value }}
+</div>
+
+<div id="reproductive-rate-container" class="parameter-selector-plot pt-2" style="width:250px">
+                      <strong class="py-0">Max number of dispersers: <output id="displayRate">{{ expected_reproductive_rate.value }}</output></strong>
+                      <div id="reproductive_rate_plot" style="height:100px; width:250px;"></div>
+                      <div id="reproductive-rate-slider" class="pt-0 range range-info text-light">
+                        <input id="id_reproductive_rate" style="" class="custom-range " type="range"
+                          name="reproductive_rate" min="{{ min_reproductive_rate.value }}" max="{{ max_reproductive_rate.value }}" step="0.1" value="{{ expected_reproductive_rate.value }}"
+                          onchange="displayRate.value=value">
+                      </div>
+                    </div>
+                    <div id="dispersal-scale-container" class="parameter-selector-plot pt-2" style="width:250px">
+                      <strong class="py-0">Dispersal scale: <output id="displayDispersalScale">47</output> meters</strong>
+                      <div id="dispersal_scale_plot" style="height:100px; width:250px;"></div>
+                      <div id="dispersal-scale-slider" class="pt-0 range range-info text-light">
+                        <input id="id_distance_scale" style="" class="custom-range " type="range" name="distance_scale"
+                          min="39" max="57" step="1" value="47" onchange="displayDispersalScale.value=value">
+                      </div>
+                    </div>
 
                   <div class="modal fade" id="session_creation_status" tabindex="-1" role="dialog" aria-labelledby="editInputParameters"
                     aria-hidden="true">
@@ -71,6 +115,141 @@
 <script>
 
 $("#modal_close_button").hide();
+
+function findMax(arr) {
+  let max = arr[0];
+
+  for (let i = 1, len=arr.length; i < len; i++) {
+    let v = arr[i];
+    max = (v > max) ? v : max;
+  }
+
+  return [max];
+}
+
+
+function parameter_plot(myDiv, title, x, y, selector_x, color, error_bar=true) {
+
+  var x_values = x;
+  var y_values = y;
+  var selector_x = Number(selector_x);
+  var index_value = x.indexOf(selector_x);
+
+  var x_selected_value=x_values[index_value];
+  var y_selected_value=y_values[index_value];
+  var min_x=x_values[0];
+  var max_x=x_values.slice(-1).pop();
+  var max_y=Number(findMax(y_values));
+        var trace1 = {
+          x: x_values,
+          y: y_values,
+  mode: 'lines',
+    type: 'scatter',
+          line: {
+            color: color
+          },
+          fill: 'tozeroy',
+        };
+
+        var trace2 = {
+          x: [x_selected_value],
+          y: [y_selected_value],
+  mode: 'markers',
+    type: 'scatter',
+          marker: {
+            color: 'white',
+            size:'10',
+          },
+        };
+
+      var data = [trace1, trace2];
+
+
+
+      var layout = {
+
+        xaxis: {
+          range: [(min_x-(max_x - min_x)/20), (max_x+(max_x - min_x)/20)],
+          dtick: parseInt((max_x - min_x)/4),
+          tickfont: {
+            size: 12,
+            color: 'rgb(107, 107, 107)'
+          }
+        },
+        yaxis: {
+          range: [-0.1, max_y+1.4],
+          showticklabels: false,
+          title: title,
+          titlefont: {
+            size: 12,
+            color: 'grey',
+          },
+
+          tickfont: {
+            size: 12,
+            color: 'rgb(107, 107, 107)'
+          }
+        },
+        showlegend: false,
+        paper_bgcolor: '#0b0d0e',
+        plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
+        margin: {
+          l: 30,
+          r: 20,
+          b: 15,
+          t: 10,
+          pad: 0
+        },
+      };
+
+      return Plotly.newPlot(myDiv, data, layout, {
+        displayModeBar: false,
+        responsive: true
+      });
+    };
+
+
+
+
+    var reproductive_rates = [
+{% for rr in reproductive_rates %}
+{% if forloop.last %}
+{{ rr.value }}
+{% else %}
+{{ rr.value }},
+{% endif %}
+{% endfor %}
+    ];
+    var reproductive_rate_probabilities = [
+{% for rr in reproductive_rates %}
+{% if forloop.last %}
+{{ rr.probability }}
+{% else %}
+{{ rr.probability }},
+{% endif %}
+{% endfor %}
+    ];
+    var reproductive_rate= {{ expected_reproductive_rate.value }};
+    var dispersal_scales = [39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57];
+    var dispersal_scale_probabilities = [0.56,2.17,2.94,4.13,5.49,6.44,7.96,8.12,8.8,8.48,8.23,7.49,6.83,5.71,4.02,3,2.31,1.52,0.82];
+    var dispersal_scale= [47];
+
+    
+  $(parameter_plot("reproductive_rate_plot", 'Probability', reproductive_rates, reproductive_rate_probabilities, reproductive_rate, '#2598b8', error_bar=false));
+  $(parameter_plot("dispersal_scale_plot", 'Probability', dispersal_scales, dispersal_scale_probabilities, dispersal_scale, '#2598b8', error_bar=false));
+
+$( "#dispersal-scale-container" ).click(function() {
+        dispersal_scale = $(this).find('input').val();
+      console.log("Distance scale is now: " + dispersal_scale);
+          $(parameter_plot("dispersal_scale_plot", 'Probability', dispersal_scales, dispersal_scale_probabilities, dispersal_scale, '#2598b8', error_bar=false));
+})
+$( "#reproductive-rate-container" ).click(function() {
+        reproductive_rate = $(this).find('input').val();
+      console.log("Reproductive rate is now: " + reproductive_rate);
+          $(parameter_plot("reproductive_rate_plot", 'Probability', reproductive_rates, reproductive_rate_probabilities, reproductive_rate, '#2598b8', error_bar=false));
+})
+
+
 
 function getCookie(name) {
   var cookieValue = null;
