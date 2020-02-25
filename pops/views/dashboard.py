@@ -71,7 +71,17 @@ class NewSessionView(LoginRequiredMixin, SessionAjaxableResponseMixin, CreateVie
 
     def get_context_data(self, **kwargs):
         context = super(NewSessionView, self).get_context_data(**kwargs)
-        context['form'].fields['case_study'].queryset = CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
+        case_study = self.kwargs.get('case_study')
+        #Here we are grabbing the first pest associated with a case study
+        #This needs to be changed if we start handling case studies with multiple pests
+        pest=Pest.objects.filter(case_study__pk=case_study)[:1].get()
+        context['form'].fields['case_study'].queryset = CaseStudy.objects.filter(pk=case_study)
+        context['case_study'] = case_study
+        context['pest'] = Pest.objects.select_related('vector').filter(case_study__pk=case_study).select_related('pest_information')
+        context['reproductive_rates'] = ReproductiveRate.objects.filter(pest=pest).order_by('value')
+        context['min_reproductive_rate'] = ReproductiveRate.objects.filter(pest=pest).order_by('value').first() 
+        context['max_reproductive_rate'] = ReproductiveRate.objects.filter(pest=pest).order_by('-value').first() 
+        context['expected_reproductive_rate'] = ReproductiveRate.objects.filter(pest=pest).order_by('-probability').first() 
         return context
  
     def get_success_url(self, **kwargs):
