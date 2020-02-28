@@ -16,7 +16,7 @@
 </style>
 
 <div class="container py-2 pb-4">
-    <h3>Available case studies: </h3>
+    <h3>Available sessions: </h3>
     <div class="row">
         <div class="col-12">
             <div class="panel-container">
@@ -38,18 +38,46 @@
                                 <td>
                                     <div class="row no-gutters align-items-center justify-content-between	">
 
-                                        <h5 class="col-auto">{{ session.name }}</h5>
+                                        <h5 class="col-auto">{{ session.name }}
+                                        <small>
+                                            {% if session.shared %}
+                                                {% if session.created_by.username != user.username %}
+                                                    <span class="badge badge-pill badge-info" data-toggle="tooltip" data-placement="right"
+                                                title="Shared with you by {{ session.created_by.username }}.">
+                                                <i class="fas fa-user-friends"></i> {{ session.shared }}</span>
+                                                {% else %}
+                                                <a class="badge badge-pill badge-light" href="{% url 'session_share' pk=session.pk %}" data-toggle="tooltip" data-placement="right"
+                                                title="Session shared with {{ session.shared }} users. Click to edit sharing on this session.">
+                                                <i class="fas fa-user-friends"></i> {{ session.shared }} <small><i class="fas fa-pencil-alt"></i></small></a>  
+                                                {% endif %}
+                                            {% elif session.public == True %}
+                                                <a class="badge badge-pill badge-warning" href="{% url 'session_share' pk=session.pk %}" data-toggle="tooltip" data-placement="right"
+                                                title="Session public. Click to edit sharing on this session.">
+                                                <i class="fas fa-unlock-alt"></i> <small><i class="fas fa-pencil-alt"></i></small></a>                                              
+                                            {% else %}
+                                                <a class="badge badge-pill badge-dark" href="{% url 'session_share' pk=session.pk %}" data-toggle="tooltip" data-placement="right"
+                                                title="Session private. Click to edit sharing on this session.">
+                                                <i class="fas fa-lock"></i><small> <i class="fas fa-pencil-alt"></i></small></a>                                              
+                                            {% endif %}
+                                        </small>
+                                        </h5>
 
                                         <div class="col-auto px-2">
-                                            <span class="badge badge-pill badge-light">{{ session.run_set.count }} runs</span>
+                                            <span class="badge badge-pill badge-light">{{ session.number_runs }} runs</span>
+                                                                    <a class="text-light"
+                                                                        href="{% url 'delete_session' pk=session.pk %}"
+                                                                        role="button"><i class="fas fa-trash-alt"
+                                                                                data-toggle="tooltip"
+                                                                                data-placement="top"
+                                                                                title="Delete session."></i>
+                                                                    </a>
                                         </div>
                                     </div>
-
                                     <p> {{ session.description }}</p>
                                 </td>
                                 <td> <a class="text-light" href="{% url 'case_study_review' pk=session.case_study.pk %}"
                                         >{{ session.case_study.name }}</a> </td>
-                                <td>{{ session.run_set.last.date_created }}</td>
+                                <td>{{ session.most_recent_run }}</td>
                                 <td>
                                     <a class="btn btn-info btn-sm btn-block" href="{% url 'dashboard' pk=session.pk %}"
                                         role="button">Go to session</a>
@@ -70,3 +98,12 @@
     </div>
 </div>
     {% endblock %}
+{% block scripts %}
+<script>
+  $(document).ready(function () {
+    $("body").tooltip({
+      selector: '[data-toggle=tooltip]'
+    });
+  });
+  </script>
+{% endblock %}

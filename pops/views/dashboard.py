@@ -1,17 +1,22 @@
-from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, View
+from django.views.generic import FormView, ListView, DetailView, TemplateView, CreateView, UpdateView, View, DeleteView
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.mixins import UserPassesTestMixin
 
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from django.db.models.functions import Greatest
-from django.db.models import Prefetch, Sum, Count, Max, Min, OuterRef, Subquery
+from django.db.models import Prefetch, Sum, Count, Exists, Max, Min, OuterRef, Subquery, Q
 
 from ..models import *
 from ..forms import *
+
+from users.models import CustomUser
 
 class SessionAjaxableResponseMixin:
     """
@@ -50,11 +55,25 @@ class SessionAjaxableResponseMixin:
         else:
             return response
  
-class NewSessionView(SessionAjaxableResponseMixin, CreateView):
+class NewSessionView(LoginRequiredMixin, SessionAjaxableResponseMixin, CreateView):
     template_name = 'pops/dashboard/new_session.html'
     form_class = SessionForm
+    login_url = 'login'
 
+    def get_initial(self, *args, **kwargs):
+        initial = super(NewSessionView, self).get_initial(**kwargs)
+        try:
+            case_study = self.kwargs.get('case_study')
+        except:
+            case_study = None
+        initial['case_study'] = case_study
+        return initial
 
+    def get_context_data(self, **kwargs):
+        context = super(NewSessionView, self).get_context_data(**kwargs)
+        context['form'].fields['case_study'].queryset = CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
+        return context
+ 
     def get_success_url(self, **kwargs):
         # obj = form.instance or self.object
         return reverse("dashboard", kwargs={'pk': self.object.pk})
@@ -73,17 +92,20 @@ class NewSessionView(SessionAjaxableResponseMixin, CreateView):
         # obj = form.instance or self.object
         return reverse("dashboard", kwargs={'pk': self.object.pk})
  """
-class WorkspaceView(TemplateView):
+class WorkspaceView(LoginRequiredMixin,TemplateView):
     template_name = 'pops/dashboard/workspace.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
             context = super(WorkspaceView, self).get_context_data(**kwargs)
             current_user=self.request.user
             context['current_user']=current_user
-            context['user_case_studies'] = CaseStudy.objects.prefetch_related('host_set','pest_set__pest_information').filter(created_by = current_user).order_by('-date_created')[:5]
-            context['user_sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(created_by = current_user).order_by('-date_created')[:5]
-            context['number_of_sessions'] = Session.objects.filter(created_by = current_user).count()
+            context['user_case_studies'] = CaseStudy.objects.prefetch_related('pest_set__pest_information').filter(created_by = current_user).order_by('-date_created')[:5]
+            #context['user_sessions'] = Session.objects.annotate(number_runs=Count('runcollection')).annotate(most_recent_run=Max('runcollection__date_created')).prefetch_related('created_by','case_study').filter(created_by = self.request.user).order_by('-date_created')[:5]
+            context['sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).annotate(shared=Count('allowedusers',distinct=True)).annotate(number_runs=Count('runcollection', distinct=True)).annotate(most_recent_run=Max('runcollection__date_created')).order_by('-most_recent_run')[:5]
+            context['number_of_sessions'] = Session.objects.filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).count() 
+            context['number_of_case_studies'] = CaseStudy.objects.filter(created_by = current_user).count() 
             return context
 
 class SessionListView(LoginRequiredMixin, TemplateView):
@@ -92,16 +114,130 @@ class SessionListView(LoginRequiredMixin, TemplateView):
     template_name = 'pops/dashboard/session_list.html'
 
     def get_queryset(self):
-        return Session.objects.prefetch_related('run_set','created_by','case_study').filter(created_by = self.request.user).order_by('-date_created')
+        return Session.objects.annotate(number_runs=Count('runcollection')).annotate(most_recent_run=Max('runcollection__date_created')).prefetch_related('created_by','case_study').filter(created_by = self.request.user).order_by('-date_created')
 
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
             context = super(SessionListView, self).get_context_data(**kwargs)
-            context['sessions']=self.get_queryset()
+            current_user=self.request.user
+            context['sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).annotate(shared=Count('allowedusers',distinct=True)).annotate(number_runs=Count('runcollection', distinct=True)).annotate(most_recent_run=Max('runcollection__date_created')).order_by('-most_recent_run')
             return context
 
-    # def get_queryset(self):
-    #     return CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
+
+class SessionShareView(LoginRequiredMixin, CreateView):
+    login_url = 'login'
+    template_name = 'pops/dashboard/session_share.html'
+    model = AllowedUsers
+    fields = ['session','user']
+
+    def get_success_url(self, **kwargs):
+        return reverse("session_share", kwargs={'pk': self.object.session.pk})
+
+    def get(self, request,*args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        return super().get(request,*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        if 'user' in request.POST:
+            return super().post(request,*args, **kwargs)
+        elif 'public' in request.POST:
+            data = request.POST.copy()
+            obj = Session.objects.get(pk=pk)
+            obj.public = data.get('public')
+            obj.save()
+            return HttpResponseRedirect(reverse("session_share", kwargs={'pk': pk}))
+        else:
+            return HttpResponseRedirect(reverse("session_share", kwargs={'pk': pk}))
+
+        
+    def get_context_data(self,**kwargs):
+        # Call the base implementation first to get the context
+        context = super(SessionShareView, self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        try:
+            session = Session.objects.get(pk=pk)
+        except:
+            session = None
+        users = CustomUser.objects.filter(is_active=True)
+        allowed_users = AllowedUsers.objects.filter(session=self.kwargs.get('pk'))
+        context['allowed_users'] = allowed_users
+        #context['users'] = users
+        context['session'] = session
+        return context
+
+    def check_permissions(self, request, pk):
+        session = get_object_or_404(Session, pk=pk)
+        if session.created_by == request.user:
+            return True
+        return
+
+#Send a list of PoPS users that meet the search criteria on the session share page
+def get_users(request):
+    user_search = request.GET.get('q') #string entered by the user
+    splitquery= user_search.split() #split the query into individual words
+    session = request.GET.get('session') #get session
+    q_objects = Q() # init our q objects variable to use .add() on it
+    #create a complex Q object to query for the users based on any
+    #matches to first name, last name or username
+    for words in splitquery:
+        search_fields = ['first_name', 'last_name', 'username']
+        for term in splitquery:
+            for field_name in search_fields:
+                q_objects.add(Q(**{"%s__icontains" % field_name: term}), Q.OR) 
+    #create object list of user matches, excluding users already in this shared session             
+    user_matches = CustomUser.objects.exclude(allowedusers__in=AllowedUsers.objects
+        .filter(session=session)).filter(q_objects)
+    #create a list to send via json response
+    data = {
+        "users": list(user_matches.order_by('last_name').values("pk","first_name","last_name","username","organization")),
+    }    
+    return JsonResponse(data)
+
+class DeleteAllowedUserView(LoginRequiredMixin, DeleteView):
+    model = AllowedUsers
+
+    def get_success_url(self, **kwargs):
+        return reverse("session_share", kwargs={'pk': self.object.session.pk})
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        return self.post(request, *args, **kwargs)
+    
+    def check_permissions(self, request, pk):
+        self.object = self.get_object() 
+        session = get_object_or_404(Session, pk=self.object.session.pk)
+        if session.created_by == request.user:
+            return True
+
+class DeleteSessionView(LoginRequiredMixin, DeleteView):
+    model = Session
+    success_url = reverse_lazy('session_list')
+
+    def get_queryset(self):
+        owner = self.request.user
+        return self.model.objects.filter(created_by=owner)
+ 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.created_by == request.user:
+            success_url = self.get_success_url()
+            self.object.delete()
+            return HttpResponseRedirect(success_url)
+        else:
+            raise PermissionDenied
 
 class DashboardTempView(TemplateView):
     template_name = 'pops/dashboard/dashboard.html'
@@ -151,10 +287,29 @@ class AjaxableResponseMixin:
         else:
             return response
  
-class DashboardView(AjaxableResponseMixin, CreateView):
+class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
     template_name = 'pops/dashboard/dashboard.html'
     form_class = RunCollectionForm
     success_url = 'new_session'
+    login_url = 'login'
+
+    def get(self, request,*args, **kwargs):
+        pk = self.kwargs.get('pk')
+        if pk:
+             permission = self.check_permissions(request, pk=pk)
+             if not permission:
+                 return HttpResponseForbidden()
+        return super().get(request,*args, **kwargs)
+
+    def check_permissions(self, request, pk):
+        session = get_object_or_404(Session, pk=pk)        
+        if session.created_by == request.user:
+            return True
+        elif session.public == True:
+            return True
+        elif session.allowedusers_set.filter(user=request.user).exists():
+            return True
+        return
 
     def get_initial(self):
             # call super if needed
@@ -168,6 +323,8 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             except:
                 session = None
             #Get case study pk    
+            allowed_users = AllowedUsers.objects.filter(session=session)
+            print(allowed_users)
             case_study = session.case_study
 
             try:
@@ -209,6 +366,8 @@ class DashboardView(AjaxableResponseMixin, CreateView):
             context['steering_years'] = steering_years
             context['run_collections'] = run_collections
             context['host_map'] = host_map
+            context['allowed_users'] = allowed_users
+            context['allowed_users_count'] = allowed_users.count()
             return context
 
 @method_decorator(csrf_exempt, name='post')
@@ -239,8 +398,7 @@ class NewRunView(CreateView):
             else:
                 return self.render_to_response(
                 self.get_context_data(
-                        answer_form=answer_form,
-                        question_form=question_form
+                        success=False
                 )
         )
     
@@ -494,7 +652,7 @@ def edit_run_collection(request):
         }
     return JsonResponse(data)
 
-class OutputDetailView(DetailView):
+class OutputDetailView(LoginRequiredMixin, DetailView):
     template_name = 'pops/dashboard/detail_output.html'
     model = Output
 

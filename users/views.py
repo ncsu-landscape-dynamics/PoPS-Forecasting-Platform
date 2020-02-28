@@ -1,4 +1,5 @@
 # users/views.py
+from django.views.generic import ListView, TemplateView, UpdateView
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.sites.shortcuts import get_current_site
@@ -6,12 +7,27 @@ from django.shortcuts import render, redirect
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
+from django.db.models import Q 
 from .tokens import account_activation_token
+from django.http import JsonResponse, HttpResponse
+
 
 from django.contrib.auth import login, authenticate
 from .forms import CustomUserCreationForm
 from .models import CustomUser
 #from google.appengine.api import mail
+
+class UpdateAccount(UpdateView):
+    model = CustomUser
+    fields = ['first_name', 'last_name', 'email', 'organization','user_type']
+    success_url = reverse_lazy('my_account')
+    template_name = 'accounts/update_account.html'
+
+    def get_object(self, queryset=None):
+        '''This method will load the object
+        that will be used to load the form
+        that will be edited'''
+        return self.request.user
 
 
 def my_account(request):
@@ -33,7 +49,7 @@ def sign_up(request):
             # confirmed via email)
             user = form.save(commit=False)
             #set is_active to false
-            user.is_active = True # THIS SHOULD BE FALSE IN PRODUCTION!!
+            user.is_active = False # THIS SHOULD BE FALSE IN PRODUCTION!!
             #save the inactive user data
             user.save()
             #grab the domain name of our site to use in our email link
@@ -61,7 +77,7 @@ def sign_up(request):
                 'token': account_activation_token.make_token(user),
             })
             #email the user using their provided email address
-            #user.email_user(subject, message)
+            user.email_user(subject, message)
             #redirect user to account_activation_sent view
             return redirect('account_activation_sent')
     #If the request method is not a POST (i.e. the user hasn't submitted data yet)
@@ -73,7 +89,7 @@ def sign_up(request):
     #the form will be populated with the user's content and error messages will be 
     #displayed
     return render(request, 'signup.html', {'form': form})
-
+ 
 # Show user a page saying that the account_activation email has been sent
 def account_activation_sent(request):
     return render(request, 'account_activation_sent.html',)
@@ -103,7 +119,25 @@ def activate(request, uidb64, token):
         # Go ahead and log the user in
         login(request, user)
         # Redirect to the desired page
-        return redirect('landing_page')
+        return redirect('workspace')
     #If the user and/or token do not work, direct the user to an invalid page
     else:
         return render(request, 'account_activation_invalid.html')
+
+class UserListView(ListView):
+    model = CustomUser
+
+class SearchView(TemplateView):
+    template_name = 'search_users.html'
+
+class SearchResultsView(ListView):
+    model = CustomUser
+    template_name = 'search_results.html'
+
+    def get_queryset(self): # new
+        query = self.request.GET.get('q')
+        object_list = CustomUser.objects.filter(
+            Q(first_name__icontains=query) | Q(last_name__icontains=query)
+        )
+        return object_list
+    

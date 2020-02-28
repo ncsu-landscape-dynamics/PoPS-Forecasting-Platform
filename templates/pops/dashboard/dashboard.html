@@ -241,59 +241,68 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
 
   <div class=" container-fluid p-0 ">
 
-    <nav class="navbar navbar-dark pl-0">
-      <div class="container-fluid ">
-        <a href="{% url 'landing_page' %}" class="navbar-brand d-none d-inline-block">
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+        <a href="{% url 'landing_page' %}" class="navbar-brand">
           <img src="{% static 'images/PoPSlogo_simple.svg' %}" style="width: 80px;" class="d-inline-block align-middle "
             alt="Pest or Pathogen Spread Simulation">
         </a>
-        <span id="session_title" class="pb-0 navbar-text d-none d-md-inline-block mr-auto text-bottom" style="font-size:1.2em;">
+  <div class="collapse navbar-collapse mb-0 mt-0" id="navbarTogglerDemo03">
+        <span id="session_title" class="pb-0 navbar-text d-none d-md-inline-block mr-auto text-bottom" >
           <strong>Session:</strong> {{ session.name|truncatechars:55  }} <a href="#" data-toggle="tooltip" title="Edit session name will be available in the future" data-placement="right"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top"></i></a>
-          <span id="case_study_title" class="text-muted d-none d-lg-inline-block" style="font-size:0.6em;">
-            {{ session.case_study }} {{ session.case_study.end_year }} <a href="{% url 'case_study_review' pk=session.case_study.pk %}" data-toggle="tooltip" title="View case study detail page" data-placement="right" ><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>
+          <span id="case_study_title" class="text-muted d-none d-lg-inline-block" style="font-size:0.8em;">
+            ({{ session.case_study }} {{ session.case_study.end_year }} <a href="{% url 'case_study_review' pk=session.case_study.pk %}" data-toggle="tooltip" title="View case study detail page" data-placement="right" ><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>)
           </span>
 
         </span>
+    <ul class="nav mt-2 mt-lg-0 mb-0 pb-0">
+      <li id="share-link" class="nav-item dropdown">
+      {% if session.public == True %}
+        <a class="nav-link" href="{% url 'session_share' pk=session.pk %}" data-toggle="tooltip" title="Edit share settings on this session." data-placement="bottom"><i class="fas fa-unlock-alt"></i> Public </a>
+      {% elif allowed_users %}
+        <a id="sharedDropdownMenuLink" class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" title="See shared users" data-placement="bottom"><i class="fas fa-user-friends"></i> Shared </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+        {% for allowed_user in allowed_users %}
+            <a class="dropdown-item text-light" href="#">{{ allowed_user.user.username }}</a>
+        {% endfor %}
+        {% if session.created_by.username == user.username %}
+        <a class="dropdown-item" href="{% url 'session_share' pk=session.pk %}" data-toggle="tooltip" title="Edit share settings on this session." data-placement="bottom"><i class="fas fa-pencil-alt"></i> Edit users... </a>
+        {% else %}
+        <a class="dropdown-item text-light" href="#">{{ session.created_by.username }} (owner)</a>
+        {% endif %}
+          </div>
+      {% else %}
+        <a class="nav-link" href="{% url 'session_share' pk=session.pk %}" data-toggle="tooltip" title="Edit share settings on this session." data-placement="bottom"><i class="fas fa-lock"></i> Private </a>
+      {% endif %}
+      </li>
 
-        <div id="main_menu" class="dropdown show ml-auto">
-          <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
+      <li id="main_menu" class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Menu
           </a>
-
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" href="{% url 'workspace' %}">My Workspace</a>
             <a class="dropdown-item" href="{% url 'new_session' %}">New Session</a>
-            
+            <a class="dropdown-item" href="{% url 'FAQs' %}">FAQs</a>
           </div>
+      </li>
+    </ul>    
         </div>
-
-
-
-
-      </div>
-
     </nav>
-
-
-
 
     <div class="row no-gutters">
       <div id="side-bar-container" class="col-auto text-center ">
         <div class="nav " id="side-bar" aria-orientation="vertical">
-          <a class="nav-link active" id="map-tab" data-toggle="pill" title="Create new run" data-placement="right" 
-             href="#" aria-controls="v-pills-home" aria-selected="true"><i class="align-middle fas fa-plus-circle"></i></a>
-          <a class="nav-link " id="results-tab" data-toggle="pill" title="View map results for selected run"
-            href="#" data-placement="right"  aria-controls="v-pills-profile" aria-selected="false"><i
-              class="align-middle fas fa-globe-americas"></i></a>
-          <a class="nav-link" id="chart-view-tab" data-toggle="pill" title="View detailed analytics for selected run"
+          <a class="nav-link" id="new-tab" data-toggle="modal" data-target="#editInputParameters"
+             href="#" aria-controls="v-pills-new" aria-selected="false"><i class="align-middle fas fa-plus-circle " data-toggle="tooltip" title="Create new run" data-placement="right" ></i></a>
+          <a class="nav-link active" id="map-tab" data-toggle="pill" title="View map" data-placement="right" 
+             href="#" aria-controls="v-pills-home" aria-selected="true"><i class="align-middle fas fa-globe-americas"></i></a>
+          <a class="nav-link" id="chart-view-tab" data-toggle="tooltip" title="View detailed analytics for selected run (Coming soon!)"
             href="#" data-placement="right" aria-controls="v-pills-messages" aria-selected="false"><i
               class=" align-middle fas fa-chart-bar"></i></a>
-          <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" title="Session summary (Coming soon!)" data-placement="right"
-            href="#v-pills-settings"  aria-controls="v-pills-settings" aria-selected="false"><i class="align-midd far fa-list-alt"></i></a>
-          <a class="nav-link align-middle" id="v-pills-settings-tab" data-toggle="pill" title="Compare two runs (Coming soon!)"
-            data-placement="right" href="#v-pills-settings"  aria-controls="v-pills-settings" aria-selected="false">vs</a>
-          <a class="nav-link" id="report-tab" data-toggle="pill" title="Generate report (Coming soon!)" data-placement="right" href="#v-pills-messages"
+          <a class="nav-link" id="report-tab" data-toggle="tooltip" title="Generate report (Coming soon!)" data-placement="right" href="#"
              aria-controls="v-pills-messages" aria-selected="false"><i class="align-middle fas fa-file-pdf"></i></a>
           <div class="" id="side-bar-filler"> </div>
         </div>
@@ -508,6 +517,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                     </div>
                   </div>
 
+
                   <div>
                     <div id="additional_map_checkboxes">
 {% comment %}                       <div id="SLF_buffer_zone_checkbox" class="form-check">
@@ -574,6 +584,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                       $('#historic-legend-container').show();
                       $('#occurence-legend-container').hide();
                       $('#probability-legend-container').hide();
+                      $('#eradication_container').hide();
 
                       $("#polygon-tool").on('click', function () {
                         $('.drawing-tool').removeClass('active');
@@ -623,9 +634,23 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   </div>
                   <button id="cancel-polling" class="btn btn-dark" type="button" data-value='false' >Cancel</button>
                   </div>
-<script>
+                  
+                  <div id="eradication-status-indicator" class="text-center">
+                  <div id="eradication_container" class="">
+                      Eradication successful in <span></span> <sup><a id="eradication-status-close-button"  href="#">&times;</a></sup>
+
+                  </div>
+                  </div>
+                  
+                  <script>
 $("#tangible-landscape-indicator").hide();
 $("#tangible-landscape-listener-button").hide();
+$("#eradication-status-indicator").hide();
+$("a#eradication-status-close-button").on('click', function () {
+      console.log("Close button clicked.");
+$("#eradication-status-indicator").hide();
+
+    });   
 
 $("button#cancel-polling").hide();
 
@@ -1072,6 +1097,7 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ o
 
 var year_id = '0';
 var max_occurence_number_for_legend = {{ session.max_value }};
+var map_fill_opacity = 0.6;
 
 function newFireLayer(map_data,year,max_legend_value) {
 console.log("Adding new layer for year " + year);
@@ -1126,16 +1152,17 @@ map.addLayer({
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
-                            0.0*max_legend_value, 0.6,
-                            0.2*max_legend_value, 0.6,
-                            0.3*max_legend_value, 0.6,
-                            0.4*max_legend_value, 0.6,
-                            0.5*max_legend_value, 0.6,
-                            0.6*max_legend_value, 0.6,
-                            0.7*max_legend_value, 0.6,
-                            0.8*max_legend_value, 0.6,
-                            0.9*max_legend_value, 0.6,
-                            1.0*max_legend_value, 0.6
+                            0.0*max_legend_value, 0.0,
+                            0.001*max_legend_value, map_fill_opacity,
+                            0.2*max_legend_value, map_fill_opacity,
+                            0.3*max_legend_value, map_fill_opacity,
+                            0.4*max_legend_value, map_fill_opacity,
+                            0.5*max_legend_value, map_fill_opacity,
+                            0.6*max_legend_value, map_fill_opacity,
+                            0.7*max_legend_value, map_fill_opacity,
+                            0.8*max_legend_value, map_fill_opacity,
+                            0.9*max_legend_value, map_fill_opacity,
+                            1.0*max_legend_value, map_fill_opacity
 
                                 ]
 
@@ -1219,16 +1246,17 @@ map.addLayer({
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'outputs'],
-                            0.0*max_legend_value, 0.6,
-                            0.2*max_legend_value, 0.6,
-                            0.3*max_legend_value, 0.6,
-                            0.4*max_legend_value, 0.6,
-                            0.5*max_legend_value, 0.6,
-                            0.6*max_legend_value, 0.6,
-                            0.7*max_legend_value, 0.6,
-                            0.8*max_legend_value, 0.6,
-                            0.9*max_legend_value, 0.6,
-                            1.0*max_legend_value, 0.6
+                            0.0*max_legend_value, 0.0,
+                            0.001*max_legend_value, map_fill_opacity,
+                            0.2*max_legend_value, map_fill_opacity,
+                            0.3*max_legend_value, map_fill_opacity,
+                            0.4*max_legend_value, map_fill_opacity,
+                            0.5*max_legend_value, map_fill_opacity,
+                            0.6*max_legend_value, map_fill_opacity,
+                            0.7*max_legend_value, map_fill_opacity,
+                            0.8*max_legend_value, map_fill_opacity,
+                            0.9*max_legend_value, map_fill_opacity,
+                            1.0*max_legend_value, map_fill_opacity
                                 ]
 
                             }
@@ -1883,6 +1911,9 @@ function enableDrawTools(){
 var most_recent_run = 0;
 
 function get_run_collection(run_collection_id) {
+  $('#tangible-landscape-listener-button a').attr('data-value','false');
+  console.log("Changing value of TL listener to false.");
+  $('#tangible-landscape-listener-button a').text('Resume listening');  
   console.log('Getting run collection for run_collection:' + run_collection_id);
   $.ajax({
     url: "{% url 'get_run_collection' %}",
@@ -2241,39 +2272,41 @@ function poll(new_run_id) {
   }, 2000);
 };
 
-function listen_for_new_runs(run_collection_id,most_recent_run) {
+function listen_for_new_runs(run_collection_id, most_recent_run) {
   $('#tangible-landscape-indicator').fadeIn();
+  var active_run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
+  console.log('Active run collection id = ' + active_run_collection_id);
   var continue_listening = $('#tangible-landscape-listener-button a').attr('data-value');
-  setTimeout(function () {
-    $.ajax({
-      url: "{% url 'check_for_new_TL_run' %}",
-      dataType: "json",
-      data: {
-        'run_collection_id': run_collection_id
-      },
-      success: function (data) {
-        console.log("The most recent run for run_collection " + run_collection_id + " is: " + data.most_recent_run_pk);
-        //Check if the most_recent_run has changed, update dashboard if it has.
-        $('#tangible-landscape-indicator').fadeOut("slow");
-        if (most_recent_run != data.most_recent_run_pk) {
-          get_run_collection(run_collection_id);
-        }
-        else if (continue_listening == 'false') {
-          console.log("Exiting TL listening loop.")
-          $('#tangible-landscape-listener-button a').attr('data-value');
-        }
-        else {
-        //Setup the next poll recursively
-        listen_for_new_runs(run_collection_id,data.most_recent_run_pk);
-        }
-      },
-      error : function(xhr,errmsg,err) {
-      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
-      + "\nThere was a problem listening for the results of the model run... the simulation is most likely still running. Try refreshing the page in 1-2 minutes.");
+  if (active_run_collection_id == run_collection_id) {
+    setTimeout(function () {
+      $.ajax({
+        url: "{% url 'check_for_new_TL_run' %}",
+        dataType: "json",
+        data: {
+          'run_collection_id': run_collection_id
+        },
+        success: function (data) {
+          console.log("The most recent run for run_collection " + run_collection_id + " is: " + data.most_recent_run_pk);
+          //Check if the most_recent_run has changed, update dashboard if it has.
+          $('#tangible-landscape-indicator').fadeOut("slow");
+          if (most_recent_run != data.most_recent_run_pk) {
+            get_run_collection(run_collection_id);
+          } else if (continue_listening == 'false') {
+            console.log("Exiting TL listening loop.")
+            $('#tangible-landscape-listener-button a').attr('data-value');
+          } else {
+            //Setup the next poll recursively
+            listen_for_new_runs(run_collection_id, data.most_recent_run_pk);
+          }
+        },
+        error: function (xhr, errmsg, err) {
+          alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText +
+            "\nThere was a problem listening for the results of the model run... the simulation is most likely still running. Try refreshing the page in 1-2 minutes.");
           console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-      }
-    });
-  }, 2000);
+        }
+      });
+    }, 2000);
+  };
 };
 
 //Changes to the page for tangible landscape.
@@ -2364,36 +2397,11 @@ $("#host_map_checkbox input").on('change', function () {
         });
     });    
 
-    $("#results-tab").on('click', function () {
-      $("#submit-run-button").attr("disabled", true);
-      $("input#id_name").prop('disabled', true);
-        disableDrawTools();
-      if (map.getLayer("treatment")) {
-        map.setLayoutProperty('treatment','visibility','visible');
-      };
-      if (map.getLayer("treatment-fill")) {
-        map.setLayoutProperty('treatment-fill','visibility','visible');
-      };
 
-      $( "#run-details" ).hide();
-      $( "#run-output-details" ).show();
-      $("a.nav-link").removeClass("active");
-      $("a#results-tab").addClass("active");
-      $(".tab-pane").removeClass("active");
-      $("#v-pills-map").addClass("active");
-
-    });
 
     $("#map-tab, #new_run_redirect a").on('click', function () {
       $("#submit-run-button").attr("disabled", false);
       $("input#id_name").prop('disabled', false);
-                        if (map.getLayer("treatment")) {
-      map.setLayoutProperty('treatment','visibility','none');
-                        };
-      if (map.getLayer("treatment-fill")) {
-        map.setLayoutProperty('treatment-fill','visibility','none');
-      };
-
       $( "#run-details" ).show();
       $( "#run-output-details" ).hide();
       $("a.nav-link").removeClass("active");
@@ -2404,12 +2412,12 @@ $("#host_map_checkbox input").on('change', function () {
     });
 
     $("#chart-view-tab").on('click', function () {
-        disableDrawTools();
-      $("a.nav-link").removeClass("active");
-      $("a#chart-view-tab").addClass("active");
-      $(".tab-pane").removeClass("active");
-      $("#v-pills-chart-view").addClass("active");
-      $("#v-pills-chart-view").addClass("show");
+        //disableDrawTools();
+      //$("a.nav-link").removeClass("active");
+      //$("a#chart-view-tab").addClass("active");
+      //$(".tab-pane").removeClass("active");
+      //$("#v-pills-chart-view").addClass("active");
+      //$("#v-pills-chart-view").addClass("show");
     });
 
     $("#submit-run-collection").on('submit', function () {
@@ -2418,12 +2426,20 @@ $("#host_map_checkbox input").on('change', function () {
       //$("#submit-run-button").attr("disabled", true);
       //$('#run-preview-container button').removeClass('active');
         var form = $("#submit-run-collection");
+        if ($('input[name="name"]').val() == "Default_name") {
+          console.log('DEFAULT NAME DETECTED... CHANGING')
+          var now_date = new Date();
+          var now_time =  now_date.getHours() + ':' + now_date.getMinutes() + ':' + now_date.getSeconds();
+          var date_time_name = 'New name';
+          $('input[name="name"]').val(now_time);
+        }
       $.ajax({
         url: form.attr("submit-run-collection-url"),
         data: form.serialize(),
         type : "POST", // http method
         success: function (data) {
           console.log('New run collection parameters successfully posted to database!');
+          $('input[name="name"]').val("Default_name");
           var new_run_collection_id = data.pk;
           console.log('New run collection id: ' + new_run_collection_id);
           $('#editInputParameters').modal('hide');
@@ -2534,6 +2550,7 @@ $("#host_map_checkbox input").on('change', function () {
 
     
 function area_plot(defaults, steering_outputs) {
+$("#eradication-status-indicator").hide();
 
   var initial_infected_area = {{historic_data.last.infected_area}};
   var initial_number_infected = {{historic_data.last.number_infected}};
@@ -2542,6 +2559,7 @@ function area_plot(defaults, steering_outputs) {
   var year_list = [];
   var infected_area_list = [];
   var number_infected_list = [];
+  var eradication_check = false;
   for (var j = -1; j < defaults.output.length; j++) {
     if (j == -1) {
       year_list.push(defaults.output[0].year);
@@ -2606,6 +2624,19 @@ function area_plot(defaults, steering_outputs) {
         year_list.push(steering_outputs[i].output[j].year + 1);
         infected_area_list.push(steering_outputs[i].output[j].infected_area*acre_to_meter_ratio);
         number_infected_list.push(steering_outputs[i].output[j].number_infected);
+        if (eradication_check == false) {
+          console.log('ERADICATION IS FALSE');
+          console.log(steering_outputs[i].output[j].number_infected);
+          if (steering_outputs[i].output[j].number_infected == 0) {
+            console.log('NUMBER INFECTED IS ZERO')
+            console.log('YEAR IT HAPPENED IS' + steering_outputs[i].output[j].year)
+            eradication_check = true;
+            $("#eradication-status-indicator").show();
+            $('#eradication_container span').text(steering_outputs[i].output[j].year);
+            
+
+          }
+        };
       }
     };
 

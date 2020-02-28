@@ -8,14 +8,17 @@ from . import views
 router = routers.DefaultRouter()
 router.register('case_study', views.CaseStudyViewSet)
 #router.register('run', views.RunViewSet)
-router.register('run', views.RunDetailViewSet)
-router.register('run_collection', views.RunCollectionDetailViewSet)
+router.register('run', views.RunModelWriteViewSet)
+router.register('run_collection', views.RunCollectionModelWriteViewSet)
+router.register('run_detail', views.RunDetailViewSet)
+router.register('run_collection_detail', views.RunCollectionDetailViewSet)
 #router.register('run_collection', views.RunCollectionViewSet)
 router.register('output', views.OutputViewSet)
 router.register('temperature_data', views.TemperatureDataViewSet)
 router.register('lethal_temperature_data', views.LethalTemperatureDataViewSet)
 router.register('precipitation_data', views.PrecipitationDataViewSet)
-router.register('session', views.SessionDetailViewSet)
+router.register('session', views.SessionModelWriteViewSet)
+router.register('session_detail', views.SessionDetailViewSet)
 
 
 urlpatterns = [
@@ -34,7 +37,12 @@ urlpatterns = [
     path('save_session_data', views.NewSessionView.as_view(), name='save_session_data'),
     path('save_run_collection_data_test', views.DashboardTestView.as_view(), name='save_run_collection_data_test'),
     path('session/new', views.NewSessionView.as_view(), name='new_session'),
+    path('session/new/<int:case_study>', views.NewSessionView.as_view(), name='new_session_case_study_specific'),
+    path('session/delete/<int:pk>', views.DeleteSessionView.as_view(), name='delete_session'),
     path('session/list', views.SessionListView.as_view(), name='session_list'),
+    path('session/share/<int:pk>', views.SessionShareView.as_view(), name='session_share'),
+    path('session/user/search_results/', views.get_users, name='user_search_results'),
+    path('session/share/delete/<int:pk>', views.DeleteAllowedUserView.as_view(), name='delete_allowed_user'),
     path('case_study/help', TemplateView.as_view(template_name="pops/case_study_instructions.html"), name='case_study_help'),
     path('dashboard_layout', TemplateView.as_view(template_name="pops/dashboard/dashboard_layout.html")),
     path('spotted_lanternfly', TemplateView.as_view(template_name="pops/dashboard/spotted_lanternfly.html")),
@@ -49,7 +57,7 @@ urlpatterns = [
     path('case_study/list', views.ApprovedAndUserCaseStudyListView.as_view(), name='case_study_list'),
     path('case_study/<int:pk>/review', views.CaseStudyReview.as_view(), name='case_study_review'),
     path('case_study/submitted', views.case_study_submitted, name='case_study_submitted'),
-    path('<int:pk>/', views.CaseStudyDetailView.as_view(), name='case-study'),
+    path('cs/<int:pk>/', views.CaseStudyDetailView.as_view(), name='case-study'),
     path('api/', include(router.urls)),
     #path('case_study/<int:pk>/edit', views.case_study_edit, name='case_study_edit'),
     #path('myaccount', views.CaseStudyListView.as_view(), name='case-study-list'),

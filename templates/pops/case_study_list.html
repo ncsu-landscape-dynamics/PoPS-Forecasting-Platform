@@ -41,7 +41,28 @@
                                 <td>
                                     <div class="row no-gutters align-items-center justify-content-between	">
 
-                                        <h5 class="col-auto">{{ cs.name }}</h5>
+                                        <h5 class="col-auto"><a class="text-light" href="{% url 'case_study_review' pk=cs.pk %}">{{ cs.name }}</a>
+                                                               {% if cs.calibration_status == "NO START" %}
+                                                                <i style="font-size:0.6em" class="fas fa-question-circle align-top text-light"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration not started. Click info for more details."></i>
+                                                                {% endif %}
+                                                                {% if cs.calibration_status == "IN PROGRESS" %}
+                                                                <i style="font-size:0.6em" class="fas fa-spinner align-top text-warning"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration in progress. Click info for more details."></i>
+                                                                {% endif %}
+                                                                {% if cs.calibration_status == "FAILED" %}
+                                                                <i style="font-size:0.6em" class="fas fa-times-circle align-toptext-danger"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration FAILED. Click info for more details."></i>
+                                                                {% endif %}
+                                                                {% if cs.calibration_status == "SUCCESS" %}
+                                                                <i style="font-size:0.6em" class="fas fa-check align-top text-success"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration successful. Click info for more details."></i>
+                                                                {% endif %}
+                                        </h5>
 
                                         <div class="col-auto px-2">
                                             <em>{{ cs.date_created }}</em>
@@ -57,12 +78,14 @@
                                 <td>
                                     <a class="btn btn-info btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
                                         role="button">View Details</a>
+                                {% comment %}
                                     {% if not cs.use_external_calibration %}
                                     <a class="btn btn-secondary btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
                                         role="button" style="white-space: normal;" data-toggle="tooltip" data-placement="top"
                                         title="Tooltip on top">Extend Case Study</a>
                                     {% endif %}
-                                    <a class="btn btn-success btn-sm btn-block" href="{% url 'new_session' %}"
+                                    {% endcomment %}
+                                    <a class="btn btn-success btn-sm btn-block" href="{% url 'new_session_case_study_specific' case_study=cs.pk %}"
                                         role="button" style="white-space: normal;">Create Session</a>
                                 </td>
                             </tr>
@@ -102,14 +125,35 @@
                                 <td>
                                     <div class="row no-gutters align-items-center justify-content-between	">
 
-                                        <h5 class="col-auto">{{ cs.name }}</h5>
+                                        <h5 class="col-auto"><a class="text-light" href="{% url 'case_study_review' pk=cs.pk %}">{{ cs.name }}</a>
+                                                            {% if cs.calibration_status == "NO START" %}
+                                                                <i style="font-size:0.6em" class="fas fa-question-circle align-top text-light"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration not started. Click info for more details."></i>
+                                                                {% endif %}
+                                                                {% if cs.calibration_status == "IN PROGRESS" %}
+                                                                <i style="font-size:0.6em" class="fas fa-spinner align-top text-warning"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration in progress. Click info for more details."></i>
+                                                                {% endif %}
+                                                                {% if cs.calibration_status == "FAILED" %}
+                                                                <i style="font-size:0.6em" class="fas fa-times-circle align-toptext-danger"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration FAILED. Click info for more details."></i>
+                                                                {% endif %}
+                                                                {% if cs.calibration_status == "SUCCESS" %}
+                                                                <i style="font-size:0.6em" class="fas fa-check align-top text-success"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration successful. Click info for more details."></i>
+                                                                {% endif %}
+                                        </h5>
 
                                         <div class="col-auto px-2">
                                             <em>{{ cs.date_created }}</em>
                                         </div>
                                     </div>
 
-                                    <p> {% lorem 30 w %}</p>
+                                    <p> {{ cs.description }}</p>
                                 </td>
                                 <td>{% for pest in cs.pest_set.all %} <p>{% firstof pest.pest_information pest.name %}
                                     </p>{% endfor %} </td>
@@ -117,12 +161,14 @@
                                 <td>
                                     <a class="btn btn-info btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
                                         role="button">View Details</a>
+                                {% comment %}
                                     {% if not cs.use_external_calibration %}
                                     <a class="btn btn-secondary btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
                                         role="button" style="white-space: normal;" data-toggle="tooltip" data-placement="top"
                                         title="Tooltip on top">Extend Case Study</a>
                                     {% endif %}
-                                    <a class="btn btn-success btn-sm btn-block" href="{% url 'case_study_edit' pk=cs.pk %}"
+                                    {% endcomment %}
+                                    <a class="btn btn-success btn-sm btn-block" href="{% url 'new_session_case_study_specific' case_study=cs.pk %}"
                                         role="button" style="white-space: normal;">Create Session</a>
                                 </td>
                             </tr>
@@ -141,3 +187,13 @@
     </div>
 </div>
     {% endblock %}
+
+    {% block scripts %}
+<script>
+  $(document).ready(function () {
+    $("body").tooltip({
+      selector: '[data-toggle=tooltip]'
+    });
+  });
+  </script>
+{% endblock %}

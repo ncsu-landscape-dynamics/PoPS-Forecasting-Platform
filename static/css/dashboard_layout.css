@@ -1,13 +1,13 @@
 
-#session_title, #case_study_title, #main_menu a, #session_title a {
-  color:#a0a8bd;
+#session_title, #case_study_title, #main_menu a, #session_title a, #share-link a {
+  color:#adadad;
 }
 
 #main_menu div {
-  border-color: #a0a8bd;
+  border-color: #adadad;
 }
 
-#main_menu a:hover, #session_title a:hover {
+#main_menu a:hover, #session_title a:hover, #share-link a:hover {
   color:white;
 }
 
@@ -88,10 +88,6 @@ height:100%;
   font-size: 35px;
 }
 
-.timeline-buttons span.submit_run_button button{
-  outline: none;
-}
-
 .timeline-buttons span a{
   padding:2px;
   opacity: 0.8
@@ -100,7 +96,17 @@ height:100%;
   opacity: 1.0
 }
 
-
+div.timeline-active div span  {
+  bottom: -10px;
+  left: 20px;
+}
+.timeline-active div span a {
+  font-size: 35px;
+  color: green;
+}
+div.timeline-active div a  {
+  color: green;
+}
 .management_not_started .completed_management_buttons, 
 .management_active .completed_management_buttons, 
 .management_not_started .submit_run_button,
@@ -124,30 +130,27 @@ height:100%;
   padding-top:0px;
 }
 
-
-
 .submit_run_button button {
   background-color: transparent;
   border: none;
 }
+
 .year-1 .timeline-year a, .year-1 .timeline-visibility, .year-1 .submit_run_button button {
   color:#C6F761;
 }
 .year-2 .timeline-year a, .year-2 .timeline-visibility, .year-2 .submit_run_button button {
-  color:#61F785;
+  color:#60f781;
 }
 .year-3 .timeline-year a, .year-3 .timeline-visibility, .year-3 .submit_run_button button {
-  color:#61F7E8;
+  color:#60e8f7;
 }
 .year-4 .timeline-year a, .year-4 .timeline-visibility, .year-4 .submit_run_button button {
-  color:#61A4F7;
+  color:#be89fa;
 }
 .year-5 .timeline-year a, .year-5 .timeline-visibility, .year-5 .submit_run_button button {
-  color:#8D61F7;
+  color:#fa89d2;
 }
-.year-6 .timeline-year a, .year-6 .timeline-visibility, .year-6 .submit_run_button button {
-  color:#E361F7;
-}
+
 
 .management_not_started .timeline-year a, .management_not_started .timeline-visibility {
   color: #454545;
@@ -159,7 +162,6 @@ height:100%;
   padding-right:5px;
   border-radius: 7px;
 }
-
 .year-0.management_complete.year_active .timeline-year a {
   background-color:#454545;
 }
@@ -167,20 +169,18 @@ height:100%;
   background-color:#C6F761;
 }
 .year-2.management_complete.year_active .timeline-year a {
-  background-color:#61F785;
+  background-color:#60f781;
 }
 .year-3.management_complete.year_active .timeline-year a {
-  background-color:#61F7E8;
+  background-color:#60e8f7;
 }
 .year-4.management_complete.year_active .timeline-year a {
-  background-color:#61A4F7;
+  background-color:#be89fa;
 }
 .year-5.management_complete.year_active .timeline-year a {
-  background-color:#8D61F7;
+  background-color:#fa89d2;
 }
-.year-6.management_complete.year_active .timeline-year a {
-  background-color:#E361F7;
-}
+
 .management_active .timeline-year a, .management_not_started .timeline-year a {
   pointer-events: none;
   cursor: default;
@@ -303,11 +303,20 @@ div#run-preview-container {
     z-index: 100;
   }
       
-  #historic-legend-container, #probability-legend-container {
+  #historic-legend-container, #occurence-legend-container , #probability-legend-container {
     position: absolute;
     top: 120px;
     left: 10px;
   }
+
+  #eradication_container_ {
+    position: absolute;
+    top: 180px;
+    left: 10px;
+    color:#a0a8bd;
+    font-size: 30px;
+  }
+
 #show_details_button {
     position: absolute;
     top: 5px;
@@ -320,12 +329,21 @@ div#run-preview-container {
     top: 90px;
     left: 10px;
   }
-  #SLF_buffer_zone_checkbox {
+
+  #additional_map_checkboxes {
     position: absolute;
     bottom: 40px;
     left: 10px; 
     background-color: rgb(65, 223, 244, 0.1)
   }
+
+  #SLF_buffer_zone_checkbox {
+    background-color: rgb(65, 223, 244, 0.1)
+  }
+  #host_map_checkbox {
+    background-color: rgb(99,245,66, 0.3)
+  }
+
 
 .legend-color {
       height: 10px;
@@ -422,20 +440,14 @@ div#run-preview-container {
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ebf1f6), color-stop(50%,#abd3ee), color-stop(51%,#89c3eb), color-stop(100%,#d5ebfb));
 }
 
-#draw-controls {
-      position: absolute;
-      top: 315px;
-      right: 10px;
-    }
-
     #money-new {
       position: absolute;
-      top: 170px;
+      top: 220px;
       right: 0px;
     }
     #displayed_management_area {
       position: absolute;
-      top: 355px;
+      top: 170px;
       width: 132px;
       right: 10px;
       font-size: 12px;
@@ -443,7 +455,7 @@ div#run-preview-container {
 #budget_background_layer {
   position: absolute;
   width: 132px;
-  height: 300px;
+  height: 270px;
   top: 95px;
   right: 10px;
   background-color: #191a1a;
@@ -454,11 +466,35 @@ div#run-preview-container {
       border-width: 2px;
       border-style: outset;
     }
-
+    #draw-controls {
+      position: absolute;
+      top: 375px;
+      right: 10px;
+    }
     #draw-controls button.active {
       border-style: inset;
     }
-
+    #tangible-landscape-indicator {
+      position: absolute;
+      color:white;
+      font-size:20px;
+      left: 50%;
+      top: 0px;
+      width: 400px;
+      margin-top:0px;
+      margin-left: -200px;
+      height: 250px;
+            }
+        
+    #tangible-landscape-listener-button{
+      position: absolute;
+      color:white;
+      font-size:10px;
+      right: 0px;
+      top: 0px;
+      width: 80px;
+      margin-top:0px;
+        }
     #status-indicator-shading {
       position: absolute;
       background: black;
@@ -468,19 +504,6 @@ div#run-preview-container {
       width: 100%;
       height: 100%;
             }
-
-    #tangible-landscape-indicator {
-      position: absolute;
-      color:white;
-      font-size:25px;
-      left: 50%;
-      top: 50%;
-      width: 400px;
-      margin-top:-125px;
-      margin-left: -200px;
-      height: 250px;
-            }
-        
     #status-indicator {
       position: absolute;
       font-size: 1.5em;
@@ -498,6 +521,21 @@ div#run-preview-container {
           color: white;
           opacity: 0.3;
         }
+
+        #eradication-status-indicator {
+          position: absolute;
+          font-size: 1.5em;
+          left: 50%;
+          top: 50%;
+          width: 400px;
+          margin-top:-25px;
+          margin-left: -200px;
+          height: 50px;
+            }
+            #eradication-status-close-button {
+              color: white;
+              opacity: 0.8;
+            }
     
 .parameter-selector-plot input {
   padding-right: 25px;
