@@ -184,10 +184,11 @@ class PestForm(forms.ModelForm):
     validate_size = validate_file_size
     class Meta:
         model = Pest
-        fields = ['pest_information','name','model_type','dispersal_type','vector_born','use_treatment']
+        fields = ['pest_information','name','model_type','vector_born','use_treatment']
     
     def clean(self):
-        self.fields_required(['pest_information','model_type','dispersal_type'])
+        print('VALIDATING PEST FORM')
+        self.fields_required(['pest_information','model_type'])
         pest_information = self.cleaned_data.get('pest_information')
         if pest_information:
             if pest_information.common_name == "Other":
@@ -325,16 +326,16 @@ class VectorForm(forms.ModelForm):
                 self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
 
 
-class ShortDistanceForm(forms.ModelForm):
+class NaturalDistanceForm(forms.ModelForm):
 
     class Meta:
-        model = ShortDistance
+        model = NaturalDistance
         exclude = ['pest']
 
-class LongDistanceForm(forms.ModelForm):
+class AnthropogenicDistanceForm(forms.ModelForm):
 
     class Meta:
-        model = LongDistance
+        model = AnthropogenicDistance
         exclude = ['pest']
 
 class CrypticToInfectedForm(forms.ModelForm):

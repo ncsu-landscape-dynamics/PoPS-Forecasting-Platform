@@ -1,38 +1,209 @@
 {% extends 'base.html' %}
 {% load static %}
+  {% block jquery_source %}
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  {% endblock %}
 {% block page_styles %}
-<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/new_session.css' %}">
 {% endblock %}
 {% block content %}
 <div class="container py-4">
   <!--Page title-->
-  <h2 class="text-center">New PoPS Session:</h2>
+  <h2 class="text-center">Create New PoPS Session</h2>
   <!--Start of form-->
     <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-6">
-      <form method="post">{% csrf_token %}
-            {% include "pops/include/form_field.html" with field=form.case_study form_class="col-12" %}
-            {% include "pops/include/form_field.html" with field=form.name form_class="col-12" %}
-            {% include "pops/include/form_field.html" with field=form.description form_class="col-12" %}
+      <form id="submit-session" submit-session-url="{% url 'save_session_data' %}" method="post">{% csrf_token %} 
+            {% include "pops/include/form_field.html" with field=form.case_study form_class="col-12 dark_input" %} 
+            {% include "pops/include/form_field.html" with field=form.name form_class="col-12 dark_input" %}
+            {% include "pops/include/form_field.html" with field=form.description form_class="col-12 dark_input" %}
+            {% include "pops/include/form_field.html" with field=form.reproductive_rate form_class="col-12 dark_input" %}
+            {% include "pops/include/form_field.html" with field=form.distance_scale form_class="col-12 dark_input" %}
+            {% include "pops/include/form_field.html" with field=form.final_year form_class="col-12 dark_input" %}
+            {% include "pops/include/form_field.html" with field=form.management_month form_class="col-12 dark_input" %}
+            {% include "pops/include/form_field.html" with field=form.weather form_class="col-12 dark_input" %}
           <div class="text-center py-2">
-            <button class="btn btn-info btn-lg" type="submit">Next</button>
-          </div>
-          <div class="text-center">
-            <span>Note: </span>
-          </div></form>
-
+            <button id="submit-session-button" class="btn btn-info btn-lg" type="submit">Create New Session</button>
+            <div class="text-muted py-4">After your session is created, you will be redirected to the PoPS dashboard.</div>
+          </div>          
+          </form>
 
 </div>
 
       </div>
       </form>
 
+                  <div class="modal fade" id="session_creation_status" tabindex="-1" role="dialog" aria-labelledby="editInputParameters"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                        <div class="row">
+                        <div class="col-12 text-center">
+                          <h5 class="modal-title" id="exampleModalLongTitle">Creating PoPS Session</h5>
+                          </div>
+                          <div class="col-12 text-center">
+                        <div class="text-muted"><i class="fas fa-mug-hot"></i> Go grab a cup of coffee. This may take a few minutes...</div>
+                        </div>
+                        </div>
+                        </div>
+                        <div class="modal-body">
 
+                          <div id="status-indicator" class="text-center">
+                            <div id="status-logo">
+                              <img class="rounded-circle"
+                                src="{% static 'images/PoPS_AnimatedLogo_TransparentBackground.gif' %}"
+                                alt="Generic placeholder image" width="180">
+                            </div>
+                            <div id="status-text">
+                              <span>Loading...</span>
+                            </div>
+                          <button id="modal_close_button" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
 </div>
 {% endblock %}
 {% block scripts %}
 <script>
+
+$("#modal_close_button").hide();
+
+function getCookie(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie != '') {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = jQuery.trim(cookies[i]);
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) == (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+};
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+            // Only send the token to relative URLs i.e. locally.
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    },
+});
+
+function poll(new_run_id, new_session_id) {
+  console.log('Run id is:' + new_run_id);
+  setTimeout(function () {
+    $.ajax({
+      url: "{% url 'check_status' %}",
+      dataType: "json",
+      data: {
+        'new_run_id': new_run_id
+      },
+      success: function (data) {
+        console.log("Status for run " + new_run_id + ": " + data.status);
+
+        //Setup the next poll recursively
+        if (data.status == "SUCCESS") {
+          $('#status-text span').text('Success! Loading results...');
+          var base_url = "{% url 'dashboard_root' %}"; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+          var run_url = base_url.concat(new_session_id.toString());
+          console.log(run_url);
+          window.location.href = run_url; //!!may need to hardcode this in, or create a url for /dashboard without the PK, then combine with PK like I do for pops-model-api calls
+        } else if (data.status == "FAILED") {
+          $('#status-text span').text('RUN FAILED.');
+          $("#status-logo").hide();
+        } else if (data.status == "PENDING") {
+            $('#status-text span').text('Pending...');
+          poll(new_run_id, new_session_id);
+        } else {
+          $('#status-text span').text(data.status);
+          poll(new_run_id, new_session_id);
+        }
+      },
+      error : function(xhr,errmsg,err) {
+      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+      + "\nThere was a problem listening for the results of the model run... the simulation is most likely still running. Try refreshing the page in 1-2 minutes.");
+          console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+      }
+    });
+  }, 2000);
+};
+
+$("#submit-session").on('submit', function () {
+  $("#modal_close_button").hide();
+  $('#session_creation_status').modal('show');
+  event.preventDefault();
+  console.log("Submit session button pressed.") // sanity check
+  $("#submit-session-button").attr("disabled", true);
+  var form = $(this).closest("form");
+  $('#status-text span').text('Sending session parameters to the database...');
+  $.ajax({
+    url: form.attr("submit-session-url"),
+    data: form.serialize(),
+    type: "POST", // http method
+    success: function (data) {
+      console.log('New session parameters successfully posted to database!');
+      $('#status-text span').text('Session parameters saved to database...');
+      var new_session_id = data.session_pk;
+      var new_run_collection_id = data.run_collection_pk;
+      var new_run_id = data.run_pk;
+      var case_study_id = data.case_study_pk;
+      console.log('Case study id: ' + case_study_id); 
+      console.log('New session id: ' + new_session_id); 
+      console.log('New run collection id: ' + new_run_collection_id); 
+      console.log('New run id: ' + new_run_id); 
+      var base_url = "https://pops-model-api.appspot.com/status?"
+      //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+      var run_url = (base_url + "run_id=" + new_run_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&session_id=" + new_session_id.toString() + "&case_study_id=" + case_study_id.toString()); //base_url.concat(new_run_id.toString());
+      console.log(run_url);
+      $('#status-text span').text('Creating default PoPS model run for this session...');
+      $.ajax({
+        url: run_url,
+        dataType: 'JSONP',
+        type: 'GET',
+        headers: {
+          'Access-Control-Allow-Origin': 'https://pops-model-api.appspot.com'
+        },
+        statusCode: {
+          404: function () {
+            alert("PoPS Model API not found (404 error)... \n Please try again. \n If the problem persists, contact an admin.");
+          },
+          500: function () {
+            alert("PoPS Model API returned 500 Error... \n Please try again. \n If the problem persists, contact an admin.");
+          }
+        },
+        success: function (data) {
+          console.log('Success signal from PoPS Model API.');
+        },
+        error: function (xhr, errmsg, err) {
+          console.log('Received status from the PoPS model API:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+      });
+      console.log('Sent run request to PoPS. Waiting for updates to database...')
+      poll(new_run_id, new_session_id); 
+    },
+    // handle a non-successful response
+    error: function (xhr, errmsg, err) {
+      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText +
+        "\nIf the displayed error is not informative, the most likely issue is that there was a problem writing to the database.");
+      console.log('There was an error writing to the database:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+    $('#status-text span').text('Failed to create session. Session parameters could not be saved to PoPS database. Try again and then contact an admin.');
+    $("#modal_close_button").show();
+    }
+  });
+  $('#status-text span').text('Getting ready...');
+  $("#status-indicator").show();
+  $("#status-indicator-shading").show();
+  $("button#cancel-polling").show();
+});
+
   $(document).ready(function () {
     $("body").tooltip({
       selector: '[data-toggle=tooltip]'

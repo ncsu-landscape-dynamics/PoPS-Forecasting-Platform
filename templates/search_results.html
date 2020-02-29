@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container py-4">
+<h1>Search Results</h1>
+
+<ul>
+  {% for user in object_list %}
+    <li>
+      {{ user.first_name }}, {{ user.last_name }}
+    </li>
+  {% endfor %}
+</ul>
+
+
+</div>
+{% endblock %}

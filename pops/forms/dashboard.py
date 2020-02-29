@@ -79,15 +79,39 @@ class SessionForm(forms.ModelForm):
     fields_required = fields_required_conditionally
     class Meta:
         model = Session
-        fields = ['case_study','name','description'] 
+        fields = ['case_study','name','description','reproductive_rate','distance_scale','final_year','management_month','weather'] 
     
     def clean(self):
-        self.fields_required(['case_study','name','description'])
+        self.fields_required(['case_study','name','description','reproductive_rate','distance_scale','final_year','management_month','weather'])
         return self.cleaned_data
 
     def __init__(self, *args, **kwargs):
         super(SessionForm, self).__init__(*args, **kwargs)
-        self.fields['case_study'].queryset = CaseStudy.objects.filter(staff_approved=True)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            input_type=self.fields[field].widget.__class__.__name__
+            if input_type != 'CheckboxInput':
+                self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update({'data-toggle':'tooltip', 'data-placement':'top', 'title':help_text, 'data-container':'body'})
+ 
+class RunCollectionForm(forms.ModelForm):
+    fields_required = fields_required_conditionally
+    class Meta:
+        model = RunCollection
+        fields = ['session','name','description',
+        'tangible_landscape','budget','efficacy',
+        'cost_per_meter_squared','random_seed']
+    
+    def clean(self):
+        self.fields_required(['session','name','description',
+        'tangible_landscape','budget','efficacy',
+        'cost_per_meter_squared','random_seed'])
+
+        return self.cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(RunCollectionForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             help_text = self.fields[field].help_text
             input_type=self.fields[field].widget.__class__.__name__
@@ -100,13 +124,14 @@ class RunForm(forms.ModelForm):
     fields_required = fields_required_conditionally
     class Meta:
         model = Run
-        fields = ['session','name','description','random_seed','status','reproductive_rate','distance_scale',
-        'weather','budget','cost_per_meter_squared','efficacy','final_year','management_polygons','management_month','management_cost',
-        'management_area','tangible_landscape']
+        fields = ['run_collection',
+        'management_polygons','management_cost',
+        'management_area','steering_year']
     
     def clean(self):
-        self.fields_required(['session','name','description','reproductive_rate','distance_scale',
-        'weather','budget','cost_per_meter_squared','efficacy'])
+        self.fields_required(['run_collection',
+        'management_polygons','management_cost',
+        'management_area','steering_year'])
 
         return self.cleaned_data
 
