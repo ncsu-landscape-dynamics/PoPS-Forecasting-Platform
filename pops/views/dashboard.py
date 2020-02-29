@@ -71,18 +71,27 @@ class NewSessionView(LoginRequiredMixin, SessionAjaxableResponseMixin, CreateVie
 
     def get_context_data(self, **kwargs):
         context = super(NewSessionView, self).get_context_data(**kwargs)
-        case_study = self.kwargs.get('case_study')
-        #Here we are grabbing the first pest associated with a case study
-        #This needs to be changed if we start handling case studies with multiple pests
-        pest=Pest.objects.filter(case_study__pk=case_study)[:1].get()
-        context['form'].fields['case_study'].queryset = CaseStudy.objects.filter(pk=case_study)
-        context['case_study'] = case_study
-        context['pest'] = Pest.objects.select_related('vector').filter(case_study__pk=case_study).select_related('pest_information')
-        context['reproductive_rates'] = ReproductiveRate.objects.filter(pest=pest).order_by('value')
-        context['min_reproductive_rate'] = ReproductiveRate.objects.filter(pest=pest).order_by('value').first() 
-        context['max_reproductive_rate'] = ReproductiveRate.objects.filter(pest=pest).order_by('-value').first() 
-        context['expected_reproductive_rate'] = ReproductiveRate.objects.filter(pest=pest).order_by('-probability').first() 
-        return context
+        if self.request.is_ajax():
+            return context
+        else:
+            case_study = self.kwargs.get('case_study')
+            #Here we are grabbing the first pest associated with a case study
+            #This needs to be changed if we start handling case studies with multiple pests
+            pest=Pest.objects.filter(case_study__pk=case_study)[:1].get()
+            reproductive_rate = ReproductiveRate.objects.filter(pest=pest)
+            natural_distance = NaturalDistance.objects.filter(pest=pest)
+            context['form'].fields['case_study'].queryset = CaseStudy.objects.filter(pk=case_study)
+            context['case_study'] = case_study
+            context['pest'] = Pest.objects.select_related('vector').filter(case_study__pk=case_study).select_related('pest_information')
+            context['reproductive_rates'] = reproductive_rate.order_by('value')
+            context['min_reproductive_rate'] = reproductive_rate.order_by('value').first() 
+            context['max_reproductive_rate'] = reproductive_rate.order_by('value').last() 
+            context['expected_reproductive_rate'] = reproductive_rate.order_by('-probability').first() 
+            context['distances'] = natural_distance.order_by('value')
+            context['min_distance'] = natural_distance.order_by('value').first() 
+            context['max_distance'] = natural_distance.order_by('-value').first() 
+            context['expected_distance'] = natural_distance.order_by('-probability').first() 
+            return context
  
     def get_success_url(self, **kwargs):
         # obj = form.instance or self.object

@@ -18,8 +18,30 @@
             {% include "pops/include/form_field.html" with field=form.case_study form_class="col-12 dark_input" %} 
             {% include "pops/include/form_field.html" with field=form.name form_class="col-12 dark_input" %}
             {% include "pops/include/form_field.html" with field=form.description form_class="col-12 dark_input" %}
-            {% include "pops/include/form_field.html" with field=form.reproductive_rate form_class="col-12 dark_input" %}
-            {% include "pops/include/form_field.html" with field=form.distance_scale form_class="col-12 dark_input" %}
+<div class="row px-3">
+            <div id="reproductive-rate-container" class="col-sm-6 parameter-selector-plot pt-2">
+                      <div class="py-0">Max number of dispersers: <output id="displayRate">{{ expected_reproductive_rate.value }}</output></div>
+                      <div id="reproductive_rate_plot" style="height:100px; width:250px;"></div>
+                      <div id="reproductive-rate-slider" class="pt-0 range range-info text-light" style="width:200px; margin-left:30px;"
+                      data-toggle="tooltip" data-placement="right"
+                      title="Update the max number of dispersers.">
+                        <input id="id_reproductive_rate" style="" class="custom-range " type="range"
+                          name="reproductive_rate" min="{{ min_reproductive_rate.value }}" max="{{ max_reproductive_rate.value }}" step="0.1" value="{{ expected_reproductive_rate.value }}"
+                          onchange="displayRate.value=value">
+                      </div>
+                    </div>
+                    <div id="dispersal-scale-container" class="col-sm-6 parameter-selector-plot pt-2">
+                      <div class="py-0">Dispersal scale: <output id="displayDispersalScale">{{ expected_distance.value }}</output> meters</div>
+                      <div id="dispersal_scale_plot" style="height:100px; width:250px;"></div>
+                      <div id="dispersal-scale-slider" class="pt-0 range range-info" style="height: 3px; width:200px; margin-left:30px;"
+                      data-toggle="tooltip" data-placement="right"
+                      title="Update the dispersal scale.">
+                        <input id="id_distance_scale" style="" class="custom-range " type="range" name="distance_scale"
+                          min="{{ min_distance.value }}" max="{{ max_distance.value }}" step="1" value="{{ expected_distance.value }}" 
+                          onchange="displayDispersalScale.value=value">
+                      </div>
+                    </div>
+</div>
             {% include "pops/include/form_field.html" with field=form.final_year form_class="col-12 dark_input" %}
             {% include "pops/include/form_field.html" with field=form.management_month form_class="col-12 dark_input" %}
             {% include "pops/include/form_field.html" with field=form.weather form_class="col-12 dark_input" %}
@@ -35,47 +57,8 @@
       </form>
 
 
-<div>
-case_study = {{ case_study }}
-</div>
-<div>
-{{ pest }}
-{% for rr in reproductive_rates %}
-{% if forloop.last %}
-<p>
-{{ rr.value }} -- 
-{{ rr.probability }}
-</p>
-{% else %}
-<p>
-{{ rr.value }} -- 
-{{ rr.probability }},
-</p>
-{% endif %}
-{% endfor %}
 
-Expected = {{ expected_reproductive_rate.value }}
-Min = {{ min_reproductive_rate.value }}
-Max = {{ max_reproductive_rate.value }}
-</div>
 
-<div id="reproductive-rate-container" class="parameter-selector-plot pt-2" style="width:250px">
-                      <strong class="py-0">Max number of dispersers: <output id="displayRate">{{ expected_reproductive_rate.value }}</output></strong>
-                      <div id="reproductive_rate_plot" style="height:100px; width:250px;"></div>
-                      <div id="reproductive-rate-slider" class="pt-0 range range-info text-light">
-                        <input id="id_reproductive_rate" style="" class="custom-range " type="range"
-                          name="reproductive_rate" min="{{ min_reproductive_rate.value }}" max="{{ max_reproductive_rate.value }}" step="0.1" value="{{ expected_reproductive_rate.value }}"
-                          onchange="displayRate.value=value">
-                      </div>
-                    </div>
-                    <div id="dispersal-scale-container" class="parameter-selector-plot pt-2" style="width:250px">
-                      <strong class="py-0">Dispersal scale: <output id="displayDispersalScale">47</output> meters</strong>
-                      <div id="dispersal_scale_plot" style="height:100px; width:250px;"></div>
-                      <div id="dispersal-scale-slider" class="pt-0 range range-info text-light">
-                        <input id="id_distance_scale" style="" class="custom-range " type="range" name="distance_scale"
-                          min="39" max="57" step="1" value="47" onchange="displayDispersalScale.value=value">
-                      </div>
-                    </div>
 
                   <div class="modal fade" id="session_creation_status" tabindex="-1" role="dialog" aria-labelledby="editInputParameters"
                     aria-hidden="true">
@@ -191,7 +174,7 @@ function parameter_plot(myDiv, title, x, y, selector_x, color, error_bar=true) {
           }
         },
         showlegend: false,
-        paper_bgcolor: '#0b0d0e',
+        paper_bgcolor: '#212529',
         plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
         margin: {
           l: 30,
@@ -209,9 +192,7 @@ function parameter_plot(myDiv, title, x, y, selector_x, color, error_bar=true) {
     };
 
 
-
-
-    var reproductive_rates = [
+var reproductive_rates = [
 {% for rr in reproductive_rates %}
 {% if forloop.last %}
 {{ rr.value }}
@@ -220,7 +201,7 @@ function parameter_plot(myDiv, title, x, y, selector_x, color, error_bar=true) {
 {% endif %}
 {% endfor %}
     ];
-    var reproductive_rate_probabilities = [
+var reproductive_rate_probabilities = [
 {% for rr in reproductive_rates %}
 {% if forloop.last %}
 {{ rr.probability }}
@@ -229,10 +210,27 @@ function parameter_plot(myDiv, title, x, y, selector_x, color, error_bar=true) {
 {% endif %}
 {% endfor %}
     ];
-    var reproductive_rate= {{ expected_reproductive_rate.value }};
-    var dispersal_scales = [39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57];
-    var dispersal_scale_probabilities = [0.56,2.17,2.94,4.13,5.49,6.44,7.96,8.12,8.8,8.48,8.23,7.49,6.83,5.71,4.02,3,2.31,1.52,0.82];
-    var dispersal_scale= [47];
+var reproductive_rate= {{ expected_reproductive_rate.value }};    
+var dispersal_scales = [
+{% for ds in distances %}
+{% if forloop.last %}
+{{ ds.value }}
+{% else %}
+{{ ds.value }},
+{% endif %}
+{% endfor %}
+    ];
+var dispersal_scale_probabilities = [
+{% for ds in distances %}
+{% if forloop.last %}
+{{ ds.probability }}
+{% else %}
+{{ ds.probability }},
+{% endif %}
+{% endfor %}
+    ];
+var dispersal_scale= {{ expected_distance.value }};
+
 
     
   $(parameter_plot("reproductive_rate_plot", 'Probability', reproductive_rates, reproductive_rate_probabilities, reproductive_rate, '#2598b8', error_bar=false));
