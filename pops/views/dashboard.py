@@ -343,7 +343,6 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
                 session = None
             #Get case study pk    
             allowed_users = AllowedUsers.objects.filter(session=session)
-            print(allowed_users)
             case_study = session.case_study
 
             try:
@@ -376,7 +375,6 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
                 host = None
                 host_map = None
 
-            print(session)
             steering_years = range(case_study.end_year +1, session.final_year+1)
             context['session'] = session
             context['case_study'] = case_study
@@ -472,7 +470,6 @@ class DashboardTestView(AjaxableResponseMixin, CreateView):
                 #host = None
                 #host_map = None
 
-            print(session)
             steering_years = range(case_study.end_year +1, session.final_year+1)
             context['session'] = session
             context['case_study'] = case_study
@@ -506,28 +503,17 @@ def get_run_collection(request):
 
 def get_output_view(request):
     run_id = request.GET.get('new_run_id', None)
-    print('GETTING OUTPUT FOR RUN: ' + run_id)
- 
-    #outputs = Output.objects.filter(run_id = run_id)
     this_run = Run.objects.get(pk=run_id)
     first_year = this_run.run_collection.session.case_study.end_year+1
     run_collection = this_run.run_collection
     total_management_cost = Run.objects.filter(run_collection=run_collection).aggregate(Sum('management_cost'))
-    print('TOTAL MANAGEMENT COST')
-    print(total_management_cost)
     number_of_steering_runs = Run.objects.filter(run_collection=run_collection).count()
     steering_year = this_run.steering_year
-    print('Steering year:')
-    print(steering_year)
     default_run=run_collection.session.default_run
     default_run_outputs = Output.objects.filter(run_id=default_run)
     spread_rate = default_run_outputs.annotate(max_spread=Greatest('spreadrate__west_rate', 'spreadrate__north_rate','spreadrate__south_rate','spreadrate__east_rate'))
     max_spreadrate = spread_rate.aggregate(Max('max_spread'))
-    print('MAX SPREAD RATE ')
-    print(max_spreadrate['max_spread__max']) 
     maximum_spread_rate = max_spreadrate['max_spread__max']
-    print(default_run)
-    print(default_run_outputs)
     defaults= {
             'steering_year' : 0,
             'management_cost' : 0,
@@ -537,8 +523,6 @@ def get_output_view(request):
     steering_outputs = []
     if steering_year:
         for x in range(first_year, first_year+number_of_steering_runs):
-            print("Steering year: ")
-            print(x)
             run = Run.objects.get(run_collection=run_collection, steering_year=x)
             run_outputs = Output.objects.filter(run_id=run)
             steering_year_output = {
@@ -552,8 +536,6 @@ def get_output_view(request):
         all_outputs = Output.objects.filter(run__run_collection=run_collection)
         spread_rate = all_outputs.annotate(max_spread=Greatest('spreadrate__west_rate', 'spreadrate__north_rate','spreadrate__south_rate','spreadrate__east_rate'))
         max_steering_spreadrate = spread_rate.aggregate(Max('max_spread'))
-        print('MAX SPREAD RATE ')
-        print(max_steering_spreadrate['max_spread__max']) 
         maximum_spread_rate = max(maximum_spread_rate, max_steering_spreadrate['max_spread__max'])
             #print(run)
             #print(steering_year_output)
@@ -561,7 +543,6 @@ def get_output_view(request):
             #outputs = outputs | Output.objects.filter(run_id=run,year=x)
     else:
         print('Steering year false')
-    print(steering_outputs)
 
     #print(steering_outputs)
     #get all inputs for runs in this collection (management polygons)
@@ -570,26 +551,12 @@ def get_output_view(request):
     outputs = Output.objects.filter(run_id = run_id) 
     #then merge the outputs for previous runs to get the previous steering years
     if steering_year:
-        print('Steering year true')
         steering_boolean=True
         for x in range(first_year, steering_year):
-            print(x)
             run = Run.objects.get(run_collection=run_collection, steering_year=x)
-            print(run)
             outputs = outputs | Output.objects.filter(run_id=run,year=x)
     else:
-        print('Steering year false')
         steering_boolean=False
-    #all_spread_rate = SpreadRate.objects.filter(output__run__pk=default_run.pk).order_by('title', 'pub_date')
-    #print('All spread rates:')
-    #print(all_spread_rate)
-    print('Data:')
-    #print(all_steering_years)
-    print(first_year)
-    #print(steering_year)
-    print(outputs)
-    print('MAX SPREAD RATE ')
-    print(maximum_spread_rate)
     data = {"run_inputs": {
         "primary_key": this_run.pk,
         "date_created":this_run.date_created,
