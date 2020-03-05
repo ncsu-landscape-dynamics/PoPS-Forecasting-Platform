@@ -103,7 +103,7 @@ class WorkspaceView(LoginRequiredMixin,TemplateView):
             context['current_user']=current_user
             context['user_case_studies'] = CaseStudy.objects.prefetch_related('pest_set__pest_information').filter(created_by = current_user).order_by('-date_created')[:5]
             #context['user_sessions'] = Session.objects.annotate(number_runs=Count('runcollection')).annotate(most_recent_run=Max('runcollection__date_created')).prefetch_related('created_by','case_study').filter(created_by = self.request.user).order_by('-date_created')[:5]
-            context['sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).annotate(shared=Count('allowedusers',distinct=True)).annotate(number_runs=Count('runcollection', distinct=True)).annotate(most_recent_run=Max('runcollection__date_created')).order_by('-most_recent_run')[:5]
+            context['sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).filter(default_run__status = 'SUCCESS').annotate(shared=Count('allowedusers',distinct=True)).annotate(number_runs=Count('runcollection', distinct=True)).annotate(most_recent_run=Max('runcollection__date_created')).order_by('-most_recent_run')[:5]
             context['number_of_sessions'] = Session.objects.filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).count() 
             context['number_of_case_studies'] = CaseStudy.objects.filter(created_by = current_user).count() 
             return context
@@ -120,7 +120,7 @@ class SessionListView(LoginRequiredMixin, TemplateView):
             # Call the base implementation first to get the context
             context = super(SessionListView, self).get_context_data(**kwargs)
             current_user=self.request.user
-            context['sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).annotate(shared=Count('allowedusers',distinct=True)).annotate(number_runs=Count('runcollection', distinct=True)).annotate(most_recent_run=Max('runcollection__date_created')).order_by('-most_recent_run')
+            context['sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).filter(default_run__status = 'SUCCESS').annotate(shared=Count('allowedusers',distinct=True)).annotate(number_runs=Count('runcollection', distinct=True)).annotate(most_recent_run=Max('runcollection__date_created')).order_by('-most_recent_run')
             return context
 
 
