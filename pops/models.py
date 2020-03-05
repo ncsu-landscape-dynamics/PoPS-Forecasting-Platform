@@ -306,7 +306,11 @@ class Pest(models.Model):
         verbose_name_plural = _("pests")
 
     def __str__(self):
-        return self.name
+        if self.name == '':
+            string = self.pest_information
+        else:
+            string = self.name
+        return string
 
 class InitialInfestation(models.Model):
 
