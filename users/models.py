@@ -31,3 +31,15 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+class MassEmail(models.Model):
+    subject = models.CharField(max_length=200)
+    created = models.DateTimeField(verbose_name = "date created", auto_now = False, auto_now_add = True)
+    message = models.TextField()
+
+    def __unicode__(self):
+        return self.subject
+
+    class Meta:
+        verbose_name = "Mass Email to all Member"
+        verbose_name_plural = "Mass Email"
