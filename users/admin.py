@@ -26,14 +26,10 @@ class CustomUserAdmin(UserAdmin):
 class MassEmailAdmin(admin.ModelAdmin):
         
         def submit_email(self, request, obj): #`obj` is queryset, so there we only use first selection, exacly obj[0]
-                #list_email_user = [ p.email for p in CustomUser.objects.all() ] #: if p.email != settings.EMAIL_HOST_USER   #this for exception
-                print('Submit email!')
                 selected = obj[0]
-                print(selected.subject)
-                print(selected.message)
-                user = CustomUser.objects.get(pk=2)
-                print(user)
-                user.email_user(selected.subject, selected.message)
+                users = CustomUser.objects.filter(is_active=True).filter(email_confirmed=True)
+                for user in users:
+                        user.email_user(selected.subject, selected.message)
                 #EmailThread(obj_selected.subject, mark_safe(obj_selected.message), list_email_user).start()
         
         submit_email.short_description = 'Submit Mail'
@@ -41,7 +37,6 @@ class MassEmailAdmin(admin.ModelAdmin):
 
         actions = [ 'submit_email' ]
         search_fields = ['subject',]
-        # list_display indicate the fields that are shown in the "list" view
         list_display = ['subject', 'created']
 
 #Register our CustomUserAdmin for the CustomUser model
