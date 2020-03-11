@@ -46,8 +46,8 @@
                 <a class="btn btn-secondary btn-lg btn-block" href="{% url 'case_study_edit' pk=case_study.pk %}" role="button">Edit</a>                
             </div>
             <!--Submit button for form--> 
-            <div class="text-center p-2">
-                <a class="btn btn-info btn-lg btn-block" href="{% url 'new_session' %}" role="button">New Session</a>                
+            <div class="text-center p-2"> 
+                <a class="btn btn-info btn-lg btn-block" href="{% url 'new_session_case_study_specific' case_study=case_study.pk %}" role="button">New Session</a>                
             </div>
         </div>
     </div>
@@ -529,7 +529,7 @@
                 <a class="btn btn-secondary btn-lg" href="{% url 'case_study_edit' pk=case_study.pk %}" role="button">Edit</a>                
                     </div>
                     <div class="d-inline text-center p-2">
-                <a class="btn btn-info btn-lg" href="{% url 'new_session' %}" role="button">New Session</a>                
+                <a class="btn btn-info btn-lg" href="{% url 'new_session_case_study_specific' case_study=case_study.pk %}" role="button">New Session</a>                
                     </div>
                 </div>
             </div>
