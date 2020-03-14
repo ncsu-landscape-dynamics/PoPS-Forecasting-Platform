@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'users.apps.UsersConfig',
     'pops.apps.PopsConfig',
+    'team.apps.TeamConfig',
     'debug_toolbar',
 ]
 
