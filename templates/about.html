@@ -8,106 +8,25 @@
 {% block content %}
 
 
-  <div id="header" class="container-fluid p-4 text-center">
-    <h1 class="display-4">About PoPS</h1>
-</div>
+  <div style="background-color: #bed0d1;" class="container-fluid text-center p-4 ">
+    <div class="row text-dark justify-content-center">
+      <div class="col-md-10">
+        <h2>What is the PoPS model?</h2>
+        <p>The PoPS model is the power-house behind the PoPS web dashboard.
+        </p>
+      </div>
+      <div class="col-md-10">
+        <div class="text-center">
+          <img class='img-fluid w-100' style="max-width:800px" src="{% static 'images/ModelDescription.png' %}"
+            alt="PoPS is easy to use.">
+        </div>
+        <small class="text-muted">Illustration of the PoPS model</small>
 
-  <div id="description" class="container-fluid p-4 ">
-<div class="row">
-<div class="col-md-6">
-<h2>What is PoPS?</h2>
-    <p >PoPS is a framework for modeling the spread of pests or pathogens across a landscape.
-    We created PoPS because we want to help decision-makers, researchers, and students
-    create geospatial distribution models.
-    </p>
-    <p >
-    With PoPS you can quickly and easily:
-    <ul >
-      <li>Calibrate and validate your model</li>
-      <li>Run management or weather scenarios</li>
-      <li>Compare scenarios to make management decisions</li>
-    </ul>
-    </p>
-<p class="text-right"><a class="text-light" href="#">Read more <i class="text-light fas fa-arrow-right"></i></a></p>    
-</div>
-    <div class="col-md-6">
-    <div id="map">
-</div>
-<small class="text-muted">Simulated results showing Spotted Lanternfly spread in Pennsylvania.</small>
-
+      </div>
     </div>
-    </div>
-</div>
-
-  <div id="how" class="container-fluid p-4 ">
-<div class="row">
-<div class="col-md-6 ">
-<div class="text-center">
-    <img class='img-fluid w-100'  style="max-width:500px" src="{% static 'images/PoPS_Dashboard_Example.png' %}" alt="PoPS is easy to use." >
-</div>
-    </div>
-    <div class="col-md-6">
-<h2>How do I use PoPS?</h2>
-    <p >Our modeling platform comes with all of the necessary tools to go from initial data to 
-    modeling results quickly and easily (<strong>NO programming experience required!</strong>):</p>
-    <ul >
-      <li>Create your own case study (i.e. model) or explore the already calibrated and validated case studies.</li>
-      <li>Run management scenarios using the easy to use PoPS interface.</li>
-      <li>Easily compare management interventions across studies.</li>
-    </ul>
-    <div class="text-center">
-      <button class="btn btn-dark btn-lg" type="button"><i class="fas fa-file-download"></i> Manual</button>
-  <button class="btn btn-warning btn-lg" type="button"><i class="fas fa-eye"></i> Tutorials</button>
   </div>
-    <p class="pt-2" style="font-size:0.8em">    <i class="fab fa-github"></i>  <strong>Experienced coder? </strong>Install the PoPS R-package to run PoPS on your 
-    own machine with more customizations and command-line control. <a href="#"><i class="text-light fas fa-arrow-right"></i></a></p>
-    </div>
-    </div>
-</div>
 
-  <div class="container-fluid ">
-<div class="row">
-<div id="who" class="col-md-6 p-4">
-<h2>Who is using PoPS?</h2>
-    <p >PoPS has been successfully used by university researchers and
-    government analysts to model both pests and pathogens.
-    </p>
-    <p >
-    PoPS has been used by:
-    <ul >
-      <li><img src="{% static 'images/ncstate-brick-4x1-red.png' %}" alt="Generic placeholder image" width=200></li>
-      <li>USDA (Animal and Plant Health Inspection Service)</li>
-      <li>More</li>
-    </ul>
 
-    </div>
-    <div id="examples" class="col-md-6 p-4">
-    <h2>What can PoPS model?</h2>
-        <p >
-    PoPS has been used to model:
-    <ul >
-      <li>Spotted Lanternfly in Pennsylvania</li>
-      <li>Sudden Oak Death in California</li>
-      <li>More</li>
-    </ul> 
-    </p>
-    <div class="row">
-    <div class="col">
-    <p >PoPS can be used to model most pests or pathogens. Read the <a class="text-light" href="{% url 'FAQs' %}">FAQs</a>
- to find out if 
-    PoPS is right for your model system.
-    </p>
-
-    </div>
-    <div class="col">
-    <div class="text-center">
-    <img src="{% static 'images/lanternfly.jpg' %}"class="rounded-circle" alt="Spotted Lanternfly">
-</div>
-   </div>
-    </div>   
-    </div>
-    </div>
-</div>
 
 
   <script>
