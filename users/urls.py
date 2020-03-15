@@ -9,6 +9,6 @@ urlpatterns = [
     path('signup/', views.sign_up, name='signup'),
     path('account_activation_sent/', views.account_activation_sent, name='account_activation_sent'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
-    path('my_account', views.my_account, name='my_account'),
-    path('update', views.UpdateAccount.as_view(), name='update_account')
+    path('my_account/', views.my_account, name='my_account'),
+    path('update/', views.UpdateAccount.as_view(), name='update_account')
 ]
