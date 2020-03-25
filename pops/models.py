@@ -273,7 +273,7 @@ class PestInformation(models.Model):
 
 class Pest(models.Model):
 
-    pest_information = models.ForeignKey(PestInformation, verbose_name = _("pest"), help_text="Sample help text.", null=True, blank=True, on_delete = models.SET_NULL)
+    pest_information = models.ForeignKey(PestInformation, verbose_name = _("pest information"), help_text="Sample help text.", null=True, blank=True, on_delete = models.SET_NULL)
     name = models.CharField(verbose_name = _("pest common name"), help_text="What is the common name of the pest/pathogen?", max_length = 150, blank=True, null=True)
     case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study"), on_delete=models.CASCADE)
     use_treatment = models.BooleanField(verbose_name = _("prior treatments"), help_text="Has management occurred during the time of initial infection/infestation?", default = False)
@@ -306,7 +306,11 @@ class Pest(models.Model):
         verbose_name_plural = _("pests")
 
     def __str__(self):
-        return self.name
+        if self.name == '':
+            string = self.pest_information.common_name
+        else:
+            string = self.name
+        return string
 
 class InitialInfestation(models.Model):
 

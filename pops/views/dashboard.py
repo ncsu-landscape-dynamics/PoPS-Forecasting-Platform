@@ -71,8 +71,27 @@ class NewSessionView(LoginRequiredMixin, SessionAjaxableResponseMixin, CreateVie
 
     def get_context_data(self, **kwargs):
         context = super(NewSessionView, self).get_context_data(**kwargs)
-        context['form'].fields['case_study'].queryset = CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
-        return context
+        if self.request.is_ajax():
+            return context
+        else:
+            case_study = self.kwargs.get('case_study')
+            #Here we are grabbing the first pest associated with a case study
+            #This needs to be changed if we start handling case studies with multiple pests
+            pest=Pest.objects.filter(case_study__pk=case_study)[:1].get()
+            reproductive_rate = ReproductiveRate.objects.filter(pest=pest)
+            natural_distance = NaturalDistance.objects.filter(pest=pest)
+            context['form'].fields['case_study'].queryset = CaseStudy.objects.filter(pk=case_study)
+            context['case_study'] = case_study
+            context['pest'] = Pest.objects.select_related('vector').filter(case_study__pk=case_study).select_related('pest_information')
+            context['reproductive_rates'] = reproductive_rate.order_by('value')
+            context['min_reproductive_rate'] = reproductive_rate.order_by('value').first() 
+            context['max_reproductive_rate'] = reproductive_rate.order_by('value').last() 
+            context['expected_reproductive_rate'] = reproductive_rate.order_by('-probability').first() 
+            context['distances'] = natural_distance.order_by('value')
+            context['min_distance'] = natural_distance.order_by('value').first() 
+            context['max_distance'] = natural_distance.order_by('-value').first() 
+            context['expected_distance'] = natural_distance.order_by('-probability').first() 
+            return context
  
     def get_success_url(self, **kwargs):
         # obj = form.instance or self.object
@@ -103,7 +122,7 @@ class WorkspaceView(LoginRequiredMixin,TemplateView):
             context['current_user']=current_user
             context['user_case_studies'] = CaseStudy.objects.prefetch_related('pest_set__pest_information').filter(created_by = current_user).order_by('-date_created')[:5]
             #context['user_sessions'] = Session.objects.annotate(number_runs=Count('runcollection')).annotate(most_recent_run=Max('runcollection__date_created')).prefetch_related('created_by','case_study').filter(created_by = self.request.user).order_by('-date_created')[:5]
-            context['sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).annotate(shared=Count('allowedusers',distinct=True)).annotate(number_runs=Count('runcollection', distinct=True)).annotate(most_recent_run=Max('runcollection__date_created')).order_by('-most_recent_run')[:5]
+            context['sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).filter(default_run__status = 'SUCCESS').annotate(shared=Count('allowedusers',distinct=True)).annotate(number_runs=Count('runcollection', distinct=True)).annotate(most_recent_run=Max('runcollection__date_created')).order_by('-most_recent_run')[:5]
             context['number_of_sessions'] = Session.objects.filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).count() 
             context['number_of_case_studies'] = CaseStudy.objects.filter(created_by = current_user).count() 
             return context
@@ -120,7 +139,7 @@ class SessionListView(LoginRequiredMixin, TemplateView):
             # Call the base implementation first to get the context
             context = super(SessionListView, self).get_context_data(**kwargs)
             current_user=self.request.user
-            context['sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).annotate(shared=Count('allowedusers',distinct=True)).annotate(number_runs=Count('runcollection', distinct=True)).annotate(most_recent_run=Max('runcollection__date_created')).order_by('-most_recent_run')
+            context['sessions'] = Session.objects.prefetch_related('created_by','case_study').filter(Q(created_by = current_user ) | Q(allowedusers__user=current_user)).filter(default_run__status = 'SUCCESS').annotate(shared=Count('allowedusers',distinct=True)).annotate(number_runs=Count('runcollection', distinct=True)).annotate(most_recent_run=Max('runcollection__date_created')).order_by('-most_recent_run')
             return context
 
 
@@ -324,7 +343,6 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
                 session = None
             #Get case study pk    
             allowed_users = AllowedUsers.objects.filter(session=session)
-            print(allowed_users)
             case_study = session.case_study
 
             try:
@@ -357,7 +375,6 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
                 host = None
                 host_map = None
 
-            print(session)
             steering_years = range(case_study.end_year +1, session.final_year+1)
             context['session'] = session
             context['case_study'] = case_study
@@ -453,7 +470,6 @@ class DashboardTestView(AjaxableResponseMixin, CreateView):
                 #host = None
                 #host_map = None
 
-            print(session)
             steering_years = range(case_study.end_year +1, session.final_year+1)
             context['session'] = session
             context['case_study'] = case_study
@@ -487,28 +503,17 @@ def get_run_collection(request):
 
 def get_output_view(request):
     run_id = request.GET.get('new_run_id', None)
-    print('GETTING OUTPUT FOR RUN: ' + run_id)
- 
-    #outputs = Output.objects.filter(run_id = run_id)
     this_run = Run.objects.get(pk=run_id)
     first_year = this_run.run_collection.session.case_study.end_year+1
     run_collection = this_run.run_collection
     total_management_cost = Run.objects.filter(run_collection=run_collection).aggregate(Sum('management_cost'))
-    print('TOTAL MANAGEMENT COST')
-    print(total_management_cost)
     number_of_steering_runs = Run.objects.filter(run_collection=run_collection).count()
     steering_year = this_run.steering_year
-    print('Steering year:')
-    print(steering_year)
     default_run=run_collection.session.default_run
     default_run_outputs = Output.objects.filter(run_id=default_run)
     spread_rate = default_run_outputs.annotate(max_spread=Greatest('spreadrate__west_rate', 'spreadrate__north_rate','spreadrate__south_rate','spreadrate__east_rate'))
     max_spreadrate = spread_rate.aggregate(Max('max_spread'))
-    print('MAX SPREAD RATE ')
-    print(max_spreadrate['max_spread__max']) 
     maximum_spread_rate = max_spreadrate['max_spread__max']
-    print(default_run)
-    print(default_run_outputs)
     defaults= {
             'steering_year' : 0,
             'management_cost' : 0,
@@ -518,8 +523,6 @@ def get_output_view(request):
     steering_outputs = []
     if steering_year:
         for x in range(first_year, first_year+number_of_steering_runs):
-            print("Steering year: ")
-            print(x)
             run = Run.objects.get(run_collection=run_collection, steering_year=x)
             run_outputs = Output.objects.filter(run_id=run)
             steering_year_output = {
@@ -533,8 +536,6 @@ def get_output_view(request):
         all_outputs = Output.objects.filter(run__run_collection=run_collection)
         spread_rate = all_outputs.annotate(max_spread=Greatest('spreadrate__west_rate', 'spreadrate__north_rate','spreadrate__south_rate','spreadrate__east_rate'))
         max_steering_spreadrate = spread_rate.aggregate(Max('max_spread'))
-        print('MAX SPREAD RATE ')
-        print(max_steering_spreadrate['max_spread__max']) 
         maximum_spread_rate = max(maximum_spread_rate, max_steering_spreadrate['max_spread__max'])
             #print(run)
             #print(steering_year_output)
@@ -542,7 +543,6 @@ def get_output_view(request):
             #outputs = outputs | Output.objects.filter(run_id=run,year=x)
     else:
         print('Steering year false')
-    print(steering_outputs)
 
     #print(steering_outputs)
     #get all inputs for runs in this collection (management polygons)
@@ -551,26 +551,12 @@ def get_output_view(request):
     outputs = Output.objects.filter(run_id = run_id) 
     #then merge the outputs for previous runs to get the previous steering years
     if steering_year:
-        print('Steering year true')
         steering_boolean=True
         for x in range(first_year, steering_year):
-            print(x)
             run = Run.objects.get(run_collection=run_collection, steering_year=x)
-            print(run)
             outputs = outputs | Output.objects.filter(run_id=run,year=x)
     else:
-        print('Steering year false')
         steering_boolean=False
-    #all_spread_rate = SpreadRate.objects.filter(output__run__pk=default_run.pk).order_by('title', 'pub_date')
-    #print('All spread rates:')
-    #print(all_spread_rate)
-    print('Data:')
-    #print(all_steering_years)
-    print(first_year)
-    #print(steering_year)
-    print(outputs)
-    print('MAX SPREAD RATE ')
-    print(maximum_spread_rate)
     data = {"run_inputs": {
         "primary_key": this_run.pk,
         "date_created":this_run.date_created,
