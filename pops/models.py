@@ -988,7 +988,7 @@ class SpreadRate(models.Model):
         verbose_name_plural = _("spread rates")
 
     def __str__(self):
-        return str(self.output)
+        return self.output
 
 class DistanceToBoundary(models.Model):
 
@@ -1003,7 +1003,7 @@ class DistanceToBoundary(models.Model):
         verbose_name_plural = _("distance to boundarys")
 
     def __str__(self):
-        return str(self.output)
+        return self.output
 
 class TimeToBoundary(models.Model):
 
@@ -1018,7 +1018,7 @@ class TimeToBoundary(models.Model):
         verbose_name_plural = _("time to boundarys")
 
     def __str__(self):
-        return str(self.output)
+        return self.output
 
 class AllowedUsers(models.Model):
 
