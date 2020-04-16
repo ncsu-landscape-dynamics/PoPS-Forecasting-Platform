@@ -8,7 +8,7 @@ class LandingPageViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
            
     def test_view_url_accessible_by_name(self):
-        response = self.client.get(reverse('temp_landing'))
+        response = self.client.get(reverse('landing_page'))
         self.assertEqual(response.status_code, 200)
 
 class FAQPageViewTest(TestCase):

@@ -81,9 +81,17 @@ class AccountActivationEmailSentPageTests(SimpleTestCase):
         self.assertNotContains(
             response, 'Hi there! I should not be on the page.')
 
-class MyAccountTests(SimpleTestCase):
+class MyAccountTests(TestCase):
 
-    def test_login_page_status_code(self):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(username='test', first_name='test_first', last_name='test_last',
+                                              email='testuser@test.com', user_type='OTHER', password='testpass')
+        self.client.force_login(self.user)
+
+    def test_user(self):
+        self.assertEqual(self.user.username, 'test')
+
+    def test_account_page_status_code(self):
         response = self.client.get('/accounts/my_account/')
         self.assertEquals(response.status_code, 200)
 
