@@ -168,6 +168,16 @@ class HostAdmin(admin.ModelAdmin):
     inlines = [
         MortalityInline, CreationInline, HostDataInline
     ]
+    list_per_page = 30
+
+
+class MortalityAdmin(admin.ModelAdmin):
+    list_display = ('pk','host','rate')
+    inlines = [
+        MortalityRateInline, MortalityTimeLagInline
+    ]
+    list_per_page = 30
+
 
 class PestAdmin(admin.ModelAdmin):
     list_display = ('__str__','name','pest_information')
@@ -348,7 +358,7 @@ admin.site.register(HostData)
 admin.site.register(Creation)
 admin.site.register(PriorTreatment, PriorTreatmentAdmin)
 admin.site.register(PriorTreatmentYear)
-admin.site.register(Mortality)
+admin.site.register(Mortality, MortalityAdmin)
 admin.site.register(MortalityRate)
 admin.site.register(MortalityTimeLag)
 admin.site.register(PestInformation)
