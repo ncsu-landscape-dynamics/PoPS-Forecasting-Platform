@@ -309,6 +309,42 @@ class AjaxableResponseMixin:
 class DemoView(TemplateView):
     template_name = 'pops/dashboard/demo.html'
 
+    def get_context_data(self, **kwargs):
+            # Call the base implementation first to get the context
+            context = super(DemoView, self).get_context_data(**kwargs)
+            try:                
+                session = Session.objects.get(pk=80)
+            except:
+                session = None
+            #Get case study pk    
+            case_study = session.case_study
+
+            try:
+                historic_data = HistoricData.objects.filter(case_study=case_study).order_by('year')
+            except:
+                historic_data = None   
+            try:
+                mapbox_parameters = MapBoxParameters.objects.get(case_study=case_study)
+            except:
+                mapbox_parameters = None   
+            
+            try:
+                host = HostData.objects.filter(host__case_study=case_study).values('host_map').first()
+                host_map = host['host_map']
+            except:
+                host = None
+                host_map = None
+
+            steering_years = range(case_study.end_year +1, session.final_year+1)
+            context['session'] = session
+            context['case_study'] = case_study
+            context['mapbox_parameters'] = mapbox_parameters
+            context['historic_data'] = historic_data
+            context['last_historic_year'] = historic_data.last()
+            context['steering_years'] = steering_years
+            context['host_map'] = host_map
+            return context
+
 class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
     template_name = 'pops/dashboard/dashboard.html'
     form_class = RunCollectionForm
