@@ -306,6 +306,9 @@ class AjaxableResponseMixin:
         else:
             return response
  
+class DemoView(TemplateView):
+    template_name = 'pops/dashboard/demo.html'
+
 class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
     template_name = 'pops/dashboard/dashboard.html'
     form_class = RunCollectionForm
