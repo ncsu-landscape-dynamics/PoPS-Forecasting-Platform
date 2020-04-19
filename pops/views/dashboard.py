@@ -306,8 +306,14 @@ class AjaxableResponseMixin:
         else:
             return response
  
-class DemoView(TemplateView):
+class DemoView(AjaxableResponseMixin, CreateView):
     template_name = 'pops/dashboard/demo.html'
+    form_class = RunCollectionForm
+    success_url = 'new_session'
+
+    def get_initial(self):
+            # call super if needed
+            return {'session': 80, 'name':'Demo run','description':'None'}
 
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
@@ -335,6 +341,11 @@ class DemoView(TemplateView):
                 host = None
                 host_map = None
 
+            try:
+                default_run_collection = RunCollection.objects.filter(session=session).first()
+            except:
+                host = None
+
             steering_years = range(case_study.end_year +1, session.final_year+1)
             context['session'] = session
             context['case_study'] = case_study
@@ -343,6 +354,7 @@ class DemoView(TemplateView):
             context['last_historic_year'] = historic_data.last()
             context['steering_years'] = steering_years
             context['host_map'] = host_map
+            context['default_run_collection'] = default_run_collection
             return context
 
 class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):

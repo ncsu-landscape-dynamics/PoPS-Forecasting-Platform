@@ -49,6 +49,7 @@ urlpatterns = [
     path('workspace/', views.WorkspaceView.as_view(), name='workspace'),
     path('dashboard/<int:pk>/', views.DashboardView.as_view(), name='dashboard'),
     path('demo/', views.DemoView.as_view(), name='demo'),
+    path('save_demo_run_collection/', views.DemoView.as_view(), name='save_demo_run_collection'),
     path('dashboard/', RedirectView.as_view(pattern_name='workspace'), name='dashboard_root'),
     path('dashboard-test/<int:pk>/', views.DashboardTestView.as_view(), name='dashboard-test'),
     path('case_study/create/', views.CreateCaseStudyStart.as_view(), name='create_case_study_start'),

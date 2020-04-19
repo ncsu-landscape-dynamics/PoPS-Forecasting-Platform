@@ -251,7 +251,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
         </a>
   <div class="collapse navbar-collapse mb-0 mt-0" id="navbarTogglerDemo03">
         <span id="session_title" class="pb-0 navbar-text d-none d-md-inline-block mr-auto text-bottom" >
-          <strong>Session:</strong> {{ session.name|truncatechars:55  }} <a href="#" data-toggle="tooltip" title="Edit session name will be available in the future" data-placement="right"><i style="font-size:0.5em;" class="fas fa-pencil-alt align-top"></i></a>
+          <strong>Session:</strong> {{ session.name|truncatechars:55  }} 
           <span id="case_study_title" class="text-muted d-none d-lg-inline-block" style="font-size:0.8em;">
             ({{ session.case_study }} {{ session.case_study.end_year }} <a href="{% url 'case_study_review' pk=session.case_study.pk %}" data-toggle="tooltip" title="View case study detail page" data-placement="right" ><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>)
           </span>
@@ -305,7 +305,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                     </div>
                     <div class="timeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
                     {% for year in steering_years %}
-                    <div class="timeline-year-container year-{{forloop.counter}} {% if forloop.first %} management_active {% else %} management_not_started {% endif %} management_visible"
+                    <div {% if forloop.first %} id="first-steering-year" {% endif %} class="timeline-year-container year-{{forloop.counter}} {% if forloop.first %} management_active {% else %} management_not_started {% endif %} management_visible"
                     data-year-counter={{ forloop.counter }} data-year-value= {{ year }} data-run-pk="" >
                       <div class="timeline-buttons">
                         <span class="completed_management_buttons">
@@ -313,7 +313,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                           <a class="timeline-visibility" href="#" data-toggle="tool" title="Toggle management polygon visibility."><i class="far fa-eye "></i></a>
                         </span>
                         <span class="submit_run_button">
-                          <button form="submit-run" type="submit" data-toggle="tool" title="Run PoPS model for {{ year }} management."><i class="fas fa-play-circle"></i></button>
+                          <button {% if forloop.first %} type="button" {% else %} form="submit-run" type="submit" {% endif %} data-toggle="tool" title="Run PoPS model for {{ year }} management."><i class="fas fa-play-circle"></i></button>
                         </span>
                       </div>
                       <div class="timeline-year">
@@ -327,7 +327,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                     {% endfor %}
                   </div>
                 </div>
-                            <form id="submit-run" method="post" submit-run-url="{% url 'save_run_data' %}">
+                            <form id="submit-run" onsubmit="submitAjaxRun(); return false" method="post" submit-run-url="{% url 'save_run_data' %}">
                                           {% csrf_token %}
                 <input type="hidden" value="0" name="management_polygons" cols="40" rows="10" class="form-control"
                   id="id_management_polygons">
@@ -718,6 +718,17 @@ $("#status-indicator").hide();
                           <div id="input_final_year">
                             Final year: <span>{{ session.final_year }}</span>
                           </div>
+                            <div class="form-group col-12">
+                              <label for="id_area_unit">Displayed Units</label>
+                              <div class="input-group ">                      
+                                <select name="area_unit" class="form-control" id="id_area_unit">
+                              <option value="1">meter squared</option>
+                              <option value="0.000247105" selected>acre</option>
+                              <option value="0.0001">hectare</option>
+                            </select> 
+                             </div>
+                              
+                            </div>
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -725,6 +736,30 @@ $("#status-indicator").hide();
                       </div>
                     </div>
                   </div>
+
+                <form id="submit-run-collection" method="post" submit-run-collection-url="{% url 'save_demo_run_collection' %}">
+                              {% csrf_token %}
+                {{ form.session.as_hidden }}
+                {{ form.random_seed.as_hidden }}
+                {{ form.name.as_hidden }}
+                {{ form.description.as_hidden }}
+                {{ form.tangible_landscape.as_hidden }}
+
+                                             
+                                  <input type="hidden" name="budget" value="{{ default_run_collection.budget }}" min="0" step="0.01" data-toggle="tooltip"
+                                  data-placement="top" title="Allowed budget" data-container="body" class="form-control"
+                                  id="id_budget">
+
+                                <input type="hidden" name="display_cost" value="5000" min="0" data-toggle="tooltip"
+                                  data-placement="top" title="Cost per area" data-container="body"
+                                  class="form-control" id="id_cost">
+
+                                <input type="hidden" name="cost_per_meter_squared" value="{{ default_run_collection.cost_per_meter_squared }}"
+                                  class="form-control" id="id_cost_per_meter_squared">
+                              <input id="id_efficacy" class="custom-range" type="hidden" name="efficacy" min="50" max="100"
+                                step="10" value="{{ default_run_collection.efficacy }}" onchange="displayEfficiency.value=value">
+
+                          </form>
 
 
                       <div id="budget_plot" style="width:100%; height:140px;"></div>
@@ -1335,9 +1370,11 @@ map.on('draw.modechange', e => {
         console.log("There is no management.")
       }
       var answer = document.getElementById('polygon-info');
-      var budget = $("input#id_budget").val();
+      var budget = {{ default_run_collection.budget }};
       var cost_per_meter_squared = $("input#id_cost_per_meter_squared").val();
       var area_unit = $("select#id_area_unit").children("option:selected").text();
+      console.log('Cost per meter squared:')
+      console.log(cost_per_meter_squared);
       if (data.features.length > 0) {
         var area = turf.area(data); //area in meters
         // restrict to area to 2 decimal points
@@ -1352,10 +1389,10 @@ map.on('draw.modechange', e => {
         $('#id_management_cost').val(cost);
         answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + area_unit;
         //console.log(map.getCenter())
-        gauge_plot("money-new", cost, budget);
+        gauge_plot("money-new", cost, {{ default_run_collection.budget }});
       } else {
         answer.innerHTML = '0.0 ' + area_unit;
-        gauge_plot("money-new", 0, budget);
+        gauge_plot("money-new", 0, {{ default_run_collection.budget }});
         $('#id_management_area').val(0);
         $('#id_management_cost').val(0);
       }
@@ -1494,7 +1531,7 @@ map.on('draw.modechange', e => {
       });
     }
 
-    gauge_plot("money-new", 0, $("input#id_budget").val());
+    gauge_plot("money-new", 0, {{ default_run_collection.budget }});
 
 
     $('#hide_details_button').on('click', function () {
@@ -1528,35 +1565,8 @@ map.on('draw.modechange', e => {
 
 
 
-$( "input#id_budget, input#id_cost, select#id_area_unit" ).on( "click blur load", function() {
-  var displayed_cost_per_area = $('input#id_cost').val();
-  console.log("The displayed cost is: " + displayed_cost_per_area);
-  var cost_modifier =  $("select#id_area_unit").children("option:selected").val();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
-  var area_unit =  $("select#id_area_unit").children("option:selected").text();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
-  console.log("The cost modifier is: " + cost_modifier);
-  var actual_cost_per_meter_squared = Math.round(displayed_cost_per_area*cost_modifier*100000000)/100000000;
-  console.log("The actual cost per meter squared is: " + actual_cost_per_meter_squared);
-  $('input#id_cost_per_meter_squared').val(actual_cost_per_meter_squared);
-  $('span.displayed_area_unit').text(area_unit);
-updateArea();
-});
-
 //Redundant function here doing the same thing as above, just on load to make sure 
 // the budget and cost are correct. Need to clean this up later.
-$(document).ready(function(){
-  var displayed_cost_per_area = $('input#id_cost').val();
-  console.log("The displayed cost is: " + displayed_cost_per_area);
-  var cost_modifier =  $("select#id_area_unit").children("option:selected").val();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
-  var area_unit =  $("select#id_area_unit").children("option:selected").text();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
-  console.log("The cost modifier is: " + cost_modifier);
-  var actual_cost_per_meter_squared = Math.round(displayed_cost_per_area*cost_modifier*100000000)/100000000;
-  console.log("The actual cost per meter squared is: " + actual_cost_per_meter_squared);
-  $('input#id_cost_per_meter_squared').val(actual_cost_per_meter_squared);
-  $('span.displayed_area_unit').text(area_unit);
-updateArea();
-});
-
-
 
 $("#year-slider").change(function () {
   year_id = $(this).find('input').val();
@@ -1681,92 +1691,7 @@ function enableDrawTools(){
 
 var most_recent_run = 0;
 
-function get_run_collection(run_collection_id) {
-  $('#tangible-landscape-listener-button a').attr('data-value','false');
-  console.log("Changing value of TL listener to false.");
-  $('#tangible-landscape-listener-button a').text('Resume listening');  
-  console.log('Getting run collection for run_collection:' + run_collection_id);
-  $.ajax({
-    url: "{% url 'get_run_collection' %}",
-    dataType: "json",
-    data: {
-      'run_collection_id': run_collection_id
-    },
-    success: function (data) {
-      console.log('Success getting run collection.')
-      console.log('Run collection id: ' + run_collection_id)
-      $('#run-collection-name span').text(data.name);
-      $('#run-collection-name').attr('data-run-collection-pk',data.pk);
-      $('#input_run_name span').text(data.name);
-      $("#new_run_collection_name").val(data.name);
-      $('#input_run_pk span').text(data.pk);
-      $('#input_description span').text(data.description);
-      $('#new_run_collection_description').val(data.description);
-      $('#input_status span').text(data.status);
-      $('#input_random_seed span').text(data.random_seed);
-      $('#input_date_created span').text(data.date_created);
-      $('#input_budget span').text(data.budget);
-      $('#input_cost_per_meter_squared span').text(data.cost_per_meter_squared);
-      $('#input_efficacy span').text(data.efficacy);
-      $('#input_tangible_landscape span').text(data.tangible_landscape);
-      $('#id_run_collection').val(data.pk);    
-      $(".timeline-year-container").removeClass("year_active").addClass("management_not_started").removeClass("management_active").removeClass("management_complete");
-      //$(".timeline-year-container.management_active").removeClass("management_active").addClass("management_complete").addClass("year_active").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
-      $(".timeline-year-container.year-0").addClass("management_complete").removeClass("management_not_started");
-      console.log('Number of steering years: ' + data.inputs.length);
-      if (data.inputs.length == 0){
-        $(".timeline-year-container.year-0").addClass("year_active");
-        default_run = {{ session.default_run }};
-        console.log("Loading default run: " +default_run);
-        get_output(default_run);        
-        $(".timeline-year-container.year-1").removeClass("management_not_started").addClass("management_active");
-        most_recent_run = 0;
-      }
-      else {
-        //Loop through the steering years
-        for (var i = 0; i < data.inputs.length; i++) {
-          var steering_year = data.inputs[i].steering_year;
-          var next_steering_year = steering_year + 1;
-          var run_id = data.inputs[i].pk;
-          console.log('Steering year: ' + steering_year);
-          $(".timeline-year-container[data-year-value="+steering_year+"]").attr('data-run-pk',run_id);
-          $(".timeline-year-container[data-year-value="+steering_year+"]").removeClass("management_not_started").addClass("management_complete");
-        // Do something if is the last iteration of the loop
-          if((i + 1) == (data.inputs.length)){
-            $(".timeline-year-container[data-year-value="+steering_year+"]").addClass("year_active")
-            $(".timeline-year-container[data-year-value="+next_steering_year+"]").removeClass("management_not_started").addClass("management_active");
-            get_output(run_id);
-            most_recent_run=run_id;
-          }
-        };
-      }
 
-    if (data.tangible_landscape) {
-      console.log('Tangible landscape is on.')
-      //hide run buttons
-      $(".timeline-year-container").find(".submit_run_button").hide();
-      $("#tangible-landscape-listener-button").show();
-      $("#tangible-landscape-listener-button a").attr('data-value','true');
-      $("#tangible-landscape-listener-button a").text('Stop listening');     
-      listen_for_new_runs(run_collection_id,most_recent_run);
- 
-      //if new run, get output for new run
-    }
-    else {
-      console.log('Tangible landscape is false.')
-      $(".timeline-year-container").find(".submit_run_button").show();
-      $("#tangible-landscape-listener-button").hide();
-        var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
-      console.log('Updating draw color to ' + year_count);
-      updateDrawColor(year_count);
-    }
-    },
-    error: function (xhr) {
-      console.log('Failed getting run collection.')
-      alert(xhr.statusText)
-    }
-  });
-};
 
 var spread_rate;
 var max_spread_rate=0;
@@ -1847,21 +1772,6 @@ function get_output(run_id) {
         year_list.push(data.results[i].year);
         infected_area_list.push(data.results[i].infected_area );
         infected_number_list.push(data.results[i].number_infected);
-        //Add new run button if there is steering or update existing button
-        if (data.steering) {
-          if((i + 1) == (data.results.length)){
-            console.log('This is the last loop of the results.')
-            var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
-            var run_collection_name = $('#input_run_name span').text();
-            var run_collection_description = $('#input_description span').text();
-            var run_collection_date = $('#input_date_created span').text(data.date_created);
-            var run_collection_budget = $('#input_budget span').text(data.budget);
-            var run_collection_efficacy = $('#input_efficacy span').text(data.efficacy);
-            insertRunButton(run_collection_pk, run_collection_name, run_collection_date, run_collection_description, run_collection_efficacy, data.results[i].number_infected, data.results[i].infected_area, data.total_management_cost);
-            relayout_buttons(max_number,max_area,max_cost);
-          }
-        }
-
 
 
         if (year > max_year) {
@@ -2043,56 +1953,6 @@ function poll(new_run_id) {
   }, 2000);
 };
 
-function listen_for_new_runs(run_collection_id, most_recent_run) {
-  $('#tangible-landscape-indicator').fadeIn();
-  var active_run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
-  console.log('Active run collection id = ' + active_run_collection_id);
-  var continue_listening = $('#tangible-landscape-listener-button a').attr('data-value');
-  if (active_run_collection_id == run_collection_id) {
-    setTimeout(function () {
-      $.ajax({
-        url: "{% url 'check_for_new_TL_run' %}",
-        dataType: "json",
-        data: {
-          'run_collection_id': run_collection_id
-        },
-        success: function (data) {
-          console.log("The most recent run for run_collection " + run_collection_id + " is: " + data.most_recent_run_pk);
-          //Check if the most_recent_run has changed, update dashboard if it has.
-          $('#tangible-landscape-indicator').fadeOut("slow");
-          if (most_recent_run != data.most_recent_run_pk) {
-            get_run_collection(run_collection_id);
-          } else if (continue_listening == 'false') {
-            console.log("Exiting TL listening loop.")
-            $('#tangible-landscape-listener-button a').attr('data-value');
-          } else {
-            //Setup the next poll recursively
-            listen_for_new_runs(run_collection_id, data.most_recent_run_pk);
-          }
-        },
-        error: function (xhr, errmsg, err) {
-          alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText +
-            "\nThere was a problem listening for the results of the model run... the simulation is most likely still running. Try refreshing the page in 1-2 minutes.");
-          console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        }
-      });
-    }, 2000);
-  };
-};
-
-//Changes to the page for tangible landscape.
-$("input#id_tangible_landscape").on('change', function () {
-  if ($('input#id_tangible_landscape').prop('checked')){
-    console.log('Tangible landscape is on...');
-      $("#submit-run-button").text("Send to Tangible Landscape");
-      disableDrawTools();
-  }
-  else {
-    console.log('Tangible landscape is off...');
-    $("#submit-run-button").text("Run PoPS Model");
-    enableDrawTools();
-  }
-});
 
 {% comment %} $("#SLF_buffer_zone_checkbox input").on('change', function () {
   if ($('#SLF_buffer_zone_checkbox input').prop('checked')){
@@ -2140,33 +2000,6 @@ $("#host_map_checkbox input").on('change', function () {
         });
     });    
 
-    $("#edit_run_collection").on('click', function () {
-   //var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
-        event.stopPropagation(); 
-      var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
-      var run_collection_name = $('#new_run_collection_name').val();
-      var run_collection_description = $('#new_run_collection_description').val();
-      console.log("Editing run_collection " + run_collection_pk);
-        $.ajax({
-          url: "{% url 'edit_run_collection' %}",
-          dataType: "json",
-          data: {
-            'run_collection': run_collection_pk,
-            'name': run_collection_name,
-            'description': run_collection_description
-          },
-          success: function (data) {
-            console.log('Run Collection ' + data.run_collection_id + ' was edited.');
-            get_run_collection(data.run_collection_id);
-            $('#edit_run_name_modal').modal('hide');
-          },
-          error : function(xhr,errmsg,err) {
-          alert("An error occured deleting the runs. An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
-          + "\n");
-              console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-          }
-        });
-    });    
 
 
 
@@ -2191,20 +2024,13 @@ $("#host_map_checkbox input").on('change', function () {
       //$("#v-pills-chart-view").addClass("show");
     });
 
-    $("#submit-run-collection").on('submit', function () {
-      console.log("Submit run collection button clicked.");
-      event.preventDefault();
-      //$("#submit-run-button").attr("disabled", true);
-      //$('#run-preview-container button').removeClass('active');
-        var form = $("#submit-run-collection");
-        if ($('input[name="name"]').val() == "Default_name") {
-          console.log('DEFAULT NAME DETECTED... CHANGING')
-          var now_date = new Date();
-          var now_time =  now_date.getHours() + ':' + now_date.getMinutes() + ':' + now_date.getSeconds();
-          var date_time_name = 'New name';
-          $('input[name="name"]').val(now_time);
-        }
-      $.ajax({
+
+$('#first-steering-year').on('click', function () {
+    console.log('First steering year clicked')
+    event.preventDefault();
+    var form = $("#submit-run-collection");
+    console.log(form)
+    $.ajax({
         url: form.attr("submit-run-collection-url"),
         data: form.serialize(),
         type : "POST", // http method
@@ -2227,7 +2053,7 @@ $("#host_map_checkbox input").on('change', function () {
           $('#input_efficacy span').text(data.efficacy);
           $('#input_tangible_landscape span').text(data.tangible_landscape);
           $('#id_run_collection').val(data.pk);
-          get_run_collection(new_run_collection_id);
+          $("#submit-run").submit();
         },
                 // handle a non-successful response
         error : function(xhr,errmsg,err) {
@@ -2236,17 +2062,82 @@ $("#host_map_checkbox input").on('change', function () {
             console.log('There was an error writing to the database:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
       });
-      //$('#status-text span').text('Getting ready...');
-      //$( "#status-indicator" ).show();
-      //$( "#status-indicator-shading" ).show();
-      //$("button#cancel-polling").show();
-    });
 
-    $("#submit-run").on('submit', function () {
+});
+
+function submitAjaxRun() {
+    event.preventDefault();
+    console.log('Submit RUN form submitted');
+    var steering_year = parseInt($(".timeline-year-container.management_active").attr('data-year-value'));
+    var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
+    console.log('Steering year is: ' + steering_year);
+    $('#id_steering_year').val(steering_year);
+      var form = $("#submit-run");
+      $.ajax({
+        url: form.attr("submit-run-url"),
+        data: form.serialize(),
+        type : "POST", // http method
+        success: function (data) {
+          console.log('New run AJAX succcessful!');
+          var new_run_id = data.pk;
+          $(".timeline-year-container.management_active").attr('data-run-pk',new_run_id);
+          var new_run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
+          var case_study_id = {{ case_study.pk }};
+          var session_id = {{ session.pk }};
+          console.log('New run id: ' + new_run_id);
+          console.log('Steering year: ' + data.steering_year);
+          if (!$('input#id_tangible_landscape').prop('checked')){
+            console.log('Case study id: ' + case_study_id); 
+            console.log('New session id: ' + session_id); 
+            console.log('New run collection id: ' + new_run_collection_id); 
+            console.log('New run id: ' + new_run_id); 
+            var base_url = "https://pops-model-api.appspot.com/status?"
+            //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+            var run_url = (base_url + "run_id=" + new_run_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&session_id=" + session_id.toString() + "&case_study_id=" + case_study_id.toString()); //base_url.concat(new_run_id.toString());
+            console.log(run_url);
+         $.ajax({
+              url: run_url,
+              dataType: 'JSONP',
+              type: 'GET',
+              headers: { 'Access-Control-Allow-Origin': 'https://pops-model-api.appspot.com' },
+              statusCode: {
+                404: function() {
+                  alert( "PoPS Model API not found (404 error)... \n Please try again. \n If the problem persists, contact an admin." );
+                },
+                500: function() {
+                  alert( "PoPS Model API returned 500 Error... \n Please try again. \n If the problem persists, contact an admin." );
+                }
+              },
+              success : function (data) {
+                console.log('Success signal from PoPS Model API.');
+              },
+              error : function(xhr,errmsg,err) {
+                console.log('Received status from the PoPS model API:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+              }
+            }); 
+            console.log('Sent run request to PoPS. Waiting for updates to database...')
+          }
+          else {
+            console.log('Waiting for management from tangible landscape...')
+          }
+          $("#submit-run-button").attr('data-run',new_run_id);
+          poll(new_run_id); 
+          console.log('Polling should start here.')
+        },
+                // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
+      + "\nIf the displayed error is not informative, the most likely issue is that there was a problem writing to the database.");
+            console.log('There was an error writing to the database:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+      });
+    $("#status-indicator").show();
+  $("#status-indicator-shading").show();
+};
+
+$("#submit-run2").on('submit', function () {
   console.log("Submit management.")
   event.preventDefault();
-  //$("#submit-run-button").attr("disabled", true);
-  //$('#run-preview-container button').removeClass('active');
   var steering_year = parseInt($(".timeline-year-container.management_active").attr('data-year-value'));
   var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
   console.log('Steering year is: ' + steering_year);
@@ -2274,7 +2165,7 @@ $("#host_map_checkbox input").on('change', function () {
             //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = (base_url + "run_id=" + new_run_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&session_id=" + session_id.toString() + "&case_study_id=" + case_study_id.toString()); //base_url.concat(new_run_id.toString());
             console.log(run_url);
-            $.ajax({
+         {% comment %}    $.ajax({
               url: run_url,
               dataType: 'JSONP',
               type: 'GET',
@@ -2287,20 +2178,21 @@ $("#host_map_checkbox input").on('change', function () {
                   alert( "PoPS Model API returned 500 Error... \n Please try again. \n If the problem persists, contact an admin." );
                 }
               },
-              success : function (data) {
-                console.log('Success signal from PoPS Model API.');
-              },
-              error : function(xhr,errmsg,err) {
-                console.log('Received status from the PoPS model API:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-              }
-            });
+              //success : function (data) {
+                //console.log('Success signal from PoPS Model API.');
+              //},
+              //error : function(xhr,errmsg,err) {
+                //console.log('Received status from the PoPS model API:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+              //}
+            }); {% endcomment %}
             console.log('Sent run request to PoPS. Waiting for updates to database...')
           }
           else {
             console.log('Waiting for management from tangible landscape...')
           }
           $("#submit-run-button").attr('data-run',new_run_id);
-          poll(new_run_id); 
+          //poll(new_run_id); 
+          console.log('Polling should start here.')
         },
                 // handle a non-successful response
         error : function(xhr,errmsg,err) {
@@ -2524,10 +2416,10 @@ $("#eradication-status-indicator").hide();
 
 function budget_plot(defaults, steering_outputs) {
   if ($('#input_budget span').text()) {
-    var max_budget = parseInt($('#input_budget span').text());
+    var max_budget = {{ default_run_collection.budget }};
   }
   else {
-    max_budget = 0;
+    max_budget = {{ default_run_collection.budget }};
   }
   var max_budget_million = max_budget/1000000;
   var data = [];
