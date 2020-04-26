@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -134,12 +133,6 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static_custom'),)
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
-AUTH_USER_MODEL = 'users.CustomUser' # new
-
-LOGIN_REDIRECT_URL = 'workspace'
-LOGOUT_REDIRECT_URL = '/'
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
