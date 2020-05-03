@@ -496,6 +496,7 @@ div#run-preview-container {
       margin-top:0px;
         }
     #status-indicator-shading {
+      z-index: 99999990 !important;
       position: absolute;
       background: black;
       opacity: 0.7;
@@ -505,6 +506,7 @@ div#run-preview-container {
       height: 100%;
             }
     #status-indicator {
+      z-index: 99999991 !important;
       position: absolute;
       font-size: 1.5em;
       left: 50%;
@@ -515,6 +517,7 @@ div#run-preview-container {
       height: 250px;
         }
         #status-close-button {
+          z-index: 99999991 !important;
           position: absolute;
           right: 0;
           top: 0;
@@ -524,6 +527,7 @@ div#run-preview-container {
 
         #eradication-status-indicator {
           position: absolute;
+          z-index: 99999991 !important;
           font-size: 1.5em;
           left: 50%;
           top: 50%;
@@ -533,6 +537,7 @@ div#run-preview-container {
           height: 50px;
             }
             #eradication-status-close-button {
+              z-index: 99999991 !important;
               color: white;
               opacity: 0.8;
             }

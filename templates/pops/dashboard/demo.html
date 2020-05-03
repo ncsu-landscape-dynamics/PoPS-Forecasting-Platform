@@ -15,6 +15,8 @@
   <script src="{% static 'js/jquery.min.js' %}"></script>
   <script src="{% static 'js/popper.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'js/introjs.css' %}">
+  <link rel="stylesheet" href="{% static 'js/introjs-modern.css' %}">
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
@@ -239,6 +241,43 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
   <style>
   </style>
 
+
+<!-- Modal -->
+<div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Welcome to the PoPS Dashboard Demo!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>This page uses a simple example to demonstrate some of the features of PoPS.
+        </p>
+        <p>
+        Create a free account to gain access to all of the features of PoPS:
+        </p>
+        <ul>
+        <li>Compare multiple management scenarios.</li>
+        <li>Explore multiple pests and pathogens.</li>
+        <li>Share your session with collaborators.</li>
+        <li>Save your work and return later.</li>
+        </ul>
+        <div class="text-center">
+        <button id="launch_tutorial" type="button" class="btn btn-primary">Let's go!</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Skip tutorial</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$('#welcomeModal').modal('show')
+
+</script>
   <div class=" container-fluid p-0 ">
 
 <nav class="navbar navbar-expand-lg navbar-dark">
@@ -250,22 +289,32 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
             alt="Pest or Pathogen Spread Simulation">
         </a>
   <div class="collapse navbar-collapse mb-0 mt-0" id="navbarTogglerDemo03">
-        <span id="session_title" class="pb-0 navbar-text d-none d-md-inline-block mr-auto text-bottom" >
-          <strong>Session:</strong> {{ session.name|truncatechars:55  }} 
-          <span id="case_study_title" class="text-muted d-none d-lg-inline-block" style="font-size:0.8em;">
+        <span id="session_title" class="pb-0 navbar-text d-none d-md-inline-block mr-auto text-bottom">
+          <strong>Session:</strong> <span 
+          data-step="1" 
+          data-intro="This is the session name. In the full version of PoPS, you may rename your sessions and submit multiple management scenarios to compare.">{{ session.name|truncatechars:55  }} </span>
+          <span id="case_study_title" class="text-muted d-none d-lg-inline-block" style="font-size:0.8em;"
+          data-step="2" 
+          data-intro="The session is based on this case study. A case study is a calibrated and validated PoPS model for a specific pest/pathogen and extent (geographic region and resolution).">
             ({{ session.case_study }} {{ session.case_study.end_year }} <a href="{% url 'case_study_review' pk=session.case_study.pk %}" data-toggle="tooltip" title="View case study detail page" data-placement="right" ><i style="font-size:0.6em" class="fas fa-info-circle align-top text-secondary"></i></a>)
           </span>
 
         </span>
     <ul class="nav mt-2 mt-lg-0 mb-0 pb-0">
-
+      <li class="nav-item" data-step="19" data-intro="Create a free account at any time to access more features!">
+        <a class="nav-link text-light" href="{% url 'signup' %}">Create Account</a>
+      </li>
+      <li class="nav-item" data-step="20" data-intro="Relaunch this tutorial by clicking here.">
+        <a class="nav-link text-light" href="#" data-toggle="modal" data-target="#welcomeModal" >Relaunch tutorial</a>
+      </li>
       <li id="main_menu" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Menu
           </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="{% url 'workspace' %}">My Workspace</a>
+            <a class="dropdown-item" href="{% url 'landing_page' %}">Home</a>
             <a class="dropdown-item" href="{% url 'FAQs' %}">FAQs</a>
+            <a class="dropdown-item" href="{% url 'tutorials' %}">Tutorials</a>
           </div>
       </li>
     </ul>    
@@ -299,7 +348,9 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                           <a href="#" data-toggle="tool" title="Run PoPS model for {{ session.case_study.end_year }} management."><i class="fas fa-play-circle"></i></a>
                         </span>
                       </div>
-                      <div class="timeline-year">
+                      <div class="timeline-year" data-step="15" 
+                          data-intro='After you submit management, you can still view the forecast with
+                          no management by clicking "None".'>
                         <a class="align-top"  data-toggle="tool" title="View forecast with no management." href="#">None</a>
                       </div>
                     </div>
@@ -307,17 +358,38 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                     {% for year in steering_years %}
                     <div {% if forloop.first %} id="first-steering-year" {% endif %} class="timeline-year-container year-{{forloop.counter}} {% if forloop.first %} management_active {% else %} management_not_started {% endif %} management_visible"
                     data-year-counter={{ forloop.counter }} data-year-value= {{ year }} data-run-pk="" >
-                      <div class="timeline-buttons">
+                      <div class="timeline-buttons" >
                         <span class="completed_management_buttons">
-                          <a class="timeline-edit" href="#" data-toggle="tool" title="Go back to manage year {{ year }}. This will delete all subsequent management years."><i class="fas fa-backspace "></i></a>
+                          <a class="timeline-edit" 
+                          href="#" data-toggle="tool" title="Go back to manage year {{ year }}. This will delete all subsequent management years."><i class="fas fa-backspace "></i></a>
                           <a class="timeline-visibility" href="#" data-toggle="tool" title="Toggle management polygon visibility."><i class="far fa-eye "></i></a>
                         </span>
                         <span class="submit_run_button">
-                          <button {% if forloop.first %} type="button" {% else %} form="submit-run" type="submit" {% endif %} data-toggle="tool" title="Run PoPS model for {{ year }} management."><i class="fas fa-play-circle"></i></button>
+                          <button {% if forloop.first %} type="button" data-step="10" data-position="left"
+                          data-intro="Once you're happy with your drawn management, 
+                          use this button to submit a run (in this example, we are running PoPS 
+                          with management in 2019). The PoPS model typically takes 1-2 minutes." 
+                          {% else %} form="submit-run" type="submit" {% endif %} data-toggle="tool" title="Run PoPS model for {{ year }} management."><i class="fas fa-play-circle"></i></button>
                         </span>
                       </div>
-                      <div class="timeline-year">
-                        <a class="align-top" data-toggle="tool" title="View forecast with management up to {{ year }}." href="#">{{ year }}</a>
+                      <div class="timeline-year"
+                      {% if forloop.first %} data-step="6" 
+                          data-intro='The color of the year corresponds to the color 
+                          of the management polygons drawn on the map.' 
+                      {% elif forloop.last %} data-step="17" 
+                          data-intro='Note that management is cummulative (e.g. when you run PoPS with management 
+                          in 2021, the management from 2019 and 2020 is also applied).' 
+                        {% else %} data-step="7" 
+                          data-intro='Grey years have not yet had management applied.' 
+                        {% endif %}                          >
+                        <a class="align-top" data-toggle="tool" title="View forecast with management up to {{ year }}." href="#"
+                        {% if forloop.first %}
+                        data-step="16" 
+                          data-intro='After submitting management for multiple years, 
+                          view the forecast for management in 
+                          a previous year by clicking on the year.'
+                          {% endif %}
+                        >{{ year }}</a>
                       </div>
                     </div>
                     {% if forloop.last %}
@@ -431,11 +503,13 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                       });
 
                   </script>                
-                  <div id="map" class="large_map"></div>
+                  <div id="map" class="large_map" ></div>
                   <button id="show_details_button" type="button" class="btn" style="display: none" data-toggle="tool"
                     title="Show details."><i class="fas fa-chevron-left"></i></button>
-                  <h4 id="display_year_forecast">Field observations</h4>
-                  <div id="historic-legend-container" class="pb-0">
+                  <h4 id="display_year_forecast" >
+                  Field observations</h4>
+                  <div id="historic-legend-container" class="pb-0" data-step="3" 
+                  data-intro="The map will show you the actual locations of observed pests or forecasted future occurences (depending on the year).">
                     <div id="legend_description"><strong>Number of detections:</strong></div>
                     <div class="legend-color" style="background-color:#CC0000; opacity:0.8"></div>
                     <div class="legend-color" style="background-color:#D61900; opacity:0.8"></div>
@@ -453,7 +527,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                       <p id="legend_label_right" class="legend-label">{{ session.max_value }}+</p>
                     </div>
                   </div>                  
-                  <div id="occurence-legend-container" class="pb-0">
+                  <div id="occurence-legend-container" class="pb-0" >
                     <div id="legend_description"><strong>Predicted occurences:</strong></div>
                     <div class="legend-color" style="background-color:#CC0000; opacity:0.8"></div>
                     <div class="legend-color" style="background-color:#D61900; opacity:0.8"></div>
@@ -499,7 +573,9 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                           SLF buffer zone
                         </label>
                       </div> {% endcomment %}
-                      <div id="host_map_checkbox" class="form-check">
+                      <div id="host_map_checkbox" class="form-check"
+                      data-step="5"
+                      data-intro="The pest or pathogen hosts are shown in green. You may toggle this on and off.">
                         <input class="form-check-input" type="checkbox" value="" checked>
                         <label class="form-check-label" for="host_map_checkbox">
                           Host Map
@@ -509,7 +585,8 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
 
                   </div>
                   <div id="budget_background_layer"></div>
-                  <div id="year-slider-container">
+                  <div id="year-slider-container" data-step="4" 
+                  data-intro="When a session first loads, it shows the forecasted occurences of the pest/pathogen with no management intervention. Try changing the year to see how the number of actual detections and forecasted detections change with time.">
                     <div id="display_year_label" class="py-0 "><output id="displayYear">{{ last_historic_year.year }}</output>
                     </div>
                   <div id="year-slider" class="pt-0 range range-info">
@@ -526,8 +603,11 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   <div>Managed area:</div> 
                   <div id="polygon-info">0.0 acres</div> 
                   </div>
-                  <div id="money-new" class="col py-0" style="width:180px; height:140px"></div>
-                  <div id="draw-controls" class="btn-group-vertical" role="group" >
+                  <div id="money-new" class="col py-0" style="width:180px; height:140px"
+                            data-step="8" data-position="right"
+          data-intro="As you draw management, the estimated cost is shown here.">
+                  </div>
+                  <div id="draw-controls" class="btn-group-vertical" role="group" data-step="9" data-position="right" data-intro="Try using the draw tools to draw management to be applied in the first year." >
                   <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
                   title="Draw management polygon" data-placement="left">
                   <i class="fas fa-draw-polygon"></i>
@@ -643,11 +723,16 @@ $("#status-indicator").hide();
                   <div class="">
                   <button id="hide_details_button" type="button" class="btn" data-toggle="tool" title="Hide details."><i class="fas fa-chevron-right"></i></button>
                   <div id="run-button-set" class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#viewParameters" title="View run and session details."><i class="fas fa-info"></i></button>
+                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#viewParameters" title="View run and session details."
+                    data-step="18" data-position="left"
+                    data-intro="View run and session details by clicking here."><i class="fas fa-info"></i></button>
                     <button type="button" class="btn btn-sm" data-toggle="tool" title="Go to the PoPS instructions. (Coming Soon)"><i class="fas fa-question"></i></button>
                   </div>
                   </div>
-                  <div id="run-collection-name" data-run-collection-pk=0>
+                  <div id="run-collection-name" data-run-collection-pk=0 
+                            data-step="11" data-position="left"
+          data-intro="This is the run name. In the full version of PoPS, you may give runs descriptive names.">
+
                   <strong>Run name:</strong> <span>Demo Run</span>
 
                   </div>
@@ -761,10 +846,13 @@ $("#status-indicator").hide();
 
                           </form>
 
-
-                      <div id="budget_plot" style="width:100%; height:140px;"></div>
-                      <div id="area_infected_side_plot" style="width:100%; height:180px;"></div>
-                      <div id="number_infected_side_plot" style="width:100%; height:180px;"></div>
+                      <div id="budget_plot" style="width:100%; height:140px;" data-step="12" data-position="left" data-intro="Keep track of estimated yearly management costs." ></div>
+                      <div id="area_infected_side_plot" style="width:100%; height:180px;" 
+                      data-step="13" data-position="left" data-intro="Here we show the area infected. Grey is no management. 
+                      The colors correspond to the management years." ></div>
+                      <div id="number_infected_side_plot" style="width:100%; height:180px;" data-step="14" data-position="left"
+                      data-intro="We also show the number infected. With management, we expect the number infected 
+                      to be lower than with no management." ></div>
                       <div id="spread_rate_title"><span></span> spread rate (m/year):</div>
                       <div id="spread_plot" style="width:100%; height:220px;"></div>
                       
@@ -2702,11 +2790,17 @@ function relayout_buttons(max_number,max_area,max_cost) {
 $( document ).ready(function() {
   $( "#status-indicator" ).hide();
   $( "#status-indicator-shading" ).hide();
+  //introJs().addHints();
+  //introJs().showHints();
+  //introJs().showHintDialog("4");
+  $("#launch_tutorial").on('click', function () {
+    $('#welcomeModal').modal("hide");
+      introJs().setOption('exitOnOverlayClick', false).setOption('scrollToElement', false).start();
+});
   relayout_buttons(max_number,max_area,max_cost);
 });
-
-
   </script>
+  <script src="{% static 'js/intro.js' %}"></script>
 
   {% endblock %}
 
