@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %} 
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+
+  {% load static %}
+  {% block page_styles %}
+  <link rel="stylesheet" href="{% static 'css/dashboard_layout.css' %}">
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    {% endblock %}
+</head>
+<body>
+
+    <div id="map" class="large_map" style="width:1000px"></div>
+    
+<div class="form-check">
+  <input class="form-check-input" type="checkbox" value="checkbox 1" id="host_removal_status">
+  <label class="form-check-label text-light" for="host_removal_status">
+    Host Removal
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="checkbox" value="checkbox 2" id="pesticide_status">
+  <label class="form-check-label text-light" for="pesticide_status">
+    Pesticide
+  </label>
+</div>
+
+
+    <div id="draw-controls" class="btn-group-vertical" role="group" >
+                  <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
+                  title="Draw management polygon" data-placement="left">
+                  <i class="fas fa-draw-polygon"></i>
+                  </button>
+                  <div class="btn-group" role="group" data-toggle="tool" 
+                  title="Draw circle" data-placement="left">
+                    <button id="btnGroupCircles" type="button" class="btn btn-default drawing-tool dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="far fa-dot-circle"></i>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupCircles">
+                      <a id="300ft-circle-tool" class="dropdown-item" href="#">300ft radius</a>
+                      <a id="600ft-circle-tool" class="dropdown-item" href="#">600ft radius</a>
+                    </div>
+                  </div>
+                  <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
+                  title="Selection tool" data-placement="left">
+                  <i class="fas fa-hand-paper"></i>
+                  </button>
+                  <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
+                  title="Delete selection" data-placement="left">
+                  <i class="fas fa-trash-alt"></i>
+                  </button>
+
+                  </div>
+                <textarea value="0" name="management_polygons" cols="40" rows="10" class="form-control"
+                  id="id_management_polygons"></textarea>
+
+  <script src="{% static 'js/dashboard/custom_draw.js' %}"></script>
+  <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
+    type='text/css' />
+  <script>
+    mapboxgl.accessToken =
+      'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
+    /* eslint-disable */
+    var map = new mapboxgl.Map({
+      container: 'map', // container id
+      style: 'mapbox://styles/mapbox/dark-v10', //hosted style id
+      center: [0, 0], // initial map center in [lon, lat]
+      zoom: 4 // starting zoom
+    });
+
+    var management_circle_radius = 0.04572; //default management radius in km
+    const CircleMode = {};
+
+    CircleMode.onSetup = function (opts) {
+      var state = {};
+      return state;
+    };
+
+    CircleMode.onClick = function (state, e) {
+      console.log('CIRCLE MODE CLICKED')
+      console.log(e)
+      const circleFeature = createGeoJSONCircle([e.lngLat.lng, e.lngLat.lat], management_circle_radius);
+      var circle1 = this.newFeature(circleFeature);
+      this.addFeature(circle1); // puts the point on the map
+      this.map.fire("draw.create");
+    };
+
+    CircleMode.onStop = function (state, e) {
+      this.map.fire("draw.create");
+      console.log('CIRCLE MODE STOPPED');
+    };
+
+    CircleMode.toDisplayFeatures = function (state, geojson, display) {
+      display(geojson);
+    };
+
+    function set_draw_color(draw_color) {
+      var draw = new MapboxDraw({
+        keybindings: true,
+        displayControlsDefault: false,
+        userProperties: true,
+        modes: Object.assign({
+          draw_circle: CircleMode,
+        }, MapboxDraw.modes),
+        controls: {
+          //polygon: true,
+          //trash: true
+        },
+        styles: [{
+            'id': 'circle-active',
+            'type': 'circle',
+            'filter': ['all',
+              ['==', '$type', 'Point'],
+              ['==', 'meta', 'feature'],
+              ['==', 'active', 'true']
+            ],
+            'paint': {
+              'circle-radius': 7,
+              'circle-color': draw_color,
+            }
+          },
+          {
+            'id': 'circle-static',
+            'type': 'circle',
+            'filter': ['all',
+              ['==', '$type', 'Point'],
+              ['==', 'meta', 'feature'],
+              ['==', 'active', 'false']
+            ],
+            'paint': {
+              'circle-radius': 7,
+              'circle-color': draw_color,
+            }
+          },
+          {
+            'id': 'highlight-active-points',
+            'type': 'circle',
+            'filter': ['all',
+              ['==', '$type', 'Point'],
+              ['==', 'meta', 'feature'],
+              ['==', 'active', 'true']
+            ],
+            'paint': {
+              'circle-radius': 7,
+              'circle-color': draw_color,
+            }
+          },
+
+          // ACTIVE (being drawn)
+          // line stroke
+          {
+            "id": "gl-draw-line",
+            "type": "line",
+            "filter": ["all", ["==", "$type", "LineString"],
+              ["!=", "mode", "static"]
+            ],
+            "layout": {
+              "line-cap": "round",
+              "line-join": "round"
+            },
+            "paint": {
+              "line-color": draw_color,
+              "line-dasharray": [0.2, 2],
+              "line-width": 3
+            }
+          },
+          // polygon fill
+          {
+            "id": "gl-draw-polygon-fill",
+            "type": "fill",
+            "filter": ["all", ["==", "$type", "Polygon"],
+              ["!=", "mode", "static"]
+            ],
+            "paint": {
+              "fill-color": draw_color,
+              "fill-outline-color": draw_color,
+              "fill-opacity": 0.1
+            }
+          },
+          // polygon outline stroke
+          // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
+          {
+            "id": "gl-draw-polygon-stroke-active",
+            "type": "line",
+            "filter": ["all", ["==", "$type", "Polygon"],
+              ["!=", "mode", "static"]
+            ],
+            "layout": {
+              "line-cap": "round",
+              "line-join": "round"
+            },
+            "paint": {
+              "line-color": draw_color,
+              "line-width": 3
+            }
+          },
+          // vertex point halos
+          {
+            "id": "gl-draw-polygon-and-line-vertex-halo-active",
+            "type": "circle",
+            "filter": ["all", ["==", "meta", "vertex"],
+              ["==", "$type", "Point"],
+              ["!=", "mode", "static"]
+            ],
+            "paint": {
+              "circle-radius": 7,
+              "circle-color": "#FFF"
+            }
+          },
+          // vertex points
+          {
+            "id": "gl-draw-polygon-and-line-vertex-active",
+            "type": "circle",
+            "filter": ["all", ["==", "meta", "vertex"],
+              ["==", "$type", "Point"],
+              ["!=", "mode", "static"]
+            ],
+            "paint": {
+              "circle-radius": 5,
+              "circle-color": draw_color,
+            }
+          },
+
+          // INACTIVE (static, already drawn)
+          // line stroke
+          {
+            "id": "gl-draw-line-static",
+            "type": "line",
+            "filter": ["all", ["==", "$type", "LineString"],
+              ["==", "mode", "static"]
+            ],
+            "layout": {
+              "line-cap": "round",
+              "line-join": "round"
+            },
+            "paint": {
+              "line-color": "#000",
+              "line-width": 3
+            }
+          },
+          // polygon fill
+          {
+            "id": "gl-draw-polygon-fill-static",
+            "type": "fill",
+            "filter": ["all", ["==", "$type", "Polygon"],
+              ["==", "mode", "static"]
+            ],
+            "paint": {
+              "fill-color": "#000",
+              "fill-outline-color": "#000",
+              "fill-opacity": 0.3
+            }
+          },
+          // polygon outline
+          {
+            "id": "gl-draw-polygon-stroke-static",
+            "type": "line",
+            "filter": ["all", ["==", "$type", "Polygon"],
+              ["==", "mode", "static"]
+            ],
+            "layout": {
+              "line-cap": "round",
+              "line-join": "round"
+            },
+            "paint": {
+              "line-color": "#000",
+              "line-width": 3
+            }
+          }
+        ]
+      });
+      return draw;
+    };
+
+    draw_color = '#C6F761';
+    draw = set_draw_color(draw_color);
+    map.addControl(draw);
+
+    map.on('draw.create', addManagementType);
+    map.on('draw.delete', updateArea);
+    map.on('draw.update', updateArea);
+
+    //Get management type, add it as a feature property to the polygon, then update area
+    function addManagementType(e) {
+      //Note that CIRCLES, are created via a different method than the polygon draw tool
+      //so, their management type is added in the custom_draw.js. We check if it is a 
+      //regular polygon with the following if statement.
+      if (e.features) {
+        draw.setFeatureProperty(e.features[0].id, 'management_type', getManagementType());
+      }
+      updateArea(e);
+    }
+
+    //Mapbox draw switches to select tool after drawing a polygon.
+    //This function makes it so that the mode stays as polygon if the polygon
+    //tool is selected.
+    map.on('draw.modechange', e => {
+      if ($("#polygon-tool").hasClass("active")) {
+        draw.changeMode('draw_polygon');
+      }
+    });
+
+    function getManagementType() {
+      if ($('#host_removal_status').prop('checked') && $('#pesticide_status').prop('checked')) {
+        management_type = 'Host removal and Pesticide';
+      } else if ($('#host_removal_status').prop('checked')) {
+        management_type = 'Host removal';
+      } else if ($('#pesticide_status').prop('checked')) {
+        management_type = 'Pesticide';
+      } else {
+        management_type = '';
+      }
+      return management_type;
+    }
+
+    function updateArea(e) {
+      var data = draw.getAll();
+      console.log("Updating management polygons:");
+      console.log(data);
+      if (data.features.length > 0) {
+        // Stringify the GeoJson
+        var convertedData = JSON.stringify(data);
+
+        // Create export
+        $('#id_management_polygons').val(convertedData);
+      } else {
+        $('#id_management_polygons').val(0);
+        console.log("There is no management.")
+      }
+    }
+    $("#polygon-tool").on('click', function () {
+      $('.drawing-tool').removeClass('active');
+      $(this).addClass('active');
+      draw.changeMode('draw_polygon');
+      console.log("Polygon tool selected to draw management.")
+    });
+    $("#300ft-circle-tool").on('click', function () {
+      $('.drawing-tool').removeClass('active');
+      $('#btnGroupCircles').addClass('active');
+      management_circle_radius = 0.09144; //300ft in km
+      draw.changeMode('draw_circle');
+      console.log("Circle tool selected to draw management.")
+    });
+
+    $("#600ft-circle-tool").on('click', function () {
+      $('.drawing-tool').removeClass('active');
+      $('#btnGroupCircles').addClass('active');
+      management_circle_radius = 0.18288; //600ft in km
+      draw.changeMode('draw_circle');
+      console.log("Circle tool selected to draw management.")
+    });
+
+    $("#select-tool").on('click', function () {
+      $('.drawing-tool').removeClass('active');
+      $(this).addClass('active');
+      draw.changeMode('simple_select');
+      console.log("Select tool selected.")
+    });
+    $("#delete-tool").on('click', function () {
+      draw.trash();
+      console.log("Trash")
+    });
+    </script>
+</body>
+
+</html>
