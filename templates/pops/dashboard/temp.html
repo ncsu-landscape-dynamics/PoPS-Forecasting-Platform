@@ -214,7 +214,13 @@ $(".management-type").on('change',  function () {
               ["!=", "mode", "static"]
             ],
             "paint": {
-              "fill-color": draw_color,
+              'fill-color': [
+                "case", 
+                ['==', ['get', "user_management_type"], "Host removal"], "red", 
+                ['==', ['get', "user_management_type"], "Pesticide"], "yellow",
+                ['==', ['get', "user_management_type"], "Host removal and Pesticide"], "black",
+                'white'
+              ],
               "fill-outline-color": draw_color,
               "fill-opacity": 0.1
             }
@@ -320,7 +326,7 @@ $(".management-type").on('change',  function () {
 
     map.on('draw.create', addManagementType);
     map.on('draw.delete', updateArea);
-    map.on('draw.update', updateArea);
+    map.on('draw.update', findAndCombineOverlappingPolygons);
     map.on('draw.selectionchange', selectionChange)
 
 //Set up to edit selected polygons
@@ -382,6 +388,8 @@ function selectionChange(e)
       }
     }
 
+    //Check if the most recently drawn polygon overlaps any existing polygons
+    //of the same type and combine.
     function findAndCombineOverlappingPolygons(e) {
       var allPolygons = draw.getAll();
       console.log(allPolygons)
@@ -392,7 +400,6 @@ function selectionChange(e)
           union=combineTwoPolygons(polygonID1, allPolygons.features[n].id);
           console.log('Union: ' + union)
           if (union) {
-            updateArea(union);
             polygonID1 = union;
           }
         }
@@ -453,6 +460,8 @@ function selectionChange(e)
       }
     });
 
+//Check if polygon1 and polygon 2 intersect and are of the same type.
+//If yes, combine them into a single polygon and delete the original 2.
 function combineTwoPolygons (polygonID1, polygonID2) {
   polygon1=draw.get(polygonID1);
   polygon2=draw.get(polygonID2);
@@ -462,7 +471,7 @@ function combineTwoPolygons (polygonID1, polygonID2) {
         var featureIds = draw.add(union); //add new polygon to draw
         draw.delete(polygonID1) //remove original overlapping polygons
         draw.delete(polygonID2) //remove original overlapping polygons
-        return(featureIds); //update area and update JSON field
+        return(featureIds); //return the ID of the new polygon
       }
 
 }
