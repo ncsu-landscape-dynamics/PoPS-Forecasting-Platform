@@ -120,15 +120,24 @@ $(".management-type").on('change',  function () {
 
     CircleMode.onClick = function (state, e) {
       console.log('CIRCLE MODE CLICKED')
-      console.log(e)
-      const circleFeature = createGeoJSONCircle([e.lngLat.lng, e.lngLat.lat], management_circle_radius);
-      var circle1 = this.newFeature(circleFeature);
-      this.addFeature(circle1); // puts the point on the map
-      this.map.fire("draw.create");
+      console.log('e = ' + e)
+      var circleFeature = createGeoJSONCircle([e.lngLat.lng, e.lngLat.lat], management_circle_radius);
+      //var circle1 = this.newFeature(circleFeature);
+      featureID = draw.add(circleFeature);
+      console.log('circleFeature = ' + circleFeature);
+      //console.log('circle1 = ' + circle1)
+      
+      //this.addFeature(circle1); // puts the point on the map
+      //this.map.fire("draw.create");
+      console.log('featureID = ' + featureID);
+      console.log('featureID[0] = ' + featureID[0]);
+      newCircleID = draw.get(featureID);
+      console.log('newCircleID = ' +  newCircleID);
+      findAndCombineOverlappingPolygons(featureID);
     };
 
     CircleMode.onStop = function (state, e) {
-      this.map.fire("draw.create");
+      //this.map.fire("draw.create");
       console.log('CIRCLE MODE STOPPED');
     };
 
@@ -345,10 +354,13 @@ function selectionChange(e)
       //Note that CIRCLES, are created via a different method than the polygon draw tool
       //so, their management type is added in the custom_draw.js. We check if it is a 
       //regular polygon with the following if statement.
+      console.log('Start addManagementType(e)')
+
       if (e.features) {
         draw.setFeatureProperty(e.features[0].id, 'management_type', getManagementType());
       }
-      findAndCombineOverlappingPolygons(e);
+      console.log('End addManagementType(e)')
+      findAndCombineOverlappingPolygons(e.features[0].id);
     }
 
     //Mapbox draw switches to select tool after drawing a polygon.
@@ -374,6 +386,7 @@ function selectionChange(e)
     }
 
     function updateArea(e) {
+      console.log('Start updateArea(e)')
       var data = draw.getAll();
       console.log("Updating management polygons:");
       console.log(data);
@@ -386,25 +399,29 @@ function selectionChange(e)
         $('#id_management_polygons').val(0);
         console.log("There is no management.")
       }
+      console.log('End updateArea(e)')
     }
 
     //Check if the most recently drawn polygon overlaps any existing polygons
     //of the same type and combine.
-    function findAndCombineOverlappingPolygons(e) {
+    function findAndCombineOverlappingPolygons(newPolygonID) {
+      console.log('Start findAndCombineOverlappingPolygons(e)')
       var allPolygons = draw.getAll();
       console.log(allPolygons)
+      //console.log('e = ' + e)
       if (allPolygons.features.length > 1) {
-        var polygonID1 = e.features[0].id;
-        console.log(polygonID1)
+        //var polygonID1 = e.features[0].id;
+        console.log('newPolygonID = ' + newPolygonID)
         for (var n = 0; n < allPolygons.features.length-1; n++) {
-          union=combineTwoPolygons(polygonID1, allPolygons.features[n].id);
+          union=combineTwoPolygons(newPolygonID, allPolygons.features[n].id);
           console.log('Union: ' + union)
           if (union) {
-            polygonID1 = union;
+            newPolygonID = union;
           }
         }
       }
-      updateArea(e)
+      updateArea(newPolygonID)
+      console.log('End findAndCombineOverlappingPolygons(e)')
     }
 
     $("#polygon-tool").on('click', function () {
