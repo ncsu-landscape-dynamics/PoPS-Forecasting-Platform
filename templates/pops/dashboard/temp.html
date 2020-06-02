@@ -335,7 +335,7 @@ $(".management-type").on('change',  function () {
 
     map.on('draw.create', addManagementType);
     map.on('draw.delete', updateArea);
-    map.on('draw.update', findAndCombineOverlappingPolygons);
+    map.on('draw.update', updatePolygons);
     map.on('draw.selectionchange', selectionChange)
 
 //Set up to edit selected polygons
@@ -348,6 +348,15 @@ function selectionChange(e)
           console.log(selection)
       }
 
+ }
+
+ function updatePolygons(e) {
+   console.log('Updating polygons.')
+   selection=draw.getSelectedIds();
+   console.log('Selection = ' + selection)
+   for (var n = 0; n < selection.length; n++) {
+   findAndCombineOverlappingPolygons(selection[n])
+   }
  }
     //Get management type, add it as a feature property to the polygon, then update area
     function addManagementType(e) {
@@ -408,20 +417,55 @@ function selectionChange(e)
       console.log('Start findAndCombineOverlappingPolygons(e)')
       var allPolygons = draw.getAll();
       console.log(allPolygons)
-      //console.log('e = ' + e)
+      newPolygon = draw.get(newPolygonID);
+      //Check that there are more than one polygon
       if (allPolygons.features.length > 1) {
-        //var polygonID1 = e.features[0].id;
         console.log('newPolygonID = ' + newPolygonID)
-        for (var n = 0; n < allPolygons.features.length-1; n++) {
-          union=combineTwoPolygons(newPolygonID, allPolygons.features[n].id);
-          console.log('Union: ' + union)
-          if (union) {
-            newPolygonID = union;
+        for (var n = 0; n < allPolygons.features.length - 1; n++) {
+          var existingPolygon = allPolygons.features[n];
+          var intersection = turf.intersect(newPolygon, existingPolygon)
+          console.log('Intersection = ' + intersection)
+          if (intersection) {
+            console.log('New polygon intersects other polygon.')
+            if ((newPolygon.properties.management_type == existingPolygon.properties.management_type)) {
+              union = combineTwoPolygons(newPolygonID, existingPolygon.id);
+              console.log('Union: ' + union)
+              if (union) {
+                newPolygonID = union;
+              }
+            } else
+            //(newPolygon.properties.management_type == 'Host removal') && (existingPolygon.properties.management_type == 'Pesticide')
+            //||
+            //(newPolygon.properties.management_type == 'Host removal') && (existingPolygon.properties.management_type == 'Pesticide')
+            {
+              console.log('Non matching types');
+              if ((newPolygon.properties.management_type != 'Host removal and Pesticide') && (existingPolygon.properties.management_type != 'Host removal and Pesticide')) {
+                console.log('Both types are different.')
+                intersectionID = draw.add(intersection);
+                draw.setFeatureProperty(intersectionID, 'management_type', 'Host removal and Pesticide');
+              }
+              if (existingPolygon.properties.management_type != 'Host removal and Pesticide') {
+                difference1 = turf.difference(existingPolygon, newPolygon);
+                if (difference1) {
+                differenceID1 = draw.add(difference1);
+                }
+                console.log(difference1)
+                draw.delete(existingPolygon.id);
+              }
+              if (newPolygon.properties.management_type != 'Host removal and Pesticide') {
+                difference2 = turf.difference(newPolygon, existingPolygon);
+                console.log(difference2)
+                if (difference2) {
+                differenceID2 = draw.add(difference2);
+                }
+                draw.delete(newPolygon.id);
+              }
+            }
           }
         }
+        updateArea(newPolygonID)
+        console.log('End findAndCombineOverlappingPolygons(e)')
       }
-      updateArea(newPolygonID)
-      console.log('End findAndCombineOverlappingPolygons(e)')
     }
 
     $("#polygon-tool").on('click', function () {
