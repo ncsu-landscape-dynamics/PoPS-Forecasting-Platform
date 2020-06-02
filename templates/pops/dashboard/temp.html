@@ -463,9 +463,9 @@ function selectionChange(e)
             }
           }
         }
-        updateArea(newPolygonID)
         console.log('End findAndCombineOverlappingPolygons(e)')
       }
+      updateArea(newPolygonID);
     }
 
     $("#polygon-tool").on('click', function () {
