@@ -29,20 +29,21 @@
 </head>
 <body>
 
-    <div id="map" class="large_map" style="width:1000px"></div>
-    
-<div class="form-check">
-  <input class="form-check-input management-type" type="checkbox" value="host_removal" id="host_removal_status" checked>
-  <label class="form-check-label text-light" for="host_removal_status">
-    Host Removal
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input management-type" type="checkbox" value="pesticide_application" id="pesticide_status">
-  <label class="form-check-label text-light" for="pesticide_status">
-    Pesticide
-  </label>
-</div>
+  <div id="map" class="large_map" style="width:1000px"></div>
+
+  <div class="form-check">
+    <input class="form-check-input management-type" type="checkbox" value="host_removal" id="host_removal_status"
+      checked>
+    <label class="form-check-label text-light" for="host_removal_status">
+      Host Removal
+    </label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input management-type" type="checkbox" value="pesticide_application" id="pesticide_status">
+    <label class="form-check-label text-light" for="pesticide_status">
+      Pesticide
+    </label>
+  </div>
 
 <script>
 //Prevent no management type from being selected
@@ -54,48 +55,70 @@ $(".management-type").on('change',  function () {
 })
 </script>
 
-    <div id="draw-controls" class="btn-group-vertical" role="group" >
-                  <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
-                  title="Draw management polygon" data-placement="left">
-                  <i class="fas fa-draw-polygon"></i>
-                  </button>
-                  <div class="btn-group" role="group" data-toggle="tool" 
-                  title="Draw circle" data-placement="left">
-                    <button id="btnGroupCircles" type="button" class="btn btn-default drawing-tool dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="far fa-dot-circle"></i>
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="btnGroupCircles">
-                      <a id="300ft-circle-tool" class="dropdown-item" href="#">300ft radius</a>
-                      <a id="600ft-circle-tool" class="dropdown-item" href="#">600ft radius</a>
-                    </div>
-                  </div>
-                  <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
-                  title="Selection tool" data-placement="left">
-                  <i class="fas fa-hand-paper"></i>
-                  </button>
-                  <button id="combine-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
-                  title="Combine tool" data-placement="left">
-                  <i class="fas fa-object-group"></i>
-                  </button>
-                  <button id="uncombine-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
-                  title="Uncombine tool" data-placement="left">
-                  <i class="fas fa-object-ungroup"></i>
-                  </button>                  
-                  <button id="unite-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
-                  title="Unite tool" data-placement="left">
-                  <i class="fas fa-layer-plus"></i>
-                  </button>
-                  <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
-                  title="Delete selection" data-placement="left">
-                  <i class="fas fa-trash-alt"></i>
-                  </button>
+    <div id="draw-controls" class="btn-group-vertical" role="group">
+      <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool"
+        title="Draw management polygon" data-placement="left">
+        <i class="fas fa-draw-polygon"></i>
+      </button>
+      <div class="btn-group" role="group" data-toggle="tool" title="Draw circle" data-placement="left">
+        <button id="btnGroupCircles" type="button" class="btn btn-default drawing-tool dropdown-toggle"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="far fa-dot-circle"></i>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btnGroupCircles">
+          <a id="300ft-circle-tool" class="dropdown-item" href="#">300ft radius</a>
+          <a id="600ft-circle-tool" class="dropdown-item" href="#">600ft radius</a>
+        </div>
+      </div>
+      <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
+        title="Selection tool" data-placement="left">
+        <i class="fas fa-hand-paper"></i>
+      </button>
+      <button id="combine-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
+        title="Combine tool" data-placement="left">
+        <i class="fas fa-object-group"></i>
+      </button>
+      <button id="uncombine-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
+        title="Uncombine tool" data-placement="left">
+        <i class="fas fa-object-ungroup"></i>
+      </button>
+      <button id="unite-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool" title="Unite tool"
+        data-placement="left">
+        <i class="fas fa-layer-plus"></i>
+      </button>
+      <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
+        title="Delete selection" data-placement="left">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
 
-                  </div>
+    <div id="editPolygons" style="color: white; background-color: black">
+      Update management for selected polygons:
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="editManagementOptions" id="inlineRadio1"
+          value="Host removal">
+        <label class="form-check-label" for="inlineRadio1">Host removal</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="editManagementOptions" id="inlineRadio2" value="Pesticide">
+        <label class="form-check-label" for="inlineRadio2">Pesticide</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="editManagementOptions" id="inlineRadio3"
+          value="Host removal and Pesticide">
+        <label class="form-check-label" for="inlineRadio3">Host removal and Pesticide</label>
+      </div>
+      <button id="changeManagementButton" class="btn btn-sm btn-secondary">Apply </button>
+
+    </div>
+
+<script>  $( "#editPolygons" ).hide();</script>
+
                 <textarea value="0" name="management_polygons" cols="40" rows="10" class="form-control"
                   id="id_management_polygons"></textarea>
 
   <script src="{% static 'js/dashboard/custom_draw.js' %}"></script>
-  <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
+<script src='https://unpkg.com/@turf/turf@5.1.6/turf.min.js'></script>
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
   <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
     type='text/css' />
@@ -106,8 +129,8 @@ $(".management-type").on('change',  function () {
     var map = new mapboxgl.Map({
       container: 'map', // container id
       style: 'mapbox://styles/mapbox/dark-v10', //hosted style id
-      center: [0, 0], // initial map center in [lon, lat]
-      zoom: 4 // starting zoom
+      center: [-80, 40], // initial map center in [lon, lat]
+      zoom: 13 // starting zoom
     });
 
     var management_circle_radius = 0.04572; //default management radius in km
@@ -121,18 +144,22 @@ $(".management-type").on('change',  function () {
     CircleMode.onClick = function (state, e) {
       console.log('CIRCLE MODE CLICKED')
       console.log('e = ' + e)
-      var circleFeature = createGeoJSONCircle([e.lngLat.lng, e.lngLat.lat], management_circle_radius);
+      //var circleFeature = createGeoJSONCircle([e.lngLat.lng, e.lngLat.lat], management_circle_radius);
       //var circle1 = this.newFeature(circleFeature);
-      featureID = draw.add(circleFeature);
-      console.log('circleFeature = ' + circleFeature);
+      var center = [e.lngLat.lng, e.lngLat.lat];
+      var radius = management_circle_radius;
+      var circle = createCircle(center, radius);
+      featureID = draw.add(circle);
+      console.log('New circle:');
+      console.log(draw.get(featureID));
+      //draw.setFeatureProperty(featureID, 'management_type', getManagementType());
+      //draw.add(draw.get(featureID));
+      //featureID = draw.add(circleFeature);
       //console.log('circle1 = ' + circle1)
-      
+
       //this.addFeature(circle1); // puts the point on the map
       //this.map.fire("draw.create");
       console.log('featureID = ' + featureID);
-      console.log('featureID[0] = ' + featureID[0]);
-      newCircleID = draw.get(featureID);
-      console.log('newCircleID = ' +  newCircleID);
       findAndCombineOverlappingPolygons(featureID);
     };
 
@@ -144,6 +171,15 @@ $(".management-type").on('change',  function () {
     CircleMode.toDisplayFeatures = function (state, geojson, display) {
       display(geojson);
     };
+
+    function createCircle(center, radius) {
+      var point = turf.point(center);
+      console.log('Point successful.')
+      var options = {steps: 32, units: 'kilometers', properties: {management_type: getManagementType()}};
+      var circle = turf.circle(center, radius, options);
+      console.log('Circle = ' + circle);
+      return circle
+    }
 
     function set_draw_color(draw_color) {
       var draw = new MapboxDraw({
@@ -224,8 +260,8 @@ $(".management-type").on('change',  function () {
             ],
             "paint": {
               'fill-color': [
-                "case", 
-                ['==', ['get', "user_management_type"], "Host removal"], "red", 
+                "case",
+                ['==', ['get', "user_management_type"], "Host removal"], "red",
                 ['==', ['get', "user_management_type"], "Pesticide"], "yellow",
                 ['==', ['get', "user_management_type"], "Host removal and Pesticide"], "black",
                 'white'
@@ -338,26 +374,54 @@ $(".management-type").on('change',  function () {
     map.on('draw.update', updatePolygons);
     map.on('draw.selectionchange', selectionChange)
 
-//Set up to edit selected polygons
-function selectionChange(e)
- {
-  console.log('selection change')
-  selection=draw.getSelected()
+    //Set up to edit selected polygons
+    function selectionChange(e) {
+      console.log('selection change')
+      selection = draw.getSelected();
       if (selection.features.length > 0) {
         //display ability to edit
-          console.log(selection)
+        console.log(selection);
+        selected_management_type = selection.features[0].properties.management_type;
+        console.log(selected_management_type);
+        $("input[type=radio][name='editManagementOptions']").prop("checked", false);
+        $("input[type=radio][value='" + selected_management_type + "']").prop("checked", true);
+        //$(this).prop('checked',true)
+        $('#editPolygons').show();
+      } else {
+        $('#editPolygons').hide();
       }
+    }
 
- }
+    $("#changeManagementButton").on('click', function () {
+      console.log('Updating management.')
+      selectionIDs = draw.getSelectedIds();
+      var editManagementTypeValue = $("input[name='editManagementOptions']:checked").val();
+      console.log('Changing management type to: ' + editManagementTypeValue);
+      for (var n = 0; n < selectionIDs.length; n++) {
+        //old_feature=draw.get(selectionIDs[n]);
+        //console.log(old_feature);
+        //draw.delete(selectionIDs[n]);
+        //new_feature_intersect = turf.intersect(old_feature,old_feature);
+        //new_feature=draw.add(new_feature_intersect);
+        //console.log(new_feature)
+        draw.setFeatureProperty(selectionIDs[n], 'management_type', editManagementTypeValue); 
+        draw.add(draw.get(selectionIDs[n]));
+        //output = draw.setFeatureProperty(selectionIDs[n], 'management_type', editManagementTypeValue);
+        //output.update();
+        console.log('Updated management type.')
+      }
+      updateArea(selectionIDs);
+    });
 
- function updatePolygons(e) {
-   console.log('Updating polygons.')
-   selection=draw.getSelectedIds();
-   console.log('Selection = ' + selection)
-   for (var n = 0; n < selection.length; n++) {
-   findAndCombineOverlappingPolygons(selection[n])
-   }
- }
+
+    function updatePolygons(e) {
+      console.log('Updating polygons.')
+      selection = draw.getSelectedIds();
+      console.log('Selection = ' + selection)
+      for (var n = 0; n < selection.length; n++) {
+        findAndCombineOverlappingPolygons(selection[n])
+      }
+    }
     //Get management type, add it as a feature property to the polygon, then update area
     function addManagementType(e) {
       //Note that CIRCLES, are created via a different method than the polygon draw tool
@@ -380,6 +444,7 @@ function selectionChange(e)
         draw.changeMode('draw_polygon');
       }
     });
+
 
     function getManagementType() {
       if ($('#host_removal_status').prop('checked') && $('#pesticide_status').prop('checked')) {
@@ -433,11 +498,7 @@ function selectionChange(e)
               if (union) {
                 newPolygonID = union;
               }
-            } else
-            //(newPolygon.properties.management_type == 'Host removal') && (existingPolygon.properties.management_type == 'Pesticide')
-            //||
-            //(newPolygon.properties.management_type == 'Host removal') && (existingPolygon.properties.management_type == 'Pesticide')
-            {
+            } else {
               console.log('Non matching types');
               if ((newPolygon.properties.management_type != 'Host removal and Pesticide') && (existingPolygon.properties.management_type != 'Host removal and Pesticide')) {
                 console.log('Both types are different.')
@@ -447,16 +508,16 @@ function selectionChange(e)
               if (existingPolygon.properties.management_type != 'Host removal and Pesticide') {
                 difference1 = turf.difference(existingPolygon, newPolygon);
                 if (difference1) {
-                differenceID1 = draw.add(difference1);
+                  differenceID1 = draw.add(difference1);
                 }
-                console.log(difference1)
+                console.log(difference1);
                 draw.delete(existingPolygon.id);
               }
               if (newPolygon.properties.management_type != 'Host removal and Pesticide') {
                 difference2 = turf.difference(newPolygon, existingPolygon);
                 console.log(difference2)
                 if (difference2) {
-                differenceID2 = draw.add(difference2);
+                  differenceID2 = draw.add(difference2);
                 }
                 draw.delete(newPolygon.id);
               }
@@ -507,12 +568,12 @@ function selectionChange(e)
 
     $("#unite-tool").on('click', function () {
       console.log("Unite selected.")
-      var polygonIDs=draw.getSelectedIds();
+      var polygonIDs = draw.getSelectedIds();
       //If selected polygons >1 do stuff
       if (polygonIDs.length > 1) {
         var polygonID1 = polygonIDs[0];
         for (var n = 1; n < polygonIDs.length; n++) {
-          union=combineTwoPolygons(polygonID1, polygonIDs[n]);
+          union = combineTwoPolygons(polygonID1, polygonIDs[n]);
           if (union) {
             updateArea(union);
             polygonID1 = union;
@@ -521,21 +582,20 @@ function selectionChange(e)
       }
     });
 
-//Check if polygon1 and polygon 2 intersect and are of the same type.
-//If yes, combine them into a single polygon and delete the original 2.
-function combineTwoPolygons (polygonID1, polygonID2) {
-  polygon1=draw.get(polygonID1);
-  polygon2=draw.get(polygonID2);
+    //Check if polygon1 and polygon 2 intersect and are of the same type.
+    //If yes, combine them into a single polygon and delete the original 2.
+    function combineTwoPolygons(polygonID1, polygonID2) {
+      polygon1 = draw.get(polygonID1);
+      polygon2 = draw.get(polygonID2);
       //if polygons intersect AND management type is the same, perform union of two polygons
-      if ((turf.intersect(polygon1,polygon2)) && (polygon1.properties.management_type == polygon2.properties.management_type)) {
-        union = turf.union(polygon1,polygon2); //create new union polygon
+      if ((turf.intersect(polygon1, polygon2)) && (polygon1.properties.management_type == polygon2.properties.management_type)) {
+        union = turf.union(polygon1, polygon2); //create new union polygon
         var featureIds = draw.add(union); //add new polygon to draw
         draw.delete(polygonID1) //remove original overlapping polygons
         draw.delete(polygonID2) //remove original overlapping polygons
-        return(featureIds); //return the ID of the new polygon
+        return (featureIds); //return the ID of the new polygon
       }
-
-}
+    }
 
     $("#delete-tool").on('click', function () {
       draw.trash();
