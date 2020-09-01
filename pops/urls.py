@@ -47,6 +47,7 @@ urlpatterns = [
     path('dashboard_layout', TemplateView.as_view(template_name="pops/dashboard/dashboard_layout.html")),
     path('spotted_lanternfly/', TemplateView.as_view(template_name="pops/dashboard/spotted_lanternfly.html")),
     path('workspace/', views.WorkspaceView.as_view(), name='workspace'),
+    path('pests/', views.PestListView.as_view(), name='pest_list'),
     path('dashboard/<int:pk>/', views.DashboardView.as_view(), name='dashboard'),
     path('dashboard/', RedirectView.as_view(pattern_name='workspace'), name='dashboard_root'),
     path('dashboard-test/<int:pk>/', views.DashboardTestView.as_view(), name='dashboard-test'),

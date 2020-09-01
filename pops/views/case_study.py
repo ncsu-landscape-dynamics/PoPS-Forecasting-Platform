@@ -444,6 +444,21 @@ class ApprovedAndUserCaseStudyListView(LoginRequiredMixin, TemplateView):
             context['user_case_studies'] = case_studies.filter(created_by = self.request.user)
             return context
 
+class PestListView(LoginRequiredMixin, TemplateView):
+    login_url = 'login'
+    #paginate_by = 5  # if pagination is desired
+    template_name = 'pops/pest_list.html'
+
+    def get_queryset(self):
+        return PestInformation.objects.all()
+
+    def get_context_data(self, **kwargs):
+            # Call the base implementation first to get the context
+            context = super(PestListView, self).get_context_data(**kwargs)
+            pests=self.get_queryset()
+            context['pests'] = pests.filter(staff_approved = True)
+            return context
+
     # def get_queryset(self):
     #     return CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
 
