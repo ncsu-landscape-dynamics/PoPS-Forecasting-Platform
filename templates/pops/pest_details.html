@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container py-2 pb-4">
+    <h3 class="text-center">{{pest_information.common_name}}</h3>
+    <h5 class="text-center"><em> {{pest_information.scientific_name}}</em></h5>
+<div class="col-md-12">
+<img src="{% static 'images/lanternfly.jpg' %}" class="float-left mr-4 rounded-circle">
+
+
+    <div class="py-2"><strong>About:</strong> {{pest_information.about}}</div>
+    <div class="py-2"><strong>At risk:</strong> {{pest_information.risks}}</div>
+    <div class="py-2"><strong>Management activities:</strong> {{pest_information.management_activity}}</div>
+
+
+</div>
+    
+    {% with case_study_pests=pest_information.pest_set.all %}
+
+                <div class="panel-container">
+                <h5>Case studies of {{ pest_information.common_name }}:</h5>
+                {% if case_study_pests %}
+                <div class="table-wrapper-scroll-y">
+                    <table class="table table-hover table-bordered table-dark table-sm ">
+                        <thead>
+                            <th style="width: 60%">Description</th>
+                            <th>Pests</th>
+                            <th>Hosts</th>
+                            <th></th>
+
+                        </thead>
+
+                        <tbody>
+                            {% for case_study_pest in case_study_pests %}
+                            {% if case_study_pest.case_study.staff_approved == True %}
+                            <tr>
+                                <td>
+                                    <div class="row no-gutters align-items-center justify-content-between	">
+
+                                        <h5 class="col-auto"><a class="text-light" href="{% url 'case_study_review' pk=case_study_pest.case_study.pk %}">{{ case_study_pest.case_study.name }}</a>
+                                                            {% if case_study_pest.case_study.calibration_status == "NO START" %}
+                                                                <i style="font-size:0.6em" class="fas fa-question-circle align-top text-light"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration not started. Click info for more details."></i>
+                                                                {% endif %}
+                                                                {% if case_study_pest.case_study.calibration_status == "IN PROGRESS" %}
+                                                                <i style="font-size:0.6em" class="fas fa-spinner align-top text-warning"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration in progress. Click info for more details."></i>
+                                                                {% endif %}
+                                                                {% if case_study_pest.case_study.calibration_status == "FAILED" %}
+                                                                <i style="font-size:0.6em" class="fas fa-times-circle align-toptext-danger"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration FAILED. Click info for more details."></i>
+                                                                {% endif %}
+                                                                {% if case_study_pest.case_study.calibration_status == "SUCCESS" %}
+                                                                <i style="font-size:0.6em" class="fas fa-check align-top text-success"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Calibration successful. Click info for more details."></i>
+                                                                {% endif %}
+                                        </h5>
+
+                                        <div class="col-auto px-2">
+                                            <em>{{ case_study_pest.case_study.date_created }}</em>
+                                        </div>
+                                    </div>
+
+                                    <p> {{ case_study_pest.case_study.description }}</p>
+                                </td>
+                                <td>{% for pest in case_study_pest.case_study.pest_set.all %} <p>{% firstof pest.pest_information pest.name %}
+                                    </p>{% endfor %} </td>
+                                <td>{% for host in case_study_pest.case_study.host_set.all %} <p>{{ host.name }}</p>{% endfor %} </td>
+                                <td>
+                                    <a class="btn btn-info btn-sm btn-block" href="{% url 'case_study_review' pk=case_study_pest.case_study.pk %}"
+                                        role="button">View Details</a>
+                                {% comment %}
+                                    {% if not cs.use_external_calibration %}
+                                    <a class="btn btn-secondary btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
+                                        role="button" style="white-space: normal;" data-toggle="tooltip" data-placement="top"
+                                        title="Tooltip on top">Extend Case Study</a>
+                                    {% endif %}
+                                    {% endcomment %}
+                                    <a class="btn btn-success btn-sm btn-block" href="{% url 'new_session_case_study_specific' case_study=case_study_pest.case_study.pk %}"
+                                        role="button" style="white-space: normal;">Create Session</a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                You haven't made any case studies yet.
+                {% endif %}
+            </div>
+            {% endwith%}
+</div>
+{% endblock %}
