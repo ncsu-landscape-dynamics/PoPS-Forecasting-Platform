@@ -99,7 +99,10 @@
                     </table>
                 </div>
                 {% else %}
-                You haven't made any case studies yet.
+                {{ pest_information.common_name }} is currently being studied using PoPS, but it doesn't
+                    have any public case studies yet. <a href="{% url 'contact' %}">Contact us </a> if you'd like to run
+                    PoPS
+                    for this organism.
                 {% endif %}
             </div>
             {% endwith%}

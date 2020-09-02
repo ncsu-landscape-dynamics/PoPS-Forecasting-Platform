@@ -459,13 +459,16 @@ class PestListView(LoginRequiredMixin, TemplateView):
     template_name = 'pops/pest_list.html'
 
     def get_queryset(self):
-        return PestInformation.objects.prefetch_related('pest_set__case_study')
+        return PestInformation.objects.prefetch_related('pest_set__case_study').order_by('common_name')
 
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context
             context = super(PestListView, self).get_context_data(**kwargs)
             pests=self.get_queryset()
-            context['pests'] = pests.filter(staff_approved = True)
+            pests_with_case_studies=pests.filter(pest__case_study__isnull=False).distinct()
+            pests_without_case_studies=pests.filter(pest__case_study__isnull=True).distinct()
+            context['pests_with_case_studies'] = pests_with_case_studies.filter(staff_approved = True)
+            context['pests_without_case_studies'] = pests_without_case_studies.filter(staff_approved = True)
             return context
 
     # def get_queryset(self):
