@@ -465,8 +465,8 @@ class PestListView(LoginRequiredMixin, TemplateView):
             # Call the base implementation first to get the context
             context = super(PestListView, self).get_context_data(**kwargs)
             pests=self.get_queryset()
-            pests_with_case_studies=pests.filter(pest__case_study__isnull=False).distinct()
-            pests_without_case_studies=pests.filter(pest__case_study__isnull=True).distinct()
+            pests_with_case_studies=pests.filter(pest__case_study__staff_approved=True).distinct()
+            pests_without_case_studies=pests.exclude(pest__case_study__staff_approved=True).distinct()
             context['pests_with_case_studies'] = pests_with_case_studies.filter(staff_approved = True)
             context['pests_without_case_studies'] = pests_without_case_studies.filter(staff_approved = True)
             return context
