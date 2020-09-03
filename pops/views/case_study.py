@@ -453,8 +453,8 @@ class PestDetailView(LoginRequiredMixin, DetailView):
     def get_queryset(self):
         return PestInformation.objects.prefetch_related('pest_set__case_study')
 
-class PestListView(LoginRequiredMixin, TemplateView):
-    login_url = 'login'
+class PestListView(TemplateView):
+    #login_url = 'login'
     #paginate_by = 5  # if pagination is desired
     template_name = 'pops/pest_list.html'
 
