@@ -262,23 +262,23 @@ class PestInformation(models.Model):
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     date_updated = models.DateTimeField(verbose_name = _("date updated"), auto_now = True, auto_now_add = False)
     staff_approved = models.BooleanField(verbose_name = _("approved by staff"), help_text="Sample help text.", default = False)
-    invasive = models.BooleanField(verbose_name = _("invasive"), help_text="Is the organism invasive in the US?", default = True)
-    HOST_CHOICES = (
-        ("ANIMAL", "The pest or pathogen infects animals"),
-        ("PLANT", "The pest or pathogen infects plants"),
-    )
-    host_type = models.CharField(verbose_name = _("host type"), help_text="Choose what system type this pest/pathogen infects", max_length = 30,
-                    choices = HOST_CHOICES,
-                    default = "PLANT", blank = False)     
-    ORGANISM_CHOICES = (
-        ("PEST", "The organism is a pest (e.g. insect)"),
-        ("PATHOGEN", "The organism is a pathogen (e.g. disease)"),
-    )
-    organism_type = models.CharField(verbose_name = _("organism type"), help_text="Choose whether this is a pest or pathogen", max_length = 30,
-                    choices = ORGANISM_CHOICES,
-                    default = "PEST", blank = False) 
-    arrival_year = models.PositiveSmallIntegerField(verbose_name = _("first year found in US"), help_text="The first year that it was identified in the US.", blank=True, null=True, default = None, validators = [MinValueValidator(1700), MaxValueValidator(2025)])
-    arrival_location = models.CharField(verbose_name = _("first location found in US (State)"), max_length = 150,blank=True, null=True, default = None)
+    #invasive = models.BooleanField(verbose_name = _("invasive"), help_text="Is the organism invasive in the US?", default = True)
+    #HOST_CHOICES = (
+    #    ("ANIMAL", "The pest or pathogen infects animals"),
+    #    ("PLANT", "The pest or pathogen infects plants"),
+    #)
+    #host_type = models.CharField(verbose_name = _("host type"), help_text="Choose what system type this pest/pathogen infects", max_length = 30,
+    #                choices = HOST_CHOICES,
+    #                default = "PLANT", blank = False)     
+    #ORGANISM_CHOICES = (
+    #    ("PEST", "The organism is a pest (e.g. insect)"),
+    #    ("PATHOGEN", "The organism is a pathogen (e.g. disease)"),
+    #)
+    #organism_type = models.CharField(verbose_name = _("organism type"), help_text="Choose whether this is a pest or pathogen", max_length = 30,
+    #                choices = ORGANISM_CHOICES,
+    #                default = "PEST", blank = False) 
+    #arrival_year = models.PositiveSmallIntegerField(verbose_name = _("first year found in US"), help_text="The first year that it was identified in the US.", blank=True, null=True, default = None, validators = [MinValueValidator(1700), MaxValueValidator(2025)])
+    #arrival_location = models.CharField(verbose_name = _("first location found in US (State)"), max_length = 150,blank=True, null=True, default = None)
     #thumbnail = models.FileField(verbose_name = "Small thumbnail image of pest/pathogen", help_text="Upload thumbnail image of pest/pathogen.",upload_to="pest_images", max_length=100, blank=False, null=True)
 
     objects = MyManager()
