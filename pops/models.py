@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator 
 from django.core.exceptions import ObjectDoesNotExist 
-from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.core.files.storage import default_storage
 import os
 
@@ -116,7 +116,7 @@ class HistoricData(models.Model):
 
     case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study id"), on_delete = models.CASCADE)
     year = models.PositiveIntegerField(verbose_name = _("year"), default = 2015, null = True, validators = [MinValueValidator(1900)])
-    data = JSONField(null = True)
+    data = models.JSONField(null = True)
     infected_area = models.DecimalField(verbose_name = _("infected_area (m^2)"), help_text="Overall infected area from the run.", blank=True, max_digits = 16, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
     number_infected = models.IntegerField(verbose_name = _("number_infected"), default = 0, null = True, validators = [MinValueValidator(0)])
 
@@ -177,7 +177,7 @@ class HostData(models.Model):
 
     host = models.OneToOneField(Host, verbose_name = _("host"), on_delete = models.CASCADE, primary_key=True)
     user_file = models.FileField(verbose_name = _("host data"), help_text="Upload your host data as a raster file.", upload_to=host_directory, max_length=100, blank=True)
-    host_map = JSONField(null = True)
+    host_map = models.JSONField(null = True)
 
     objects = MyManager()
 
@@ -943,7 +943,7 @@ class Run(models.Model):
     status = models.CharField(verbose_name = _("run status"), help_text="", max_length = 20,
                     choices = STATUS_CHOICES,
                     default = "PENDING", blank=True)
-    management_polygons = JSONField(null = True, blank = True)
+    management_polygons = models.JSONField(null = True, blank = True)
     management_cost = models.DecimalField(verbose_name = _("management cost"), max_digits = 16, decimal_places = 2, blank=True, null=True, default = 0)
     management_area = models.DecimalField(verbose_name = _("management area"), max_digits = 16, decimal_places = 2, blank=True, null=True, default = 0)
     logging = models.TextField(verbose_name = _("error logs for backend"), max_length = 300, blank=True, null=True, help_text="For checking error logs for backend model runs")
@@ -964,9 +964,9 @@ class Output(models.Model):
     number_infected = models.IntegerField(verbose_name = _("number_infected"), default = 0, null = True, validators = [MinValueValidator(0)])
     infected_area = models.DecimalField(verbose_name = _("infected_area (m^2)"), help_text="Overall infected area from the run.", blank=True, max_digits = 16, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
     year = models.PositiveIntegerField(verbose_name = _("year"), default = 2020, null = True, validators = [MinValueValidator(2018)])
-    single_spread_map = JSONField(null = True)
-    probability_map = JSONField(null = True)
-    susceptible_map = JSONField(null = True)
+    single_spread_map = models.JSONField(null = True)
+    probability_map = models.JSONField(null = True)
+    susceptible_map = models.JSONField(null = True)
     escape_probability = models.DecimalField(verbose_name = _("probability of escape"), help_text="Probability that the pest/pathogen escapes quarantine or other boundary.", blank=True, max_digits = 6, decimal_places = 2, default = 1, validators = [MinValueValidator(0), MaxValueValidator(10)])
 
     class Meta:
