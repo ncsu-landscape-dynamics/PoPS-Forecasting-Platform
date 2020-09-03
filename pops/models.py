@@ -279,7 +279,8 @@ class PestInformation(models.Model):
                     default = "PEST", blank = False) 
     arrival_year = models.PositiveSmallIntegerField(verbose_name = _("first year found in US"), help_text="The first year that it was identified in the US.", blank=True, null=True, default = None, validators = [MinValueValidator(1700), MaxValueValidator(2025)])
     arrival_location = models.CharField(verbose_name = _("first location found in US (State)"), max_length = 150,blank=True, null=True, default = None)
-    thumbnail = models.FileField(verbose_name = "Small thumbnail image of pest/pathogen", help_text="Upload thumbnail image of pest/pathogen.",upload_to="pest_images", max_length=100, blank=True, null=True)
+    thumbnail = models.FileField(verbose_name = "Small thumbnail image of pest/pathogen", help_text="Upload thumbnail image of pest/pathogen (58x58 px crop to 0.8in square at 72ppi).",upload_to="pest_images", max_length=100, blank=True, null=True)
+    #large_image = models.FileField(verbose_name = "Large image of pest/pathogen", help_text="Upload image of pest/pathogen (58x58 px crop to 0.8in square at 72ppi).",upload_to="pest_images", max_length=100, blank=True, null=True)
 
     objects = MyManager()
 

@@ -30,13 +30,12 @@
         <div class="col-md-auto col-sm-12">
           <div class="row justify-content-xs-center justify-content-sm-center">
             <div class="col-auto">
-              <img src="{% static 'images/SLF.png' %}" max-width="100%" alt="{{pest.common_name}}">
+              <img src="{{ pest.thumbnail.url }}" max-width="100%" alt="{{pest.common_name}}">
             </div>
             <div class="col-auto">
               <h4 class="card-title"><a class="text-dark"
                   href="{% url 'pest_detail' pk=pest.pk %}">{{ pest.common_name }}</a></h4>
-              <h6 class="card-subtitle mb-2">(<em>{{pest.scientific_name}}</em> <i class="fas fa-bug"></i> <i
-                  class="fas fa-virus"></i>)</h6>
+              <h6 class="card-subtitle mb-2">(<em>{{pest.scientific_name}}</em>)</h6>
             </div>
           </div>
         </div>
@@ -75,7 +74,18 @@
           </ul>
           <div class="tab-content mt-3">
             <div class="tab-pane active" id="about-{{pest.pk}}" role="tabpanel">
-            <p class="mb-0"><small><strong>{{pest.common_name}} was discovered in Pennsylvania in 2014. </strong></small></p>
+                          <div class="mb-0"><small>
+              {% if pest.organism_type == "PEST" %}
+              <strong><i class="fas fa-bug" style="color:orange"></i> Pest</strong>
+              {% elif pest.organism_type == "PATHOGEN" %}
+              <strong><i class="fas fa-virus" style="color:purple"></i> Pathogen</strong>
+              {% endif %}
+              {% if pest.invasive %}
+            / <strong><i class="fas fa-exclamation text-danger"></i> Invasive</strong> (first found in {{pest.arrival_location}} in {{pest.arrival_year}}) 
+            {% endif %} 
+            </strong>
+              </small>
+              </div>
               <p class="card-text">{{ pest.about|safe|truncatechars:420 }}... <a href="{% url 'pest_detail' pk=pest.pk %}"
                   class="card-link text-danger">Read more</a></p>
             </div>
@@ -137,10 +147,10 @@
   There are no staff-approved pests or pathogens at this time. Please <a href="{% url 'contact' %}">contact us </a> to report the problem.
   {% endif %}
 
+
+  {% if pests_without_case_studies %}
   <p>The following pests and pathogens that have been modeled using PoPS, however, they do not yet have
   publicly available case studies. </p>
-  {% if pests_without_case_studies %}
-
   {% for pest in pests_without_case_studies %}
   <div class="card my-3 text-dark">
     <div class="card-header">
