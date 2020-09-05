@@ -23,13 +23,13 @@
   <p>Below are the pests and pathogens that have been modeled using PoPS. Users may select a calibrated case study
     to forecast the spread of a pest of pathogen using the PoPS web dashboard. </p>
   {% for pest in pests_with_case_studies %}
-  <div class="card my-3 text-dark">
+  <div class="card my-3 text-dark" >
     <div class="card-header">
       <div class="row justify-content-between align-items-center">
         <div class="col-md-auto col-sm-12">
           <div class="row justify-content-xs-center justify-content-sm-center">
             <div class="col-auto">
-              <img src="{{ pest.thumbnail.url }}" max-width="100%" alt="{{pest.common_name}}">
+              <img src="{{ pest.thumbnail.url }}" width="58" height="58" alt="{{pest.common_name}}">
             </div>
             <div class="col-auto">
               <h4 class="card-title"><a class="text-dark"
@@ -80,7 +80,7 @@
               <strong><i class="fas fa-virus" style="color:purple"></i> Pathogen</strong>
               {% endif %}
               {% if pest.invasive %}
-            / <strong><i class="fas fa-exclamation text-danger"></i> Invasive</strong> (first found in {{pest.arrival_location}} in {{pest.arrival_year}}) 
+            / <strong><i class="fas fa-exclamation text-danger"></i> Invasive</strong> (<em>first found in {{pest.arrival_location}} in {{pest.arrival_year}}</em>) 
             {% endif %} 
             </strong>
               </small>
@@ -91,14 +91,14 @@
 
             <div class="tab-pane" id="management-{{pest.pk}}" role="tabpanel" aria-labelledby="management-tab">
               <p class="card-text"><strong>Management activities:
-                </strong>{{ pest.management_activity|truncatechars:370  }}... <a
+                </strong>{{ pest.management_activity|safe|truncatechars:370  }}... <a
                   href="{% url 'pest_detail' pk=pest.pk %}" class="card-link text-danger">Read more</a></p>
 
             </div>
 
             <div class="tab-pane" id="at_risk-{{pest.pk}}" role="tabpanel" aria-labelledby="risk-tab">
               <p class="card-text"><strong>{{  pest.common_name }} commonly affects: </strong></p>
-              <p> {{ pest.risks|truncatechars:370 }}</p>
+              <p> {{ pest.risks|safe|truncatechars:370 }}</p>
             </div>
             <div class="tab-pane" id="case_studies-{{pest.pk}}" role="tabpanel" aria-labelledby="case_studies-tab">
               {% with case_study_pests=pest.pest_set.all %}
@@ -127,8 +127,7 @@
         <div class="col-lg-6">
           <div class="text-center py-0 my-0">
             <p class="py-0 my-0"><small><strong>PoPS forecast of {{pest.common_name}}:</strong></small></p>
-            <img src="{% static 'images/SLF-spread-356x200px.gif' %}" max-width="100%"
-              alt="{{pest.common_name}} forecast spread over time">
+            <img src="{{ pest.large_image.url }}" max-width="100%" alt="{{pest.common_name}}">
           </div>
         </div>
       </div>
@@ -255,8 +254,7 @@
         <div class="col-lg-6">
           <div class="text-center py-0 my-0">
             <p class="py-0 my-0"><small><strong>PoPS forecast of {{pest.common_name}}:</strong></small></p>
-            <img src="{% static 'images/SLF-spread-356x200px.gif' %}" max-width="100%"
-              alt="{{pest.common_name}} forecast spread over time">
+            <img src="{{ pest.large_image.url }}" max-width="100%" alt="{{pest.common_name}}">
           </div>
         </div>
       </div>

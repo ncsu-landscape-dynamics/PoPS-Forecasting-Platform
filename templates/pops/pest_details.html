@@ -12,13 +12,21 @@
 <div class="container py-2 pb-4">
     <h3 class="text-center">{{pest_information.common_name}}</h3>
     <h5 class="text-center"><em> {{pest_information.scientific_name}}</em></h5>
+    <div class="text-center">
+                  {% if pest_information.organism_type == "PEST" %}
+              <strong><i class="fas fa-bug" style="color:orange"></i> Pest</strong>
+              {% elif pest_information.organism_type == "PATHOGEN" %}
+              <strong><i class="fas fa-virus" style="color:purple"></i> Pathogen</strong>
+              {% endif %}
+              {% if pest_information.invasive %}
+            / <strong><i class="fas fa-exclamation text-danger"></i> Invasive</strong> (<small><em>first found in {{pest_information.arrival_location}} in {{pest_information.arrival_year}}</em></small>) 
+            {% endif %} 
+    </div>
 <div class="col-md-12">
-<img src="{% static 'images/lanternfly.jpg' %}" class="float-left mr-4 rounded-circle">
-
-
-    <div class="py-2"><strong>About:</strong> {{pest_information.about}}</div>
-    <div class="py-2"><strong>At risk:</strong> {{pest_information.risks}}</div>
-    <div class="py-2"><strong>Management activities:</strong> {{pest_information.management_activity}}</div>
+<img src="{{ pest_information.large_image.url }}" class="float-left mr-4" alt="{{pest_information.common_name}}">
+    <div class="py-2"><h5>About:</h5> <p>{{pest_information.about|safe}}</p></div>
+    <div class="py-2"><h5>At risk:</h5> <p>{{pest_information.risks|safe}}</p></div>
+    <div class="py-2"><h5>Management activities:</h5> <p>{{pest_information.management_activity|safe}}</p></div>
 
 
 </div>
