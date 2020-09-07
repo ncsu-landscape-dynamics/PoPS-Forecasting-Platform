@@ -59,7 +59,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#at_risk-{{pest.pk}}" role="tab" aria-controls="risk"
-                aria-selected="false">Risk</a>
+                aria-selected="false">Risks</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#management-{{pest.pk}}" role="tab" aria-controls="management"
@@ -90,14 +90,12 @@
             </div>
 
             <div class="tab-pane" id="management-{{pest.pk}}" role="tabpanel" aria-labelledby="management-tab">
-              <p class="card-text"><strong>Management activities:
-                </strong>{{ pest.management_activity|safe|truncatechars:370  }}... <a
+              <p class="card-text">{{ pest.management_activity|safe|truncatechars:370  }}... <a
                   href="{% url 'pest_detail' pk=pest.pk %}" class="card-link text-danger">Read more</a></p>
 
             </div>
 
             <div class="tab-pane" id="at_risk-{{pest.pk}}" role="tabpanel" aria-labelledby="risk-tab">
-              <p class="card-text"><strong>{{  pest.common_name }} commonly affects: </strong></p>
               <p> {{ pest.risks|safe|truncatechars:370 }}</p>
             </div>
             <div class="tab-pane" id="case_studies-{{pest.pk}}" role="tabpanel" aria-labelledby="case_studies-tab">
@@ -125,9 +123,14 @@
           </div>
         </div>
         <div class="col-lg-6">
-          <div class="text-center py-0 my-0">
-            <p class="py-0 my-0"><small><strong>PoPS forecast of {{pest.common_name}}:</strong></small></p>
-            <img src="{{ pest.large_image.url }}" max-width="100%" alt="{{pest.common_name}}">
+          <div class="text-center">
+          {% if pest.spread_image %}
+            <img src="{{ pest.spread_image.url }}" style="max-height:216px" alt="{{pest.common_name}}">
+            <p class="py-0 my-0"><small><em>PoPS forecast of {{pest.common_name}}</em></small></p>
+            {% else %}
+            <img src="{{ pest.large_image.url }}" style="max-height:216px" alt="{{pest.common_name}}">
+            <p class="py-0 my-0"><small><em>{{pest.common_name}}</em></small></p>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -186,7 +189,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#at_risk-{{pest.pk}}" role="tab" aria-controls="risk"
-                aria-selected="false">Risk</a>
+                aria-selected="false">Risks</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#management-{{pest.pk}}" role="tab" aria-controls="management"
@@ -217,15 +220,14 @@
             </div>
 
             <div class="tab-pane" id="management-{{pest.pk}}" role="tabpanel" aria-labelledby="management-tab">
-              <p class="card-text"><strong>Management activities:
-                </strong>{{ pest.management_activity|truncatechars:370  }}... <a
+              <p class="card-text">{{ pest.management_activity|truncatechars:370  }}... <a
                   href="{% url 'pest_detail' pk=pest.pk %}" class="card-link text-danger">Read more</a></p>
 
             </div>
 
             <div class="tab-pane" id="at_risk-{{pest.pk}}" role="tabpanel" aria-labelledby="risk-tab">
-              <p class="card-text"><strong>{{  pest.common_name }} commonly affects: </strong></p>
-              <p> {{ pest.risks|truncatechars:370 }}</p>
+              
+              <p> {{ pest.risks|truncatechars:440 }}</p>
             </div>
             <div class="tab-pane" id="case_studies-{{pest.pk}}" role="tabpanel" aria-labelledby="case_studies-tab">
               {% with case_study_pests=pest.pest_set.all %}
@@ -252,9 +254,14 @@
           </div>
         </div>
         <div class="col-lg-6">
-          <div class="text-center py-0 my-0">
-            <p class="py-0 my-0"><small><strong>PoPS forecast of {{pest.common_name}}:</strong></small></p>
-            <img src="{{ pest.large_image.url }}" max-width="100%" alt="{{pest.common_name}}">
+          <div class="text-center">
+          {% if pest.spread_image %}
+            <img src="{{ pest.spread_image.url }}" style="max-height:216px" alt="{{pest.common_name}}">
+            <p class="py-0 my-0"><small><em>PoPS forecast of {{pest.common_name}}</em></small></p>
+            {% else %}
+            <img src="{{ pest.large_image.url }}" style="max-height:216px" alt="{{pest.common_name}}">
+            <p class="py-0 my-0"><small><em>{{pest.common_name}}</em></small></p>
+            {% endif %}
           </div>
         </div>
       </div>
