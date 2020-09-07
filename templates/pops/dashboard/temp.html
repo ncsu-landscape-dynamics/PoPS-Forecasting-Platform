@@ -160,7 +160,7 @@ $(".management-type").on('change',  function () {
     /* eslint-disable */
     var map = new mapboxgl.Map({
       container: 'map', // container id
-      style: 'mapbox://styles/mapbox/dark-v10', //hosted style id
+      style: 'mapbox://styles/shankj687/ckepxyovg4fin19pse5rafnce',//'mapbox://styles/mapbox/dark-v10', //hosted style id
       center: [-80, 40], // initial map center in [lon, lat]
       zoom: 13 // starting zoom
     });
@@ -279,15 +279,22 @@ $(".management-type").on('change',  function () {
               ["!=", "mode", "static"]
             ],
             "paint": {
-              'fill-color': [
+              //'fill-color': [
+                //"case",
+                //['==', ['get', "user_management_type"], "Host removal"], "red",
+                //['==', ['get', "user_management_type"], "Pesticide"], "yellow",
+                //['==', ['get', "user_management_type"], "Host removal and Pesticide"], "black",
+                //'white'
+              //],              
+              'fill-pattern': [
                 "case",
-                ['==', ['get', "user_management_type"], "Host removal"], "red",
-                ['==', ['get', "user_management_type"], "Pesticide"], "yellow",
-                ['==', ['get', "user_management_type"], "Host removal and Pesticide"], "black",
-                'white'
+                ['==', ['get', "user_management_type"], "Host removal"], "level-crossing",
+                ['==', ['get', "user_management_type"], "Pesticide"], "marker-11",
+                ['==', ['get', "user_management_type"], "Host removal and Pesticide"], "tw-national-2",
+                ''
               ],
               "fill-outline-color": draw_color,
-              "fill-opacity": 0.1
+              "fill-opacity": 0.5
             }
           },
           // polygon outline stroke
@@ -359,9 +366,15 @@ $(".management-type").on('change',  function () {
               ["==", "mode", "static"]
             ],
             "paint": {
-              "fill-color": "#000",
-              "fill-outline-color": "#000",
-              "fill-opacity": 0.3
+              'fill-pattern': [
+                "case",
+                ['==', ['get', "user_management_type"], "Host removal"], "level-crossing",
+                ['==', ['get', "user_management_type"], "Pesticide"], "marker-11",
+                ['==', ['get', "user_management_type"], "Host removal and Pesticide"], "tw-national-2",
+                'airport-15'
+              ],
+              "fill-outline-color": draw_color,
+              "fill-opacity": 0.5
             }
           },
           // polygon outline
