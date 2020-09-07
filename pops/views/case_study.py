@@ -444,6 +444,33 @@ class ApprovedAndUserCaseStudyListView(LoginRequiredMixin, TemplateView):
             context['user_case_studies'] = case_studies.filter(created_by = self.request.user)
             return context
 
+class PestDetailView(LoginRequiredMixin, DetailView):
+    login_url = 'login'
+    model = PestInformation
+    template_name = 'pops/pest_details.html'
+    context_object_name = 'pest_information'
+
+    def get_queryset(self):
+        return PestInformation.objects.prefetch_related('pest_set__case_study')
+
+class PestListView(TemplateView):
+    #login_url = 'login'
+    #paginate_by = 5  # if pagination is desired
+    template_name = 'pops/pest_list.html'
+
+    def get_queryset(self):
+        return PestInformation.objects.prefetch_related('pest_set__case_study').order_by('common_name')
+
+    def get_context_data(self, **kwargs):
+            # Call the base implementation first to get the context
+            context = super(PestListView, self).get_context_data(**kwargs)
+            pests=self.get_queryset()
+            pests_with_case_studies=pests.filter(pest__case_study__staff_approved=True).distinct()
+            pests_without_case_studies=pests.exclude(pest__case_study__staff_approved=True).distinct()
+            context['pests_with_case_studies'] = pests_with_case_studies.filter(staff_approved = True)
+            context['pests_without_case_studies'] = pests_without_case_studies.filter(staff_approved = True)
+            return context
+
     # def get_queryset(self):
     #     return CaseStudy.objects.filter(Q(staff_approved = True ) | Q(created_by = self.request.user))
 
