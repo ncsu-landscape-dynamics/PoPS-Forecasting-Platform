@@ -175,11 +175,35 @@ $(".management-type").on('change',  function () {
 
     CircleMode.onClick = function (state, e) {
       console.log('Drawing circle...')
+      console.log(e)
       var center = [e.lngLat.lng, e.lngLat.lat];
       var radius = management_circle_radius;
-      var circle = createCircle(center, radius);
-      featureID = draw.add(circle);
-      findAndCombineOverlappingPolygons(featureID);
+      var management = getManagementType();
+      var management_type = management[0];
+      var host_removal_efficacy = management[1];
+      var pesticide_application_efficacy = management[2];
+      if (management_type == 'Host removal and Pesticide') {
+        console.log('The type is both.')
+        var circle1 = createCircle(center, radius,'Host removal',host_removal_efficacy,pesticide_application_efficacy);
+        console.log(circle1);
+        featureID = draw.add(circle1);
+        findAndCombineOverlappingPolygons(featureID);      
+        var circle2 = createCircle(center, radius,'Pesticide',host_removal_efficacy,pesticide_application_efficacy);
+        featureID = draw.add(circle2);
+        findAndCombineOverlappingPolygons(featureID);      }
+      else {
+        console.log('The type is one.')
+        var circle = createCircle(center, radius,management_type,host_removal_efficacy,pesticide_application_efficacy);
+        featureID = draw.add(circle);
+        new_circle = draw.get(featureID);
+        console.log(new_circle);
+        findAndCombineOverlappingPolygons(featureID);
+      }
+      //var circle = createCircle(center, radius,management_type,host_removal_efficacy,pesticide_application_efficacy);
+      //featureID = draw.add(circle);
+      //new_circle = draw.get(featureID);
+      //console.log(new_circle);
+      //findAndCombineOverlappingPolygons(featureID);
     };
 
     CircleMode.onStop = function (state, e) {
@@ -191,11 +215,7 @@ $(".management-type").on('change',  function () {
       display(geojson);
     };
 
-    function createCircle(center, radius) {
-        var management = getManagementType();
-        var management_type = management[0];
-        var host_removal_efficacy = management[1];
-        var pesticide_application_efficacy = management[2];
+    function createCircle(center, radius,management_type,host_removal_efficacy,pesticide_application_efficacy) {
       var options = {steps: 32, units: 'kilometers', properties: {management_type: management_type, host_removal_efficacy: host_removal_efficacy, pesticide_application_efficacy: pesticide_application_efficacy}};
       var circle = turf.circle(center, radius, options);
       return circle
@@ -402,10 +422,44 @@ $(".management-type").on('change',  function () {
     draw = set_draw_color(draw_color);
     map.addControl(draw);
 
-    map.on('draw.create', addManagementType);
+    map.on('draw.create', checkManagementType);
     map.on('draw.delete', updateJSON);
     map.on('draw.update', updatePolygons);
     map.on('draw.selectionchange', selectionChange)
+
+    function checkManagementType(e) {
+      //Note that CIRCLES, are created via a different method than the polygon draw tool
+      //so, their management type is added in the CIRCLE tool. We check if it is a 
+      //regular polygon with the following if statement.
+      console.log('Start checkManagementType(e)')
+      var management = getManagementType();
+      var management_type = management[0];
+      var host_removal_efficacy = management[1];
+      var pesticide_application_efficacy = management[2];      
+      console.log('Management type is: ' + management_type + ' (' + host_removal_efficacy+'/'+pesticide_application_efficacy+')')
+      if (management_type == 'Host removal and Pesticide') {
+        console.log('The type is both.')
+        addManagementType(e,'Host removal',host_removal_efficacy,pesticide_application_efficacy);
+        polygon = draw.get(e.features[0].id);
+        second_polygon = $.extend( true, {}, polygon);
+        //second_polygon=e.features[0].geometry;
+        delete second_polygon['id'];
+        console.log(second_polygon)
+        
+        featureID = draw.add(second_polygon);
+        copy_polygon = draw.get(featureID);
+        console.log(copy_polygon);    
+        draw.setFeatureProperty(featureID, 'management_type', 'Pesticide'); 
+        draw.add(draw.get(featureID)); //This line makes the new change draw on the map and appear.    
+        updateJSON(featureID);
+
+        //addManagementType(second_polygon,'Pesticide',host_removal_efficacy,pesticide_application_efficacy);
+      }
+      else {
+        console.log('The type is one.')
+        addManagementType(e,management_type,host_removal_efficacy,pesticide_application_efficacy);
+      }
+    }
 
     //Set up to edit selected polygons
     function selectionChange(e) {
@@ -454,21 +508,12 @@ $(".management-type").on('change',  function () {
       }
     }
     //Get management type, add it as a feature property to the polygon, then update area
-    function addManagementType(e) {
+    function addManagementType(e,management_type,host_removal_efficacy,pesticide_application_efficacy) {
       //Note that CIRCLES, are created via a different method than the polygon draw tool
       //so, their management type is added in the CIRCLE tool. We check if it is a 
       //regular polygon with the following if statement.
       console.log('Start addManagementType(e)')
-
       if (e.features) {
-        var management = getManagementType();
-        console.log(management);
-        var management_type = management[0];
-        console.log(management_type)
-        var host_removal_efficacy = management[1];
-        console.log(host_removal_efficacy);
-        var pesticide_application_efficacy = management[2];
-        console.log(pesticide_application_efficacy)
         draw.setFeatureProperty(e.features[0].id, 'management_type', management_type);
         draw.setFeatureProperty(e.features[0].id, 'host_removal_efficacy', host_removal_efficacy);
         draw.setFeatureProperty(e.features[0].id, 'pesticide_application_efficacy', pesticide_application_efficacy);
@@ -550,27 +595,6 @@ $(".management-type").on('change',  function () {
             else {
               console.log('Non matching types');
               //If neither of them is Both types, then the intersection should be added to the map with type=Both.
-              if ((newPolygon.properties.management_type != 'Host removal and Pesticide') && (existingPolygon.properties.management_type != 'Host removal and Pesticide')) {
-                console.log('Both types are different.')
-                intersectionID = draw.add(intersection);
-                draw.setFeatureProperty(intersectionID, 'management_type', 'Host removal and Pesticide');
-              }
-              //If the existing polygon is not both types, remove the intersection from the existing polygon.
-              if (existingPolygon.properties.management_type != 'Host removal and Pesticide') {
-                difference1 = turf.difference(existingPolygon, newPolygon);
-                if (difference1) {
-                  differenceID1 = draw.add(difference1);
-                }
-                draw.delete(existingPolygon.id);
-              }
-              //If the new polygon is not both types, remove the intersection from the new polygon.
-              if (newPolygon.properties.management_type != 'Host removal and Pesticide') {
-                difference2 = turf.difference(newPolygon, existingPolygon);
-                if (difference2) {
-                  differenceID2 = draw.add(difference2);
-                }
-                draw.delete(newPolygon.id);
-              }
             }
           }
         }
