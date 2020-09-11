@@ -29,7 +29,7 @@
 
   <script>
 
-var colors = ['#C6F761', '#60f781','#60e8f7','#be89fa','#fa89d2'];//['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
+var colors = ['#d6f731','#4af7b0','#6fd5f7','#c596fa','#fa89d2'];//['#C6F761', '#60f781','#60e8f7','#be89fa','#fa89d2'];//['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
 var acre_to_meter_ratio=0.000247105;
 var max_number=100;
 var max_area=100;
@@ -1088,7 +1088,7 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ o
     /* eslint-disable */
     var map = new mapboxgl.Map({
       container: 'map', // container id
-      style: 'mapbox://styles/mapbox/dark-v10', //hosted style id
+      style: 'mapbox://styles/shankj687/ckepyeuvg2zh219s0qihd4m55', //hosted style id
       center: [{{ mapbox_parameters.longitude}}, {{ mapbox_parameters.latitude}}], // initial map center in [lon, lat]
       zoom: {{ mapbox_parameters.zoom }} // starting zoom
     });
