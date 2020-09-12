@@ -30,6 +30,10 @@
   <script>
 
 var colors = ['#d6f731','#4af7b0','#6fd5f7','#c596fa','#fa89d2'];//['#C6F761', '#60f781','#60e8f7','#be89fa','#fa89d2'];//['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
+var host_removal_patterns=['X-LimeGreen','X-BlueGreen','X-Blue','X-Purple','X-Pink',];
+var pesticide_application_patterns=['ColoredDots-LimeGreen','ColoredDots-BlueGreen','ColoredDots-Blue','ColoredDots-Purple','ColoredDots-Pink',];
+
+
 var acre_to_meter_ratio=0.000247105;
 var max_number=100;
 var max_area=100;
@@ -377,12 +381,16 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                     map.removeControl(draw);
                     if (year_count) {
                       var draw_color = colors[year_count-1];
+                      var host_removal_pattern = host_removal_patterns[year_count-1];
+                      var pesticide_application_pattern = pesticide_application_patterns[year_count-1];
                     }
                     else {
                       var draw_color = '#000';
+                      var host_removal_pattern = '';
+                      var pesticide_application_pattern = '';
                     }
                     console.log('Draw color:' + draw_color);
-                    draw = set_draw_color(draw_color);
+                    draw = set_draw_color(draw_color,host_removal_pattern,pesticide_application_pattern);
                     map.addControl(draw);
                     return;
                   };
@@ -1423,7 +1431,7 @@ var management_circle_radius = 0.04572; //default management radius in km
     };
 
 
-    function set_draw_color(draw_color) {
+    function set_draw_color(draw_color,host_removal_pattern,pesticide_application_pattern) {
       var draw = new MapboxDraw({
         keybindings: true,
         displayControlsDefault: false,
@@ -1501,8 +1509,8 @@ var management_circle_radius = 0.04572; //default management radius in km
             "paint": {
               'fill-pattern': [
                 "case",
-                ['==', ['get', "user_management_type"], "Host removal"], "X-Pink",
-                ['==', ['get', "user_management_type"], "Pesticide"], "ColoredDots-LimeGreen",
+                ['==', ['get', "user_management_type"], "Host removal"], host_removal_pattern,
+                ['==', ['get', "user_management_type"], "Pesticide"], pesticide_application_pattern,
                 ''
               ],      
               "fill-outline-color": draw_color,
@@ -1605,8 +1613,10 @@ var management_circle_radius = 0.04572; //default management radius in km
 };
 
     //Set initial draw color and settings, add Draw functionality to the map.
-    draw_color = '#C6F761';
-    draw = set_draw_color(draw_color);
+    var draw_color = colors[0];
+    var host_removal_pattern=host_removal_patterns[0];
+    var pesticide_application_pattern=pesticide_application_patterns[0];
+    draw = set_draw_color(draw_color,host_removal_pattern,pesticide_application_pattern);
     map.addControl(draw);
 
     //Draw fires a number of events. All of these events are namespaced with draw. 
