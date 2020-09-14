@@ -465,36 +465,7 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                       });
 
                   </script>   
-                    <div class="row">
-    <div class="col-3">
-      <div class="input-group input-group-sm mb-3">
-        <div class="input-group-prepend">
-          <div class="input-group-text">
-            <input type="checkbox" value="host_removal" id="host_removal_status" checked>
-          </div>
-        </div>
-        <div class="input-group-prepend">
-          <span class="input-group-text">Host removal</span>
-        </div>
-        <input id="default_host_removal_efficacy" type="number" name="host_removal_efficacy" value="0.5" min="0" max="1"
-          step="0.1">
-      </div>
-    </div>
-    <div class="col-3">
-      <div class="input-group input-group-sm mb-3">
-        <div class="input-group-prepend">
-          <div class="input-group-text">
-            <input type="checkbox" value="pesticide_application" id="pesticide_status">
-          </div>
-        </div>
-        <div class="input-group-prepend">
-          <span class="input-group-text">Pesticide application</span>
-        </div>
-        <input id="default_pesticide_efficacy" type="number" name="pesticide_efficacy" value="0.0" min="0" max="1"
-          step="0.1">
-      </div>
-    </div>
-  </div>             
+
                   <div id="map" class="large_map"></div>
                   <button id="show_details_button" type="button" class="btn" style="display: none" data-toggle="tool"
                     title="Show details."><i class="fas fa-chevron-left"></i></button>
@@ -591,31 +562,90 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   <div id="polygon-info">0.0 acres</div> 
                   </div>
                   <div id="money-new" class="col py-0" style="width:180px; height:140px"></div>
-                  <div id="draw-controls" class="btn-group-vertical" role="group" >
-                  <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
-                  title="Draw management polygon" data-placement="left">
-                  <i class="fas fa-draw-polygon"></i>
-                  </button>
-                  <div class="btn-group" role="group" data-toggle="tool" 
-                  title="Draw circle" data-placement="left">
-                    <button id="btnGroupCircles" type="button" class="btn btn-default drawing-tool dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="far fa-dot-circle"></i>
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="btnGroupCircles">
-                      <a id="300ft-circle-tool" class="dropdown-item" href="#">300ft radius</a>
-                      <a id="600ft-circle-tool" class="dropdown-item" href="#">600ft radius</a>
-                    </div>
-                  </div>
-                  <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
-                  title="Selection tool" data-placement="left">
-                  <i class="fas fa-hand-paper"></i>
-                  </button>
-                  <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
-                  title="Delete selection" data-placement="left">
-                  <i class="fas fa-trash-alt"></i>
-                  </button>
+  <div id="draw-controls" class="btn-group-vertical" role="group">
+    <div class="input-group input-group-sm">
+      <div class="input-group-prepend dropleft">
+        <button type="button" title="Host removal" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false"> <i class="fas fa-window-close"></i>
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+          <div class="input-group input-group-sm mx-2 my-1">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Efficacy</span>
+            </div>
+            <input id="default_host_removal_efficacy" type="number" name="host_removal_efficacy" value="0.5" min="0" max="1"
+              step="0.1">
+          </div>
+          <div class="input-group input-group-sm mx-2 my-1">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$ per m<sup>2</sup></span>
+            </div>
+            <input id="default_host_removal_cost" type="number" name="host_removal_cost" value="0.5" min="0" max="1"
+              step="0.1">
+          </div>
+        </div>
+      </div>
+      <div class="input-group-append">
+        <div class="input-group-text">
+          <input class="management-type" type="checkbox" value="host_removal" id="host_removal_status" checked>
+        </div>
+      </div>
+    </div>
+    <div class="input-group input-group-sm">
+      <div class="input-group-prepend dropleft">
+        <button type="button" class="btn dropdown-toggle dropdown-toggle-split" title="Pesticide" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false"> <i class="fas fa-spray-can"></i>
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+          <div class="input-group input-group-sm mx-2 my-1">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Efficacy</span>
+            </div>
+            <input id="default_pesticide_efficacy" type="number" name="pesticide_efficacy" value="0.5" min="0" max="1"
+              step="0.1">
+          </div>
+          <div class="input-group input-group-sm mx-2 my-1">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$ per m<sup>2</sup></span>
+            </div>
+            <input id="default_pesticide_cost" type="number" name="pesticide_cost" value="0.5" min="0" max="1"
+              step="0.1">
+          </div>
+        </div>
+      </div>
+      <div class="input-group-append">
+        <div class="input-group-text">
+          <input class="management-type" type="checkbox" value="pesticide" id="pesticide_status">
+        </div>
+      </div>
 
-                  </div>
+
+    </div>
+    <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool"
+      title="Draw management polygon" data-placement="left">
+      <i class="fas fa-draw-polygon"></i>
+    </button>
+    <div class="btn-group" role="group" data-toggle="tool" title="Draw circle" data-placement="left">
+      <button id="btnGroupCircles" type="button" class="btn btn-default drawing-tool dropdown-toggle"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="far fa-dot-circle"></i>
+      </button>
+      <div class="dropdown-menu" aria-labelledby="btnGroupCircles">
+        <a id="300ft-circle-tool" class="dropdown-item" href="#">300ft radius</a>
+        <a id="600ft-circle-tool" class="dropdown-item" href="#">600ft radius</a>
+      </div>
+    </div>
+    <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
+      title="Selection tool" data-placement="left">
+      <i class="fas fa-hand-paper"></i>
+    </button>
+    <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
+      title="Delete selection" data-placement="left">
+      <i class="fas fa-trash-alt"></i>
+    </button>
+  </div>
                   <script>
 
                       $('#historic-legend-container').show();
@@ -1386,29 +1416,32 @@ var management_circle_radius = 0.04572; //default management radius in km
       var management_type = management[0];
       var host_removal_efficacy = management[1];
       var pesticide_application_efficacy = management[2];
+      var host_removal_cost = management[3];
+      var pesticide_application_cost = management[4];
       if (management_type == 'Host removal and Pesticide') {
-        var circle1 = createCircle(center, radius, 'Host removal', host_removal_efficacy);
+        var circle1 = createCircle(center, radius, 'Host removal', host_removal_efficacy,host_removal_cost);
         addCircle(circle1);
-        var circle2 = createCircle(center, radius, 'Pesticide', pesticide_application_efficacy);
+        var circle2 = createCircle(center, radius, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost);
         addCircle(circle2);
       } else if (management_type == 'Host removal') {
-        var circle = createCircle(center, radius, 'Host removal', host_removal_efficacy, );
+        var circle = createCircle(center, radius, 'Host removal', host_removal_efficacy, host_removal_cost);
         addCircle(circle);
       } else if (management_type == 'Pesticide') {
-        var circle = createCircle(center, radius, 'Pesticide', pesticide_application_efficacy);
+        var circle = createCircle(center, radius, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost);
         addCircle(circle);
       } else {
         console.log('No management type selected.')
       }
     };
     //Creates a JSON circle of given radius and number of steps. Includes management and efficacy properties.
-    function createCircle(center, radius, management_type, efficacy) {
+    function createCircle(center, radius, management_type, efficacy, cost) {
       var options = {
         steps: 32,
         units: 'kilometers',
         properties: {
           management_type: management_type,
-          efficacy: efficacy
+          efficacy: efficacy,
+          cost: cost
         }
       };
       var circle = turf.circle(center, radius, options);
@@ -1642,13 +1675,15 @@ var management_circle_radius = 0.04572; //default management radius in km
       var management_type = management[0];
       var host_removal_efficacy = management[1];
       var pesticide_application_efficacy = management[2];
+      var host_removal_cost = management[3];
+      var pesticide_application_cost = management[4];
       if (management_type == 'Host removal and Pesticide') {
-        drawPolygon(polygon, 'Host removal', host_removal_efficacy)
-        drawPolygon(polygon, 'Pesticide', pesticide_application_efficacy)
+        drawPolygon(polygon, 'Host removal', host_removal_efficacy,host_removal_cost)
+        drawPolygon(polygon, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost)
       } else if (management_type == 'Host removal') {
-        drawPolygon(polygon, 'Host removal', host_removal_efficacy)
+        drawPolygon(polygon, 'Host removal', host_removal_efficacy,host_removal_cost)
       } else if (management_type == 'Pesticide') {
-        drawPolygon(polygon, 'Pesticide', pesticide_application_efficacy)
+        drawPolygon(polygon, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost)
       } else {
         console.log('Error: No management type')
       }
@@ -1716,19 +1751,25 @@ var management_circle_radius = 0.04572; //default management radius in km
       if ($('#host_removal_status').prop('checked') && $('#pesticide_status').prop('checked')) {
         management_type = 'Host removal and Pesticide';
         host_removal_efficacy = $("#default_host_removal_efficacy").val();
+        host_removal_cost = $("#default_host_removal_cost").val();
         pesticide_application_efficacy = $("#default_pesticide_efficacy").val();
+        pesticide_application_cost = $("#default_pesticide_cost").val();
       } else if ($('#host_removal_status').prop('checked')) {
         management_type = 'Host removal';
         host_removal_efficacy = $("#default_host_removal_efficacy").val();
         pesticide_application_efficacy = 0;
+        host_removal_cost = $("#default_host_removal_cost").val();
+        pesticide_application_cost = 0;
       } else if ($('#pesticide_status').prop('checked')) {
         management_type = 'Pesticide';
         host_removal_efficacy = 0;
+        host_removal_cost = 0;
         pesticide_application_efficacy = $("#default_pesticide_efficacy").val();
+        pesticide_application_cost = $("#default_pesticide_cost").val();
       } else {
         management_type = '';
       }
-      return [management_type, host_removal_efficacy, pesticide_application_efficacy];
+      return [management_type, host_removal_efficacy, pesticide_application_efficacy,host_removal_cost,pesticide_application_cost];
     }
 
     //This function updates the GeoJSON management field 
