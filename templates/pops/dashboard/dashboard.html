@@ -1735,45 +1735,63 @@ var management_circle_radius = 0.04572; //default management radius in km
     function updateJSON() {
       var data = draw.getAll();
       console.log("Updating management polygons:");
-      console.log(data);
-
+      //console.log(data);
+      var answer = document.getElementById('polygon-info');
+      var budget = $("input#id_budget").val();
+      var area_unit = $("select#id_area_unit").children("option:selected").text();
+      var area_modifier = $("select#id_area_unit").children("option:selected").val();
       if (data.features.length > 0) {
         // Stringify the GeoJson
         var convertedData = JSON.stringify(data);
-
-        // Create export
-        $('#id_management_polygons').val(convertedData);
-      } else {
-        $('#id_management_polygons').val(0);
-        console.log("There is no management.")
-      }
-      var answer = document.getElementById('polygon-info');
-      var budget = $("input#id_budget").val();
-      var cost_per_meter_squared = $("input#id_cost_per_meter_squared").val();
-      var area_unit = $("select#id_area_unit").children("option:selected").text();
-      if (data.features.length > 0) {
-        var area = turf.area(data); //area in meters
-        // restrict to area to 2 decimal points
-        var area_modifier = $("select#id_area_unit").children("option:selected").val();
-        console.log('The area modifier is:' + area_modifier);
-        console.log('The area unit is:' + area_unit );
-        var rounded_area = Math.round(area * 100) / 100;
-        var displayed_area = Math.round(area*area_modifier * 100) / 100;
-        $('#id_management_area').val(rounded_area);
+        [host_removal_area, pesticide_area] = calculateManagementArea(data);
+        console.log('host_removal_area = ' + host_removal_area);
+        console.log('pesticide_area = ' + pesticide_area);
+        [host_removal_cost,pesticide_cost] = calculateManagementCost(host_removal_area, pesticide_area);
+        var total_area = host_removal_area + pesticide_area;
+        var rounded_area = Math.round(total_area * 100) / 100;
+        var displayed_area = Math.round(total_area*area_modifier * 100) / 100;
         // round cost to 2 decimal places
-        var cost = Math.round(area * cost_per_meter_squared * 100) / 100;
-        $('#id_management_cost').val(cost);
-        answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + area_unit;
-        //console.log(map.getCenter())
-        gauge_plot("money-new", cost, budget);
+        var total_cost = host_removal_cost + pesticide_cost;
+        console.log('Cost is = ' + total_cost)
       } else {
-        answer.innerHTML = '0.0 ' + area_unit;
-        gauge_plot("money-new", 0, budget);
-        $('#id_management_area').val(0);
-        $('#id_management_cost').val(0);
+        var rounded_area=0;
+        var convertedData = 0;
+        var host_removal_cost=0, pesticide_cost = 0;
+        var total_cost = 0;
+        var displayed_area = 0;
+        console.log("updateJSON: There is no management.")
       }
+      answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + area_unit;     
+      $('#id_management_polygons').val(convertedData);
+      $('#id_management_area').val(rounded_area);
+      $('#id_management_cost').val(total_cost);
+      gauge_plot("money-new", host_removal_cost, pesticide_cost, budget);
     }
 
+function calculateManagementCost(host_removal_area, pesticide_area) {
+      var host_removal_cost_per_meter_squared = $("input#id_cost_per_meter_squared").val();
+      var pesticide_cost_per_meter_squared = $("input#id_cost_per_meter_squared").val();
+        var host_removal_cost = Math.round(host_removal_area * host_removal_cost_per_meter_squared * 100) / 100;
+        var pesticide_cost = Math.round(pesticide_area * pesticide_cost_per_meter_squared * 100) / 100;
+        return [host_removal_cost,pesticide_cost]
+}
+
+function calculateManagementArea(data) {
+  var host_removal_objects = [];
+  var pesticide_objects = [];
+  for (var n = 0; n < data.features.length; n++) {
+    if (data.features[n].properties.management_type == 'Host removal') {
+      host_removal_objects.push(data.features[n]);
+    } else if (data.features[n].properties.management_type == 'Pesticide') {
+      pesticide_objects.push(data.features[n]);
+    }
+  }
+  var host_removal_JSON = turf.featureCollection(host_removal_objects);
+  var pesticide_JSON = turf.featureCollection(pesticide_objects);
+  var host_removal_area = turf.area(host_removal_JSON);
+  var pesticide_area = turf.area(pesticide_JSON);
+  return [host_removal_area, pesticide_area];
+}
     //Check if the most recently drawn polygon overlaps any existing polygons
     //of the same type and combine.
     function findAndCombineOverlappingPolygons(newPolygonID) {
@@ -1859,10 +1877,10 @@ map.on('draw.modechange', e => {
         $('#id_management_cost').val(cost);
         answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + area_unit;
         //console.log(map.getCenter())
-        gauge_plot("money-new", cost, budget);
+        //gauge_plot("money-new", cost, budget);
       } else {
         answer.innerHTML = '0.0 ' + area_unit;
-        gauge_plot("money-new", 0, budget);
+        //gauge_plot("money-new", 0, budget);
         $('#id_management_area').val(0);
         $('#id_management_cost').val(0);
       }
@@ -1873,25 +1891,21 @@ map.on('draw.modechange', e => {
       return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
     }
 
-    function gauge_plot(div_id, amount, max_amount) {
+    function gauge_plot(div_id, host_removal_dollars, pesticide_dollars, max_amount) {
 
       var max_level = max_amount/1000000;
-      var level = amount/1000000;
+      var host_removal_cost = host_removal_dollars/1000000;
+      var pesticide_cost = pesticide_dollars/1000000;
+      var total_cost = host_removal_cost + pesticide_cost;
 
-      if (level >= max_level) {
+      if (total_cost >= max_level) {
         main_color = "#f55949";
         drawn_level = max_level;
-        var overbudget = level - max_level;
+        var overbudget = total_cost - max_level;
         warning_msg = "Budget exceeded by:<br>$" + round(overbudget, 2) + " million";
         warning_color = "#f55949";
-      } else {
-        main_color = "#7ba83d";
-        drawn_level = level;
-        warning_msg = 'spent on<br>management';
-        warning_color = 'white';
-      };
       var data = [{
-        values: [drawn_level, (0.98 * max_level - drawn_level), (max_level / 50), (max_level / 3)],
+        values: [max_level,(0.98 * max_level - total_cost), (max_level / 50), (max_level / 3)],
         rotation: -135,
         direction: "clockwise",
         sort: false,
@@ -1900,7 +1914,7 @@ map.on('draw.modechange', e => {
         marker: {
           colors: [main_color, '#676b73', '#f55949', 'rgba(255, 255, 255, 0)']
         },
-        labels: ['Money spent in <br> this run:<br>$' + level + ' million', '', 'Budget: $' + max_level +
+        labels: ['Total <br> cost:<br>$' + round(total_cost, 3) + ' million', '', 'Budget: $' + max_level +
           ' million', ''
         ],
         hoverinfo: 'label',
@@ -1908,6 +1922,31 @@ map.on('draw.modechange', e => {
         type: 'pie',
         showlegend: false
       }];
+            } else {
+        main_color = "#7ba83d";
+        drawn_level = total_cost;
+        warning_msg = 'spent on<br>management';
+        warning_color = 'white';
+      var data = [{
+        values: [host_removal_cost, pesticide_cost,(0.98 * max_level - total_cost), (max_level / 50), (max_level / 3)],
+        rotation: -135,
+        direction: "clockwise",
+        sort: false,
+        textinfo: 'text',
+        textposition: 'inside',
+        marker: {
+          colors: [main_color, main_color, '#676b73', '#f55949', 'rgba(255, 255, 255, 0)']
+        },
+        labels: ['Host removal <br> cost:<br>$' + round(host_removal_cost, 3) + ' million',
+        'Pesticide <br> cost:<br>$' + round(pesticide_cost, 3) + ' million', '', 'Budget: $' + max_level +
+          ' million', ''
+        ],
+        hoverinfo: 'label',
+        hole: 0.8,
+        type: 'pie',
+        showlegend: false
+      }];
+            };
 
       var layout = {
         annotations: [{
@@ -1917,7 +1956,7 @@ map.on('draw.modechange', e => {
             xanchor: 'middle',
             y: 0.5,
             yanchor: 'middle',
-            text: '$' + round(level, 1),
+            text: '$' + round(total_cost, 1),
             font: {
               family: 'Helvetica',
               size: 30,
@@ -2001,7 +2040,7 @@ map.on('draw.modechange', e => {
       });
     }
 
-    gauge_plot("money-new", 0, $("input#id_budget").val());
+    gauge_plot("money-new", 0,0, $("input#id_budget").val());
 
 
     $('#hide_details_button').on('click', function () {
