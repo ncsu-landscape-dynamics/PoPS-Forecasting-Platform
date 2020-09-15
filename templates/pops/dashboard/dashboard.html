@@ -912,10 +912,11 @@ map.on('draw.selectionchange', selectionChange);
       }
     }
     //Add the polygon to draw. Set management properties. Perform findAndCombineOverlappingPolyogns.
-    function drawPolygon(polygon, management_type, efficacy) {
+    function drawPolygon(polygon, management_type, efficacy,cost) {
       featureID = draw.add(polygon);
       draw.setFeatureProperty(featureID, 'management_type', management_type);
       draw.setFeatureProperty(featureID, 'efficacy', efficacy);
+      draw.setFeatureProperty(featureID, 'cost', cost);
       //draw.add(draw.get(featureID)); //This line makes the new change draw on the map and appear.    
       findAndCombineOverlappingPolygons(featureID);
     };
@@ -1010,6 +1011,7 @@ map.on('draw.selectionchange', selectionChange);
         [host_removal_area, pesticide_area] = calculateManagementArea(data);
         console.log('host_removal_area = ' + host_removal_area);
         console.log('pesticide_area = ' + pesticide_area);
+        console.log('convertedData = ' + convertedData);
         [host_removal_cost,pesticide_cost] = calculateManagementCost(host_removal_area, pesticide_area);
         var total_area = host_removal_area + pesticide_area;
         var rounded_area = Math.round(total_area * 100) / 100;
@@ -1198,7 +1200,7 @@ $( "input#id_budget, input#id_cost, select#id_area_unit" ).on( "click blur load"
   console.log("The actual cost per meter squared is: " + actual_cost_per_meter_squared);
   $('input#id_cost_per_meter_squared').val(actual_cost_per_meter_squared);
   $('span.displayed_area_unit').text(area_unit);
-updateArea();
+updateJSON();
 });
 
 //Redundant function here doing the same thing as above, just on load to make sure 
@@ -1213,7 +1215,7 @@ $(document).ready(function(){
   console.log("The actual cost per meter squared is: " + actual_cost_per_meter_squared);
   $('input#id_cost_per_meter_squared').val(actual_cost_per_meter_squared);
   $('span.displayed_area_unit').text(area_unit);
-updateArea();
+updateJSON();
 });
 
 
@@ -1299,11 +1301,11 @@ function enableDrawTools(){
       };
 
       console.log('Added draw tools.')
-      updateArea();
+      updateJSON();
     }  
     else  {
     console.log('Did not add draw tools because TL is checked')
-      updateArea();
+      updateJSON();
     }
   }
   else {
