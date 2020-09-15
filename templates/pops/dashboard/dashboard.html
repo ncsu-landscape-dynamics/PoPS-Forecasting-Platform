@@ -29,7 +29,11 @@
 
   <script>
 
-var colors = ['#C6F761', '#60f781','#60e8f7','#be89fa','#fa89d2'];//['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
+var colors = ['#d6f731','#4af7b0','#6fd5f7','#c596fa','#fa89d2'];//['#C6F761', '#60f781','#60e8f7','#be89fa','#fa89d2'];//['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
+var host_removal_patterns=['X-LimeGreen','X-BlueGreen','X-Blue','X-Purple','X-Pink',];
+var pesticide_application_patterns=['ColoredDots-LimeGreen','ColoredDots-BlueGreen','ColoredDots-Blue','ColoredDots-Purple','ColoredDots-Pink',];
+
+
 var acre_to_meter_ratio=0.000247105;
 var max_number=100;
 var max_area=100;
@@ -377,12 +381,16 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                     map.removeControl(draw);
                     if (year_count) {
                       var draw_color = colors[year_count-1];
+                      var host_removal_pattern = host_removal_patterns[year_count-1];
+                      var pesticide_application_pattern = pesticide_application_patterns[year_count-1];
                     }
                     else {
                       var draw_color = '#000';
+                      var host_removal_pattern = '';
+                      var pesticide_application_pattern = '';
                     }
                     console.log('Draw color:' + draw_color);
-                    draw = set_draw_color(draw_color);
+                    draw = set_draw_color(draw_color,host_removal_pattern,pesticide_application_pattern);
                     map.addControl(draw);
                     return;
                   };
@@ -456,7 +464,8 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                         updateDrawColor(year_count);
                       });
 
-                  </script>                
+                  </script>   
+
                   <div id="map" class="large_map"></div>
                   <button id="show_details_button" type="button" class="btn" style="display: none" data-toggle="tool"
                     title="Show details."><i class="fas fa-chevron-left"></i></button>
@@ -553,31 +562,88 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   <div id="polygon-info">0.0 acres</div> 
                   </div>
                   <div id="money-new" class="col py-0" style="width:180px; height:140px"></div>
-                  <div id="draw-controls" class="btn-group-vertical" role="group" >
-                  <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool" 
-                  title="Draw management polygon" data-placement="left">
-                  <i class="fas fa-draw-polygon"></i>
-                  </button>
-                  <div class="btn-group" role="group" data-toggle="tool" 
-                  title="Draw circle" data-placement="left">
-                    <button id="btnGroupCircles" type="button" class="btn btn-default drawing-tool dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="far fa-dot-circle"></i>
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="btnGroupCircles">
-                      <a id="300ft-circle-tool" class="dropdown-item" href="#">300ft radius</a>
-                      <a id="600ft-circle-tool" class="dropdown-item" href="#">600ft radius</a>
-                    </div>
-                  </div>
-                  <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
-                  title="Selection tool" data-placement="left">
-                  <i class="fas fa-hand-paper"></i>
-                  </button>
-                  <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
-                  title="Delete selection" data-placement="left">
-                  <i class="fas fa-trash-alt"></i>
-                  </button>
-
-                  </div>
+  <div id="draw-controls" class="btn-group-vertical" role="group">
+    <div class="input-group input-group rounded-0 border" title="Host removal">
+      <div class="input-group-prepend dropleft rounded-0">
+        <button type="button" title="Host removal" class="btn dropdown-toggle dropdown-toggle-split rounded-0 border"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <button type="button" class="btn border">
+          <i class="fas fa-window-close"></i> <input class="management-type rounded-0" type="checkbox"
+            value="host_removal" id="host_removal_status" checked>
+        </button>
+        <div class="dropdown-menu">
+          <div class="mx-2 my-1">Host removal:</div>
+          <div class="input-group input-group-sm mx-2 my-1">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Efficacy</span>
+            </div>
+            <input id="default_host_removal_efficacy" type="number" name="host_removal_efficacy" value="0.5" min="0"
+              max="1" step="0.1">
+          </div>
+          <div class="input-group input-group-sm mx-2 my-1">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$ per m<sup>2</sup></span>
+            </div>
+            <input id="default_host_removal_cost" type="number" name="host_removal_cost" value="0.5" min="0" max="1"
+              step="0.1">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="input-group input-group rounded-0 border" title="Pesticide">
+      <div class="input-group-prepend dropleft rounded-0">
+        <button type="button" class="btn dropdown-toggle dropdown-toggle-split rounded-0 border" title="Pesticide"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <button type="button" class="btn border">
+          <i class="fas fa-spray-can"></i> <input class="management-type rounded-0" type="checkbox" value="pesticide"
+            id="pesticide_status">
+        </button>
+        <div class="dropdown-menu">
+          <div class="mx-2 my-1">Pesticide:</div>
+          <div class="input-group input-group-sm mx-2 my-1">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Efficacy</span>
+            </div>
+            <input id="default_pesticide_efficacy" type="number" name="pesticide_efficacy" value="0.5" min="0" max="1"
+              step="0.1">
+          </div>
+          <div class="input-group input-group-sm mx-2 my-1">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$ per m<sup>2</sup></span>
+            </div>
+            <input id="default_pesticide_cost" type="number" name="pesticide_cost" value="0.5" min="0" max="1"
+              step="0.1">
+          </div>
+        </div>
+      </div>
+    </div>
+    <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool"
+      title="Draw management polygon" data-placement="left">
+      <i class="fas fa-draw-polygon"></i>
+    </button>
+    <div class="btn-group" role="group" data-toggle="tool" title="Draw circle" data-placement="left">
+      <button id="btnGroupCircles" type="button" class="btn btn-default drawing-tool dropdown-toggle"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="far fa-dot-circle"></i>
+      </button>
+      <div class="dropdown-menu" aria-labelledby="btnGroupCircles">
+        <a id="300ft-circle-tool" class="dropdown-item" href="#">300ft radius</a>
+        <a id="600ft-circle-tool" class="dropdown-item" href="#">600ft radius</a>
+      </div>
+    </div>
+    <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
+      title="Selection tool" data-placement="left">
+      <i class="fas fa-hand-paper"></i>
+    </button>
+    <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
+      title="Delete selection" data-placement="left">
+      <i class="fas fa-trash-alt"></i>
+    </button>
+  </div>
                   <script>
 
                       $('#historic-legend-container').show();
@@ -1077,7 +1143,7 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ o
 
 </script>
   <script src="{% static 'js/dashboard/custom_draw.js' %}"></script>
-  <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
+<script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
   <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
     type='text/css' />
@@ -1088,7 +1154,7 @@ $(run_comparison_plot('run_{{ run.pk }}','{{ run.name|truncatechars:18 }}', {{ o
     /* eslint-disable */
     var map = new mapboxgl.Map({
       container: 'map', // container id
-      style: 'mapbox://styles/mapbox/dark-v10', //hosted style id
+      style: 'mapbox://styles/shankj687/ckepyeuvg2zh219s0qihd4m55', //hosted style id
       center: [{{ mapbox_parameters.longitude}}, {{ mapbox_parameters.latitude}}], // initial map center in [lon, lat]
       zoom: {{ mapbox_parameters.zoom }} // starting zoom
     });
@@ -1329,42 +1395,85 @@ console.log('Adding host map')
 
 
 var management_circle_radius = 0.04572; //default management radius in km
-const CircleMode = {};
+  // CUSTOM CIRCLE DRAWING MODE 
+  // to draw management buffers of given radius.
+  // Info on custom modes: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/MODES.md
 
-CircleMode.onSetup = function(opts) {
-  var state = {};
-  return state;
-};
+    const CircleMode = {};
 
-CircleMode.onClick = function(state,e) {
-  console.log('CIRCLE MODE CLICKED')
-  const circleFeature = createGeoJSONCircle([e.lngLat.lng, e.lngLat.lat], management_circle_radius);
-  var circle1 = this.newFeature(circleFeature);
-  this.addFeature(circle1); // puts the point on the map
-  this.map.fire("draw.create");
-};
+    CircleMode.onSetup = function (opts) {
+      var state = {};
+      return state;
+    };
+    //On click, a circle of radius, management_circle_radius, is drawn and added to the management JSON.
+    CircleMode.onClick = function (state, e) {
+      console.log('Drawing circle...')
+      var center = [e.lngLat.lng, e.lngLat.lat];
+      var radius = management_circle_radius;
+      var management = getManagementType();
+      var management_type = management[0];
+      var host_removal_efficacy = management[1];
+      var pesticide_application_efficacy = management[2];
+      var host_removal_cost = management[3];
+      var pesticide_application_cost = management[4];
+      if (management_type == 'Host removal and Pesticide') {
+        var circle1 = createCircle(center, radius, 'Host removal', host_removal_efficacy,host_removal_cost);
+        addCircle(circle1);
+        var circle2 = createCircle(center, radius, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost);
+        addCircle(circle2);
+      } else if (management_type == 'Host removal') {
+        var circle = createCircle(center, radius, 'Host removal', host_removal_efficacy, host_removal_cost);
+        addCircle(circle);
+      } else if (management_type == 'Pesticide') {
+        var circle = createCircle(center, radius, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost);
+        addCircle(circle);
+      } else {
+        console.log('No management type selected.')
+      }
+    };
+    //Creates a JSON circle of given radius and number of steps. Includes management and efficacy properties.
+    function createCircle(center, radius, management_type, efficacy, cost) {
+      var options = {
+        steps: 32,
+        units: 'kilometers',
+        properties: {
+          management_type: management_type,
+          efficacy: efficacy,
+          cost: cost
+        }
+      };
+      var circle = turf.circle(center, radius, options);
+      return circle
+    }
+    //Adds the circle JSON to Draw, finds and combines polygons, adds to management JSON.
+    function addCircle(circle) {
+      featureID = draw.add(circle);
+      new_circle = draw.get(featureID);
+      findAndCombineOverlappingPolygons(featureID);
+    }
 
-CircleMode.onStop = function(state,e) {
-  this.map.fire("draw.create");
-  console.log('CIRCLE MODE STOPPED');
-};
+    CircleMode.onStop = function (state, e) {
+      //this.map.fire("draw.create");
+    };
 
-CircleMode.toDisplayFeatures = function(state, geojson, display) {
-  display(geojson);
-};
+    //toDisplayFeatures is a required function to show the polygon. Triggered anytime a feature is rendered.
+    CircleMode.toDisplayFeatures = function (state, geojson, display) {
+      display(geojson);
+    };
 
 
-function set_draw_color(draw_color) {
-  var draw = new MapboxDraw({
-    keybindings: true,
-    displayControlsDefault: false,
-    modes: Object.assign({
-      draw_circle: CircleMode,
-    }, MapboxDraw.modes),
-    controls: {
-      //polygon: true,
-      //trash: true
-    },
+    function set_draw_color(draw_color,host_removal_pattern,pesticide_application_pattern) {
+      var draw = new MapboxDraw({
+        keybindings: true,
+        displayControlsDefault: false,
+        userProperties: true,
+        modes: Object.assign({
+          draw_circle: CircleMode,
+        }, MapboxDraw.modes),
+        controls: {
+          //polygon: true,
+          //trash: true
+        },
     styles: [
     {
       'id': 'circle-active',
@@ -1428,12 +1537,17 @@ function set_draw_color(draw_color) {
         "filter": ["all", ["==", "$type", "Polygon"],
           ["!=", "mode", "static"]
         ],
-        "paint": {
-          "fill-color": draw_color,
-          "fill-outline-color": draw_color,
-          "fill-opacity": 0.1
-        }
-      },
+            "paint": {
+              'fill-pattern': [
+                "case",
+                ['==', ['get', "user_management_type"], "Host removal"], host_removal_pattern,
+                ['==', ['get', "user_management_type"], "Pesticide"], pesticide_application_pattern,
+                ''
+              ],      
+              "fill-outline-color": draw_color,
+              "fill-opacity": 1.0
+            }
+          },
       // polygon outline stroke
       // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
       {
@@ -1529,14 +1643,236 @@ function set_draw_color(draw_color) {
   return draw;
 };
 
-draw_color='#C6F761';
-draw = set_draw_color(draw_color);
-map.addControl(draw);
+    //Set initial draw color and settings, add Draw functionality to the map.
+    var draw_color = colors[0];
+    var host_removal_pattern=host_removal_patterns[0];
+    var pesticide_application_pattern=pesticide_application_patterns[0];
+    draw = set_draw_color(draw_color,host_removal_pattern,pesticide_application_pattern);
+    map.addControl(draw);
 
-    map.on('draw.create', updateArea);
-    map.on('draw.delete', updateArea);
-    map.on('draw.update', updateArea);
+    //Draw fires a number of events. All of these events are namespaced with draw. 
+    //and are emitted from the Mapbox GL JS map object. 
+    //All events are all triggered by user interaction.
+    //Here we are giving the draw events custom functions to perform when triggered.
+    map.on('draw.create', grabPolygon);
+    map.on('draw.delete', updateJSON);
+    map.on('draw.update', updatePolygons);
+    map.on('draw.selectionchange', selectionChange)
 
+    //Get the currently drawn polygon, so we can add management properties to the JSON.
+    function grabPolygon(e) {
+      polygon = draw.get(e.features[0].id); //Get the polygon
+      delete polygon['id']; //Delete the ID, so we can duplicate it if there are more than 1 management type.
+      draw.delete(e.features[0].id); //delete the original polygon.
+      setManagementProperty(polygon); //Assign management properties to polygon.
+    }
+    //Assign management and efficacy properties to JSON.
+    //Draw the polygon(s) (this includes combining same-type polygons and updating the management JSON)
+    function setManagementProperty(polygon) {
+      var management = getManagementType();
+      var management_type = management[0];
+      var host_removal_efficacy = management[1];
+      var pesticide_application_efficacy = management[2];
+      var host_removal_cost = management[3];
+      var pesticide_application_cost = management[4];
+      if (management_type == 'Host removal and Pesticide') {
+        drawPolygon(polygon, 'Host removal', host_removal_efficacy,host_removal_cost)
+        drawPolygon(polygon, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost)
+      } else if (management_type == 'Host removal') {
+        drawPolygon(polygon, 'Host removal', host_removal_efficacy,host_removal_cost)
+      } else if (management_type == 'Pesticide') {
+        drawPolygon(polygon, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost)
+      } else {
+        console.log('Error: No management type')
+      }
+    }
+    //Add the polygon to draw. Set management properties. Perform findAndCombineOverlappingPolyogns.
+    function drawPolygon(polygon, management_type, efficacy) {
+      featureID = draw.add(polygon);
+      draw.setFeatureProperty(featureID, 'management_type', management_type);
+      draw.setFeatureProperty(featureID, 'efficacy', efficacy);
+      //draw.add(draw.get(featureID)); //This line makes the new change draw on the map and appear.    
+      findAndCombineOverlappingPolygons(featureID);
+    }
+
+    //When selection changes, show box to edit the selected polygons.
+    function selectionChange(e) {
+      selection = draw.getSelected();
+      //display ability to edit if 1 or more polygons are selected
+      if (selection.features.length > 0) {
+        //Get the management type of the first feature, to pre-check that as the type
+        selected_management_type = selection.features[0].properties.management_type;
+        $("input[type=radio][name='editManagementOptions']").prop("checked", false);
+        $("input[type=radio][value='" + selected_management_type + "']").prop("checked", true);
+        if (selected_management_type == 'Host removal') {
+          $("input[id='edit_host_removal_efficacy']").val(selection.features[0].properties.efficacy);
+          $("input[id='edit_pesticide_efficacy']").val('');
+        } else if (selected_management_type == 'Pesticide') {
+          $("input[id='edit_host_removal_efficacy']").val('');
+          $("input[id='edit_pesticide_efficacy']").val(selection.features[0].properties.efficacy);
+        }
+        //Show edit polygons box.
+        $('#editPolygons').show();
+      } else {
+        $('#editPolygons').hide();
+      }
+    }
+
+    //Change management type of selected polygons
+    $("#changeManagementButton").on('click', function () {
+      selectionIDs = draw.getSelectedIds();
+      var editManagementTypeValue = $("input[name='editManagementOptions']:checked").val();
+      var editHostRemovalEfficacy = $("input[id='edit_host_removal_efficacy']").val();
+      var editPesticideEfficacy = $("input[id='edit_pesticide_efficacy']").val();
+      for (var n = 0; n < selectionIDs.length; n++) {
+        draw.setFeatureProperty(selectionIDs[n], 'management_type', editManagementTypeValue);
+        if (editManagementTypeValue == 'Host removal') {
+          draw.setFeatureProperty(selectionIDs[n], 'efficacy', editHostRemovalEfficacy);
+        } else if (editManagementTypeValue == 'Pesticide') {
+          draw.setFeatureProperty(selectionIDs[n], 'efficacy', editPesticideEfficacy);
+        }
+        draw.add(draw.get(selectionIDs[n])); //This line makes the new change draw on the map and appear.
+      }
+      updateJSON(selectionIDs);
+    });
+
+    //When the polygons change (e.g. a polygon is selected and moved), check for overlapping polygons.
+    function updatePolygons(e) {
+      selection = draw.getSelectedIds();
+      for (var n = 0; n < selection.length; n++) {
+        findAndCombineOverlappingPolygons(selection[n]);
+      }
+    }
+
+    //Get the checked management type to apply to newly drawn polygons.
+    function getManagementType() {
+      if ($('#host_removal_status').prop('checked') && $('#pesticide_status').prop('checked')) {
+        management_type = 'Host removal and Pesticide';
+        host_removal_efficacy = $("#default_host_removal_efficacy").val();
+        host_removal_cost = $("#default_host_removal_cost").val();
+        pesticide_application_efficacy = $("#default_pesticide_efficacy").val();
+        pesticide_application_cost = $("#default_pesticide_cost").val();
+      } else if ($('#host_removal_status').prop('checked')) {
+        management_type = 'Host removal';
+        host_removal_efficacy = $("#default_host_removal_efficacy").val();
+        pesticide_application_efficacy = 0;
+        host_removal_cost = $("#default_host_removal_cost").val();
+        pesticide_application_cost = 0;
+      } else if ($('#pesticide_status').prop('checked')) {
+        management_type = 'Pesticide';
+        host_removal_efficacy = 0;
+        host_removal_cost = 0;
+        pesticide_application_efficacy = $("#default_pesticide_efficacy").val();
+        pesticide_application_cost = $("#default_pesticide_cost").val();
+      } else {
+        management_type = '';
+      }
+      return [management_type, host_removal_efficacy, pesticide_application_efficacy,host_removal_cost,pesticide_application_cost];
+    }
+
+    //This function updates the GeoJSON management field 
+    function updateJSON() {
+      var data = draw.getAll();
+      console.log("Updating management polygons:");
+      //console.log(data);
+      var answer = document.getElementById('polygon-info');
+      var budget = $("input#id_budget").val();
+      var area_unit = $("select#id_area_unit").children("option:selected").text();
+      var area_modifier = $("select#id_area_unit").children("option:selected").val();
+      if (data.features.length > 0) {
+        // Stringify the GeoJson
+        var convertedData = JSON.stringify(data);
+        [host_removal_area, pesticide_area] = calculateManagementArea(data);
+        console.log('host_removal_area = ' + host_removal_area);
+        console.log('pesticide_area = ' + pesticide_area);
+        [host_removal_cost,pesticide_cost] = calculateManagementCost(host_removal_area, pesticide_area);
+        var total_area = host_removal_area + pesticide_area;
+        var rounded_area = Math.round(total_area * 100) / 100;
+        var displayed_area = Math.round(total_area*area_modifier * 100) / 100;
+        // round cost to 2 decimal places
+        var total_cost = host_removal_cost + pesticide_cost;
+        console.log('Cost is = ' + total_cost)
+      } else {
+        var rounded_area=0;
+        var convertedData = 0;
+        var host_removal_cost=0, pesticide_cost = 0;
+        var total_cost = 0;
+        var displayed_area = 0;
+        console.log("updateJSON: There is no management.")
+      }
+      answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + area_unit;     
+      $('#id_management_polygons').val(convertedData);
+      $('#id_management_area').val(rounded_area);
+      $('#id_management_cost').val(total_cost);
+      gauge_plot("money-new", host_removal_cost, pesticide_cost, budget);
+    }
+
+function calculateManagementCost(host_removal_area, pesticide_area) {
+      var host_removal_cost_per_meter_squared = $("input#id_cost_per_meter_squared").val();
+      var pesticide_cost_per_meter_squared = $("input#id_cost_per_meter_squared").val();
+        var host_removal_cost = Math.round(host_removal_area * host_removal_cost_per_meter_squared * 100) / 100;
+        var pesticide_cost = Math.round(pesticide_area * pesticide_cost_per_meter_squared * 100) / 100;
+        return [host_removal_cost,pesticide_cost]
+}
+
+function calculateManagementArea(data) {
+  var host_removal_objects = [];
+  var pesticide_objects = [];
+  for (var n = 0; n < data.features.length; n++) {
+    if (data.features[n].properties.management_type == 'Host removal') {
+      host_removal_objects.push(data.features[n]);
+    } else if (data.features[n].properties.management_type == 'Pesticide') {
+      pesticide_objects.push(data.features[n]);
+    }
+  }
+  var host_removal_JSON = turf.featureCollection(host_removal_objects);
+  var pesticide_JSON = turf.featureCollection(pesticide_objects);
+  var host_removal_area = turf.area(host_removal_JSON);
+  var pesticide_area = turf.area(pesticide_JSON);
+  return [host_removal_area, pesticide_area];
+}
+    //Check if the most recently drawn polygon overlaps any existing polygons
+    //of the same type and combine.
+    function findAndCombineOverlappingPolygons(newPolygonID) {
+      var allPolygons = draw.getAll();
+      newPolygon = draw.get(newPolygonID);
+      //Check that there are more than one polygon
+      if (allPolygons.features.length > 1) {
+        //Loop through all of the existing polygons
+        for (var n = 0; n < allPolygons.features.length - 1; n++) {
+          var existingPolygon = allPolygons.features[n];
+          //Check to see if the new polygon intersects the existing polygon
+          var intersection = turf.intersect(newPolygon, existingPolygon);
+          if (intersection) {
+            //If they are the same management type, combine the two polygons.
+            if ((newPolygon.properties.management_type == existingPolygon.properties.management_type)) {
+              union = combineTwoPolygons(newPolygonID, existingPolygon.id);
+              if (union) {
+                newPolygonID = union;
+              }
+            }
+            else {
+            }
+          }
+        }
+      }
+      updateJSON(newPolygonID);
+    }
+
+    //Check if polygon1 and polygon 2 intersect and are of the same type.
+    //If yes, combine them into a single polygon and delete the original 2.
+    function combineTwoPolygons(polygonID1, polygonID2) {
+      polygon1 = draw.get(polygonID1);
+      polygon2 = draw.get(polygonID2);
+      //if polygons intersect AND management type is the same, perform union of two polygons
+      if ((turf.intersect(polygon1, polygon2)) && (polygon1.properties.management_type == polygon2.properties.management_type)) {
+        union = turf.union(polygon1, polygon2); //create new union polygon
+        var featureIds = draw.add(union); //add new polygon to draw
+        draw.delete(polygonID1) //remove original overlapping polygons
+        draw.delete(polygonID2) //remove original overlapping polygons
+        return (featureIds); //return the ID of the new polygon
+      }
+    }
 
 //Mapbox draw switches to select tool after drawing a polygon.
 //This function makes it so that the mode stays as polygon if the polygon
@@ -1580,10 +1916,10 @@ map.on('draw.modechange', e => {
         $('#id_management_cost').val(cost);
         answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + area_unit;
         //console.log(map.getCenter())
-        gauge_plot("money-new", cost, budget);
+        //gauge_plot("money-new", cost, budget);
       } else {
         answer.innerHTML = '0.0 ' + area_unit;
-        gauge_plot("money-new", 0, budget);
+        //gauge_plot("money-new", 0, budget);
         $('#id_management_area').val(0);
         $('#id_management_cost').val(0);
       }
@@ -1594,25 +1930,21 @@ map.on('draw.modechange', e => {
       return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
     }
 
-    function gauge_plot(div_id, amount, max_amount) {
+    function gauge_plot(div_id, host_removal_dollars, pesticide_dollars, max_amount) {
 
       var max_level = max_amount/1000000;
-      var level = amount/1000000;
+      var host_removal_cost = host_removal_dollars/1000000;
+      var pesticide_cost = pesticide_dollars/1000000;
+      var total_cost = host_removal_cost + pesticide_cost;
 
-      if (level >= max_level) {
+      if (total_cost >= max_level) {
         main_color = "#f55949";
         drawn_level = max_level;
-        var overbudget = level - max_level;
+        var overbudget = total_cost - max_level;
         warning_msg = "Budget exceeded by:<br>$" + round(overbudget, 2) + " million";
         warning_color = "#f55949";
-      } else {
-        main_color = "#7ba83d";
-        drawn_level = level;
-        warning_msg = 'spent on<br>management';
-        warning_color = 'white';
-      };
       var data = [{
-        values: [drawn_level, (0.98 * max_level - drawn_level), (max_level / 50), (max_level / 3)],
+        values: [max_level,(0.98 * max_level - total_cost), (max_level / 50), (max_level / 3)],
         rotation: -135,
         direction: "clockwise",
         sort: false,
@@ -1621,7 +1953,7 @@ map.on('draw.modechange', e => {
         marker: {
           colors: [main_color, '#676b73', '#f55949', 'rgba(255, 255, 255, 0)']
         },
-        labels: ['Money spent in <br> this run:<br>$' + level + ' million', '', 'Budget: $' + max_level +
+        labels: ['Total <br> cost:<br>$' + round(total_cost, 3) + ' million', '', 'Budget: $' + max_level +
           ' million', ''
         ],
         hoverinfo: 'label',
@@ -1629,6 +1961,31 @@ map.on('draw.modechange', e => {
         type: 'pie',
         showlegend: false
       }];
+            } else {
+        main_color = "#7ba83d";
+        drawn_level = total_cost;
+        warning_msg = 'spent on<br>management';
+        warning_color = 'white';
+      var data = [{
+        values: [host_removal_cost, pesticide_cost,(0.98 * max_level - total_cost), (max_level / 50), (max_level / 3)],
+        rotation: -135,
+        direction: "clockwise",
+        sort: false,
+        textinfo: 'text',
+        textposition: 'inside',
+        marker: {
+          colors: [main_color, main_color, '#676b73', '#f55949', 'rgba(255, 255, 255, 0)']
+        },
+        labels: ['Host removal <br> cost:<br>$' + round(host_removal_cost, 3) + ' million',
+        'Pesticide <br> cost:<br>$' + round(pesticide_cost, 3) + ' million', '', 'Budget: $' + max_level +
+          ' million', ''
+        ],
+        hoverinfo: 'label',
+        hole: 0.8,
+        type: 'pie',
+        showlegend: false
+      }];
+            };
 
       var layout = {
         annotations: [{
@@ -1638,7 +1995,7 @@ map.on('draw.modechange', e => {
             xanchor: 'middle',
             y: 0.5,
             yanchor: 'middle',
-            text: '$' + round(level, 1),
+            text: '$' + round(total_cost, 1),
             font: {
               family: 'Helvetica',
               size: 30,
@@ -1722,7 +2079,7 @@ map.on('draw.modechange', e => {
       });
     }
 
-    gauge_plot("money-new", 0, $("input#id_budget").val());
+    gauge_plot("money-new", 0,0, $("input#id_budget").val());
 
 
     $('#hide_details_button').on('click', function () {
