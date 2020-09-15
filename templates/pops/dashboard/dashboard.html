@@ -799,6 +799,9 @@
 <!-- Set the draw color and pattern fills for the draw tools -->
 <script src="{% static 'js/dashboard/setDrawColor.js' %}"></script>
 <script src="{% static 'js/dashboard/gaugePlot.js' %}"></script>
+<script src="{% static 'js/dashboard/ajax_setup_functions.js' %}"></script>
+<script src="{% static 'js/dashboard/spreadRatePlot.js' %}"></script>
+<script src="{% static 'js/dashboard/mapbox_layer_functions.js' %}"></script>
 
 <script>
   $("#polygon-tool").on('click', function () {
@@ -851,143 +854,10 @@ var year_id = '0';
 var max_occurence_number_for_legend = {{ session.max_value }}; //Normalize the run collections
 var map_fill_opacity = 0.6; //For occurence and forecasted data
 
-function newFireLayer(map_data, year, max_legend_value) {
-  console.log("Adding new layer for year " + year);
-  map.addSource(year, {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': map_data
-  });
-  map.addLayer({
-    "id": year,
-    "type": 'fill',
-    "source": year,
-    "layout": {
-      'visibility': 'none',
-    },
-    'paint': {
-      'fill-color': [
-        'interpolate',
-        ['linear'],
-        ['get', 'outputs'],
-        0.0 * max_legend_value, '#CC0000',
-        0.1 * max_legend_value, '#D61900',
-        0.2 * max_legend_value, '#E03300',
-        0.3 * max_legend_value, '#EA4C00',
-        0.4 * max_legend_value, '#F46600',
-        0.5 * max_legend_value, '#FF8000',
-        0.6 * max_legend_value, '#FF9F19',
-        0.7 * max_legend_value, '#FFBF33',
-        0.8 * max_legend_value, '#FFDF4C',
-        0.9 * max_legend_value, '#FFFF66',
-        1.0 * max_legend_value, '#FFFFCC'
-      ],
-      'fill-outline-color': [
-        'interpolate',
-        ['linear'],
-        ['get', 'outputs'],
-        0.0 * max_legend_value, '#CC0000',
-        0.1 * max_legend_value, '#D61900',
-        0.2 * max_legend_value, '#E03300',
-        0.3 * max_legend_value, '#EA4C00',
-        0.4 * max_legend_value, '#F46600',
-        0.5 * max_legend_value, '#FF8000',
-        0.6 * max_legend_value, '#FF9F19',
-        0.7 * max_legend_value, '#FFBF33',
-        0.8 * max_legend_value, '#FFDF4C',
-        0.9 * max_legend_value, '#FFFF66',
-        1.0 * max_legend_value, '#FFFFCC'
-      ],
-      'fill-opacity': [
-        'interpolate',
-        ['linear'],
-        ['get', 'outputs'],
-        0.0 * max_legend_value, 0.0,
-        0.001 * max_legend_value, map_fill_opacity,
-        0.2 * max_legend_value, map_fill_opacity,
-        0.3 * max_legend_value, map_fill_opacity,
-        0.4 * max_legend_value, map_fill_opacity,
-        0.5 * max_legend_value, map_fill_opacity,
-        0.6 * max_legend_value, map_fill_opacity,
-        0.7 * max_legend_value, map_fill_opacity,
-        0.8 * max_legend_value, map_fill_opacity,
-        0.9 * max_legend_value, map_fill_opacity,
-        1.0 * max_legend_value, map_fill_opacity
-      ]
-    }
-  }, 'waterway-label');
-};
-
-function newMagmaLayer(map_data, year, max_legend_value) {
-  console.log("Adding new magma layer for year " + year);
-  map.addSource(year, {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': map_data
-  });
-  map.addLayer({
-    "id": year,
-    "type": 'fill',
-    "source": year,
-    "layout": {
-      'visibility': 'none',
-    },
-    'paint': {
-      'fill-color': [
-        'interpolate',
-        ['linear'],
-        ['get', 'outputs'],
-        0.0 * max_legend_value, '#000005',
-        0.1 * max_legend_value, '#080616',
-        0.2 * max_legend_value, '#1E0848',
-        0.3 * max_legend_value, '#43006A',
-        0.4 * max_legend_value, '#6B116F',
-        0.5 * max_legend_value, '#981D69',
-        0.6 * max_legend_value, '#C92D59',
-        0.7 * max_legend_value, '#ED504A',
-        0.8 * max_legend_value, '#FA8657',
-        0.9 * max_legend_value, '#FBC17D',
-        1.0 * max_legend_value, '#FCFFB2'
-      ],
-      'fill-outline-color': [
-        'interpolate',
-        ['linear'],
-        ['get', 'outputs'],
-        0.0 * max_legend_value, '#000005',
-        0.1 * max_legend_value, '#080616',
-        0.2 * max_legend_value, '#1E0848',
-        0.3 * max_legend_value, '#43006A',
-        0.4 * max_legend_value, '#6B116F',
-        0.5 * max_legend_value, '#981D69',
-        0.6 * max_legend_value, '#C92D59',
-        0.7 * max_legend_value, '#ED504A',
-        0.8 * max_legend_value, '#FA8657',
-        0.9 * max_legend_value, '#FBC17D',
-        1.0 * max_legend_value, '#FCFFB2'
-      ],
-      'fill-opacity': [
-        'interpolate',
-        ['linear'],
-        ['get', 'outputs'],
-        0.0 * max_legend_value, 0.0,
-        0.001 * max_legend_value, map_fill_opacity,
-        0.2 * max_legend_value, map_fill_opacity,
-        0.3 * max_legend_value, map_fill_opacity,
-        0.4 * max_legend_value, map_fill_opacity,
-        0.5 * max_legend_value, map_fill_opacity,
-        0.6 * max_legend_value, map_fill_opacity,
-        0.7 * max_legend_value, map_fill_opacity,
-        0.8 * max_legend_value, map_fill_opacity,
-        0.9 * max_legend_value, map_fill_opacity,
-        1.0 * max_legend_value, map_fill_opacity
-      ]
-    }
-  }, 'waterway-label');
-};
-
-
 map.on('load', function() {
-  console.log("Adding initial data.");
+    console.log('Adding host map')
+    hostmapLayer({{ host_map|safe }});
+    console.log("Adding initial data.");
     {% for year in historic_data %}
       newFireLayer({{ year.data|safe }}, '{{ year.year}}', max_occurence_number_for_legend);
     {% endfor %}
@@ -1013,31 +883,6 @@ map.on('load', function() {
           }
           }, 'waterway-label');  */
 
-    console.log('Adding host map')
-    map.addSource('host_map', {
-      'type': 'geojson',
-      'data': {{ host_map|safe }}
-    });
-    map.addLayer({
-                    "id": 'host_map',
-                    "type": 'fill',
-                    "source": 'host_map',
-                    'paint': {
-                    'fill-color': [
-                    'interpolate',
-                    ['linear'],
-                    ['get', 'outputs'],
-                    1, '#63f542'
-                    ],
-                        'fill-opacity': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'outputs'],
-                            0, 0.00,
-                            100, 0.4,
-                        ]
-                    }
-                  }, 'waterway-label'); 
   default_run = {{ session.default_run }};
   console.log(default_run);
   get_output(default_run);                      
@@ -1442,7 +1287,7 @@ $("#year-slider").change(function () {
     $('#probability-legend-container').hide();
   }
   console.log("Current displayed year: " + year_id);
-  spread_rate_plot();
+  spreadRatePlot({{historic_data.last.year}});
 });
 
 $("select#run_preview_year_selector").change(function () {
@@ -1452,30 +1297,6 @@ console.log("New year selected: " + preview_year);
 
 });
 
-  function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-      var cookies = document.cookie.split(';');
-      for (var i = 0; i < cookies.length; i++) {
-        var cookie = jQuery.trim(cookies[i]);
-        // Does this cookie string begin with the name we want?
-        if (cookie.substring(0, name.length + 1) == (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  };
-
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-            // Only send the token to relative URLs i.e. locally.
-            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-        }
-    },
-});
 
 function disableDrawTools(){
   if ($("#draw-controls").is(":visible")){
@@ -1757,7 +1578,7 @@ function get_output(run_id) {
       var steering_outputs = data.all_steering_years;
       budget_plot(defaults, steering_outputs);
       area_plot(defaults, steering_outputs);
-      spread_rate_plot();
+      spreadRatePlot({{historic_data.last.year}});
       for (var i = 0; i < data.all_steering_years.length; i++) {
         console.log('Sanity check: ' + i)
       };
@@ -2512,119 +2333,6 @@ $(function () {
 $('#test-get-output').on('click', function(event) {
 //relayout_buttons(1000000,200000,300000);
 });
-
-function spread_rate_plot() {
-  var data = [];
-  console.log('Spread rate inside function: ')
-  console.log(spread_rate);
-  console.log(spread_rate.length);
-  var slider_year = parseInt($('#year-slider').find('input').val());
-  var year_count = parseInt($(".timeline-year-container.year_active").attr('data-year-counter'));
-  if (year_count == 0) {
-    year_color = 'grey';
-  } else {
-    year_color = colors[year_count - 1];
-  }
-  console.log(slider_year)
-
-  if (slider_year > {{historic_data.last.year}}) {
-    $('#spread_rate_title span').text(slider_year);
-    for (var i = 0; i < spread_rate.length; i++) {
-      if (spread_rate[i].year == slider_year) {
-        console.log(spread_rate[i]);
-        data.push({
-          type: "scatterpolar",
-          r: [parseFloat(spread_rate[i].spreadrate__east_rate), parseFloat(spread_rate[i].spreadrate__north_rate), parseFloat(spread_rate[i].spreadrate__west_rate), parseFloat(spread_rate[i].spreadrate__south_rate), parseFloat(spread_rate[i].spreadrate__east_rate)],
-          theta: ["E", "N", "W", "S", "E"],
-          fill: "toself",
-          marker: {
-            color: year_color,
-            size: 2,
-          },
-          line: {
-            width: 2,
-          },
-
-
-        });
-
-      };
-    };
-  } else {
-    $('#spread_rate_title span').text('');
-    data.push({
-      type: "scatterpolar",
-      r: [0, 0, 0, 0],
-      theta: ["E", "N", "W", "S", "E"],
-      fill: "toself",
-      marker: {
-        color: 'grey',
-        size: 0,
-      },
-      line: {
-        width: 0,
-      },
-
-
-    });
-  }
-  console.log(data);
-  console.log('Max spread rate: ' + max_spread_rate);
-
-  var layout = {
-    font: {
-      size: 15,
-      color: "white",
-      border: "transparent"
-    },
-    showlegend: false,
-    legend: {
-      font: {
-        size: 16
-      }
-    },
-    polar: {
-      bgcolor: "#2e3236",
-      angularaxis: {
-        tickwidth: 2,
-        linewidth: 3,
-        showline: false,
-
-        layer: "below traces"
-      },
-      radialaxis: {
-        range: [0, max_spread_rate],
-        showline: false,
-        showticklabels: false,
-        showgrid: true,
-        zeroline: false,
-        autotick: true,
-        ticks: '',
-
-        visible: true,
-        linewidth: 2,
-        tickwidth: 2,
-        gridcolor: "#4A5158",
-        gridwidth: 2
-      }
-    },
-    orientation: 0,
-    paper_bgcolor: 'transparent',
-    plot_bgcolor: 'black',
-    margin: {
-      l: 40,
-      r: 40,
-      b: 50,
-      t: 30,
-      pad: 0
-    },
-  };
-
-  Plotly.newPlot('spread_plot', data, layout, {
-    displayModeBar: false,
-    responsive: true
-  });
-};
 
 function relayout_buttons(max_number,max_area,max_cost) {
   var update = {
