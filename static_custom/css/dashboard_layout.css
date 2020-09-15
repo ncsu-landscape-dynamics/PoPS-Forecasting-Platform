@@ -194,7 +194,7 @@ div.timeline-active div a  {
   max-height: calc(800px - 150px)
 }
 
-#run-title, #run-preview-description {
+#run-preview-description {
   font-size: 1.2em;
   height: 60px;
   padding: 0.5em;
@@ -202,7 +202,6 @@ div.timeline-active div a  {
   border-width: 3px;
   border-style: outset;
   border-color: #212529;
-  flex: 0 1 auto;
 }
 #run-preview-description {
   height: 100%;
@@ -440,7 +439,7 @@ div#run-preview-container {
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ebf1f6), color-stop(50%,#abd3ee), color-stop(51%,#89c3eb), color-stop(100%,#d5ebfb));
 }
 
-    #money-new {
+    #current-budget-plot {
       position: absolute;
       top: 220px;
       right: 0px;

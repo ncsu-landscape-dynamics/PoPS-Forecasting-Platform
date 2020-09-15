@@ -15,7 +15,7 @@ function updateDrawColor (year_count) {
     var pesticide_application_pattern = '';
   }
   console.log('Draw color:' + draw_color);
-  draw = set_draw_color(draw_color,host_removal_pattern,pesticide_application_pattern);
+  draw = setDrawColor(draw_color,host_removal_pattern,pesticide_application_pattern);
   map.addControl(draw);
   return;
 };

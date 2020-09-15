@@ -159,3 +159,24 @@ function hostmapLayer(data) {
                     }
                   }, 'waterway-label'); 
 };
+
+    /*
+    console.log("Adding APHIS Perimeter Zone.");
+    map.addSource('perimeter_zone', {
+      'type': 'geojson',
+      'data': '{% static "map_data/slf_aphis_treatment.geojson" %}'
+    });
+    map.addLayer({
+          "id": 'perimeter_zone_layer',
+          "type": 'fill',
+          "source": 'perimeter_zone',
+          'paint': {
+          'fill-color': [
+          'interpolate',
+          ['linear'],
+          ['get', 'Dis_KB'],
+          1, '#41dff4'
+          ],
+          'fill-opacity': 0.1
+          }
+          }, 'waterway-label');  */
