@@ -1110,47 +1110,6 @@ map.on('draw.modechange', e => {
   }
 });
 
-    function updateArea(e) {
-      var data = draw.getAll();
-      console.log("Updating management polygons:");
-      console.log(data);
-
-      if (data.features.length > 0) {
-        // Stringify the GeoJson
-        var convertedData = JSON.stringify(data);
-
-        // Create export
-        $('#id_management_polygons').val(convertedData);
-      } else {
-        $('#id_management_polygons').val(0);
-        console.log("There is no management.")
-      }
-      var answer = document.getElementById('polygon-info');
-      var budget = $("input#id_budget").val();
-      var cost_per_meter_squared = $("input#id_cost_per_meter_squared").val();
-      var area_unit = $("select#id_area_unit").children("option:selected").text();
-      if (data.features.length > 0) {
-        var area = turf.area(data); //area in meters
-        // restrict to area to 2 decimal points
-        var area_modifier = $("select#id_area_unit").children("option:selected").val();
-        console.log('The area modifier is:' + area_modifier);
-        console.log('The area unit is:' + area_unit );
-        var rounded_area = Math.round(area * 100) / 100;
-        var displayed_area = Math.round(area*area_modifier * 100) / 100;
-        $('#id_management_area').val(rounded_area);
-        // round cost to 2 decimal places
-        var cost = Math.round(area * cost_per_meter_squared * 100) / 100;
-        $('#id_management_cost').val(cost);
-        answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + area_unit;
-        //console.log(map.getCenter())
-        //gaugePlot("current-budget-plot", cost, budget);
-      } else {
-        answer.innerHTML = '0.0 ' + area_unit;
-        //gaugePlot("current-budget-plot", 0, budget);
-        $('#id_management_area').val(0);
-        $('#id_management_cost').val(0);
-      }
-    }
 
     function round(value, decimals) {
       return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
