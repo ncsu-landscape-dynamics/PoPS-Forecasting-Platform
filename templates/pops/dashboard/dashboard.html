@@ -563,19 +563,24 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
                   </div>
                   <div id="money-new" class="col py-0" style="width:180px; height:140px"></div>
   <div id="draw-controls" class="btn-group-vertical" role="group">
-    <div class="input-group input-group-sm">
-      <div class="input-group-prepend dropleft">
-        <button type="button" title="Host removal" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false"> <i class="fas fa-window-close"></i>
+    <div class="input-group input-group rounded-0 border" title="Host removal">
+      <div class="input-group-prepend dropleft rounded-0">
+        <button type="button" title="Host removal" class="btn dropdown-toggle dropdown-toggle-split rounded-0 border"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span class="sr-only">Toggle Dropdown</span>
         </button>
+        <button type="button" class="btn border">
+          <i class="fas fa-window-close"></i> <input class="management-type rounded-0" type="checkbox"
+            value="host_removal" id="host_removal_status" checked>
+        </button>
         <div class="dropdown-menu">
+          <div class="mx-2 my-1">Host removal:</div>
           <div class="input-group input-group-sm mx-2 my-1">
             <div class="input-group-prepend">
               <span class="input-group-text">Efficacy</span>
             </div>
-            <input id="default_host_removal_efficacy" type="number" name="host_removal_efficacy" value="0.5" min="0" max="1"
-              step="0.1">
+            <input id="default_host_removal_efficacy" type="number" name="host_removal_efficacy" value="0.5" min="0"
+              max="1" step="0.1">
           </div>
           <div class="input-group input-group-sm mx-2 my-1">
             <div class="input-group-prepend">
@@ -586,19 +591,19 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
           </div>
         </div>
       </div>
-      <div class="input-group-append">
-        <div class="input-group-text">
-          <input class="management-type" type="checkbox" value="host_removal" id="host_removal_status" checked>
-        </div>
-      </div>
     </div>
-    <div class="input-group input-group-sm">
-      <div class="input-group-prepend dropleft">
-        <button type="button" class="btn dropdown-toggle dropdown-toggle-split" title="Pesticide" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false"> <i class="fas fa-spray-can"></i>
+    <div class="input-group input-group rounded-0 border" title="Pesticide">
+      <div class="input-group-prepend dropleft rounded-0">
+        <button type="button" class="btn dropdown-toggle dropdown-toggle-split rounded-0 border" title="Pesticide"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span class="sr-only">Toggle Dropdown</span>
         </button>
+        <button type="button" class="btn border">
+          <i class="fas fa-spray-can"></i> <input class="management-type rounded-0" type="checkbox" value="pesticide"
+            id="pesticide_status">
+        </button>
         <div class="dropdown-menu">
+          <div class="mx-2 my-1">Pesticide:</div>
           <div class="input-group input-group-sm mx-2 my-1">
             <div class="input-group-prepend">
               <span class="input-group-text">Efficacy</span>
@@ -615,13 +620,6 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
           </div>
         </div>
       </div>
-      <div class="input-group-append">
-        <div class="input-group-text">
-          <input class="management-type" type="checkbox" value="pesticide" id="pesticide_status">
-        </div>
-      </div>
-
-
     </div>
     <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool"
       title="Draw management polygon" data-placement="left">
