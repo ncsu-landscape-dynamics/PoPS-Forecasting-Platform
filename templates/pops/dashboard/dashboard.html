@@ -28,211 +28,24 @@
     {% endblock %}
 
   <script>
-
+  //Colors and patterns for drawing management polygons and plots.
 var colors = ['#d6f731','#4af7b0','#6fd5f7','#c596fa','#fa89d2'];//['#C6F761', '#60f781','#60e8f7','#be89fa','#fa89d2'];//['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
 var host_removal_patterns=['X-LimeGreen','X-BlueGreen','X-Blue','X-Purple','X-Pink',];
 var pesticide_application_patterns=['ColoredDots-LimeGreen','ColoredDots-BlueGreen','ColoredDots-Blue','ColoredDots-Purple','ColoredDots-Pink',];
-
-
+  //Default variable values for initial load (these may not all be necessary?)
 var acre_to_meter_ratio=0.000247105;
 var max_number=100;
 var max_area=100;
 var max_cost=100;
-
-function run_comparison_plot(run_comparison_div,run_name,infected, area, money) {
-
-var max_a=1;
-var max_b=1;
-
-if (infected == 'None') {
-  infected=0;
-};
-if (area == 'None') {
-  area=0;
-}
-if (money == 'None') {
-  money=0;
-}
-var trace1 = {
-  x: ['# Occurences'],
-  y: [infected],
-  type: 'bar',
-  text: ['Additional info'],
-  hoverinfo: ['x+y+text'],
-  marker: {
-    color: ['#2598b8'],
-    opacity: 1,
-  }
-}; 
-var trace2 = {
-  x: ['Occurence area'],
-  y: [area*acre_to_meter_ratio],
-  type: 'bar',
-  text: ['Additional info'],
-  hoverinfo: ['x+y+text'],
-  yaxis:'y2',
-  marker: {
-    color: ['#5fc2c2'],
-    opacity: 1,
-  }
-}; 
-var trace3 = {
-  x: ['Money spent'],
-  y: [money],
-  type: 'bar',
-  text: ['Additional info'],
-  hoverinfo: ['x+y+text'],
-  yaxis:'y3',
-  marker: {
-    color: ['#7ba83d'],
-    opacity: 1,
-  }
-}; 
-
-var data = [trace1,trace2,trace3];
-
-    var axis_template={
-        showgrid:false,
-        zeroline:false,
-        showticklabels: false,
-    };
-
-var xaxis ={
-    tickfont: {
-      size: 9,
-      color: 'white',
-      },
-      title: run_name,
-      titlefont: {
-      size: 12,
-      color: 'white',
-      },
-};
-var yaxis = {
-        range: [0,max_number],
-  };
-var yaxis2= {
-  ticksuffix:' acres',
-  overlaying: 'y',
-  range: [0,max_area*acre_to_meter_ratio],
-  };
-var yaxis3= {
-  tickprefix:'$',
-  overlaying: 'y',
-  range: [0,max_cost],
-  };
-var yaxis4= {
-  overlaying: 'y',
-  range: [0,max_a],
-  };
-var yaxis5= {
-  overlaying: 'y',
-  range: [0,max_b],
-  };
- 
-
-var layout = {
-    xaxis: $.extend({}, axis_template, xaxis),
-    yaxis: $.extend({}, axis_template, yaxis),
-    yaxis2: $.extend({}, axis_template, yaxis2),
-    yaxis3: $.extend({}, axis_template, yaxis3),
-        showlegend:false,
-        paper_bgcolor:'rgba(0,0,0,0)',
-        plot_bgcolor:'rgba(0,0,0,0)',//'#16181b',
-        margin: {
-            l: 10,
-            r: 10,
-            b: 30,
-            t: 5,
-            pad: 0
-        },
-        bargap: 0.1,
-        barmode: 'group',
-
-    };
-
-
-
-return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, responsive: true});
-
-};
-
-function insertRunButton(run_id, name, date, description, efficacy, infected_number, infected_area, cost) {
-  var run_pk = run_id.toString();
-    if (cost > max_cost){
-      max_cost = cost;
-      console.log('Cost is greater' + max_cost);
-    };
-    if (infected_number > max_number){
-      max_number = infected_number;
-      console.log('number_infected is greater' + max_number);
-    };
-    if (infected_area > max_area){
-      max_area = infected_area;
-      console.log('infected_area is greater' +max_area);
-    };
-  console.log('Creating run button: '+run_pk);
-
-      if (name.length > 18) {
-      var short_name = name.substring(0, 18) + '...';
-    } else {
-      short_name = name;
-    }
-    console.log('Short name: ' + short_name);
-    
-  if (!(document.getElementById("run_" + run_pk))) {
-
-    $('<button id="run_button_' + run_pk +
-      '" type="button" class="btn text-right run-link pb-2" data-run-collection = "' + run_pk +
-      '">'+
-      '<a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left">'+
-      '<i class="fas fa-play-circle"></i></a>' +
-      '<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>' + name +
-      '</strong></div><small><em>' + date +
-      '</em></small>" data-content="<div>' + description +
-      '</div><div>Efficacy: ' + efficacy +
-      '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a> '+
-      '<a class="delete_run_collection" data-toggle="tooltip" title="Delete" data-placement="left"><i class="fas fa-trash-alt"></i></a>' +
-      '<div id="run_' + run_pk +
-      '" class="comparison_plot" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));
-
-    $(function () {
-      $('[data-toggle="popover"]').popover({
-        boundary: 'viewport',
-        html: true,
-        trigger: 'hover focus',
-        template: '<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'
-      })
-    })
-
-
-    $("#run_button_" + run_pk).on('click', function () {
-      $('#run-preview-container button').removeClass('active');
-      $(this).addClass('active');
-      var run_collection_id = $(this).attr('data-run-collection');
-      get_run_collection(run_collection_id);
-      console.log("Run collection" + run_id + "link clicked.");
-    });
-
-    $("#run_button_" + run_pk + ' a.load_run_text').on('click', function (event) {
-      event.stopPropagation();
-      console.log('Run button icon clicked.')
-      $(this).parent().trigger("click");
-      console.log('Triggered parent button click.')
-    });
-    $("#run_button_" + run_pk + ' a.run_info_button').on('click', function (event) {
-      event.stopPropagation();
-      console.log('Run info icon clicked.')
-    });
-    $('[data-toggle="tooltip"]').tooltip({
-      trigger: 'hover'
-    })
-
-  };
-  $(run_comparison_plot('run_' + run_pk, short_name, infected_number, infected_area, cost));
-
-};
 </script>
+    {% comment %} 
+FUNCTIONS 
+    {% endcomment %}
+  {% comment %} This is the plotting function for the comparison buttons at the bottom. {% endcomment %}
+<script src="{% static 'js/dashboard/run_comparison_plot.js' %}"></script>
+  {% comment %} Function to insert a run button. {% endcomment %}
+<script src="{% static 'js/dashboard/insertRunButton.js' %}"></script>
+<script src="{% static 'js/dashboard/updateDrawColor.js' %}"></script>
 
   <title>PoPS</title>
 </head>
