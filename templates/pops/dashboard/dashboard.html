@@ -38,15 +38,13 @@
   var max_area=100;
   var max_cost=100;
 </script>
-    {% comment %} 
-FUNCTIONS 
-    {% endcomment %}
-  {% comment %} This is the plotting function for the comparison buttons at the bottom. {% endcomment %}
+<!-- FUNCTIONS  -->
+<!-- This is the plotting function for the comparison buttons at the bottom.  -->
 <script src="{% static 'js/dashboard/run_comparison_plot.js' %}"></script>
-  {% comment %} Function to insert a run button. {% endcomment %}
+<!-- Function to insert a run button.  -->
 <script src="{% static 'js/dashboard/insertRunButton.js' %}"></script>
+<!-- Function to update mapbox draw color.  -->
 <script src="{% static 'js/dashboard/updateDrawColor.js' %}"></script>
-
 <title>PoPS</title>
 </head>
 
@@ -775,579 +773,292 @@ FUNCTIONS
 </div><!-- End container-->
 
 <script>
-  $('[data-toggle="pill"],[data-toggle="tooltip"],[data-toggle="tool"]').tooltip({trigger : 'hover'})
-  $('a.load_run_text').on('click', function(event) {
-  event.stopPropagation();
-  console.log('Run button icon clicked.')
-  $(this).parent().trigger( "click" );
-  console.log('Triggered parent button click.')
-});
-  $('a.run_info_button').on('click', function(event) {
-  event.stopPropagation();
-  console.log('Run info icon clicked.')
-});
-
+  $('[data-toggle="pill"],[data-toggle="tooltip"],[data-toggle="tool"]').tooltip({
+    trigger: 'hover'
+  })
+  $('a.load_run_text').on('click', function (event) {
+    event.stopPropagation();
+    console.log('Run button icon clicked.')
+    $(this).parent().trigger("click");
+    console.log('Triggered parent button click.')
+  });
+  $('a.run_info_button').on('click', function (event) {
+    event.stopPropagation();
+    console.log('Run info icon clicked.')
+  });
 </script>
+{% endblock %}
 
-  </div>
-  {% endblock %}
-
-  {% block scripts %}
-  <script>
-
-</script>
-  <script src="{% static 'js/dashboard/custom_draw.js' %}"></script>
+{% block scripts %}
 <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
-  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
-  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
     type='text/css' />
+<!-- CUSTOM CIRCLE DRAWING MODE -->
+<script src="{% static 'js/dashboard/CircleMode.js' %}"></script>
+<!-- Set the draw color and pattern fills for the draw tools -->
+<script src="{% static 'js/dashboard/setDrawColor.js' %}"></script>
+<script src="{% static 'js/dashboard/gaugePlot.js' %}"></script>
 
-  <script>
+<script>
+  $("#polygon-tool").on('click', function () {
+    $('.drawing-tool').removeClass('active');
+    $(this).addClass('active');
+    draw.changeMode('draw_polygon');
+    console.log("Polygon tool selected to draw management.")
+  });
 
-      $("#polygon-tool").on('click', function () {
-      $('.drawing-tool').removeClass('active');
-      $(this).addClass('active');
-      draw.changeMode('draw_polygon');
-      console.log("Polygon tool selected to draw management.")
-    }); 
+  $("#300ft-circle-tool").on('click', function () {
+    $('.drawing-tool').removeClass('active');
+    $('#btnGroupCircles').addClass('active');
+    management_circle_radius = 0.09144; //300ft in km
+    draw.changeMode('draw_circle');
+    console.log("Circle tool selected to draw management.")
+  });
 
-    $("#300ft-circle-tool").on('click', function () {
-      $('.drawing-tool').removeClass('active');
-      $('#btnGroupCircles').addClass('active');
-      management_circle_radius = 0.09144; //300ft in km
-      draw.changeMode('draw_circle');
-      console.log("Circle tool selected to draw management.")
-    }); 
+  $("#600ft-circle-tool").on('click', function () {
+    $('.drawing-tool').removeClass('active');
+    $('#btnGroupCircles').addClass('active');
+    management_circle_radius = 0.18288; //600ft in km
+    draw.changeMode('draw_circle');
+    console.log("Circle tool selected to draw management.")
+  });
 
-    $("#600ft-circle-tool").on('click', function () {
-      $('.drawing-tool').removeClass('active');
-      $('#btnGroupCircles').addClass('active');
-      management_circle_radius = 0.18288; //600ft in km
-      draw.changeMode('draw_circle');
-      console.log("Circle tool selected to draw management.")
-    }); 
+  $("#select-tool").on('click', function () {
+    $('.drawing-tool').removeClass('active');
+    $(this).addClass('active');
+    draw.changeMode('simple_select');
+    console.log("Select tool selected.")
+  });
 
-    $("#select-tool").on('click', function () {
-      $('.drawing-tool').removeClass('active');
-      $(this).addClass('active');
-      draw.changeMode('simple_select');
-      console.log("Select tool selected.")
-    }); 
+  $("#delete-tool").on('click', function () {
+    draw.trash();
+    console.log("Trash")
+  });
 
-    $("#delete-tool").on('click', function () {
-      draw.trash();
-      console.log("Trash")
-    }); 
-
-    mapboxgl.accessToken =
+  mapboxgl.accessToken =
       'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
     /* eslint-disable */
-    var map = new mapboxgl.Map({
-      container: 'map', // container id
-      style: 'mapbox://styles/shankj687/ckepyeuvg2zh219s0qihd4m55', //hosted style id
-      center: [{{ mapbox_parameters.longitude}}, {{ mapbox_parameters.latitude}}], // initial map center in [lon, lat]
-      zoom: {{ mapbox_parameters.zoom }} // starting zoom
-    });
+  var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/shankj687/ckepyeuvg2zh219s0qihd4m55', //hosted style id
+    center: [{{ mapbox_parameters.longitude}}, {{ mapbox_parameters.latitude}}], // initial map center in [lon, lat]
+    zoom: {{ mapbox_parameters.zoom }} // starting zoom
+  });
 
-
+//Initialize some variables
 var year_id = '0';
-var max_occurence_number_for_legend = {{ session.max_value }};
-var map_fill_opacity = 0.6;
+var max_occurence_number_for_legend = {{ session.max_value }}; //Normalize the run collections
+var map_fill_opacity = 0.6; //For occurence and forecasted data
 
-function newFireLayer(map_data,year,max_legend_value) {
-console.log("Adding new layer for year " + year);
+function newFireLayer(map_data, year, max_legend_value) {
+  console.log("Adding new layer for year " + year);
   map.addSource(year, {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
     'data': map_data
   });
-
-map.addLayer({
-                            "id": year,
-                            "type": 'fill',
-                            "source": year,
-                            "layout": {
-                              'visibility':'none',
-                            },
-                            'paint': {
-                            'fill-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'outputs'],
-                            0.0*max_legend_value, '#CC0000',
-                            0.1*max_legend_value, '#D61900',
-                            0.2*max_legend_value, '#E03300',
-                            0.3*max_legend_value, '#EA4C00',
-                            0.4*max_legend_value, '#F46600',
-                            0.5*max_legend_value, '#FF8000',
-                            0.6*max_legend_value, '#FF9F19',
-                            0.7*max_legend_value, '#FFBF33',
-                            0.8*max_legend_value, '#FFDF4C',
-                            0.9*max_legend_value, '#FFFF66',
-                            1.0*max_legend_value, '#FFFFCC'
-                     ],
-                            'fill-outline-color': [
-                                'interpolate',
-                                    ['linear'],
-                                    ['get', 'outputs'],
-                            0.0*max_legend_value, '#CC0000',
-                            0.1*max_legend_value, '#D61900',
-                            0.2*max_legend_value, '#E03300',
-                            0.3*max_legend_value, '#EA4C00',
-                            0.4*max_legend_value, '#F46600',
-                            0.5*max_legend_value, '#FF8000',
-                            0.6*max_legend_value, '#FF9F19',
-                            0.7*max_legend_value, '#FFBF33',
-                            0.8*max_legend_value, '#FFDF4C',
-                            0.9*max_legend_value, '#FFFF66',
-                            1.0*max_legend_value, '#FFFFCC'
-
-                            ],
-                                'fill-opacity': [
-                                    'interpolate',
-                                    ['linear'],
-                                    ['get', 'outputs'],
-                            0.0*max_legend_value, 0.0,
-                            0.001*max_legend_value, map_fill_opacity,
-                            0.2*max_legend_value, map_fill_opacity,
-                            0.3*max_legend_value, map_fill_opacity,
-                            0.4*max_legend_value, map_fill_opacity,
-                            0.5*max_legend_value, map_fill_opacity,
-                            0.6*max_legend_value, map_fill_opacity,
-                            0.7*max_legend_value, map_fill_opacity,
-                            0.8*max_legend_value, map_fill_opacity,
-                            0.9*max_legend_value, map_fill_opacity,
-                            1.0*max_legend_value, map_fill_opacity
-
-                                ]
-
-                            }
-                            }, 'waterway-label'); 
-
+  map.addLayer({
+    "id": year,
+    "type": 'fill',
+    "source": year,
+    "layout": {
+      'visibility': 'none',
+    },
+    'paint': {
+      'fill-color': [
+        'interpolate',
+        ['linear'],
+        ['get', 'outputs'],
+        0.0 * max_legend_value, '#CC0000',
+        0.1 * max_legend_value, '#D61900',
+        0.2 * max_legend_value, '#E03300',
+        0.3 * max_legend_value, '#EA4C00',
+        0.4 * max_legend_value, '#F46600',
+        0.5 * max_legend_value, '#FF8000',
+        0.6 * max_legend_value, '#FF9F19',
+        0.7 * max_legend_value, '#FFBF33',
+        0.8 * max_legend_value, '#FFDF4C',
+        0.9 * max_legend_value, '#FFFF66',
+        1.0 * max_legend_value, '#FFFFCC'
+      ],
+      'fill-outline-color': [
+        'interpolate',
+        ['linear'],
+        ['get', 'outputs'],
+        0.0 * max_legend_value, '#CC0000',
+        0.1 * max_legend_value, '#D61900',
+        0.2 * max_legend_value, '#E03300',
+        0.3 * max_legend_value, '#EA4C00',
+        0.4 * max_legend_value, '#F46600',
+        0.5 * max_legend_value, '#FF8000',
+        0.6 * max_legend_value, '#FF9F19',
+        0.7 * max_legend_value, '#FFBF33',
+        0.8 * max_legend_value, '#FFDF4C',
+        0.9 * max_legend_value, '#FFFF66',
+        1.0 * max_legend_value, '#FFFFCC'
+      ],
+      'fill-opacity': [
+        'interpolate',
+        ['linear'],
+        ['get', 'outputs'],
+        0.0 * max_legend_value, 0.0,
+        0.001 * max_legend_value, map_fill_opacity,
+        0.2 * max_legend_value, map_fill_opacity,
+        0.3 * max_legend_value, map_fill_opacity,
+        0.4 * max_legend_value, map_fill_opacity,
+        0.5 * max_legend_value, map_fill_opacity,
+        0.6 * max_legend_value, map_fill_opacity,
+        0.7 * max_legend_value, map_fill_opacity,
+        0.8 * max_legend_value, map_fill_opacity,
+        0.9 * max_legend_value, map_fill_opacity,
+        1.0 * max_legend_value, map_fill_opacity
+      ]
+    }
+  }, 'waterway-label');
 };
 
-function newMagmaLayer(map_data,year,max_legend_value) {
-console.log("Adding new magma layer for year " + year);
+function newMagmaLayer(map_data, year, max_legend_value) {
+  console.log("Adding new magma layer for year " + year);
   map.addSource(year, {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
     'data': map_data
   });
-
-map.addLayer({
-                            "id": year,
-                            "type": 'fill',
-                            "source": year,
-                            "layout": {
-                              'visibility':'none',
-                              
-                            },
-                            'paint': {
-                            'fill-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'outputs'],
-                            0.0*max_legend_value, '#000005',
-                            0.1*max_legend_value, '#080616',
-                            0.2*max_legend_value, '#1E0848',
-                            0.3*max_legend_value, '#43006A',
-                            0.4*max_legend_value, '#6B116F',
-                            0.5*max_legend_value, '#981D69',
-                            0.6*max_legend_value, '#C92D59',
-                            0.7*max_legend_value, '#ED504A',
-                            0.8*max_legend_value, '#FA8657',
-                            0.9*max_legend_value, '#FBC17D',
-                            1.0*max_legend_value, '#FCFFB2'  
-                           /* Viridis color palette 
-                            0, '#440154',
-                            10, '#481567',
-                            15, '#482677',
-                            20, '#453781',
-                            25, '#404788',
-                            30, '#39568C',
-                            35, '#33638D',
-                            40, '#2D708E',
-                            45, '#287D8E',
-                            50, '#238A8D',
-                            55, '#1F968B',
-                            60, '#20A387',
-                            65, '#29AF7F',
-                            70, '#3CBB75',
-                            75, '#55C667',
-                            80, '#73D055',
-                            85, '#95D840',
-                            90, '#B8DE29',
-                            95, '#DCE319',
-                            100, '#FDE725', */
-                     ],
-                            'fill-outline-color': [
-                                'interpolate',
-                                    ['linear'],
-                                    ['get', 'outputs'],
-                                      0.0*max_legend_value, '#000005',
-                                      0.1*max_legend_value, '#080616',
-                                      0.2*max_legend_value, '#1E0848',
-                                      0.3*max_legend_value, '#43006A',
-                                      0.4*max_legend_value, '#6B116F',
-                                      0.5*max_legend_value, '#981D69',
-                                      0.6*max_legend_value, '#C92D59',
-                                      0.7*max_legend_value, '#ED504A',
-                                      0.8*max_legend_value, '#FA8657',
-                                      0.9*max_legend_value, '#FBC17D',
-                                      1.0*max_legend_value, '#FCFFB2'
-
-                            ],
-                                'fill-opacity': [
-                                    'interpolate',
-                                    ['linear'],
-                                    ['get', 'outputs'],
-                            0.0*max_legend_value, 0.0,
-                            0.001*max_legend_value, map_fill_opacity,
-                            0.2*max_legend_value, map_fill_opacity,
-                            0.3*max_legend_value, map_fill_opacity,
-                            0.4*max_legend_value, map_fill_opacity,
-                            0.5*max_legend_value, map_fill_opacity,
-                            0.6*max_legend_value, map_fill_opacity,
-                            0.7*max_legend_value, map_fill_opacity,
-                            0.8*max_legend_value, map_fill_opacity,
-                            0.9*max_legend_value, map_fill_opacity,
-                            1.0*max_legend_value, map_fill_opacity
-                                ]
-
-                            }
-                            }, 'waterway-label'); 
-
+  map.addLayer({
+    "id": year,
+    "type": 'fill',
+    "source": year,
+    "layout": {
+      'visibility': 'none',
+    },
+    'paint': {
+      'fill-color': [
+        'interpolate',
+        ['linear'],
+        ['get', 'outputs'],
+        0.0 * max_legend_value, '#000005',
+        0.1 * max_legend_value, '#080616',
+        0.2 * max_legend_value, '#1E0848',
+        0.3 * max_legend_value, '#43006A',
+        0.4 * max_legend_value, '#6B116F',
+        0.5 * max_legend_value, '#981D69',
+        0.6 * max_legend_value, '#C92D59',
+        0.7 * max_legend_value, '#ED504A',
+        0.8 * max_legend_value, '#FA8657',
+        0.9 * max_legend_value, '#FBC17D',
+        1.0 * max_legend_value, '#FCFFB2'
+      ],
+      'fill-outline-color': [
+        'interpolate',
+        ['linear'],
+        ['get', 'outputs'],
+        0.0 * max_legend_value, '#000005',
+        0.1 * max_legend_value, '#080616',
+        0.2 * max_legend_value, '#1E0848',
+        0.3 * max_legend_value, '#43006A',
+        0.4 * max_legend_value, '#6B116F',
+        0.5 * max_legend_value, '#981D69',
+        0.6 * max_legend_value, '#C92D59',
+        0.7 * max_legend_value, '#ED504A',
+        0.8 * max_legend_value, '#FA8657',
+        0.9 * max_legend_value, '#FBC17D',
+        1.0 * max_legend_value, '#FCFFB2'
+      ],
+      'fill-opacity': [
+        'interpolate',
+        ['linear'],
+        ['get', 'outputs'],
+        0.0 * max_legend_value, 0.0,
+        0.001 * max_legend_value, map_fill_opacity,
+        0.2 * max_legend_value, map_fill_opacity,
+        0.3 * max_legend_value, map_fill_opacity,
+        0.4 * max_legend_value, map_fill_opacity,
+        0.5 * max_legend_value, map_fill_opacity,
+        0.6 * max_legend_value, map_fill_opacity,
+        0.7 * max_legend_value, map_fill_opacity,
+        0.8 * max_legend_value, map_fill_opacity,
+        0.9 * max_legend_value, map_fill_opacity,
+        1.0 * max_legend_value, map_fill_opacity
+      ]
+    }
+  }, 'waterway-label');
 };
 
 
 map.on('load', function() {
   console.log("Adding initial data.");
-  {% get_static_prefix as STATIC_URL %}
     {% for year in historic_data %}
-
       newFireLayer({{ year.data|safe }}, '{{ year.year}}', max_occurence_number_for_legend);
     {% endfor %}
     map.setLayoutProperty({{ historic_data.last.year }}, 'visibility', 'visible');
-
-  {% comment %} console.log("Adding APHIS Perimeter Zone.");
+    /*
+    console.log("Adding APHIS Perimeter Zone.");
     map.addSource('perimeter_zone', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/slf_aphis_treatment.geojson" %}'
-  });
-  /*here we are adding a source, then a layer based on that that source*/
+      'type': 'geojson',
+      'data': '{% static "map_data/slf_aphis_treatment.geojson" %}'
+    });
     map.addLayer({
-                            "id": 'perimeter_zone_layer',
-                            "type": 'fill',
-                            "source": 'perimeter_zone',
-                            'paint': {
-                            'fill-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'Dis_KB'],
-                            1, '#41dff4'
-                            ],
-                            'fill-opacity': 0.1
-                            }
-                            }, 'waterway-label');  {% endcomment %}
+          "id": 'perimeter_zone_layer',
+          "type": 'fill',
+          "source": 'perimeter_zone',
+          'paint': {
+          'fill-color': [
+          'interpolate',
+          ['linear'],
+          ['get', 'Dis_KB'],
+          1, '#41dff4'
+          ],
+          'fill-opacity': 0.1
+          }
+          }, 'waterway-label');  */
 
-console.log('Adding host map')
+    console.log('Adding host map')
     map.addSource('host_map', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': {{ host_map|safe }}
-  });
-  /*here we are adding a source, then a layer based on that that source*/
+      'type': 'geojson',
+      'data': {{ host_map|safe }}
+    });
     map.addLayer({
-                            "id": 'host_map',
-                            "type": 'fill',
-                            "source": 'host_map',
-                            'paint': {
-                            'fill-color': [
+                    "id": 'host_map',
+                    "type": 'fill',
+                    "source": 'host_map',
+                    'paint': {
+                    'fill-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['get', 'outputs'],
+                    1, '#63f542'
+                    ],
+                        'fill-opacity': [
                             'interpolate',
                             ['linear'],
                             ['get', 'outputs'],
-                            1, '#63f542'
-                            ],
-                                'fill-opacity': [
-                                    'interpolate',
-                                    ['linear'],
-                                    ['get', 'outputs'],
-                                    0, 0.00,
-                                    100, 0.4,
-                                ]
-                            }
-                            }, 'waterway-label'); 
+                            0, 0.00,
+                            100, 0.4,
+                        ]
+                    }
+                  }, 'waterway-label'); 
   default_run = {{ session.default_run }};
   console.log(default_run);
   get_output(default_run);                      
-  });
+});
 
 
-var management_circle_radius = 0.04572; //default management radius in km
-  // CUSTOM CIRCLE DRAWING MODE 
-  // to draw management buffers of given radius.
-  // Info on custom modes: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/MODES.md
+//Set initial draw color and settings, add Draw functionality to the map.
+var draw_color = colors[0];
+var host_removal_pattern=host_removal_patterns[0];
+var pesticide_application_pattern=pesticide_application_patterns[0];
+draw = setDrawColor(draw_color,host_removal_pattern,pesticide_application_pattern);
+map.addControl(draw);
 
-    const CircleMode = {};
-
-    CircleMode.onSetup = function (opts) {
-      var state = {};
-      return state;
-    };
-    //On click, a circle of radius, management_circle_radius, is drawn and added to the management JSON.
-    CircleMode.onClick = function (state, e) {
-      console.log('Drawing circle...')
-      var center = [e.lngLat.lng, e.lngLat.lat];
-      var radius = management_circle_radius;
-      var management = getManagementType();
-      var management_type = management[0];
-      var host_removal_efficacy = management[1];
-      var pesticide_application_efficacy = management[2];
-      var host_removal_cost = management[3];
-      var pesticide_application_cost = management[4];
-      if (management_type == 'Host removal and Pesticide') {
-        var circle1 = createCircle(center, radius, 'Host removal', host_removal_efficacy,host_removal_cost);
-        addCircle(circle1);
-        var circle2 = createCircle(center, radius, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost);
-        addCircle(circle2);
-      } else if (management_type == 'Host removal') {
-        var circle = createCircle(center, radius, 'Host removal', host_removal_efficacy, host_removal_cost);
-        addCircle(circle);
-      } else if (management_type == 'Pesticide') {
-        var circle = createCircle(center, radius, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost);
-        addCircle(circle);
-      } else {
-        console.log('No management type selected.')
-      }
-    };
-    //Creates a JSON circle of given radius and number of steps. Includes management and efficacy properties.
-    function createCircle(center, radius, management_type, efficacy, cost) {
-      var options = {
-        steps: 32,
-        units: 'kilometers',
-        properties: {
-          management_type: management_type,
-          efficacy: efficacy,
-          cost: cost
-        }
-      };
-      var circle = turf.circle(center, radius, options);
-      return circle
-    }
-    //Adds the circle JSON to Draw, finds and combines polygons, adds to management JSON.
-    function addCircle(circle) {
-      featureID = draw.add(circle);
-      new_circle = draw.get(featureID);
-      findAndCombineOverlappingPolygons(featureID);
-    }
-
-    CircleMode.onStop = function (state, e) {
-      //this.map.fire("draw.create");
-    };
-
-    //toDisplayFeatures is a required function to show the polygon. Triggered anytime a feature is rendered.
-    CircleMode.toDisplayFeatures = function (state, geojson, display) {
-      display(geojson);
-    };
-
-
-    function set_draw_color(draw_color,host_removal_pattern,pesticide_application_pattern) {
-      var draw = new MapboxDraw({
-        keybindings: true,
-        displayControlsDefault: false,
-        userProperties: true,
-        modes: Object.assign({
-          draw_circle: CircleMode,
-        }, MapboxDraw.modes),
-        controls: {
-          //polygon: true,
-          //trash: true
-        },
-    styles: [
-    {
-      'id': 'circle-active',
-      'type': 'circle',
-      'filter': ['all',
-        ['==', '$type', 'Point'],
-        ['==', 'meta', 'feature'],
-        ['==', 'active', 'true']],
-      'paint': {
-        'circle-radius': 7,
-        'circle-color': draw_color,
-      }
-    },        
-    {
-      'id': 'circle-static',
-      'type': 'circle',
-      'filter': ['all',
-        ['==', '$type', 'Point'],
-        ['==', 'meta', 'feature'],
-        ['==', 'active', 'false']],
-      'paint': {
-        'circle-radius': 7,
-        'circle-color': draw_color,
-      }
-    },    
-    {
-      'id': 'highlight-active-points',
-      'type': 'circle',
-      'filter': ['all',
-        ['==', '$type', 'Point'],
-        ['==', 'meta', 'feature'],
-        ['==', 'active', 'true']],
-      'paint': {
-        'circle-radius': 7,
-        'circle-color': draw_color,
-      }
-    },
-
-      // ACTIVE (being drawn)
-      // line stroke
-      {
-        "id": "gl-draw-line",
-        "type": "line",
-        "filter": ["all", ["==", "$type", "LineString"],
-          ["!=", "mode", "static"]
-        ],
-        "layout": {
-          "line-cap": "round",
-          "line-join": "round"
-        },
-        "paint": {
-          "line-color": draw_color,
-          "line-dasharray": [0.2, 2],
-          "line-width": 3
-        }
-      },
-      // polygon fill
-      {
-        "id": "gl-draw-polygon-fill",
-        "type": "fill",
-        "filter": ["all", ["==", "$type", "Polygon"],
-          ["!=", "mode", "static"]
-        ],
-            "paint": {
-              'fill-pattern': [
-                "case",
-                ['==', ['get', "user_management_type"], "Host removal"], host_removal_pattern,
-                ['==', ['get', "user_management_type"], "Pesticide"], pesticide_application_pattern,
-                ''
-              ],      
-              "fill-outline-color": draw_color,
-              "fill-opacity": 1.0
-            }
-          },
-      // polygon outline stroke
-      // This doesn't style the first edge of the polygon, which uses the line stroke styling instead
-      {
-        "id": "gl-draw-polygon-stroke-active",
-        "type": "line",
-        "filter": ["all", ["==", "$type", "Polygon"],
-          ["!=", "mode", "static"]
-        ],
-        "layout": {
-          "line-cap": "round",
-          "line-join": "round"
-        },
-        "paint": {
-          "line-color": draw_color,
-          "line-width": 3
-        }
-      },
-      // vertex point halos
-      {
-        "id": "gl-draw-polygon-and-line-vertex-halo-active",
-        "type": "circle",
-        "filter": ["all", ["==", "meta", "vertex"],
-          ["==", "$type", "Point"],
-          ["!=", "mode", "static"]
-        ],
-        "paint": {
-          "circle-radius": 7,
-          "circle-color": "#FFF"
-        }
-      },
-      // vertex points
-      {
-        "id": "gl-draw-polygon-and-line-vertex-active",
-        "type": "circle",
-        "filter": ["all", ["==", "meta", "vertex"],
-          ["==", "$type", "Point"],
-          ["!=", "mode", "static"]
-        ],
-        "paint": {
-          "circle-radius": 5,
-          "circle-color": draw_color,
-        }
-      },
-
-      // INACTIVE (static, already drawn)
-      // line stroke
-      {
-        "id": "gl-draw-line-static",
-        "type": "line",
-        "filter": ["all", ["==", "$type", "LineString"],
-          ["==", "mode", "static"]
-        ],
-        "layout": {
-          "line-cap": "round",
-          "line-join": "round"
-        },
-        "paint": {
-          "line-color": "#000",
-          "line-width": 3
-        }
-      },
-      // polygon fill
-      {
-        "id": "gl-draw-polygon-fill-static",
-        "type": "fill",
-        "filter": ["all", ["==", "$type", "Polygon"],
-          ["==", "mode", "static"]
-        ],
-        "paint": {
-          "fill-color": "#000",
-          "fill-outline-color": "#000",
-          "fill-opacity": 0.3
-        }
-      },
-      // polygon outline
-      {
-        "id": "gl-draw-polygon-stroke-static",
-        "type": "line",
-        "filter": ["all", ["==", "$type", "Polygon"],
-          ["==", "mode", "static"]
-        ],
-        "layout": {
-          "line-cap": "round",
-          "line-join": "round"
-        },
-        "paint": {
-          "line-color": "#000",
-          "line-width": 3
-        }
-      }
-    ]
-  });
-  return draw;
-};
-
-    //Set initial draw color and settings, add Draw functionality to the map.
-    var draw_color = colors[0];
-    var host_removal_pattern=host_removal_patterns[0];
-    var pesticide_application_pattern=pesticide_application_patterns[0];
-    draw = set_draw_color(draw_color,host_removal_pattern,pesticide_application_pattern);
-    map.addControl(draw);
-
-    //Draw fires a number of events. All of these events are namespaced with draw. 
-    //and are emitted from the Mapbox GL JS map object. 
-    //All events are all triggered by user interaction.
-    //Here we are giving the draw events custom functions to perform when triggered.
-    map.on('draw.create', grabPolygon);
-    map.on('draw.delete', updateJSON);
-    map.on('draw.update', updatePolygons);
-    map.on('draw.selectionchange', selectionChange)
+//Draw fires a number of events. All of these events are namespaced with draw. 
+//and are emitted from the Mapbox GL JS map object. 
+//All events are all triggered by user interaction.
+//Here we are giving the draw events custom functions to perform when triggered.
+map.on('draw.create', grabPolygon);
+map.on('draw.delete', updateJSON);
+map.on('draw.update', updatePolygons);
+map.on('draw.selectionchange', selectionChange);
 
     //Get the currently drawn polygon, so we can add management properties to the JSON.
     function grabPolygon(e) {
@@ -1355,7 +1066,7 @@ var management_circle_radius = 0.04572; //default management radius in km
       delete polygon['id']; //Delete the ID, so we can duplicate it if there are more than 1 management type.
       draw.delete(e.features[0].id); //delete the original polygon.
       setManagementProperty(polygon); //Assign management properties to polygon.
-    }
+    };
     //Assign management and efficacy properties to JSON.
     //Draw the polygon(s) (this includes combining same-type polygons and updating the management JSON)
     function setManagementProperty(polygon) {
@@ -1383,7 +1094,7 @@ var management_circle_radius = 0.04572; //default management radius in km
       draw.setFeatureProperty(featureID, 'efficacy', efficacy);
       //draw.add(draw.get(featureID)); //This line makes the new change draw on the map and appear.    
       findAndCombineOverlappingPolygons(featureID);
-    }
+    };
 
     //When selection changes, show box to edit the selected polygons.
     function selectionChange(e) {
@@ -1494,7 +1205,7 @@ var management_circle_radius = 0.04572; //default management radius in km
       $('#id_management_polygons').val(convertedData);
       $('#id_management_area').val(rounded_area);
       $('#id_management_cost').val(total_cost);
-      gauge_plot("current-budget-plot", host_removal_cost, pesticide_cost, budget);
+      gaugePlot("current-budget-plot", host_removal_cost, pesticide_cost, budget);
     }
 
 function calculateManagementCost(host_removal_area, pesticide_area) {
@@ -1606,10 +1317,10 @@ map.on('draw.modechange', e => {
         $('#id_management_cost').val(cost);
         answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + area_unit;
         //console.log(map.getCenter())
-        //gauge_plot("current-budget-plot", cost, budget);
+        //gaugePlot("current-budget-plot", cost, budget);
       } else {
         answer.innerHTML = '0.0 ' + area_unit;
-        //gauge_plot("current-budget-plot", 0, budget);
+        //gaugePlot("current-budget-plot", 0, budget);
         $('#id_management_area').val(0);
         $('#id_management_cost').val(0);
       }
@@ -1620,156 +1331,9 @@ map.on('draw.modechange', e => {
       return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
     }
 
-    function gauge_plot(div_id, host_removal_dollars, pesticide_dollars, max_amount) {
+    
 
-      var max_level = max_amount/1000000;
-      var host_removal_cost = host_removal_dollars/1000000;
-      var pesticide_cost = pesticide_dollars/1000000;
-      var total_cost = host_removal_cost + pesticide_cost;
-
-      if (total_cost >= max_level) {
-        main_color = "#f55949";
-        drawn_level = max_level;
-        var overbudget = total_cost - max_level;
-        warning_msg = "Budget exceeded by:<br>$" + round(overbudget, 2) + " million";
-        warning_color = "#f55949";
-      var data = [{
-        values: [max_level,(0.98 * max_level - total_cost), (max_level / 50), (max_level / 3)],
-        rotation: -135,
-        direction: "clockwise",
-        sort: false,
-        textinfo: 'text',
-        textposition: 'inside',
-        marker: {
-          colors: [main_color, '#676b73', '#f55949', 'rgba(255, 255, 255, 0)']
-        },
-        labels: ['Total <br> cost:<br>$' + round(total_cost, 3) + ' million', '', 'Budget: $' + max_level +
-          ' million', ''
-        ],
-        hoverinfo: 'label',
-        hole: 0.8,
-        type: 'pie',
-        showlegend: false
-      }];
-            } else {
-        main_color = "#7ba83d";
-        drawn_level = total_cost;
-        warning_msg = 'spent on<br>management';
-        warning_color = 'white';
-      var data = [{
-        values: [host_removal_cost, pesticide_cost,(0.98 * max_level - total_cost), (max_level / 50), (max_level / 3)],
-        rotation: -135,
-        direction: "clockwise",
-        sort: false,
-        textinfo: 'text',
-        textposition: 'inside',
-        marker: {
-          colors: [main_color, main_color, '#676b73', '#f55949', 'rgba(255, 255, 255, 0)']
-        },
-        labels: ['Host removal <br> cost:<br>$' + round(host_removal_cost, 3) + ' million',
-        'Pesticide <br> cost:<br>$' + round(pesticide_cost, 3) + ' million', '', 'Budget: $' + max_level +
-          ' million', ''
-        ],
-        hoverinfo: 'label',
-        hole: 0.8,
-        type: 'pie',
-        showlegend: false
-      }];
-            };
-
-      var layout = {
-        annotations: [{
-            xref: 'paper',
-            yref: 'paper',
-            x: 0.5,
-            xanchor: 'middle',
-            y: 0.5,
-            yanchor: 'middle',
-            text: '$' + round(total_cost, 1),
-            font: {
-              family: 'Helvetica',
-              size: 30,
-              color: '#ffffff'
-            },
-            align: 'center',
-
-            showarrow: false,
-          },
-          {
-            xref: 'paper',
-            yref: 'paper',
-            x: 0.5,
-            xanchor: 'center',
-            y: 0.3,
-            yanchor: 'middle',
-            text: 'million',
-            font: {
-              family: 'Helvetica',
-              size: 20,
-              color: '#ffffff'
-            },
-            align: 'center',
-
-            showarrow: false,
-          },
-          {
-            xref: 'paper',
-            yref: 'paper',
-            x: 0.5,
-            xanchor: 'center',
-            y: 0.0,
-            yanchor: 'middle',
-            text: warning_msg,
-            font: {
-              family: 'Helvetica',
-              size: 14,
-              color: warning_color,
-            },
-            align: 'center',
-
-            showarrow: false,
-          }
-
-        ],
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)', //'#16181b',
-        margin: {
-          l: 30,
-          r: 30,
-          b: 20,
-          t: 0,
-          pad: 0
-        },
-
-
-
-        title: {
-          text: '',
-          font: {
-            color: 'white',
-          },
-        },
-
-
-        xaxis: {
-          zeroline: false,
-          showticklabels: false,
-          showgrid: false,
-        },
-        yaxis: {
-          zeroline: false,
-          showticklabels: false,
-          showgrid: false,
-        }
-      };
-
-      return Plotly.newPlot(div_id, data, layout, {
-        displayModeBar: false,
-        responsive: true
-      });
-    }
-
-    gauge_plot("current-budget-plot", 0,0, $("input#id_budget").val());
+    gaugePlot("current-budget-plot", 0,0, $("input#id_budget").val());
 
 
     $('#hide_details_button').on('click', function () {
