@@ -42,7 +42,7 @@ function gaugePlot(div_id, host_removal_dollars, pesticide_dollars, max_amount) 
     textinfo: 'text',
     textposition: 'inside',
     marker: {
-      colors: [main_color, main_color, '#676b73', '#f55949', 'rgba(255, 255, 255, 0)']
+      colors: [main_color, "a3e04f", '#676b73', '#f55949', 'rgba(255, 255, 255, 0)']
     },
     labels: ['Host removal <br> cost:<br>$' + round(host_removal_cost, 3) + ' million',
     'Pesticide <br> cost:<br>$' + round(pesticide_cost, 3) + ' million', '', 'Budget: $' + max_level +

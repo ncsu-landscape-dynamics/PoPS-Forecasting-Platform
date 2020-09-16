@@ -996,11 +996,10 @@ function updateJSON() {
   if (data.features.length > 0) {
     // Stringify the GeoJson
     var convertedData = JSON.stringify(data);
-    [host_removal_area, pesticide_area] = calculateManagementArea(data);
+    [host_removal_area, pesticide_area, host_removal_cost,pesticide_cost] = calculateManagementArea(data);
     console.log('host_removal_area = ' + host_removal_area);
     console.log('pesticide_area = ' + pesticide_area);
     console.log('convertedData = ' + convertedData);
-    [host_removal_cost,pesticide_cost] = calculateManagementCost(host_removal_area, pesticide_area);
     var total_area = host_removal_area + pesticide_area;
     var rounded_area = Math.round(total_area * 100) / 100;
     var displayed_area = Math.round(total_area*area_modifier * 100) / 100;
@@ -1031,20 +1030,26 @@ function calculateManagementCost(host_removal_area, pesticide_area) {
 }
 
 function calculateManagementArea(data) {
+  var host_removal_area = 0;
+  var pesticide_area = 0;  
+  var host_removal_cost = 0;
+  var pesticide_cost = 0;
   var host_removal_objects = [];
   var pesticide_objects = [];
-  for (var n = 0; n < data.features.length; n++) {
+  var length = data.features.length;
+  for (var n = 0; n < length; n++) {
     if (data.features[n].properties.management_type == 'Host removal') {
-      host_removal_objects.push(data.features[n]);
-    } else if (data.features[n].properties.management_type == 'Pesticide') {
-      pesticide_objects.push(data.features[n]);
+      host_removal_objects.push(data.features[n].properties.area);
+      host_removal_area += data.features[n].properties.area;
+      host_removal_cost += data.features[n].properties.area * data.features[n].properties.cost;
+    } 
+    else if (data.features[n].properties.management_type == 'Pesticide') {
+      pesticide_objects.push(data.features[n].properties.area);
+      pesticide_area += data.features[n].properties.area;
+      pesticide_cost += data.features[n].properties.area * data.features[n].properties.cost;
     }
   }
-  var host_removal_JSON = turf.featureCollection(host_removal_objects);
-  var pesticide_JSON = turf.featureCollection(pesticide_objects);
-  var host_removal_area = turf.area(host_removal_JSON);
-  var pesticide_area = turf.area(pesticide_JSON);
-  return [host_removal_area, pesticide_area];
+  return [host_removal_area, pesticide_area, host_removal_cost, pesticide_cost];
 }
 //Check if the most recently drawn polygon overlaps any existing polygons
 //of the same type and combine.
