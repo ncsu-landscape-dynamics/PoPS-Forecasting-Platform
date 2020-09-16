@@ -888,13 +888,19 @@ map.on('draw.selectionchange', selectionChange);
 
 
 function createPolygon (e) {
-  var polygon = grabPolygon(e);
+  var polygon = grabPolygon(e); 
+  var area = getArea(polygon);
   var management_properties = getManagementProperties();
   for (var n = 0; n < management_properties.length; n++) {
-    featureID = drawPolygon(polygon, management_properties[n]);
+    featureID = drawPolygon(polygon, management_properties[n],area);
     findAndCombineOverlappingPolygons(featureID);
   }
   updateJSON();
+}
+
+function getArea(polygon) {
+  var area = turf.area(polygon);
+  return Math.round(area)
 }
 
 //Get the currently drawn polygon, so we can add management properties to the JSON.
@@ -918,11 +924,12 @@ function getManagementProperties() {
   return management
 }
 //Add the polygon to draw. Set management properties. Perform findAndCombineOverlappingPolyogns.
-function drawPolygon(polygon, management_properties) {
+function drawPolygon(polygon, management_properties,area) {
   featureID = draw.add(polygon);
   draw.setFeatureProperty(featureID, 'management_type', management_properties[0]);
   draw.setFeatureProperty(featureID, 'efficacy', management_properties[1]);
   draw.setFeatureProperty(featureID, 'cost', management_properties[2]);
+  draw.setFeatureProperty(featureID, 'area', area);
   //draw.add(draw.get(featureID)); //This line makes the new change draw on the map and appear.    
   return featureID;
 };
@@ -1057,6 +1064,10 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
           union = combineTwoPolygons(newPolygonID, existingPolygon.id);
           if (union) {
             newPolygonID = union;
+            polygon =  draw.get(newPolygonID);
+            var area=Math.round(getArea(polygon));
+            console.log('NEW AREA = ' + area);
+            draw.setFeatureProperty(newPolygonID, 'area', area);
           }
         }
         else {

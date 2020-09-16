@@ -12,22 +12,27 @@ CircleMode.onClick = function (state, e) {
   console.log('Drawing circle...')
   var center = [e.lngLat.lng, e.lngLat.lat]; 
   var radius = management_circle_radius;
+  console.log('RADIUS = ' + radius);
+  var area = Math.round(3.141592*(radius*1000.0)*(radius*1000.0)); //calculate area in m^2
+  console.log('AREA = ' + area);
   var management_properties = getManagementProperties();
   for (var n = 0; n < management_properties.length; n++) {
-    var circle = createCircle(center, radius, management_properties[n]);
+    var circle = createCircle(center, radius, management_properties[n], area);
     var featureID = draw.add(circle);
     findAndCombineOverlappingPolygons(featureID);
+    updateJSON();
   }
 };
 //Creates a JSON circle of given radius and number of steps. Includes management and efficacy properties.
-function createCircle(center, radius, management_properties) {
+function createCircle(center, radius, management_properties, area) {
   var options = {
     steps: 32,
     units: 'kilometers',
     properties: {
       management_type: management_properties[0],
       efficacy: management_properties[1],
-      cost: management_properties[2]
+      cost: management_properties[2],
+      area: area
     }
   };
   var circle = turf.circle(center, radius, options);
