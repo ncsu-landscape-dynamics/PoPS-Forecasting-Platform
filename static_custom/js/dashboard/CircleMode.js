@@ -10,48 +10,28 @@ CircleMode.onSetup = function (opts) {
 //On click, a circle of radius, management_circle_radius, is drawn and added to the management JSON.
 CircleMode.onClick = function (state, e) {
   console.log('Drawing circle...')
-  var center = [e.lngLat.lng, e.lngLat.lat];
+  var center = [e.lngLat.lng, e.lngLat.lat]; 
   var radius = management_circle_radius;
-  var management = getManagementType();
-  var management_type = management[0];
-  var host_removal_efficacy = management[1];
-  var pesticide_application_efficacy = management[2];
-  var host_removal_cost = management[3];
-  var pesticide_application_cost = management[4];
-  if (management_type == 'Host removal and Pesticide') {
-    var circle1 = createCircle(center, radius, 'Host removal', host_removal_efficacy,host_removal_cost);
-    addCircle(circle1);
-    var circle2 = createCircle(center, radius, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost);
-    addCircle(circle2);
-  } else if (management_type == 'Host removal') {
-    var circle = createCircle(center, radius, 'Host removal', host_removal_efficacy, host_removal_cost);
-    addCircle(circle);
-  } else if (management_type == 'Pesticide') {
-    var circle = createCircle(center, radius, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost);
-    addCircle(circle);
-  } else {
-    console.log('No management type selected.')
+  var management_properties = getManagementProperties();
+  for (var n = 0; n < management_properties.length; n++) {
+    var circle = createCircle(center, radius, management_properties[n]);
+    var featureID = draw.add(circle);
+    findAndCombineOverlappingPolygons(featureID);
   }
 };
 //Creates a JSON circle of given radius and number of steps. Includes management and efficacy properties.
-function createCircle(center, radius, management_type, efficacy, cost) {
+function createCircle(center, radius, management_properties) {
   var options = {
     steps: 32,
     units: 'kilometers',
     properties: {
-      management_type: management_type,
-      efficacy: efficacy,
-      cost: cost
+      management_type: management_properties[0],
+      efficacy: management_properties[1],
+      cost: management_properties[2]
     }
   };
   var circle = turf.circle(center, radius, options);
   return circle
-}
-//Adds the circle JSON to Draw, finds and combines polygons, adds to management JSON.
-function addCircle(circle) {
-  featureID = draw.add(circle);
-  new_circle = draw.get(featureID);
-  findAndCombineOverlappingPolygons(featureID);
 }
 
 CircleMode.onStop = function (state, e) {
