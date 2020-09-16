@@ -1061,14 +1061,22 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
       if (intersection) {
         //If they are the same management type, combine the two polygons.
         if ((newPolygon.properties.management_type == existingPolygon.properties.management_type)) {
-          union = combineTwoPolygons(newPolygonID, existingPolygon.id);
-          if (union) {
-            newPolygonID = union;
-            polygon =  draw.get(newPolygonID);
-            var area=Math.round(getArea(polygon));
-            console.log('NEW AREA = ' + area);
-            draw.setFeatureProperty(newPolygonID, 'area', area);
+          if ((newPolygon.properties.efficacy == existingPolygon.properties.efficacy) && 
+          (newPolygon.properties.cost == existingPolygon.properties.cost)) {
+            union = combineTwoPolygons(newPolygonID, existingPolygon.id);
+            if (union) {
+              newPolygonID = union;
+              polygon =  draw.get(newPolygonID);
+              var area=Math.round(getArea(polygon));
+              draw.setFeatureProperty(newPolygonID, 'area', area);
+            }
           }
+          else {
+            difference = turf.difference(existingPolygon,newPolygon);//remove newpolygon from existing polygon
+            var newPolygonID = draw.add(difference); //add new polygon to draw
+            draw.delete(existingPolygon.id); //remove original overlapping polygons
+            var area=Math.round(getArea(difference));
+            draw.setFeatureProperty(newPolygonID, 'area', area);          }
         }
         else {
         }
