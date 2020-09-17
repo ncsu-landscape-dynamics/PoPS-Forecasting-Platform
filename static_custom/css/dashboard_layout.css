@@ -301,12 +301,7 @@ div#run-preview-container {
     background-color:grey;
     z-index: 100;
   }
-      
-  #historic-legend-container, #occurence-legend-container , #probability-legend-container {
-    position: absolute;
-    top: 120px;
-    left: 10px;
-  }
+    
 
   #eradication_container_ {
     position: absolute;
@@ -323,11 +318,7 @@ div#run-preview-container {
     background-color: transparent;
     color:#a0a8bd;
   }
-  #display_year_forecast {
-    position: absolute;
-    top: 90px;
-    left: 10px;
-  }
+
 
   #additional_map_checkboxes {
     position: absolute;
@@ -343,39 +334,49 @@ div#run-preview-container {
     background-color: rgb(99,245,66, 0.3)
   }
 
+  #legend-container {
+    position: relative;
+    top: 0px;
+    left: 5px;
+    height: 40px; 
+    }
 
 .legend-color {
-      height: 10px;
-      width: 20px;
-      float:left;
+  margin-top: 2px;
+  height: 10px;
+  width: 20px;
+  float:left;
     }
     
-    .legend-label {
-    font-size:0.8em;
-    }
+.legend-label {
+    font-size:10px;
+    float:left;
+    height: 10px;
+    margin-top: 0px;
+    padding-top: 0px;
+  }
 
     #year-slider-container {
-      position: absolute;
-      width: 132px;
-      height: 100px;
-      top: 95px;
-      right: 10px;    
+      position: relative;
+      height: 40px;
+      left: 5px;    
     }
-    #year-slider {
-      width: 120px;
-	height: 17px;
+  #year-slider {
+      float:left;
+      width: 180px;
+  height: 17px;
+  top: 13px;
   position: relative;
-  margin: auto;
-	
-	
+  margin: auto;	
 	-webkit-border-radius: 40px;
 	-moz-border-radius: 40px;
 	border-radius: 40px;
     }
 #display_year_label {
-  text-align: center;
+  float:left;
+  text-align: left;
   color: white;
-  font-size: 30px;
+  font-size: 26px;
 }
 
 #year-slider .year-range {
@@ -441,24 +442,35 @@ div#run-preview-container {
 
     #current-budget-plot {
       position: absolute;
-      top: 220px;
-      right: 0px;
-    }
+      top: 100px;
+      right: -20px;
+      width:180px; height:140px;
+        }
     #displayed_management_area {
-      position: absolute;
-      top: 170px;
-      width: 132px;
-      right: 10px;
+      position: relative;
+      top: 150px;
+      width: 140px;
       font-size: 12px;
+      text-align: center;
     }
 #budget_background_layer {
   position: absolute;
-  width: 132px;
-  height: 270px;
-  top: 95px;
-  right: 10px;
-  background-color: #191a1a;
-  opacity: 0.7;
+  width: 140px;
+  height: 200px;
+  top: 90px;
+  right: 0px;
+}
+
+#budget_background_layer, #displayed-data-legend-container {
+  background-color:#2e2e2e;  /*#191a1a;*/
+  opacity: 1;
+}
+#displayed-data-legend-container {
+position: absolute;
+width: 300px;
+height: 80px;
+top: 90px;
+left: 0px;    
 }
     .drawing-tool {
       border-radius: 0px;
@@ -467,7 +479,7 @@ div#run-preview-container {
     }
     #draw-controls {
       position: absolute;
-      top: 375px;
+      top: 300px;
       right: 10px;
     }
     #draw-controls button.active {

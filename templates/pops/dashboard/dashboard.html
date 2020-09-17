@@ -273,62 +273,87 @@
               <button id="show_details_button" type="button" class="btn" style="display: none" data-toggle="tool"
                 title="Show details."><i class="fas fa-chevron-left"></i></button>
               {% comment %} MAP LEGENDS {% endcomment %}
-              <h4 id="display_year_forecast">Field observations</h4>
-              <div id="historic-legend-container" class="pb-0">
-                <div id="legend_description"><strong>Number of detections:</strong></div>
-                <div class="legend-color" style="background-color:#CC0000; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#D61900; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#E03300; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#EA4C00; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#F46600; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#FF8000; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#FF9F19; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#FFBF33; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#FFDF4C; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#FFFF66; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
-                <div style="clear: left;">
-                  <p id="legend_label_left" class="legend-label" style="float:left; margin-right:190px;">0</p>
-                  <p id="legend_label_right" class="legend-label">{{ session.max_value }}+</p>
+              <div id="displayed-data-legend-container">
+              <div id="legend-container" data-toggle="tool" title="Legend for currently displayed data">
+                <div class="my-0">
+                  <strong id="display_year_forecast" >Field observations </strong>
+                  <small id="legend_description"> (Number of detections)</small>
+                </div>
+                <div id="historic-legend-container" class="my-0">
+                  <div>
+                    <span class="legend-label mr-1">0</span>
+                    <div class="legend-color" style="background-color:#CC0000; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#D61900; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#E03300; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#EA4C00; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#F46600; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FF8000; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FF9F19; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFBF33; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFDF4C; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFFF66; opacity:0.85"></div>
+                    <div class="legend-color" style="background-color:#FFFFCC; opacity:0.9"></div>
+                    <div class="legend-label ml-1">{{ session.max_value }}+</div>
+                    <div style="clear: left;">
+                    </div>
+                  </div>
+                </div>
+                <div id="occurence-legend-container" class="my-0">
+                  <div style="height: 20px; width: 280px;">
+                    <span class="legend-label mr-1">0</span>
+                    <div class="legend-color" style="background-color:#CC0000; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#D61900; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#E03300; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#EA4C00; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#F46600; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FF8000; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FF9F19; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFBF33; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFDF4C; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFFF66; opacity:0.8"></div>
+                    <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
+                    <div class="legend-label ml-1">{{ session.max_value }}+</div>
+                    <div style="clear: left;">
+                    </div>
+                  </div>
+                </div>
+                <div id="probability-legend-container" class="my-0">
+                  <div style="height: 20px; width: 280px;">
+                    <span class="legend-label mr-1">0</span>
+                    <div class="legend-color" style="background-color:#000005; opacity:0.467"></div>
+                    <div class="legend-color" style="background-color:#080616; opacity:0.5"></div>
+                    <div class="legend-color" style="background-color:#1E0848; opacity:0.533"></div>
+                    <div class="legend-color" style="background-color:#43006A; opacity:0.567"></div>
+                    <div class="legend-color" style="background-color:#6B116F; opacity:0.6"></div>
+                    <div class="legend-color" style="background-color:#981D69; opacity:0.633"></div>
+                    <div class="legend-color" style="background-color:#C92D59; opacity:0.676"></div>
+                    <div class="legend-color" style="background-color:#ED504A; opacity:0.7"></div>
+                    <div class="legend-color" style="background-color:#FA8657; opacity:0.733"></div>
+                    <div class="legend-color" style="background-color:#FBC17D; opacity:0.767"></div>
+                    <div class="legend-color" style="background-color:#FCFFB2; opacity:0.8"></div>
+                    <div class="legend-label ml-1">100%</div>
+                    <div style="clear: left;">
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div id="occurence-legend-container" class="pb-0">
-                <div id="legend_description"><strong>Predicted occurences:</strong></div>
-                <div class="legend-color" style="background-color:#CC0000; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#D61900; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#E03300; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#EA4C00; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#F46600; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#FF8000; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#FF9F19; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#FFBF33; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#FFDF4C; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#FFFF66; opacity:0.8"></div>
-                <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
-                <div style="clear: left;">
-                  <p id="legend_label_left" class="legend-label" style="float:left; margin-right:190px;">0</p>
-                  <p id="legend_label_right" class="legend-label">{{ session.max_value }}+</p>
+              <div id="year-slider-container" data-toggle="tool" title="Currently displayed year">
+                <div id="display_year_label" class="py-0 ">
+                  <output id="displayYear">{{ historic_data.last.year }}</output>
+                </div>
+                <div id="year-slider" class="range range-info">
+                  <div class="slider-bar">
+                    <div class="slider-bar-colors historic-years" style="width: 55px;"></div>
+                    <div class="slider-bar-colors managed-years" style="width: 2px;"></div>
+                    <div class="slider-bar-colors forecast-years"></div>
+                  </div>
+                  <input class="year-range" type="range" name="range" min="{{ historic_data.0.year }}"
+                    max="{{ historic_data.last.year }}" step="1" value="{{ historic_data.last.year }}"
+                    onchange="displayYear.value=value">
                 </div>
               </div>
-              <div id="probability-legend-container" class="pb-0">
-                <div id="legend_description"><strong>Probability of occurence:</strong></div>
-                <div class="legend-color" style="background-color:#000005; opacity:0.467"></div>
-                <div class="legend-color" style="background-color:#080616; opacity:0.5"></div>
-                <div class="legend-color" style="background-color:#1E0848; opacity:0.533"></div>
-                <div class="legend-color" style="background-color:#43006A; opacity:0.567"></div>
-                <div class="legend-color" style="background-color:#6B116F; opacity:0.6"></div>
-                <div class="legend-color" style="background-color:#981D69; opacity:0.633"></div>
-                <div class="legend-color" style="background-color:#C92D59; opacity:0.676"></div>
-                <div class="legend-color" style="background-color:#ED504A; opacity:0.7"></div>
-                <div class="legend-color" style="background-color:#FA8657; opacity:0.733"></div>
-                <div class="legend-color" style="background-color:#FBC17D; opacity:0.767"></div>
-                <div class="legend-color" style="background-color:#FCFFB2; opacity:0.8"></div>
-                <div style="clear: left;">
-                  <p id="legend_label_left" class="legend-label" style="float:left; margin-right:170px;">0</p>
-                  <p id="legend_label_right" class="legend-label">100%</p>
-                </div>
               </div>
-              {% comment %} MAP CHECKBOXES {% endcomment %}
+                            {% comment %} MAP CHECKBOXES {% endcomment %}
               <div>
                 <div id="additional_map_checkboxes">
                   {% comment %} <div id="SLF_buffer_zone_checkbox" class="form-check">
@@ -346,27 +371,15 @@
                 </div>
               </div>
               {% comment %} YEAR SLIDER and BUDGET PLOT {% endcomment %}
-              <div id="budget_background_layer"></div>
-              <div id="year-slider-container">
-                <div id="display_year_label" class="py-0 "><output
-                    id="displayYear">{{ historic_data.last.year }}</output>
+              <div id="budget_background_layer">
+                <div id="displayed_management_area" class="text-center">
+                  <div>Managed area:</div>
+                  <div id="polygon-info">0.0 acres</div>
                 </div>
-                <div id="year-slider" class="pt-0 range range-info">
-                  <div class="slider-bar">
-                    <div class="slider-bar-colors historic-years" style="width: 55px;"></div>
-                    <div class="slider-bar-colors managed-years" style="width: 2px;"></div>
-                    <div class="slider-bar-colors forecast-years"></div>
-                  </div>
-                  <input class="year-range" type="range" name="range" min="{{ historic_data.0.year }}"
-                    max="{{ historic_data.last.year }}" step="1" value="{{ historic_data.last.year }}"
-                    onchange="displayYear.value=value">
-                </div>
+                
               </div>
-              <div id="displayed_management_area" class="text-center">
-                <div>Managed area:</div>
-                <div id="polygon-info">0.0 acres</div>
-              </div>
-              <div id="current-budget-plot" class="col py-0" style="width:180px; height:140px"></div>
+              <div id="current-budget-plot" class=""></div>
+
               <div id="draw-controls" class="btn-group-vertical" role="group">
                 <div class="input-group input-group rounded-0 border" title="Host removal">
                   <div class="input-group-prepend dropleft rounded-0">
@@ -1001,8 +1014,8 @@ function updateJSON() {
     console.log('pesticide_area = ' + pesticide_area);
     console.log('convertedData = ' + convertedData);
     var total_area = host_removal_area + pesticide_area;
-    var rounded_area = Math.round(total_area * 100) / 100;
-    var displayed_area = Math.round(total_area*area_modifier * 100) / 100;
+    var rounded_area = Math.round(total_area);
+    var displayed_area = Math.round(total_area*area_modifier);
     // round cost to 2 decimal places
     var total_cost = host_removal_cost + pesticide_cost;
     console.log('Cost is = ' + total_cost)
@@ -1211,18 +1224,21 @@ $("#year-slider").change(function () {
   $("#displayYear").val(year_id);
   if (year_id > steering_year){
     $('#display_year_forecast').text('Forecast');
+    $('#legend_description').text(' (Probability of occurence)');
     $('#historic-legend-container').hide();
     $('#occurence-legend-container').hide();
     $('#probability-legend-container').show();
   }
   else if (year_id > {{ historic_data.last.year }}){
     $('#display_year_forecast').text('Current state');
+    $('#legend_description').text(' (Predicted occurences)');
     $('#historic-legend-container').hide();
     $('#occurence-legend-container').show();
     $('#probability-legend-container').hide();  
   }
   else {
     $('#display_year_forecast').text('Field observations');
+    $('#legend_description').text(' (Number of detections)');
     $('#historic-legend-container').show();
     $('#occurence-legend-container').hide();
     $('#probability-legend-container').hide();
@@ -1507,6 +1523,7 @@ function get_output(run_id) {
         $("#year-slider").find('input').val(display_year.toString());
         $("#displayYear").val(display_year.toString());
         $('#display_year_forecast').text('Current state');
+        $('#legend_description').text(' (Number of detections)');
         $('#historic-legend-container').hide();
         $('#occurence-legend-container').show();
         $('#probability-legend-container').hide();        
