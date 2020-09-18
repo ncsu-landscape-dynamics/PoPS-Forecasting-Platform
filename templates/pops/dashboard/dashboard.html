@@ -374,110 +374,162 @@
               <div id="budget_background_layer">
                 <div id="displayed_management_area" class="text-center">
                   <div>Managed area:</div>
-                  <div id="polygon-info">0.0 acres</div>
+                  <div id="displayed-management-area">0.0 acres</div>
                 </div>
                 
               </div>
               <div id="current-budget-plot" class=""></div>
 
               <div id="draw-controls" class="btn-group-vertical" role="group">
-                <div class="btn-group input-group input-group rounded-0 border" title="Displayed area">
-                  <div class="btn-group input-group-prepend dropleft rounded-0">
-                    <button type="button" title="Displayed area"
-                      class="btn dropdown-toggle dropdown-toggle-split rounded-0 border" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false" style="width:20px">
-                    </button>
-                    <button type="button disabled" class="btn border btn-block">
-                      m<sup>2</sup>
-                    </button>
-<div class="dropdown-menu draw-tool-dropdown">
-                            <div class="form-group mx-2 my-1">
-                              <label for="">Displayed Units</label>
-                              <div class="input-group ">
-                                <select name="area_unit" class="form-control" id="">
-                                  <option value="1">meter squared</option>
-                                  <option value="0.000247105" selected>acre</option>
-                                  <option value="0.0001">hectare</option>
-                                </select>
-                              </div>
+                <div class="btn-group dropleft" title="Displayed units">
+                  <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split "
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <button id="area_unit_button" type="button" data-toggle="dropdown" class="btn btn-default">
+                    <div id="area_unit_text">ac</div>
+                  </button>
+                  <div class="dropdown-menu draw-tool-dropdown">
+                    <div class="px-2 py-1">Displayed units:</div>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm">
+                            <select name="area_unit" class="form-control" id="id_area_unit">
+                              <option data-text="m<sup>2</sup>" value="1">meter squared</option>
+                              <option data-text="ac" value="0.000247105" selected>acre</option>
+                              <option data-text="ha" value="0.0001">hectare</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn btn-secondary btn-sm" type="button" data-toggle="tool" title="Select management type"
+                  data-placement="left">
+                  <small>Management type</small>
+                </button>
+                <div class="btn-group dropleft management_input_group">
+                  <button type="button" title="Host removal"
+                    class="btn btn-default dropdown-toggle dropdown-toggle-split " data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <button type="button" class="btn btn-default" title="Host removal" data-toggle="dropdown">
+                    <i class="fas fa-window-close"></i> <input class="management-type" type="checkbox"
+                      value="host_removal" id="host_removal_status" checked>
+                  </button>
+                  <div class="dropdown-menu draw-tool-dropdown">
+                    <div class="px-2 py-1">Host removal:</div>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm" title="Host removal efficacy (range: 0-1)">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Efficacy</span>
                             </div>
-
-</div>
-                  </div>
-                </div>
-                <div class="input-group input-group rounded-0 border" title="Host removal">
-                  <div class="input-group-prepend dropleft rounded-0">
-                    <button type="button" title="Host removal"
-                      class="btn dropdown-toggle dropdown-toggle-split rounded-0 border" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false" style="width:20px">
-                    </button>
-                    <button type="button" class="btn border">
-                      <i class="fas fa-window-close"></i> <input class="management-type rounded-0" type="checkbox"
-                        value="host_removal" id="host_removal_status" checked>
-                    </button>
-                    <div class="dropdown-menu draw-tool-dropdown">
-                      <div class="mx-2 my-1">Host removal:</div>
-                      <div class="input-group input-group-sm mx-2 my-1">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">Efficacy</span>
+                            <input id="default_host_removal_efficacy" class="form-control" type="number"
+                              name="host_removal_efficacy" value="0.5" min="0" max="1" step="0.1">
+                          </div>
                         </div>
-                        <input id="default_host_removal_efficacy" type="number" name="host_removal_efficacy"
-                          value="0.5" min="0" max="1" step="0.1">
-                      </div>
-                      <div class="input-group input-group-sm mx-2 my-1">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">$ per acre</span>
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm management_group_cost" title="Host removal cost per selected unit area">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">$</span>
+                            </div>
+                            <input class="displayed_cost form-control" type="number" name="displayed_host_removal_cost"
+                              value="0.5" min="0" max="1" step="0.1">
+                            <input hidden id="default_host_removal_cost" class="default_cost" type="number"
+                              name="host_removal_cost_per_m2" value="0.5" min="0" max="1" step="0.1">
+                            <select class="custom-select custom-select-sm cost_unit">
+                              <option value="1">/m^2</option>
+                              <option value="0.000247105" selected>/acre</option>
+                              <option value="0.0001">/ha</option>
+                            </select>
+                          </div>
                         </div>
-                        <input id="default_host_removal_cost" type="number" name="host_removal_cost" value="0.5"
-                          min="0" max="1" step="0.1">
-                      </div>
-                    </div>
-                  </div>
-                </div>                
-                <div class="input-group input-group rounded-0 border" title="Pesticide">
-                  <div class="input-group-prepend dropleft rounded-0">
-                    <button type="button" class="btn dropdown-toggle dropdown-toggle-split rounded-0 border"
-                      title="Pesticide" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:20px">
-                    </button>
-                    <button type="button" class="btn border">
-                      <i class="fas fa-spray-can"></i> <input class="management-type rounded-0" type="checkbox"
-                        value="pesticide" id="pesticide_status">
-                    </button>
-                    <div class="dropdown-menu draw-tool-dropdown">
-                      <div class="mx-2 my-1">Pesticide:</div>
-                      <div class="input-group input-group-sm mx-2 my-1">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">Efficacy</span>
-                        </div>
-                        <input id="default_pesticide_efficacy" type="number" name="pesticide_efficacy" value="0.5"
-                          min="0" max="1" step="0.1">
-                      </div>
-                      <div class="input-group input-group-sm mx-2 my-1">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">$ per m<sup>2</sup></span>
-                        </div>
-                        <input id="default_pesticide_cost" type="number" name="pesticide_cost" value="0.5" min="0"
-                          max="1" step="0.1">
                       </div>
                     </div>
                   </div>
                 </div>
+                <div class="btn-group dropleft">
+                  <button type="button" title="Pesticide" class="btn btn-default dropdown-toggle dropdown-toggle-split "
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <button type="button" class="btn btn-default" title="Pesticide" data-toggle="dropdown">
+                    <i class="fas fa-spray-can"></i> <input class="management-type " type="checkbox" value="pesticide"
+                      id="pesticide_status">
+                  </button>
+                  <div class="dropdown-menu draw-tool-dropdown management_input_group">
+                    <div class="px-2 py-1">Pesticide:</div>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm" title="Pesticide efficacy (range: 0-1)">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Efficacy</span>
+                            </div>
+                            <input id="default_pesticide_efficacy" class="form-control" type="number"
+                              name="pesticide_efficacy" value="0.5" min="0" max="1" step="0.1"
+                              title="Pesticide efficacy (0-1)">
+                          </div>
+                        </div>
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm" title="Pesticide cost per selected unit area">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">$</span>
+                            </div>
+                            <input class="displayed_cost form-control" type="number" name="displayed_pesticide_cost"
+                              value="0.5" min="0" max="1" step="0.1">
+                            <input hidden id="default_pesticide_cost" class="default_cost" type="number"
+                              name="pesticide_cost_per_m2" value="0.5" min="0" max="1" step="0.1">
+                            <select class="custom-select custom-select-sm cost_unit">
+                              <option value="1">/m^2</option>
+                              <option value="0.000247105" selected>/acre</option>
+                              <option value="0.0001">/ha</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn btn-secondary btn-sm " type="button" data-toggle="tool"
+                  title="Below are the tools to draw management" data-placement="left">
+                  <small>Draw tools</small>
+                </button>
                 <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool"
                   title="Draw management polygon" data-placement="left">
                   <i class="fas fa-draw-polygon"></i>
                 </button>
-                <div class="btn-group" role="group" data-toggle="tool" title="Draw circle" data-placement="left">
-                  <button id="btnGroupCircles" type="button" class="btn btn-default drawing-tool dropdown-toggle"
+                <div id="circle-tool-group" class="btn-group dropleft">
+                  <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split "
+                    title="Select radius" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <button id="circle-tool" type="button" class="btn btn-default drawing-tool" title="Circle tool"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="far fa-dot-circle"></i>
                   </button>
-                  <div class="dropdown-menu" aria-labelledby="btnGroupCircles">
-                    <a id="300ft-circle-tool" class="dropdown-item" href="#">300ft radius</a>
-                    <a id="600ft-circle-tool" class="dropdown-item" href="#">600ft radius</a>
+                  <div class="dropdown-menu draw-tool-dropdown">
+                    <div class="px-2 py-1">Choose circle radius:</div>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm" title="Circle radius">
+                            <input id="displayed_circle_radius" class="displayed_circle_radius form-control"
+                              type="number" name="displayed_circle_radius" value="600" min="0" step="1">
+                            <input hidden id="circle_radius_in_meters" type="number" name="circle_radius_in_meters" value="600">
+                            <select id="circle_distance_unit" class="custom-select custom-select-sm">
+                              <option value="1.0" selected>meters</option>
+                              <option value="0.3048">feet</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <button id="select-tool" class="btn btn-default drawing-tool active" type="button"
-                  data-toggle="tool" title="Selection tool" data-placement="left">
+                <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
+                  title="Selection tool" data-placement="left">
                   <i class="fas fa-hand-paper"></i>
                 </button>
                 <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
@@ -485,7 +537,41 @@
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
-              <script>
+
+<script>
+
+  $("#circle-tool-group input, #circle-tool-group select").on('click blur hide.bs.dropdown', function () {
+    console.log("Circle radius changed")
+    var displayed_management_circle_radius = $("input#displayed_circle_radius").val();
+    console.log('Displayed radius = ' + displayed_management_circle_radius);
+    var area_modifier = $("select#id_area_unit").children("option:selected").val();
+    var convert_to_meters_modifier = $("select#circle_distance_unit").children("option:selected").val();
+    console.log('Modifier = ' + convert_to_meters_modifier);
+    var management_circle_radius_meters = displayed_management_circle_radius*convert_to_meters_modifier;
+    console.log("Radius in hidden field = " + management_circle_radius_meters);
+    $("input#circle_radius_in_meters").val(management_circle_radius_meters);
+  });
+
+$(".management_group_cost input, .management_group_cost select").on("click blur hide.bs.dropdown", function() {
+  var element = $(this).parent();
+  var displayed_cost = $(element).find("input.displayed_cost").val();
+  console.log("DISPLAYED COST: " + displayed_cost);
+  var cost_modifier =  $(element).find("option:selected").val();
+  console.log("COST MODIFIER: " + cost_modifier);
+  var actual_cost_per_meter_squared = Math.round(displayed_cost*cost_modifier*100000000)/100000000;
+  console.log("ACTUAL COST: " + actual_cost_per_meter_squared);
+  $(element).find("input.default_cost").val(actual_cost_per_meter_squared);
+});
+
+
+$(".management-type").on('change',  function () {
+  //If all management types are unchecked, recheck the last unchecked checkbox
+  console.log('Management type changed.')
+  if ($('.management-type:not(:checked)').length == $('.management-type').length ){
+    $(this).prop('checked',true)
+    console.log('Rechecking box')
+	}
+})
 
                 $('#historic-legend-container').show();
                 $('#occurence-legend-container').hide();
@@ -584,16 +670,6 @@ $('.draw-tool-dropdown').on('click', function(e) {
                           <div class="row">
                             {% include "pops/include/form_field.html" with field=form.name form_class="col-12" %}
                             {% include "pops/include/form_field.html" with field=form.description form_class="col-12" %}
-                            <div class="form-group col-12">
-                              <label for="id_area_unit">Displayed Units</label>
-                              <div class="input-group ">
-                                <select name="area_unit" class="form-control" id="id_area_unit">
-                                  <option value="1">meter squared</option>
-                                  <option value="0.000247105" selected>acre</option>
-                                  <option value="0.0001">hectare</option>
-                                </select>
-                              </div>
-                            </div>
                             <div class="form-group col-6">
                               <label for="id_budget">Budget ($US)</label>
                               <div class="input-group">
@@ -852,21 +928,12 @@ $('.draw-tool-dropdown').on('click', function(e) {
     console.log("Polygon tool selected to draw management.")
   });
 
-  $("#300ft-circle-tool").on('click', function () {
-    $('.drawing-tool').removeClass('active');
-    $('#btnGroupCircles').addClass('active');
-    management_circle_radius = 0.09144; //300ft in km
-    draw.changeMode('draw_circle');
-    console.log("Circle tool selected to draw management.")
-  });
-
-  $("#600ft-circle-tool").on('click', function () {
-    $('.drawing-tool').removeClass('active');
-    $('#btnGroupCircles').addClass('active');
-    management_circle_radius = 0.18288; //600ft in km
-    draw.changeMode('draw_circle');
-    console.log("Circle tool selected to draw management.")
-  });
+    $("#circle-tool").on('click', function () {
+      $('.drawing-tool').removeClass('active');
+      $('#circle-tool').addClass('active');
+      draw.changeMode('draw_circle');
+      console.log("Circle tool selected to draw management.")
+    });
 
   $("#select-tool").on('click', function () {
     $('.drawing-tool').removeClass('active');
@@ -1028,9 +1095,10 @@ function updateJSON() {
   var data = draw.getAll();
   console.log("Updating management polygons:");
   //console.log(data);
-  var answer = document.getElementById('polygon-info');
+  var answer = document.getElementById('displayed-management-area');
   var budget = $("input#id_budget").val();
   var area_unit = $("select#id_area_unit").children("option:selected").text();
+  var abbreviated_unit_display = $("select#id_area_unit").children("option:selected").attr('data-text');
   var area_modifier = $("select#id_area_unit").children("option:selected").val();
   if (data.features.length > 0) {
     // Stringify the GeoJson
@@ -1053,7 +1121,7 @@ function updateJSON() {
     var displayed_area = 0;
     console.log("updateJSON: There is no management.")
   }
-  answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + area_unit;     
+  answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + abbreviated_unit_display;  
   $('#id_management_polygons').val(convertedData);
   $('#id_management_area').val(rounded_area);
   $('#id_management_cost').val(total_cost);
@@ -1192,17 +1260,19 @@ $('#show_details_button').on('click', function () {
 //management polygons and properties. There will no longer be budget and cost, but
 //there will still be an area unit and cost modifier...
 
-$( "input#id_budget, input#id_cost, select#id_area_unit" ).on( "click blur load", function() {
-  var displayed_cost_per_area = $('input#id_cost').val();
+$( " select#id_area_unit" ).on( "click blur load", function() {
+  var displayed_cost_per_area = $('input#displayed_host_removal_cost').val();
   console.log("The displayed cost is: " + displayed_cost_per_area);
   var cost_modifier =  $("select#id_area_unit").children("option:selected").val();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
   var area_unit =  $("select#id_area_unit").children("option:selected").text();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
+  var abbreviated_unit_display = $("select#id_area_unit").children("option:selected").attr('data-text');
   console.log('Area unit is: ' + area_unit);
   console.log("The cost modifier is: " + cost_modifier);
   var actual_cost_per_meter_squared = Math.round(displayed_cost_per_area*cost_modifier*100000000)/100000000;
   console.log("The actual cost per meter squared is: " + actual_cost_per_meter_squared);
-  $('input#id_cost_per_meter_squared').val(actual_cost_per_meter_squared);
+  $('input#default_host_removal_cost').val(actual_cost_per_meter_squared);
   $('span.displayed_area_unit').text(area_unit);
+  $('#area_unit_button').html(abbreviated_unit_display);
   updateJSON();
 });
 

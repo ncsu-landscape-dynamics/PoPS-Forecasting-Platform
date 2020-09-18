@@ -11,7 +11,8 @@ CircleMode.onSetup = function (opts) {
 CircleMode.onClick = function (state, e) {
   console.log('Drawing circle...')
   var center = [e.lngLat.lng, e.lngLat.lat]; 
-  var radius = management_circle_radius;
+  var management_circle_radius_meters = $("input#circle_radius_in_meters").val();
+  var radius = management_circle_radius_meters/1000;
   console.log('RADIUS = ' + radius);
   var area = Math.round(3.141592*(radius*1000.0)*(radius*1000.0)); //calculate area in m^2
   console.log('AREA = ' + area);
