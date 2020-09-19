@@ -561,6 +561,16 @@ left: 0px;
               opacity: 0.8;
             }
     
+            #editPolygons {
+              position: absolute;
+              top: 175px;
+              left: 5px;              
+              color: white; 
+              background-color: black;
+              opacity: 0.8;
+              width: 220px;
+              border-radius: 4px; 
+            }
 .parameter-selector-plot input {
   padding-right: 25px;
   padding-left: 35px;

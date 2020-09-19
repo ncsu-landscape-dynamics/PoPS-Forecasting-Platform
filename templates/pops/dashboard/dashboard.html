@@ -414,7 +414,7 @@
                     class="btn btn-default dropdown-toggle dropdown-toggle-split " data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                   </button>
-                  <button type="button" class="btn btn-default" title="Host removal" data-toggle="dropdown">
+                  <button type="button" class="btn btn-default" title="Host removal">
                     <i class="fas fa-window-close"></i> <input class="management-type" type="checkbox"
                       value="host_removal" id="host_removal_status" checked>
                   </button>
@@ -455,7 +455,7 @@
                   <button type="button" title="Pesticide" class="btn btn-default dropdown-toggle dropdown-toggle-split "
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   </button>
-                  <button type="button" class="btn btn-default" title="Pesticide" data-toggle="dropdown">
+                  <button type="button" class="btn btn-default" title="Pesticide">
                     <i class="fas fa-spray-can"></i> <input class="management-type " type="checkbox" value="pesticide"
                       id="pesticide_status">
                   </button>
@@ -540,47 +540,13 @@
 
 <script>
 
-  $("#circle-tool-group input, #circle-tool-group select").on('click blur hide.bs.dropdown', function () {
-    console.log("Circle radius changed")
-    var displayed_management_circle_radius = $("input#displayed_circle_radius").val();
-    console.log('Displayed radius = ' + displayed_management_circle_radius);
-    var area_modifier = $("select#id_area_unit").children("option:selected").val();
-    var convert_to_meters_modifier = $("select#circle_distance_unit").children("option:selected").val();
-    console.log('Modifier = ' + convert_to_meters_modifier);
-    var management_circle_radius_meters = displayed_management_circle_radius*convert_to_meters_modifier;
-    console.log("Radius in hidden field = " + management_circle_radius_meters);
-    $("input#circle_radius_in_meters").val(management_circle_radius_meters);
-  });
-
-$(".management_group_cost input, .management_group_cost select").on("click blur hide.bs.dropdown", function() {
-  var element = $(this).parent();
-  var displayed_cost = $(element).find("input.displayed_cost").val();
-  console.log("DISPLAYED COST: " + displayed_cost);
-  var cost_modifier =  $(element).find("option:selected").val();
-  console.log("COST MODIFIER: " + cost_modifier);
-  var actual_cost_per_meter_squared = Math.round(displayed_cost*cost_modifier*100000000)/100000000;
-  console.log("ACTUAL COST: " + actual_cost_per_meter_squared);
-  $(element).find("input.default_cost").val(actual_cost_per_meter_squared);
-});
-
-
-$(".management-type").on('change',  function () {
-  //If all management types are unchecked, recheck the last unchecked checkbox
-  console.log('Management type changed.')
-  if ($('.management-type:not(:checked)').length == $('.management-type').length ){
-    $(this).prop('checked',true)
-    console.log('Rechecking box')
-	}
-})
 
                 $('#historic-legend-container').show();
                 $('#occurence-legend-container').hide();
                 $('#probability-legend-container').hide();
                 $('#eradication_container').hide();
 
-$('.draw-tool-dropdown').on('click', function(e) {
-  e.stopPropagation();
-});
+
 
               </script>
               {% comment %}  STATUS INDICATORS {% endcomment %}
@@ -606,8 +572,57 @@ $('.draw-tool-dropdown').on('click', function(e) {
 
                 </div>
               </div>
-                
+              <div id="editPolygons" class="container">
+                <div class="row">
+                  <div class="col-12">
+                    Edit selected polygons:
+                  </div>
+                  <div class="col-12">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="editManagementOptions" id="inlineRadio1"
+                        value="Host removal">
+                      <label class="form-check-label" for="inlineRadio1"><small>Host removal</small></label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="editManagementOptions" id="inlineRadio2" value="Pesticide">
+                      <label class="form-check-label" for="inlineRadio2"><small>Pesticide</small></label>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 py-1">
+                      <div class="input-group input-group-sm" title="Efficacy (range: 0-1)">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Efficacy</span>
+                        </div>
+                        <input id="edit_efficacy" class="form-control" type="number" name="" value="0.5" min="0" max="1" step="0.1"
+                          title="Efficacy (0-1)">
+                      </div>
+                    </div>
+                    <div class="col-12 py-1">
+                      <div class="input-group input-group-sm management_group_cost" title="Cost per selected unit area">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">$</span>
+                        </div>
+                        <input id="edit_display_cost" class="displayed_cost form-control" type="number"
+                          name="displayed_pesticide_cost" value="0.5" min="0" max="1" step="0.1">
+                        <input hidden id="edit_cost" class="default_cost" type="number" name="pesticide_cost_per_m2" value="0.5"
+                          min="0" step="0.1">
+                        <select id="edit_area_unit" class="custom-select custom-select-sm cost_unit">
+                          <option value="1">/m^2</option>
+                          <option value="0.000247105" selected>/acre</option>
+                          <option value="0.0001">/ha</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-12 py-1">
+                      <button id="changeManagementButton" class="btn btn-sm btn-secondary">Apply changes </button>
+                    </div>
+                  </div>
+                </div>
+
               <script>
+              $( "#editPolygons" ).hide();
                 $("#tangible-landscape-indicator").hide();
                 $("#tangible-landscape-listener-button").hide();
                 $("#eradication-status-indicator").hide();
@@ -1040,46 +1055,40 @@ function drawPolygon(polygon, management_properties,area) {
   return featureID;
 };
 
-//When selection changes, show box to edit the selected polygons.
-function selectionChange(e) {
-  selection = draw.getSelected();
-  //display ability to edit if 1 or more polygons are selected
-  if (selection.features.length > 0) {
-    //Get the management type of the first feature, to pre-check that as the type
-    selected_management_type = selection.features[0].properties.management_type;
-    $("input[type=radio][name='editManagementOptions']").prop("checked", false);
-    $("input[type=radio][value='" + selected_management_type + "']").prop("checked", true);
-    if (selected_management_type == 'Host removal') {
-      $("input[id='edit_host_removal_efficacy']").val(selection.features[0].properties.efficacy);
-      $("input[id='edit_pesticide_efficacy']").val('');
-    } else if (selected_management_type == 'Pesticide') {
-      $("input[id='edit_host_removal_efficacy']").val('');
-      $("input[id='edit_pesticide_efficacy']").val(selection.features[0].properties.efficacy);
+    //When selection changes, show box to edit the selected polygons.
+    function selectionChange(e) {
+      selection = draw.getSelected();
+      //display ability to edit if 1 or more polygons are selected
+      if (selection.features.length > 0) {
+        //Get the management type of the first feature, to pre-check that as the type
+        selected_management_type = selection.features[0].properties.management_type;
+        $("input[type=radio][name='editManagementOptions']").prop("checked", false);
+        $("input[type=radio][value='" + selected_management_type + "']").prop("checked", true);
+        $("input[id='edit_efficacy']").val(selection.features[0].properties.efficacy);
+        var area_modifier = $("select#edit_area_unit").val();
+        $("input[id='edit_display_cost']").val(selection.features[0].properties.cost/area_modifier);
+        //Show edit polygons box.
+        $('#editPolygons').show();
+      } else {
+        $('#editPolygons').hide();
+      }
     }
-    //Show edit polygons box.
-    $('#editPolygons').show();
-  } else {
-    $('#editPolygons').hide();
-  }
-}
 
-//Change management type of selected polygons
-$("#changeManagementButton").on('click', function () {
-  selectionIDs = draw.getSelectedIds();
-  var editManagementTypeValue = $("input[name='editManagementOptions']:checked").val();
-  var editHostRemovalEfficacy = $("input[id='edit_host_removal_efficacy']").val();
-  var editPesticideEfficacy = $("input[id='edit_pesticide_efficacy']").val();
-  for (var n = 0; n < selectionIDs.length; n++) {
-    draw.setFeatureProperty(selectionIDs[n], 'management_type', editManagementTypeValue);
-    if (editManagementTypeValue == 'Host removal') {
-      draw.setFeatureProperty(selectionIDs[n], 'efficacy', editHostRemovalEfficacy);
-    } else if (editManagementTypeValue == 'Pesticide') {
-      draw.setFeatureProperty(selectionIDs[n], 'efficacy', editPesticideEfficacy);
-    }
-    draw.add(draw.get(selectionIDs[n])); //This line makes the new change draw on the map and appear.
-  }
-  updateJSON();
-});
+    //Change management type of selected polygons
+    $("#changeManagementButton").on('click', function () {
+      selectionIDs = draw.getSelectedIds();
+      var editManagementTypeValue = $("input[name='editManagementOptions']:checked").val();
+      var editEfficacy = $("input[id='edit_efficacy']").val();
+      console.log('Edit efficacy value = ' + editEfficacy);
+      var editCost = $("input[id='edit_cost']").val();
+      for (var n = 0; n < selectionIDs.length; n++) {
+        draw.setFeatureProperty(selectionIDs[n], 'management_type', editManagementTypeValue);
+        draw.setFeatureProperty(selectionIDs[n], 'efficacy', editEfficacy);
+        draw.setFeatureProperty(selectionIDs[n], 'cost', editCost);
+        draw.add(draw.get(selectionIDs[n])); //This line makes the new change draw on the map and appear.
+      }
+      updateJSON(selectionIDs);
+    });
 
 //When the polygons change (e.g. a polygon is selected and moved), check for overlapping polygons.
 function updatePolygons(e) {
@@ -1211,6 +1220,43 @@ function combineTwoPolygons(polygonID1, polygonID2) {
     return (featureIds); //return the ID of the new polygon
   }
 }
+
+
+  $("input#displayed_circle_radius, select#circle_distance_unit").on('click blur', function () {
+    console.log("Circle radius changed")
+    var displayed_management_circle_radius = $("input#displayed_circle_radius").val();
+    console.log('Displayed radius = ' + displayed_management_circle_radius);
+    var convert_to_meters_modifier = $("select#circle_distance_unit").children("option:selected").val();
+    console.log('Modifier = ' + convert_to_meters_modifier);
+    var management_circle_radius_meters = displayed_management_circle_radius*convert_to_meters_modifier;
+    console.log("Radius in hidden field = " + management_circle_radius_meters);
+    $("input#circle_radius_in_meters").val(management_circle_radius_meters);
+  });
+
+$(".management_group_cost input, .management_group_cost select").on("click blur hide.bs.dropdown", function() {
+  var element = $(this).parent();
+  var displayed_cost = $(element).find("input.displayed_cost").val();
+  console.log("DISPLAYED COST: " + displayed_cost);
+  var cost_modifier =  $(element).find("option:selected").val();
+  console.log("COST MODIFIER: " + cost_modifier);
+  var actual_cost_per_meter_squared = Math.round(displayed_cost*cost_modifier*100000000)/100000000;
+  console.log("ACTUAL COST: " + actual_cost_per_meter_squared);
+  $(element).find("input.default_cost").val(actual_cost_per_meter_squared);
+});
+
+$('.draw-tool-dropdown').on('click', function(e) {
+  e.stopPropagation();
+});
+
+//Prevent no management type from being selected
+$(".management-type").on('change',  function () {
+  //If all management types are unchecked, recheck the last unchecked checkbox
+  console.log('Management type changed.')
+  if ($('.management-type:not(:checked)').length == $('.management-type').length ){
+    $(this).prop('checked',true)
+    console.log('Rechecking box')
+	}
+});
 
 //Mapbox draw switches to select tool after drawing a polygon.
 //This function makes it so that the mode stays as polygon if the polygon
