@@ -4,7 +4,6 @@ function gaugePlot(div_id, host_removal_dollars, pesticide_dollars, max_amount) 
 
   function divideCost(amount,divide_by) {
     new_cost = round(amount/divide_by,1);
-    console.log('New function works: ' + new_cost);
     return new_cost
   }
 
