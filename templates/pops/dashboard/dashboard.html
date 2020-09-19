@@ -959,7 +959,8 @@
 
   $("#delete-tool").on('click', function () {
     draw.trash();
-    console.log("Trash")
+    console.log("Trash");
+    selectionChange();
   });
 
 //MAP
@@ -1056,7 +1057,7 @@ function drawPolygon(polygon, management_properties,area) {
 };
 
     //When selection changes, show box to edit the selected polygons.
-    function selectionChange(e) {
+    function selectionChange() {
       selection = draw.getSelected();
       //display ability to edit if 1 or more polygons are selected
       if (selection.features.length > 0) {
