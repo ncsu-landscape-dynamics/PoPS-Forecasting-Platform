@@ -21,6 +21,7 @@ pops-project-b461537ece08.json
 app.yaml
 dispatch.yaml
 pops_staging.json
+pops-prod.json
 local.env
 
 stuff/*
