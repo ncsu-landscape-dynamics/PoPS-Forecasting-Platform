@@ -1201,8 +1201,7 @@ function calculateTotalDrawnManagement(data) {
   return [host_removal_area, pesticide_area, host_removal_cost, pesticide_cost];
 }
 
-//Update hidden radius_in_meters field anytime the displayed radius is updated
-  $("input#displayed_circle_radius, select#circle_distance_unit").on('click blur', function () {
+function updateCircleRadiusInMeters() {
     console.log("Circle radius changed")
     var displayed_management_circle_radius = $("input#displayed_circle_radius").val();
     console.log('Displayed radius = ' + displayed_management_circle_radius);
@@ -1211,10 +1210,9 @@ function calculateTotalDrawnManagement(data) {
     var management_circle_radius_meters = displayed_management_circle_radius*convert_to_meters_modifier;
     console.log("Radius in hidden field = " + management_circle_radius_meters);
     $("input#circle_radius_in_meters").val(management_circle_radius_meters);
-  });
-//Update hidden cost per meter squared when displayed cost is updated
-$(".management_group_cost input, .management_group_cost select").on("click blur hide.bs.dropdown", function() {
-  var element = $(this).parent();
+};
+
+function updateDefaultManagementCost(element) {
   var displayed_cost = $(element).find("input.displayed_cost").val();
   console.log("DISPLAYED COST: " + displayed_cost);
   var cost_modifier =  $(element).find("option:selected").val();
@@ -1222,6 +1220,15 @@ $(".management_group_cost input, .management_group_cost select").on("click blur 
   var actual_cost_per_meter_squared = Math.round(displayed_cost*cost_modifier*100000000)/100000000;
   console.log("ACTUAL COST: " + actual_cost_per_meter_squared);
   $(element).find("input.default_cost").val(actual_cost_per_meter_squared);
+};
+//Update hidden radius_in_meters field anytime the displayed radius is updated
+  $("input#displayed_circle_radius, select#circle_distance_unit").on('click blur', function () {
+      updateCircleRadiusInMeters();
+  });
+//Update hidden cost per meter squared when displayed cost is updated
+$(".management_group_cost input, .management_group_cost select").on("click blur hide.bs.dropdown", function() {
+  element = $(this).parent();
+  updateDefaultManagementCost(element);
 });
 
 //Prevent dropdown inputs for draw tools from closing on click
