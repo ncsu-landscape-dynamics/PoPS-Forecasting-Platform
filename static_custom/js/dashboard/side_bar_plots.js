@@ -199,7 +199,7 @@ function area_plot(defaults, steering_outputs, initial_infected_area, initial_nu
     });
   };
 
-  function budget_plot(defaults, steering_outputs, first_year, last_year) {
+function budget_plot(defaults, steering_outputs, first_year, last_year) {
     if ($('#input_budget span').text()) {
       var max_budget = parseInt($('#input_budget span').text());
     }
@@ -340,7 +340,7 @@ function area_plot(defaults, steering_outputs, initial_infected_area, initial_nu
       displayModeBar: false,
       responsive: true
     });
-  };
+};
 
   function spreadRatePlot(last_year) {
     var data = [];
@@ -450,4 +450,4 @@ function area_plot(defaults, steering_outputs, initial_infected_area, initial_nu
       displayModeBar: false,
       responsive: true
     });
-  };
+};

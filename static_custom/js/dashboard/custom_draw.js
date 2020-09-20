@@ -31,4 +31,5 @@ function createGeoJSONCircle(center, radiusInKm, points = 64) {
     properties: {"management_type": getManagementType()
     },
   };
-}
+};
+

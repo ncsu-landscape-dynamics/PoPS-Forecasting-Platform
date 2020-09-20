@@ -170,4 +170,4 @@ function gaugePlot(div_id, host_removal_dollars, pesticide_dollars, max_amount) 
     displayModeBar: false,
     responsive: true
   });
-}
+};

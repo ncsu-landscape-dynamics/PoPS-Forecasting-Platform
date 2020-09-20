@@ -1040,13 +1040,6 @@ $('#show_details_button, #hide_details_button').on('click', function () {
     });
 
 
-
-//Redundant function here doing the same thing as above, just on load to make sure 
-// the budget and cost are correct. Need to clean this up later.
-$(document).ready(function(){
-  updateJSON();
-});
-
 $("#year-slider").change(function () {
   year_id = $(this).find('input').val();
   //$("#year-value").text(year_id);
@@ -1715,6 +1708,7 @@ function relayout_buttons(max_number,max_area,max_cost) {
 };
 
 $( document ).ready(function() {
+  updateJSON();
   $( "#status-indicator" ).hide();
   $( "#status-indicator-shading" ).hide();
   relayout_buttons(max_number,max_area,max_cost);

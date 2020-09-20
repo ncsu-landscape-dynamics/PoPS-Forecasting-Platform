@@ -108,3 +108,4 @@ function run_comparison_plot(run_comparison_div,run_name,infected, area, money) 
       };
   return Plotly.newPlot(run_comparison_div, data, layout, {displayModeBar: false, responsive: true});
   };
+  
