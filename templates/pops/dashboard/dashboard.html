@@ -127,12 +127,13 @@
         <div class="" id="side-bar-filler"> </div>
       </div>
     </div>
-
     <div id="" class="col">
       <div class="tab-content" id="v-pills-tabContent">
         <div id="v-pills-map" class="tab-pane fade show active no-gutters">
           <div class="row no-gutters">
+            <!-- MAP CONTAINER -->
             <div id="map-container-new-view" class="col-md-9">
+              <!-- TIMELINE HEADER BUTTONS FOR SUBMITTING RUNS -->
               <div id="timeline" class="text-center">
                 <div id="flex-container">
                   <div class="timeline-year-container year-0 management_complete year_active management_visible"
@@ -195,84 +196,12 @@
                   id="id_management_cost">
                 <input type="hidden" value="4" name="run_collection" cols="40" rows="10" class="form-control"
                   id="id_run_collection">
-              </form>
-
-              <script>
-                  $(".timeline-year a").on('click', function () {
-                    console.log("Year clicked.")
-                    if (!$(this).parents(".timeline-year-container").hasClass("year_active")) {
-                      if ($(this).parents(".timeline-year-container").hasClass("management_complete")) {
-                        console.log("Updating year.")
-                        var run_id = $(this).parents(".timeline-year-container").attr('data-run-pk');
-                        $(".timeline-year-container").removeClass("year_active");
-                        $(this).parents(".timeline-year-container").addClass("year_active");
-                        get_output(run_id);
-                      };
-                    };
-                  });
-
-                  $(".timeline-visibility").on('click', function () {
-                    console.log("Visibility toggled.")
-                    var year_value = $(this).parents(".timeline-year-container").attr('data-year-value');
-                    var treatment_outline = (year_value.toString() + "_management");
-                    var treatment_fill = (year_value.toString() + "_fill");
-                    if ($(this).parents(".timeline-year-container").hasClass("management_visible")) {
-                      console.log('Turning visibility off...');
-                      $(this).parents(".timeline-year-container").removeClass("management_visible").addClass("management_hidden");
-                      $(this).children("i").removeClass("fa-eye").addClass("fa-eye-slash");
-                      map.setLayoutProperty(treatment_fill, 'visibility', 'none');
-                      map.setLayoutProperty(treatment_outline, 'visibility', 'none');
-                    } else {
-                      console.log('Turning visibility on...');
-                      $(this).parents(".timeline-year-container").removeClass("management_hidden").addClass("management_visible");
-                      $(this).children("i").removeClass("fa-eye-slash").addClass("fa-eye");
-                      map.setLayoutProperty(treatment_fill, 'visibility', 'visible');
-                      map.setLayoutProperty(treatment_outline, 'visibility', 'visible');
-                    }
-                  });
-
-                  $(".timeline-edit").on('click', function () {
-                    console.log("Editing...")
-                    $(this).parents(".timeline-year-container").removeClass("management_complete").removeClass("year_active").addClass("management_active").removeClass("management_hidden").addClass("management_visible");
-                    $(this).next(".timeline-visibility").children("i").removeClass("fa-eye-slash").addClass("fa-eye");
-                    $(this).parents(".timeline-year-container").nextAll(".timeline-year-container").removeClass("management_active").removeClass("management_complete").removeClass("year_active").addClass("management_not_started").removeClass("management_hidden").addClass("management_visible");
-                    $(this).parents(".timeline-year-container").nextAll(".timeline-year-container").find(".timeline-visibility").children("i").removeClass("fa-eye-slash").addClass("fa-eye");
-                    $(this).parents(".timeline-year-container").prev().prev(".timeline-year-container").addClass("year_active");
-                    var year_count = $(this).parents(".timeline-year-container").attr('data-year-counter');
-                    var run_id = $(this).parents(".timeline-year-container").attr('data-run-pk');
-                    var previous_run_id = $(this).parents(".timeline-year-container").prev().prev(".timeline-year-container").attr('data-run-pk');
-                    console.log('Year count is:' + year_count);
-                    console.log('Run pk of deleted run is: ' + run_id);
-                    var run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
-                    $.ajax({
-                      url: "{% url 'delete_runs' %}",
-                      dataType: "json",
-                      data: {
-                        'run_id': run_id,
-                        'run_collection': run_collection_id,
-                      },
-                      success: function (data) {
-                        console.log('Sanity Check! Success for delete runs AJAX call.');
-                        console.log('The Run PK to be deleted is: ' + data.run_id);
-                        get_output(previous_run_id);
-                      },
-                      error: function (xhr, errmsg, err) {
-                        alert("An error occured deleting the runs. An error has occured: " + xhr.status + "\nError: " + xhr.responseText +
-                          "\n");
-                        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-                      }
-                    });
-                    updateDrawColor(year_count);
-                  });
-              </script>   
-
-              {% comment %} MAP {% endcomment %}
-
+              </form>              
+              <!-- MAP -->
               <div id="map" class="large_map"></div>
-
               <button id="show_details_button" type="button" class="btn" style="display: none" data-toggle="tool"
                 title="Show details."><i class="fas fa-chevron-left"></i></button>
-              {% comment %} MAP LEGENDS {% endcomment %}
+              <!-- MAP LEGEND -->
               <div id="displayed-data-legend-container">
               <div id="legend-container" data-toggle="tool" title="Legend for currently displayed data">
                 <div class="my-0">
@@ -353,7 +282,7 @@
                 </div>
               </div>
               </div>
-                            {% comment %} MAP CHECKBOXES {% endcomment %}
+              <!-- MAP ADDITIONAL LAYER CHECKBOXES -->
               <div>
                 <div id="additional_map_checkboxes">
                   {% comment %} <div id="SLF_buffer_zone_checkbox" class="form-check">
@@ -370,16 +299,15 @@
                   </div>
                 </div>
               </div>
-              {% comment %} YEAR SLIDER and BUDGET PLOT {% endcomment %}
+              <!-- BUDGET PLOT --> 
               <div id="budget_background_layer">
                 <div id="displayed_management_area" class="text-center">
                   <div>Managed area:</div>
                   <div id="displayed-management-area">0.0 acres</div>
-                </div>
-                
+                </div>                
               </div>
               <div id="current-budget-plot" class=""></div>
-
+              <!-- DRAW CONTROLS -->
               <div id="draw-controls" class="btn-group-vertical" role="group">
                 <div class="btn-group dropleft" title="Displayed units">
                   <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split "
@@ -537,19 +465,13 @@
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
-
-<script>
-
-
+              <script>
                 $('#historic-legend-container').show();
                 $('#occurence-legend-container').hide();
                 $('#probability-legend-container').hide();
                 $('#eradication_container').hide();
-
-
-
               </script>
-              {% comment %}  STATUS INDICATORS {% endcomment %}
+              <!-- STATUS INDICATORS -->
               <div id="status-indicator-shading">
               </div>
               <div id="tangible-landscape-indicator" class="text-center">Waiting for Tangible Landscape...</div>
@@ -572,6 +494,7 @@
 
                 </div>
               </div>
+              <!-- EDIT POLYGON POP UP BOX -->
               <div id="editPolygons" class="container">
                 <div class="row">
                   <div class="col-12">
@@ -584,83 +507,64 @@
                       <label class="form-check-label" for="inlineRadio1"><small>Host removal</small></label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="editManagementOptions" id="inlineRadio2" value="Pesticide">
+                      <input class="form-check-input" type="radio" name="editManagementOptions" id="inlineRadio2"
+                        value="Pesticide">
                       <label class="form-check-label" for="inlineRadio2"><small>Pesticide</small></label>
                     </div>
                   </div>
+                </div>
+                <div class="row">
+                  <div class="col-12 py-1">
+                    <div class="input-group input-group-sm" title="Efficacy (range: 0-1)">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Efficacy</span>
+                      </div>
+                      <input id="edit_efficacy" class="form-control" type="number" name="" value="0.5" min="0" max="1"
+                        step="0.1" title="Efficacy (0-1)">
+                    </div>
                   </div>
-                  <div class="row">
-                    <div class="col-12 py-1">
-                      <div class="input-group input-group-sm" title="Efficacy (range: 0-1)">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">Efficacy</span>
-                        </div>
-                        <input id="edit_efficacy" class="form-control" type="number" name="" value="0.5" min="0" max="1" step="0.1"
-                          title="Efficacy (0-1)">
+                  <div class="col-12 py-1">
+                    <div class="input-group input-group-sm management_group_cost" title="Cost per selected unit area">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">$</span>
                       </div>
+                      <input id="edit_display_cost" class="displayed_cost form-control" type="number"
+                        name="displayed_pesticide_cost" value="0.5" min="0" max="1" step="0.1">
+                      <input hidden id="edit_cost" class="default_cost" type="number" name="pesticide_cost_per_m2"
+                        value="0.5" min="0" step="0.1">
+                      <select id="edit_area_unit" class="custom-select custom-select-sm cost_unit">
+                        <option value="1">/m^2</option>
+                        <option value="0.000247105" selected>/acre</option>
+                        <option value="0.0001">/ha</option>
+                      </select>
                     </div>
-                    <div class="col-12 py-1">
-                      <div class="input-group input-group-sm management_group_cost" title="Cost per selected unit area">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">$</span>
-                        </div>
-                        <input id="edit_display_cost" class="displayed_cost form-control" type="number"
-                          name="displayed_pesticide_cost" value="0.5" min="0" max="1" step="0.1">
-                        <input hidden id="edit_cost" class="default_cost" type="number" name="pesticide_cost_per_m2" value="0.5"
-                          min="0" step="0.1">
-                        <select id="edit_area_unit" class="custom-select custom-select-sm cost_unit">
-                          <option value="1">/m^2</option>
-                          <option value="0.000247105" selected>/acre</option>
-                          <option value="0.0001">/ha</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-12 py-1">
-                      <button id="changeManagementButton" class="btn btn-sm btn-secondary">Apply changes </button>
-                    </div>
+                  </div>
+                  <div class="col-12 py-1">
+                    <button id="changeManagementButton" class="btn btn-sm btn-secondary">Apply changes </button>
                   </div>
                 </div>
+              </div>
 
               <script>
-              $( "#editPolygons" ).hide();
-                $("#tangible-landscape-indicator").hide();
-                $("#tangible-landscape-listener-button").hide();
+              $("#editPolygons").hide();
+              $("#tangible-landscape-indicator").hide();
+              $("#tangible-landscape-listener-button").hide();
+              $("#eradication-status-indicator").hide();
+              $("a#eradication-status-close-button").on('click', function () {
+                console.log("Close button clicked.");
                 $("#eradication-status-indicator").hide();
-                $("a#eradication-status-close-button").on('click', function () {
-                      console.log("Close button clicked.");
-                $("#eradication-status-indicator").hide();
-
-                    });   
-
-                $("button#cancel-polling").hide();
-
-                $("button#cancel-polling").on('click', function () {
-                          $(this).attr('data-value','true');
-                      console.log("Cancel polling clicked.");
-                      $(this).hide();
-                    });   
-
-                $("#tangible-landscape-listener-button a").on('click', function () {
-                  if ($(this).attr('data-value') == 'true') {
-                      $(this).attr('data-value','false');
-                      console.log("Changing value of TL listener to false.");
-                      $(this).text('Resume listening');
-                  }
-                  else {
-                      $(this).attr('data-value','true');
-                      $(this).text('Stop listening');
-                      console.log("Changing value of TL listener to true.");
-                      var run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
-                      listen_for_new_runs(run_collection_id,0);
-                  }
-
-                    });   
-
-                $("a#status-close-button").on('click', function () {
-                      console.log("Close button clicked.");
+              });
+              $("button#cancel-polling").hide();
+              $("button#cancel-polling").on('click', function () {
+                $(this).attr('data-value', 'true');
+                console.log("Cancel polling clicked.");
+                $(this).hide();
+              });
+              $("a#status-close-button").on('click', function () {
+                console.log("Close button clicked.");
                 $("#status-indicator-shading").hide();
                 $("#status-indicator").hide();
-                    });   
+              });
               </script>
             </div> <!-- End map-container-new-view -->
             <!-- RIGHT SIDE PANEL -->
@@ -731,11 +635,12 @@
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> <!-- End run collection modal -->
+                <!-- Side panel top button row -->
                 <div class="">
                   <button id="hide_details_button" type="button" class="btn" data-toggle="tool"
                     title="Hide details."><i class="fas fa-chevron-right"></i></button>
-                  <div id="run-button-set" class="btn-group" role="group" aria-label="Basic example">
+                  <div id="side-panel-buttons" class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#viewParameters"
                       title="View run and session details."><i class="fas fa-info"></i></button>
                     <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#editInputParameters"
@@ -881,14 +786,14 @@
 
       </div> <!-- End tab-content -->
     </div> <!-- End col-->
-  </div> <!-- End row (this containers the side bars and map)-->
+  </div> <!-- End row (this contains the side bars and map)-->
   <div id="run-preview-description" class="row no-gutters">
     <div class="col">
       Other runs in this session:
     </div>
   </div><!-- End row-->
-  <div id="run-preview-container" class="row no-gutters flex-nowrap">
-  </div><!-- End row-->
+  <!-- BOTTOM PANEL: OTHER RUN BUTTONS-->
+  <div id="run-preview-container" class="row no-gutters flex-nowrap"></div>
 </div><!-- End container-->
 
 {% endblock %}
@@ -921,6 +826,75 @@
 {% endfor %} 
 
 <script>
+//TIMELINE BUTTONS 
+                  $(".timeline-year a").on('click', function () {
+                    console.log("Year clicked.")
+                    if (!$(this).parents(".timeline-year-container").hasClass("year_active")) {
+                      if ($(this).parents(".timeline-year-container").hasClass("management_complete")) {
+                        console.log("Updating year.")
+                        var run_id = $(this).parents(".timeline-year-container").attr('data-run-pk');
+                        $(".timeline-year-container").removeClass("year_active");
+                        $(this).parents(".timeline-year-container").addClass("year_active");
+                        get_output(run_id);
+                      };
+                    };
+                  });
+
+                  $(".timeline-visibility").on('click', function () {
+                    console.log("Visibility toggled.")
+                    var year_value = $(this).parents(".timeline-year-container").attr('data-year-value');
+                    var treatment_outline = (year_value.toString() + "_management");
+                    var treatment_fill = (year_value.toString() + "_fill");
+                    if ($(this).parents(".timeline-year-container").hasClass("management_visible")) {
+                      console.log('Turning visibility off...');
+                      $(this).parents(".timeline-year-container").removeClass("management_visible").addClass("management_hidden");
+                      $(this).children("i").removeClass("fa-eye").addClass("fa-eye-slash");
+                      map.setLayoutProperty(treatment_fill, 'visibility', 'none');
+                      map.setLayoutProperty(treatment_outline, 'visibility', 'none');
+                    } else {
+                      console.log('Turning visibility on...');
+                      $(this).parents(".timeline-year-container").removeClass("management_hidden").addClass("management_visible");
+                      $(this).children("i").removeClass("fa-eye-slash").addClass("fa-eye");
+                      map.setLayoutProperty(treatment_fill, 'visibility', 'visible');
+                      map.setLayoutProperty(treatment_outline, 'visibility', 'visible');
+                    }
+                  });
+
+                  $(".timeline-edit").on('click', function () {
+                    console.log("Editing...")
+                    $(this).parents(".timeline-year-container").removeClass("management_complete").removeClass("year_active").addClass("management_active").removeClass("management_hidden").addClass("management_visible");
+                    $(this).next(".timeline-visibility").children("i").removeClass("fa-eye-slash").addClass("fa-eye");
+                    $(this).parents(".timeline-year-container").nextAll(".timeline-year-container").removeClass("management_active").removeClass("management_complete").removeClass("year_active").addClass("management_not_started").removeClass("management_hidden").addClass("management_visible");
+                    $(this).parents(".timeline-year-container").nextAll(".timeline-year-container").find(".timeline-visibility").children("i").removeClass("fa-eye-slash").addClass("fa-eye");
+                    $(this).parents(".timeline-year-container").prev().prev(".timeline-year-container").addClass("year_active");
+                    var year_count = $(this).parents(".timeline-year-container").attr('data-year-counter');
+                    var run_id = $(this).parents(".timeline-year-container").attr('data-run-pk');
+                    var previous_run_id = $(this).parents(".timeline-year-container").prev().prev(".timeline-year-container").attr('data-run-pk');
+                    console.log('Year count is:' + year_count);
+                    console.log('Run pk of deleted run is: ' + run_id);
+                    var run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
+                    $.ajax({
+                      url: "{% url 'delete_runs' %}",
+                      dataType: "json",
+                      data: {
+                        'run_id': run_id,
+                        'run_collection': run_collection_id,
+                      },
+                      success: function (data) {
+                        console.log('Sanity Check! Success for delete runs AJAX call.');
+                        console.log('The Run PK to be deleted is: ' + data.run_id);
+                        get_output(previous_run_id);
+                      },
+                      error: function (xhr, errmsg, err) {
+                        alert("An error occured deleting the runs. An error has occured: " + xhr.status + "\nError: " + xhr.responseText +
+                          "\n");
+                        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                      }
+                    });
+                    updateDrawColor(year_count);
+                  });
+
+
 //DRAW TOOLS
   $("#polygon-tool").on('click', function () {
     $('.drawing-tool').removeClass('active');
@@ -1454,6 +1428,20 @@ function poll(new_run_id) {
   }, 2000);
 };
 
+$("#tangible-landscape-listener-button a").on('click', function () {
+  if ($(this).attr('data-value') == 'true') {
+    $(this).attr('data-value', 'false');
+    console.log("Changing value of TL listener to false.");
+    $(this).text('Resume listening');
+  } else {
+    $(this).attr('data-value', 'true');
+    $(this).text('Stop listening');
+    console.log("Changing value of TL listener to true.");
+    var run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
+    listen_for_new_runs(run_collection_id, 0);
+  }
+});
+
 function listen_for_new_runs(run_collection_id, most_recent_run) {
   $('#tangible-landscape-indicator').fadeIn();
   var active_run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
@@ -1580,6 +1568,7 @@ $("#host_map_checkbox input").on('change', function () {
         });
     });    
 
+    /*
     $("#map-tab").on('click', function () {
       $("#submit-run-button").attr("disabled", false);
       $("input#id_name").prop('disabled', false);
@@ -1590,7 +1579,7 @@ $("#host_map_checkbox input").on('change', function () {
       $("#v-pills-map").addClass("active");
       enableDrawTools();
     });
-
+    */
     $("#submit-run-collection").on('submit', function () {
       console.log("Submit run collection button clicked.");
       event.preventDefault();
@@ -1736,12 +1725,7 @@ $( document ).ready(function() {
     $('[data-toggle="popover"]').popover({boundary: 'viewport', html: true, trigger: 'hover focus', template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-header"></div><div class="popover-body"></div></div>'})
   });
 });
-
-
   </script>
-
   {% endblock %}
-
 </body>
-
 </html>
