@@ -891,21 +891,6 @@
   </div><!-- End row-->
 </div><!-- End container-->
 
-<script>
-  $('[data-toggle="pill"],[data-toggle="tooltip"],[data-toggle="tool"]').tooltip({
-    trigger: 'hover'
-  })
-  $('a.load_run_text').on('click', function (event) {
-    event.stopPropagation();
-    console.log('Run button icon clicked.')
-    $(this).parent().trigger("click");
-    console.log('Triggered parent button click.')
-  });
-  $('a.run_info_button').on('click', function (event) {
-    event.stopPropagation();
-    console.log('Run info icon clicked.')
-  });
-</script>
 {% endblock %}
 
 {% block scripts %}
@@ -935,6 +920,11 @@
 {% endfor %} 
 
 <script>
+
+  $('[data-toggle="pill"],[data-toggle="tooltip"],[data-toggle="tool"]').tooltip({
+    trigger: 'hover'
+  })
+
 //DRAW TOOLS
   $("#polygon-tool").on('click', function () {
     $('.drawing-tool').removeClass('active');
