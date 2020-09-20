@@ -945,7 +945,7 @@
   $("#delete-tool").on('click', function () {
     draw.trash();
     console.log("Trash");
-    selectionChange();
+    displaySelectionChange();
   });
 
 //MAP
@@ -991,7 +991,7 @@ map.addControl(draw);
 map.on('draw.create', createPolygon);
 map.on('draw.delete', updateJSON);
 map.on('draw.update', updatePolygons);
-map.on('draw.selectionchange', selectionChange);
+map.on('draw.selectionchange', displaySelectionChange);
 //Mapbox draw automatically switches to select tool after drawing a polygon.
 //This function makes it so that the mode stays as polygon if the polygon
 //tool is selected.
@@ -1105,7 +1105,7 @@ function updatePolygons(e) {
   updateJSON();
 }
     //When selection changes, show box to edit the selected polygons.
-    function selectionChange() {
+    function displaySelectionChange() {
       selection = draw.getSelected();
       //display ability to edit if 1 or more polygons are selected
       if (selection.features.length > 0) {
@@ -1123,8 +1123,7 @@ function updatePolygons(e) {
       }
     }
 
-    //editPolygons popup button click
-    $("#changeManagementButton").on('click', function () {
+function changePolygonProperties() {
       selectionIDs = draw.getSelectedIds();
       var editManagementTypeValue = $("input[name='editManagementOptions']:checked").val();
       var editEfficacy = $("input[id='edit_efficacy']").val();
@@ -1137,6 +1136,11 @@ function updatePolygons(e) {
         draw.add(draw.get(selectionIDs[n])); //This line makes the new change draw on the map and appear.
       }
       updateJSON(selectionIDs);
+};
+
+    //editPolygons popup button click
+    $("#changeManagementButton").on('click', function () {
+      changePolygonProperties();
     });
 
 
@@ -1183,17 +1187,13 @@ function calculateTotalDrawnManagement(data) {
   var pesticide_area = 0;  
   var host_removal_cost = 0;
   var pesticide_cost = 0;
-  var host_removal_objects = [];
-  var pesticide_objects = [];
   var length = data.features.length;
   for (var n = 0; n < length; n++) {
     if (data.features[n].properties.management_type == 'Host removal') {
-      host_removal_objects.push(data.features[n].properties.area);
       host_removal_area += data.features[n].properties.area;
       host_removal_cost += data.features[n].properties.area * data.features[n].properties.cost;
     } 
     else if (data.features[n].properties.management_type == 'Pesticide') {
-      pesticide_objects.push(data.features[n].properties.area);
       pesticide_area += data.features[n].properties.area;
       pesticide_cost += data.features[n].properties.area * data.features[n].properties.cost;
     }
