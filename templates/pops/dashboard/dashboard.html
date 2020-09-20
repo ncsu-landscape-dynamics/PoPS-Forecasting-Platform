@@ -1275,17 +1275,7 @@ $('#show_details_button, #hide_details_button').on('click', function () {
 //there will still be an area unit and cost modifier...
 
 $( " select#id_area_unit" ).on( "click blur load", function() {
-  var displayed_cost_per_area = $('input#displayed_host_removal_cost').val();
-  console.log("The displayed cost is: " + displayed_cost_per_area);
-  var cost_modifier =  $("select#id_area_unit").children("option:selected").val();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
-  var area_unit =  $("select#id_area_unit").children("option:selected").text();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
   var abbreviated_unit_display = $("select#id_area_unit").children("option:selected").attr('data-text');
-  console.log('Area unit is: ' + area_unit);
-  console.log("The cost modifier is: " + cost_modifier);
-  var actual_cost_per_meter_squared = Math.round(displayed_cost_per_area*cost_modifier*100000000)/100000000;
-  console.log("The actual cost per meter squared is: " + actual_cost_per_meter_squared);
-  $('input#default_host_removal_cost').val(actual_cost_per_meter_squared);
-  $('span.displayed_area_unit').text(area_unit);
   $('#area_unit_button').html(abbreviated_unit_display);
   updateJSON();
 });
@@ -1293,15 +1283,6 @@ $( " select#id_area_unit" ).on( "click blur load", function() {
 //Redundant function here doing the same thing as above, just on load to make sure 
 // the budget and cost are correct. Need to clean this up later.
 $(document).ready(function(){
-  var displayed_cost_per_area = $('input#id_cost').val();
-  console.log("The displayed cost is: " + displayed_cost_per_area);
-  var cost_modifier =  $("select#id_area_unit").children("option:selected").val();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
-  var area_unit =  $("select#id_area_unit").children("option:selected").text();//$('input#id_area_unit').val();//0.000247105; //acres in meter squared
-  console.log("The cost modifier is: " + cost_modifier);
-  var actual_cost_per_meter_squared = Math.round(displayed_cost_per_area*cost_modifier*100000000)/100000000;
-  console.log("The actual cost per meter squared is: " + actual_cost_per_meter_squared);
-  $('input#id_cost_per_meter_squared').val(actual_cost_per_meter_squared);
-  $('span.displayed_area_unit').text(area_unit);
   updateJSON();
 });
 
@@ -1387,7 +1368,6 @@ function enableDrawTools(){
       if (treatment != 0) {
         var ids = draw.set(treatment);
       };
-
       console.log('Added draw tools.')
       updateJSON();
     }  
@@ -1471,7 +1451,6 @@ function get_run_collection(run_collection_id) {
       $("#tangible-landscape-listener-button a").attr('data-value','true');
       $("#tangible-landscape-listener-button a").text('Stop listening');     
       listen_for_new_runs(run_collection_id,most_recent_run);
- 
       //if new run, get output for new run
     }
     else {
@@ -1544,7 +1523,6 @@ function get_output(run_id) {
       var steering_year = data.run_inputs.steering_year;
       spread_rate = data.spread_rate;
       max_spread_rate=data.max_spread_rate;
-
       console.log('Spread rate: ');
       console.log(spread_rate);
       console.log(max_spread_rate);
@@ -1559,7 +1537,6 @@ function get_output(run_id) {
         if (year > steering_year) {
           var map_data = data.results[i].probability_map;
           newMagmaLayer(map_data, year_string,100);
-
         }
         else {
           var map_data = data.results[i].single_spread_map;
@@ -1583,9 +1560,6 @@ function get_output(run_id) {
             relayout_buttons(max_number,max_area,max_cost);
           }
         }
-
-
-
         if (year > max_year) {
           $("#year-slider input").attr('max', year.toString());
           max_year = year;
@@ -1597,31 +1571,6 @@ function get_output(run_id) {
           console.log("New min year = " + min_year);
         };
       }
-
-      {% comment %}
-      $('#input_run_name span').text(data.run_inputs.name);
-      $('#input_run_pk span').text(data.run_inputs.primary_key);
-      $('input#id_name').val(data.run_inputs.name);
-      $('#input_description span').text(data.run_inputs.description);
-      $('#input_reproductive_rate span').text(data.run_inputs.reproductive_rate);
-      $('#input_distance_scale span').text(data.run_inputs.distance_scale);
-      $('#input_efficacy span').text(data.run_inputs.efficacy);
-      $('#input_date_created span').text(data.run_inputs.date_created);
-      $('#input_random_seed span').text(data.run_inputs.random_seed);
-      $('#input_budget span').text(data.run_inputs.budget);
-      $('#input_management_month span').text(data.run_inputs.management_month);
-      $('#input_management_cost span').text(data.run_inputs.management_cost);
-      $('#input_management_area span').text(data.run_inputs.management_area);
-      $('#run_details_management_area span').text(Math.round(data.run_inputs.management_area * acre_to_meter_ratio));
-      $('#input_cost_per_meter_squared span').text(data.run_inputs.cost_per_meter_squared);
-      $('#input_weather span').text(data.run_inputs.weather);
-      $('#input_final_year span').text(data.run_inputs.final_year);
-      $('#input_management span').text(data.run_inputs.management_polygons);
-      $('#status span').text(data.run_inputs.status);
-      $('#output_years span').text(year_list);
-      $('#output_area span').text(infected_area_list);
-      $('#output_number span').text(infected_number_list); 
-      {% endcomment %}
       var year_list = [],
         infected_area_list = [],
         infected_number_list = [];
@@ -1697,19 +1646,10 @@ function get_output(run_id) {
           };
         };
       };
-
-
-
-      {% comment %}
-      if (!(document.getElementById("run_" + data.run_inputs.primary_key.toString()))) {
-        insertRunButton(data.run_inputs.primary_key, data.run_inputs.name, data.run_inputs.date_created, data.run_inputs.description, data.run_inputs.reproductive_rate, data.run_inputs.distance_scale, data.run_inputs.efficacy, button_number_infected, button_area, data.run_inputs.management_cost);
-      }; {% endcomment %}
     },
-
     error: function (xhr) {
       alert(xhr.statusText)
     }
-
   });
 };
 
