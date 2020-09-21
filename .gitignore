@@ -19,5 +19,8 @@ cloud_sql_proxy.exe
 pops-project-b461537ece08.json
 
 app.yaml
+local.env
+pops_staging.json
+pops-prod.json
 
 stuff/*
