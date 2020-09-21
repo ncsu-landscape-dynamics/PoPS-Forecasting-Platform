@@ -28,7 +28,8 @@ function createGeoJSONCircle(center, radiusInKm, points = 64) {
       type: 'Polygon',
       coordinates: [ret],
     },
-    properties: {
+    properties: {"management_type": getManagementType()
     },
   };
-}
+};
+
