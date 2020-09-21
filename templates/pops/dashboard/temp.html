@@ -105,122 +105,254 @@
 
   <div id="map" class="large_map" style="width:1000px"></div>
 
-  <div id="draw-controls" class="btn-group-vertical" role="group">
-    <div class="input-group input-group rounded-0 border">
-      <div class="input-group-prepend dropleft rounded-0">
-        <button type="button" title="Host removal" class="btn dropdown-toggle dropdown-toggle-split rounded-0 border"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span class="sr-only">Toggle Dropdown</span>
-        </button>
-        <button type="button" class="btn border">
-          <i class="fas fa-window-close"></i> <input class="management-type rounded-0" type="checkbox"
-            value="host_removal" id="host_removal_status" checked>
-        </button>
-        <div class="dropdown-menu">
-          <div class="mx-2 my-1">Host removal:</div>
-          <div class="input-group input-group-sm mx-2 my-1">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Efficacy</span>
-            </div>
-            <input id="default_host_removal_efficacy" type="number" name="host_removal_efficacy" value="0.5" min="0"
-              max="1" step="0.1">
-          </div>
-          <div class="input-group input-group-sm mx-2 my-1">
-            <div class="input-group-prepend">
-              <span class="input-group-text">$ per m<sup>2</sup></span>
-            </div>
-            <input id="default_host_removal_cost" type="number" name="host_removal_cost" value="0.5" min="0" max="1"
-              step="0.1">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="input-group input-group rounded-0 border">
-      <div class="input-group-prepend dropleft rounded-0">
-        <button type="button" class="btn dropdown-toggle dropdown-toggle-split rounded-0 border" title="Pesticide"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span class="sr-only">Toggle Dropdown</span>
-        </button>
-        <button type="button" class="btn border">
-          <i class="fas fa-spray-can"></i> <input class="management-type rounded-0" type="checkbox" value="pesticide"
-            id="pesticide_status">
-        </button>
-        <div class="dropdown-menu">
-          <div class="mx-2 my-1">Pesticide:</div>
-          <div class="input-group input-group-sm mx-2 my-1">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Efficacy</span>
-            </div>
-            <input id="default_pesticide_efficacy" type="number" name="pesticide_efficacy" value="0.5" min="0" max="1"
-              step="0.1">
-          </div>
-          <div class="input-group input-group-sm mx-2 my-1">
-            <div class="input-group-prepend">
-              <span class="input-group-text">$ per m<sup>2</sup></span>
-            </div>
-            <input id="default_pesticide_cost" type="number" name="pesticide_cost" value="0.5" min="0" max="1"
-              step="0.1">
-          </div>
-        </div>
-      </div>
-    </div>
-    <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool"
-      title="Draw management polygon" data-placement="left">
-      <i class="fas fa-draw-polygon"></i>
-    </button>
-    <div class="btn-group" role="group" data-toggle="tool" title="Draw circle" data-placement="left">
-      <button id="btnGroupCircles" type="button" class="btn btn-default drawing-tool dropdown-toggle"
-        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="far fa-dot-circle"></i>
-      </button>
-      <div class="dropdown-menu" aria-labelledby="btnGroupCircles">
-        <a id="300ft-circle-tool" class="dropdown-item" href="#">300ft radius</a>
-        <a id="600ft-circle-tool" class="dropdown-item" href="#">600ft radius</a>
-      </div>
-    </div>
-    <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
-      title="Selection tool" data-placement="left">
-      <i class="fas fa-hand-paper"></i>
-    </button>
-    <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
-      title="Delete selection" data-placement="left">
-      <i class="fas fa-trash-alt"></i>
-    </button>
-  </div>
+              <div id="draw-controls" class="btn-group-vertical" role="group">
+                <div class="btn-group dropleft" title="Displayed units">
+                  <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split "
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <button id="area_unit_button" type="button" data-toggle="dropdown" class="btn btn-default">
+                    <div id="area_unit_text">ac</div>
+                  </button>
+                  <div class="dropdown-menu draw-tool-dropdown management_input_group">
+                    <div class="px-2 py-1">Displayed units:</div>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm">
+                            <select name="area_unit" class="form-control" id="id_area_unit">
+                              <option data-text="m<sup>2</sup>" value="1">meter squared</option>
+                              <option data-text="ac" value="0.000247105" selected>acre</option>
+                              <option data-text="ha" value="0.0001">hectare</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn btn-secondary btn-sm" type="button" data-toggle="tool" title="Select management type"
+                  data-placement="left">
+                  <small>Management type</small>
+                </button>
+                <div class="btn-group dropleft">
+                  <button type="button" title="Host removal"
+                    class="btn btn-default dropdown-toggle dropdown-toggle-split " data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <button type="button" class="btn btn-default" title="Host removal" >
+                    <i class="fas fa-window-close"></i> <input class="management-type" type="checkbox"
+                      value="host_removal" id="host_removal_status" checked>
+                  </button>
+                  <div class="dropdown-menu draw-tool-dropdown management_input_group">
+                    <div class="px-2 py-1">Host removal:</div>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm" title="Host removal efficacy (range: 0-1)">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Efficacy</span>
+                            </div>
+                            <input id="default_host_removal_efficacy" class="form-control" type="number"
+                              name="host_removal_efficacy" value="0.5" min="0" max="1" step="0.1">
+                          </div>
+                        </div>
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm" title="Host removal cost per selected unit area">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">$</span>
+                            </div>
+                            <input class="displayed_cost form-control" type="number" name="displayed_host_removal_cost"
+                              value="0.5" min="0" max="1" step="0.1">
+                            <input hidden id="default_host_removal_cost" class="default_cost" type="number"
+                              name="host_removal_cost_per_m2" value="0.5" min="0" max="1" step="0.1">
+                            <select class="custom-select custom-select-sm cost_unit">
+                              <option value="1">/m^2</option>
+                              <option value="0.000247105" selected>/acre</option>
+                              <option value="0.0001">/ha</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="btn-group dropleft">
+                  <button type="button" title="Pesticide" class="btn btn-default dropdown-toggle dropdown-toggle-split "
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <button type="button" class="btn btn-default" title="Pesticide" >
+                    <i class="fas fa-spray-can"></i> <input class="management-type " type="checkbox" value="pesticide"
+                      id="pesticide_status">
+                  </button>
+                  <div class="dropdown-menu draw-tool-dropdown management_input_group">
+                    <div class="px-2 py-1">Pesticide:</div>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm" title="Pesticide efficacy (range: 0-1)">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Efficacy</span>
+                            </div>
+                            <input id="default_pesticide_efficacy" class="form-control" type="number"
+                              name="pesticide_efficacy" value="0.5" min="0" max="1" step="0.1"
+                              title="Pesticide efficacy (0-1)">
+                          </div>
+                        </div>
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm" title="Pesticide cost per selected unit area">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">$</span>
+                            </div>
+                            <input class="displayed_cost form-control" type="number" name="displayed_pesticide_cost"
+                              value="0.5" min="0" max="1" step="0.1">
+                            <input hidden id="default_pesticide_cost" class="default_cost" type="number"
+                              name="pesticide_cost_per_m2" value="0.5" min="0" max="1" step="0.1">
+                            <select class="custom-select custom-select-sm cost_unit">
+                              <option value="1">/m^2</option>
+                              <option value="0.000247105" selected>/acre</option>
+                              <option value="0.0001">/ha</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn btn-secondary btn-sm " type="button" data-toggle="tool"
+                  title="Below are the tools to draw management" data-placement="left">
+                  <small>Draw tools</small>
+                </button>
+                <button id="polygon-tool" class="btn btn-default drawing-tool " type="button" data-toggle="tool"
+                  title="Draw management polygon" data-placement="left">
+                  <i class="fas fa-draw-polygon"></i>
+                </button>
+                <div class="btn-group dropleft">
+                  <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split "
+                    title="Select radius" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <button id="circle-tool" type="button" class="btn btn-default drawing-tool" title="Circle tool"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="far fa-dot-circle"></i>
+                  </button>
+                  <div class="dropdown-menu draw-tool-dropdown management_input_group">
+                    <div class="px-2 py-1">Choose circle radius:</div>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm" title="Circle radius">
+                            <input id="displayed_circle_radius" class="displayed_circle_radius form-control"
+                              type="number" name="displayed_circle_radius" value="600" min="0" step="1">
+                            <input hidden id="circle_radius_in_meters" type="number" name="circle_radius_in_meters">
+                            <select id="circle_distance_unit" class="custom-select custom-select-sm">
+                              <option value="1.0" selected>meters</option>
+                              <option value="0.3048">feet</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button id="select-tool" class="btn btn-default drawing-tool active" type="button" data-toggle="tool"
+                  title="Selection tool" data-placement="left">
+                  <i class="fas fa-hand-paper"></i>
+                </button>
+                <button id="delete-tool" class="btn btn-default drawing-tool" type="button" data-toggle="tool"
+                  title="Delete selection" data-placement="left">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
 
-  <div id="editPolygons" style="color: white; background-color: black">
-    Edit selected polygons:
-    <div class="form-check form-check-inline">
-      <input class="form-check-input" type="radio" name="editManagementOptions" id="inlineRadio1" value="Host removal">
-      <label class="form-check-label" for="inlineRadio1">Host removal</label>
-    </div>
-    <div class="form-check form-check-inline">
-      <input class="form-check-input" type="radio" name="editManagementOptions" id="inlineRadio2" value="Pesticide">
-      <label class="form-check-label" for="inlineRadio2">Pesticide</label>
-    </div>
-
+  <div id="editPolygons" class="container">
     <div class="row">
-      <div class="col-3">
-        <div class="input-group input-group-sm mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Host removal efficacy</span>
-          </div>
-          <input id="edit_host_removal_efficacy" type="number" name="edit_host_removal_efficacy" min="0" max="1">
+      <div class="col-12">
+        Edit selected polygons:
+      </div>
+      <div class="col-12">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="editManagementOptions" id="inlineRadio1"
+            value="Host removal">
+          <label class="form-check-label" for="inlineRadio1"><small>Host removal</small></label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="editManagementOptions" id="inlineRadio2" value="Pesticide">
+          <label class="form-check-label" for="inlineRadio2"><small>Pesticide</small></label>
         </div>
       </div>
-      <div class="col-3">
-        <div class="input-group input-group-sm mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Pesticide application efficacy</span>
+      </div>
+      <div class="row">
+        <div class="col-12 py-1">
+          <div class="input-group input-group-sm" title="Efficacy (range: 0-1)">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Efficacy</span>
+            </div>
+            <input id="edit_efficacy" class="form-control" type="number" name="" value="0.5" min="0" max="1" step="0.1"
+              title="Efficacy (0-1)">
           </div>
-          <input id="edit_pesticide_efficacy" type="number" name="edit_pesticide_efficacy" min="0" max="1">
+        </div>
+        <div class="col-12 py-1">
+          <div class="input-group input-group-sm management_group_cost" title="Cost per selected unit area">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$</span>
+            </div>
+            <input id="edit_display_cost" class="displayed_cost form-control" type="number"
+              name="displayed_pesticide_cost" value="0.5" min="0" max="1" step="0.1">
+            <input hidden id="edit_cost" class="default_cost" type="number" name="pesticide_cost_per_m2" value="0.5"
+              min="0" step="0.1">
+            <select id="edit_area_unit" class="custom-select custom-select-sm cost_unit">
+              <option value="1">/m^2</option>
+              <option value="0.000247105" selected>/acre</option>
+              <option value="0.0001">/ha</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-12 py-1">
+          <button id="changeManagementButton" class="btn btn-sm btn-secondary">Apply changes </button>
         </div>
       </div>
     </div>
-    <button id="changeManagementButton" class="btn btn-sm btn-secondary">Apply changes </button>
 
-  </div>
+<script src="{% static 'js/dashboard/CircleMode.js' %}"></script>
+<!-- Set the draw color and pattern fills for the draw tools -->
+<script src="{% static 'js/dashboard/setDrawColor.js' %}"></script>
+<script src="{% static 'js/dashboard/gaugePlot.js' %}"></script>
+<script src="{% static 'js/dashboard/ajax_setup_functions.js' %}"></script>
+<script src="{% static 'js/dashboard/mapbox_layer_functions.js' %}"></script>
+<script src="{% static 'js/dashboard/side_bar_plots.js' %}"></script>
+<!-- This is the plotting function for the comparison buttons at the bottom.  -->
+<script src="{% static 'js/dashboard/run_comparison_plot.js' %}"></script>
+<!-- Function to insert a run button.  -->
+<script src="{% static 'js/dashboard/insertRunButton.js' %}"></script>
+<!-- Function to update mapbox draw color.  -->
+<script src="{% static 'js/dashboard/updateDrawColor.js' %}"></script>
 <script>
+
+  $("input#displayed_circle_radius, select#circle_distance_unit").on('click blur', function () {
+    console.log("Circle radius changed")
+    var displayed_management_circle_radius = $("input#displayed_circle_radius").val();
+    console.log('Displayed radius = ' + displayed_management_circle_radius);
+    var convert_to_meters_modifier = $("select#circle_distance_unit").children("option:selected").val();
+    console.log('Modifier = ' + convert_to_meters_modifier);
+    var management_circle_radius_meters = displayed_management_circle_radius*convert_to_meters_modifier;
+    console.log("Radius in hidden field = " + management_circle_radius_meters);
+    $("input#circle_radius_in_meters").val(management_circle_radius_meters);
+  });
+
+$(".management_group_cost input, .management_group_cost select").on("click blur hide.bs.dropdown", function() {
+  var element = $(this).parent();
+  var displayed_cost = $(element).find("input.displayed_cost").val();
+  console.log("DISPLAYED COST: " + displayed_cost);
+  var cost_modifier =  $(element).find("option:selected").val();
+  console.log("COST MODIFIER: " + cost_modifier);
+  var actual_cost_per_meter_squared = Math.round(displayed_cost*cost_modifier*100000000)/100000000;
+  console.log("ACTUAL COST: " + actual_cost_per_meter_squared);
+  $(element).find("input.default_cost").val(actual_cost_per_meter_squared);
+});
+
+$('.draw-tool-dropdown').on('click', function(e) {
+  e.stopPropagation();
+});
+
 //Prevent no management type from being selected
 $(".management-type").on('change',  function () {
   //If all management types are unchecked, recheck the last unchecked checkbox
@@ -233,9 +365,11 @@ $(".management-type").on('change',  function () {
 </script>
 <script>  $( "#editPolygons" ).hide();</script>
 
-                <textarea value="0" name="management_polygons" cols="40" rows="10" class="form-control"
-                  id="id_management_polygons"></textarea>
+        <textarea value="0" name="management_polygons" cols="40" rows="10" class="form-control"
+          id="id_management_polygons"></textarea>
+
 </div>
+
   <script src="{% static 'js/dashboard/custom_draw.js' %}"></script>
 <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
@@ -252,74 +386,6 @@ $(".management-type").on('change',  function () {
       zoom: 13 // starting zoom
     });
 
-    //default management radius (this is updated when the user selects a radius)
-    var management_circle_radius = 0.04572;  //kilometers
-
-  // CUSTOM CIRCLE DRAWING MODE 
-  // to draw management buffers of given radius.
-  // Info on custom modes: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/MODES.md
-
-    const CircleMode = {};
-
-    CircleMode.onSetup = function (opts) {
-      var state = {};
-      return state;
-    };
-    //On click, a circle of radius, management_circle_radius, is drawn and added to the management JSON.
-    CircleMode.onClick = function (state, e) {
-      console.log('Drawing circle...')
-      var center = [e.lngLat.lng, e.lngLat.lat];
-      var radius = management_circle_radius;
-      var management = getManagementType();
-      var management_type = management[0];
-      var host_removal_efficacy = management[1];
-      var pesticide_application_efficacy = management[2];
-      var host_removal_cost = management[3];
-      var pesticide_application_cost = management[4];
-      if (management_type == 'Host removal and Pesticide') {
-        var circle1 = createCircle(center, radius, 'Host removal', host_removal_efficacy,host_removal_cost);
-        addCircle(circle1);
-        var circle2 = createCircle(center, radius, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost);
-        addCircle(circle2);
-      } else if (management_type == 'Host removal') {
-        var circle = createCircle(center, radius, 'Host removal', host_removal_efficacy, host_removal_cost);
-        addCircle(circle);
-      } else if (management_type == 'Pesticide') {
-        var circle = createCircle(center, radius, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost);
-        addCircle(circle);
-      } else {
-        console.log('No management type selected.')
-      }
-    };
-    //Creates a JSON circle of given radius and number of steps. Includes management and efficacy properties.
-    function createCircle(center, radius, management_type, efficacy, cost) {
-      var options = {
-        steps: 32,
-        units: 'kilometers',
-        properties: {
-          management_type: management_type,
-          efficacy: efficacy,
-          cost: cost
-        }
-      };
-      var circle = turf.circle(center, radius, options);
-      return circle
-    }
-    //Adds the circle JSON to Draw, finds and combines polygons, adds to management JSON.
-    function addCircle(circle) {
-      featureID = draw.add(circle);
-      new_circle = draw.get(featureID);
-      findAndCombineOverlappingPolygons(featureID);
-    }
-
-    CircleMode.onStop = function (state, e) {
-      //this.map.fire("draw.create");
-    };
-
-    //toDisplayFeatures is a required function to show the polygon. Triggered anytime a feature is rendered.
-    CircleMode.toDisplayFeatures = function (state, geojson, display) {
-      display(geojson);
-    };
 
     //This function creates a new MapBox draw with custom settings and styles. The draw functionality
     //is then added to the map using map.addControl(draw);
@@ -576,13 +642,9 @@ $(".management-type").on('change',  function () {
         selected_management_type = selection.features[0].properties.management_type;
         $("input[type=radio][name='editManagementOptions']").prop("checked", false);
         $("input[type=radio][value='" + selected_management_type + "']").prop("checked", true);
-        if (selected_management_type == 'Host removal') {
-          $("input[id='edit_host_removal_efficacy']").val(selection.features[0].properties.efficacy);
-          $("input[id='edit_pesticide_efficacy']").val('');
-        } else if (selected_management_type == 'Pesticide') {
-          $("input[id='edit_host_removal_efficacy']").val('');
-          $("input[id='edit_pesticide_efficacy']").val(selection.features[0].properties.efficacy);
-        }
+        $("input[id='edit_efficacy']").val(selection.features[0].properties.efficacy);
+        var area_modifier = $("select#edit_area_unit").val();
+        $("input[id='edit_display_cost']").val(selection.features[0].properties.cost/area_modifier);
         //Show edit polygons box.
         $('#editPolygons').show();
       } else {
@@ -594,15 +656,12 @@ $(".management-type").on('change',  function () {
     $("#changeManagementButton").on('click', function () {
       selectionIDs = draw.getSelectedIds();
       var editManagementTypeValue = $("input[name='editManagementOptions']:checked").val();
-      var editHostRemovalEfficacy = $("input[id='edit_host_removal_efficacy']").val();
-      var editPesticideEfficacy = $("input[id='edit_pesticide_efficacy']").val();
+      var editEfficacy = $("input[id='edit_efficacy']").val();
+      var editCost = $("input[id='edit_cost']").val();
       for (var n = 0; n < selectionIDs.length; n++) {
         draw.setFeatureProperty(selectionIDs[n], 'management_type', editManagementTypeValue);
-        if (editManagementTypeValue == 'Host removal') {
-          draw.setFeatureProperty(selectionIDs[n], 'efficacy', editHostRemovalEfficacy);
-        } else if (editManagementTypeValue == 'Pesticide') {
-          draw.setFeatureProperty(selectionIDs[n], 'efficacy', editPesticideEfficacy);
-        }
+        draw.setFeatureProperty(selectionIDs[n], 'efficacy', editEfficacy);
+        draw.setFeatureProperty(selectionIDs[n], 'cost', editCost);
         draw.add(draw.get(selectionIDs[n])); //This line makes the new change draw on the map and appear.
       }
       updateJSON(selectionIDs);
@@ -756,20 +815,13 @@ function calculateManagementArea(data) {
       draw.changeMode('draw_polygon');
       console.log("Polygon tool selected to draw management.")
     });
-    $("#300ft-circle-tool").on('click', function () {
+    $("#circle-tool").on('click', function () {
       $('.drawing-tool').removeClass('active');
-      $('#btnGroupCircles').addClass('active');
-      management_circle_radius = 0.09144; //300ft in km
+      $('#circle-tool').addClass('active');
       draw.changeMode('draw_circle');
       console.log("Circle tool selected to draw management.")
     });
-    $("#600ft-circle-tool").on('click', function () {
-      $('.drawing-tool').removeClass('active');
-      $('#btnGroupCircles').addClass('active');
-      management_circle_radius = 0.18288; //600ft in km
-      draw.changeMode('draw_circle');
-      console.log("Circle tool selected to draw management.")
-    });
+
     $("#select-tool").on('click', function () {
       $('.drawing-tool').removeClass('active');
       $(this).addClass('active');
