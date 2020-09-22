@@ -364,8 +364,8 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text">Date</span>
                             </div>
-                            <input id="default_host_removal_date" class="form-control" type="date"
-                              name="host_removal_date" value="2018-01-01" min="2018-01-01" max="2018-12-31">
+                            <input id="default_host_removal_date" class="form-control management-date" type="date"
+                              name="host_removal_date" value="{{steering_years | first }}-01-01" min="{{steering_years | first }}-01-01" max="{{steering_years | first }}-12-31">
                           </div>
                         </div>
                         <div class="col-12 px-2 py-1">
@@ -415,8 +415,8 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text">Date</span>
                             </div>
-                            <input id="default_pesticide_date" class="form-control" type="date"
-                              name="pesticide_date" value="2018-01-01" min="2018-01-01" max="2018-12-31">
+                            <input id="default_pesticide_date" class="form-control management-date" type="date"
+                              name="pesticide_date" value="{{steering_years | first }}-01-01" min="{{steering_years | first }}-01-01" max="{{steering_years | first }}-12-31">
                           </div>
                         </div>                        
                         <div class="col-12 px-2 py-1">
@@ -542,11 +542,11 @@
                     </div>
                   </div>
                   <div class="col-12 py-1">
-                    <div class="input-group input-group-sm" title="Efficacy (range: 0-1)">
+                    <div class="input-group input-group-sm" title="Date">
                       <div class="input-group-prepend">
                         <span class="input-group-text">Date</span>
                       </div>
-                      <input id="edit_date" class="form-control" type="date" name="" title="Date">
+                      <input id="edit_date" class="form-control management-date" type="date"  title="Date" value="{{steering_years | first }}-01-01" min="{{steering_years | first }}-01-01" max="{{steering_years | first }}-12-31">
                     </div>
                   </div>                  
                   <div class="col-12 py-1">
@@ -1164,6 +1164,7 @@ function get_run_collection(run_collection_id) {
         get_output(default_run);        
         $(".timeline-year-container.year-1").removeClass("management_not_started").addClass("management_active");
         most_recent_run = 0;
+        setDateRange(2019);
       }
       else {
         //Loop through the steering years
@@ -1178,12 +1179,23 @@ function get_run_collection(run_collection_id) {
           if((i + 1) == (data.inputs.length)){
             $(".timeline-year-container[data-year-value="+steering_year+"]").addClass("year_active")
             $(".timeline-year-container[data-year-value="+next_steering_year+"]").removeClass("management_not_started").addClass("management_active");
+            setDateRange(next_steering_year);
             get_output(run_id);
             most_recent_run=run_id;
           }
         };
       }
 
+function setDateRange(year) {
+  var min_date = year.toString() + '-01-01';
+  var max_date = year.toString() + '-12-31';
+  var display_date = year.toString() + '-01-01';
+  $('.management-date').attr('min',min_date);
+  $('.management-date').attr('max',max_date);
+  $('.management-date').val(min_date);
+  console.log('Min date: ' + min_date);
+  console.log('Max date: ' + max_date);
+}
     if (data.tangible_landscape) {
       console.log('Tangible landscape is on.')
       //hide run buttons
