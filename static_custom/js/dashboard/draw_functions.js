@@ -2,7 +2,8 @@ function createPolygon (e) {
   var polygon = grabPolygon(e); 
   var area = getArea(polygon);
   var management_properties = getManagementProperties();
-  for (var n = 0; n < management_properties.length; n++) {
+  var number_of_management_types = management_properties.length;
+  for (var n = 0; n < number_of_management_types; n++) {
     featureID = drawPolygon(polygon, management_properties[n],area);
     findAndCombineOverlappingPolygons(featureID);
   }
@@ -23,11 +24,17 @@ function getArea(polygon) {
 function getManagementProperties() {
   management = [];
   if ($('#host_removal_status').prop('checked')) {
-    host_removal_management = ['Host removal',$("#default_host_removal_efficacy").val(),$("#default_host_removal_cost").val()];
+    host_removal_management = ['Host removal',
+      $("#default_host_removal_efficacy").val(),
+      $("#default_host_removal_cost").val(),
+      $("#default_host_removal_date").val()];
     management.push(host_removal_management);
   } 
   if ($('#pesticide_status').prop('checked')) {
-    pesticide_management = ['Pesticide',$("#default_pesticide_efficacy").val(),$("#default_pesticide_cost").val()];
+    pesticide_management = ['Pesticide',
+      $("#default_pesticide_efficacy").val(),
+      $("#default_pesticide_cost").val(),
+      $("#default_pesticide_date").val()];
     management.push(pesticide_management);  
   } 
   return management;
@@ -38,6 +45,7 @@ function drawPolygon(polygon, management_properties,area) {
   draw.setFeatureProperty(featureID, 'management_type', management_properties[0]);
   draw.setFeatureProperty(featureID, 'efficacy', management_properties[1]);
   draw.setFeatureProperty(featureID, 'cost', management_properties[2]);
+  draw.setFeatureProperty(featureID, 'date', management_properties[3]);
   draw.setFeatureProperty(featureID, 'area', area);
   //draw.add(draw.get(featureID)); //This line makes the new change draw on the map and appear.    
   return featureID;

@@ -337,7 +337,7 @@
                   data-placement="left">
                   <small>Management type</small>
                 </button>
-                <div class="btn-group dropleft management_input_group">
+                <div class="btn-group dropleft">
                   <button type="button" title="Host removal"
                     class="btn btn-default dropdown-toggle dropdown-toggle-split " data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
@@ -357,6 +357,15 @@
                             </div>
                             <input id="default_host_removal_efficacy" class="form-control" type="number"
                               name="host_removal_efficacy" value="0.5" min="0" max="1" step="0.1">
+                          </div>
+                        </div>
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm" title="Host removal date">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Date</span>
+                            </div>
+                            <input id="default_host_removal_date" class="form-control" type="date"
+                              name="host_removal_date" value="2018-01-01" min="2018-01-01" max="2018-12-31">
                           </div>
                         </div>
                         <div class="col-12 px-2 py-1">
@@ -387,7 +396,7 @@
                     <i class="fas fa-spray-can"></i> <input class="management-type " type="checkbox" value="pesticide"
                       id="pesticide_status">
                   </button>
-                  <div class="dropdown-menu draw-tool-dropdown management_input_group">
+                  <div class="dropdown-menu draw-tool-dropdown">
                     <div class="px-2 py-1">Pesticide:</div>
                     <div class="container">
                       <div class="row">
@@ -402,7 +411,16 @@
                           </div>
                         </div>
                         <div class="col-12 px-2 py-1">
-                          <div class="input-group input-group-sm" title="Pesticide cost per selected unit area">
+                          <div class="input-group input-group-sm" title="Pesticide application date">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Date</span>
+                            </div>
+                            <input id="default_pesticide_date" class="form-control" type="date"
+                              name="pesticide_date" value="2018-01-01" min="2018-01-01" max="2018-12-31">
+                          </div>
+                        </div>                        
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm management_group_cost" title="Pesticide cost per selected unit area">
                             <div class="input-group-prepend">
                               <span class="input-group-text">$</span>
                             </div>

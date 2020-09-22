@@ -105,6 +105,7 @@
 
   <div id="map" class="large_map" style="width:1000px"></div>
 
+              <!-- DRAW CONTROLS -->
               <div id="draw-controls" class="btn-group-vertical" role="group">
                 <div class="btn-group dropleft" title="Displayed units">
                   <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split "
@@ -113,7 +114,7 @@
                   <button id="area_unit_button" type="button" data-toggle="dropdown" class="btn btn-default">
                     <div id="area_unit_text">ac</div>
                   </button>
-                  <div class="dropdown-menu draw-tool-dropdown management_input_group">
+                  <div class="dropdown-menu draw-tool-dropdown">
                     <div class="px-2 py-1">Displayed units:</div>
                     <div class="container">
                       <div class="row">
@@ -139,11 +140,11 @@
                     class="btn btn-default dropdown-toggle dropdown-toggle-split " data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                   </button>
-                  <button type="button" class="btn btn-default" title="Host removal" >
+                  <button type="button" class="btn btn-default" title="Host removal">
                     <i class="fas fa-window-close"></i> <input class="management-type" type="checkbox"
                       value="host_removal" id="host_removal_status" checked>
                   </button>
-                  <div class="dropdown-menu draw-tool-dropdown management_input_group">
+                  <div class="dropdown-menu draw-tool-dropdown">
                     <div class="px-2 py-1">Host removal:</div>
                     <div class="container">
                       <div class="row">
@@ -157,7 +158,16 @@
                           </div>
                         </div>
                         <div class="col-12 px-2 py-1">
-                          <div class="input-group input-group-sm" title="Host removal cost per selected unit area">
+                          <div class="input-group input-group-sm" title="Host removal date">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Date</span>
+                            </div>
+                            <input id="default_host_removal_date" class="form-control" type="date"
+                              name="host_removal_date" value="2018-01-01" min="2018-01-01" max="2018-12-31">
+                          </div>
+                        </div>
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm management_group_cost" title="Host removal cost per selected unit area">
                             <div class="input-group-prepend">
                               <span class="input-group-text">$</span>
                             </div>
@@ -180,11 +190,11 @@
                   <button type="button" title="Pesticide" class="btn btn-default dropdown-toggle dropdown-toggle-split "
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   </button>
-                  <button type="button" class="btn btn-default" title="Pesticide" >
+                  <button type="button" class="btn btn-default" title="Pesticide">
                     <i class="fas fa-spray-can"></i> <input class="management-type " type="checkbox" value="pesticide"
                       id="pesticide_status">
                   </button>
-                  <div class="dropdown-menu draw-tool-dropdown management_input_group">
+                  <div class="dropdown-menu draw-tool-dropdown">
                     <div class="px-2 py-1">Pesticide:</div>
                     <div class="container">
                       <div class="row">
@@ -199,7 +209,16 @@
                           </div>
                         </div>
                         <div class="col-12 px-2 py-1">
-                          <div class="input-group input-group-sm" title="Pesticide cost per selected unit area">
+                          <div class="input-group input-group-sm" title="Pesticide application date">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Date</span>
+                            </div>
+                            <input id="default_pesticide_date" class="form-control" type="date"
+                              name="pesticide_date" value="2018-01-01" min="2018-01-01" max="2018-12-31">
+                          </div>
+                        </div>                        
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm management_group_cost" title="Pesticide cost per selected unit area">
                             <div class="input-group-prepend">
                               <span class="input-group-text">$</span>
                             </div>
@@ -226,7 +245,7 @@
                   title="Draw management polygon" data-placement="left">
                   <i class="fas fa-draw-polygon"></i>
                 </button>
-                <div class="btn-group dropleft">
+                <div id="circle-tool-group" class="btn-group dropleft">
                   <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split "
                     title="Select radius" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   </button>
@@ -234,7 +253,7 @@
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="far fa-dot-circle"></i>
                   </button>
-                  <div class="dropdown-menu draw-tool-dropdown management_input_group">
+                  <div class="dropdown-menu draw-tool-dropdown">
                     <div class="px-2 py-1">Choose circle radius:</div>
                     <div class="container">
                       <div class="row">
@@ -242,7 +261,7 @@
                           <div class="input-group input-group-sm" title="Circle radius">
                             <input id="displayed_circle_radius" class="displayed_circle_radius form-control"
                               type="number" name="displayed_circle_radius" value="600" min="0" step="1">
-                            <input hidden id="circle_radius_in_meters" type="number" name="circle_radius_in_meters">
+                            <input hidden id="circle_radius_in_meters" type="number" name="circle_radius_in_meters" value="600">
                             <select id="circle_distance_unit" class="custom-select custom-select-sm">
                               <option value="1.0" selected>meters</option>
                               <option value="0.3048">feet</option>
@@ -606,21 +625,11 @@ $(".management-type").on('change',  function () {
     //Assign management and efficacy properties to JSON.
     //Draw the polygon(s) (this includes combining same-type polygons and updating the management JSON)
     function setManagementProperty(polygon) {
-      var management = getManagementType();
-      var management_type = management[0];
-      var host_removal_efficacy = management[1];
-      var pesticide_application_efficacy = management[2];
-      var host_removal_cost = management[3];
-      var pesticide_application_cost = management[4];
-      if (management_type == 'Host removal and Pesticide') {
-        drawPolygon(polygon, 'Host removal', host_removal_efficacy,host_removal_cost)
-        drawPolygon(polygon, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost)
-      } else if (management_type == 'Host removal') {
-        drawPolygon(polygon, 'Host removal', host_removal_efficacy,host_removal_cost)
-      } else if (management_type == 'Pesticide') {
-        drawPolygon(polygon, 'Pesticide', pesticide_application_efficacy,pesticide_application_cost)
-      } else {
-        console.log('Error: No management type')
+      var management_properties = getManagementType();
+      var number_of_management_types = management_properties.length;
+      for (var i = 0; i < number_of_management_types; i++) {
+        console.log(management_properties[i]);
+        drawPolygon(polygon, management_properties[i][0], management_properties[i][1],management_properties[i][2],management_properties[i][3]);
       }
     }
     //Add the polygon to draw. Set management properties. Perform findAndCombineOverlappingPolyogns.
@@ -629,6 +638,7 @@ $(".management-type").on('change',  function () {
       draw.setFeatureProperty(featureID, 'management_type', management_type);
       draw.setFeatureProperty(featureID, 'efficacy', efficacy);
       draw.setFeatureProperty(featureID, 'cost', cost);
+      draw.setFeatureProperty(featureID, 'date', date);
       draw.add(draw.get(featureID)); //This line makes the new change draw on the map and appear.    
       findAndCombineOverlappingPolygons(featureID);
     }
@@ -686,28 +696,25 @@ $(".management-type").on('change',  function () {
 
     //Get the checked management type to apply to newly drawn polygons.
     function getManagementType() {
-      if ($('#host_removal_status').prop('checked') && $('#pesticide_status').prop('checked')) {
-        management_type = 'Host removal and Pesticide';
-        host_removal_efficacy = $("#default_host_removal_efficacy").val();
-        host_removal_cost = $("#default_host_removal_cost").val();
-        pesticide_application_efficacy = $("#default_pesticide_efficacy").val();
-        pesticide_application_cost = $("#default_pesticide_cost").val();
-      } else if ($('#host_removal_status').prop('checked')) {
+      var management_properties=[];
+      if ($('#host_removal_status').prop('checked')) {
         management_type = 'Host removal';
-        host_removal_efficacy = $("#default_host_removal_efficacy").val();
-        pesticide_application_efficacy = 0;
-        host_removal_cost = $("#default_host_removal_cost").val();
-        pesticide_application_cost = 0;
-      } else if ($('#pesticide_status').prop('checked')) {
+        efficacy = $("#default_host_removal_efficacy").val();
+        cost = $("#default_host_removal_cost").val();
+        date = $("#default_host_removal_date").val();
+        management = [management_type,efficacy,cost,date];
+        management_properties.push(management);
+      };
+      if ($('#pesticide_status').prop('checked')) {
         management_type = 'Pesticide';
-        host_removal_efficacy = 0;
-        host_removal_cost = 0;
-        pesticide_application_efficacy = $("#default_pesticide_efficacy").val();
-        pesticide_application_cost = $("#default_pesticide_cost").val();
-      } else {
-        management_type = '';
-      }
-      return [management_type, host_removal_efficacy, pesticide_application_efficacy,host_removal_cost,pesticide_application_cost];
+        efficacy = $("#default_pesticide_efficacy").val();
+        cost = $("#default_pesticide_cost").val();
+        date = $("#default_pesticide_date").val();
+        management = [management_type,efficacy,cost,date];
+        management_properties.push(management);      
+      } 
+      console.log('Management Properties = ' + management_properties);
+      return management_properties;
     }
 
     //This function updates the GeoJSON management field 
