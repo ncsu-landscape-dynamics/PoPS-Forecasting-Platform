@@ -123,6 +123,7 @@ function updatePolygons(e) {
         $("input[id='edit_efficacy']").val(selection.features[0].properties.efficacy);
         var area_modifier = $("select#edit_area_unit").val();
         $("input[id='edit_display_cost']").val(selection.features[0].properties.cost/area_modifier);
+        $("input[id='edit_date']").val(selection.features[0].properties.date);
         //Show edit polygons box.
         $('#editPolygons').show();
       } else {
@@ -134,12 +135,13 @@ function changePolygonProperties() {
       selectionIDs = draw.getSelectedIds();
       var editManagementTypeValue = $("input[name='editManagementOptions']:checked").val();
       var editEfficacy = $("input[id='edit_efficacy']").val();
-      console.log('Edit efficacy value = ' + editEfficacy);
       var editCost = $("input[id='edit_cost']").val();
+      var editDate = $("input[id='edit_date']").val();
       for (var n = 0; n < selectionIDs.length; n++) {
         draw.setFeatureProperty(selectionIDs[n], 'management_type', editManagementTypeValue);
         draw.setFeatureProperty(selectionIDs[n], 'efficacy', editEfficacy);
         draw.setFeatureProperty(selectionIDs[n], 'cost', editCost);
+        draw.setFeatureProperty(selectionIDs[n], 'date', editDate);
         draw.add(draw.get(selectionIDs[n])); //This line makes the new change draw on the map and appear.
       }
       updateJSON(selectionIDs);
