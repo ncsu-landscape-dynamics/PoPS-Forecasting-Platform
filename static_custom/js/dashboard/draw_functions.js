@@ -66,7 +66,8 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
         //If they are the same management type, combine the two polygons.
         if ((newPolygon.properties.management_type == existingPolygon.properties.management_type)) {
           if ((newPolygon.properties.efficacy == existingPolygon.properties.efficacy) && 
-          (newPolygon.properties.cost == existingPolygon.properties.cost)) {
+          (newPolygon.properties.cost == existingPolygon.properties.cost) &&
+          (newPolygon.properties.date == existingPolygon.properties.date)) {
             union = combineTwoPolygons(newPolygonID, existingPolygon.id);
             if (union) {
               newPolygonID = union;
@@ -75,7 +76,8 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
               draw.setFeatureProperty(newPolygonID, 'area', area);
             }
           }
-          else {
+          else if ((newPolygon.properties.management_type != 'Pesticide') || (newPolygon.properties.date == existingPolygon.properties.date)
+          ) {
             difference = turf.difference(existingPolygon,newPolygon);//remove newpolygon from existing polygon
             var newPolygonID = draw.add(difference); //add new polygon to draw
             draw.delete(existingPolygon.id); //remove original overlapping polygons
