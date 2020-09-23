@@ -889,13 +889,11 @@
                       $(this).parents(".timeline-year-container").removeClass("management_visible").addClass("management_hidden");
                       $(this).children("i").removeClass("fa-eye").addClass("fa-eye-slash");
                       map.setLayoutProperty(treatment_fill, 'visibility', 'none');
-                      map.setLayoutProperty(treatment_outline, 'visibility', 'none');
                     } else {
                       console.log('Turning visibility on...');
                       $(this).parents(".timeline-year-container").removeClass("management_hidden").addClass("management_visible");
                       $(this).children("i").removeClass("fa-eye-slash").addClass("fa-eye");
                       map.setLayoutProperty(treatment_fill, 'visibility', 'visible');
-                      map.setLayoutProperty(treatment_outline, 'visibility', 'visible');
                     }
                   });
 
@@ -1090,15 +1088,12 @@ $("#year-slider").change(function () {
     if (map.getLayer(i.toString())) {
       map.setLayoutProperty(i.toString(), 'visibility', 'none');
     };
-    var treatment_outline = (i.toString() + "_management");
     var treatment_fill = (i.toString() + "_fill");
-    if (map.getLayer(treatment_outline)) {
+    if (map.getLayer(treatment_fill)) {
       if (year_id >= i) {
-        map.setLayoutProperty(treatment_outline, 'visibility','visible');
         map.setLayoutProperty(treatment_fill, 'visibility','visible');
       }
       else {
-        map.setLayoutProperty(treatment_outline, 'visibility','none');
         map.setLayoutProperty(treatment_fill, 'visibility','none');
       }
     };
@@ -1255,9 +1250,6 @@ function get_output(run_id) {
     var treatment_outline = (i.toString() + "_management");
     var treatment_fill = (i.toString() + "_fill");
     console.log(treatment_outline);
-    if (map.getLayer(treatment_outline)) {
-      map.removeLayer(treatment_outline);
-    };
     if (map.getLayer(treatment_fill)) {
       map.removeLayer(treatment_fill);
     };
@@ -1372,9 +1364,6 @@ function get_output(run_id) {
           var treatment_outline = (data.inputs[i].steering_year.toString() + "_management");
           var treatment_fill = (data.inputs[i].steering_year.toString() + "_fill");
           console.log(treatment_outline);
-          if (map.getLayer(treatment_outline)) {
-            map.removeLayer(treatment_outline);
-          };
           if (map.getLayer(treatment_fill)) {
             map.removeLayer(treatment_fill);
           };
