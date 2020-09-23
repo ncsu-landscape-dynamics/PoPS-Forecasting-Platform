@@ -1391,9 +1391,14 @@ function get_output(run_id) {
             "id": treatment_fill,
             "type": 'fill',
             "source": treatment_outline,
-            'paint': {
-              'fill-color': colors[i],
-              'fill-opacity': 0.2,
+            "paint": {
+              'fill-pattern': [
+                "case",
+                ['==', ['get', "management_type"], "Host removal"], host_removal_patterns[i],
+                ['==', ['get', "management_type"], "Pesticide"], pesticide_application_patterns[i],
+                ''
+              ],      
+              "fill-opacity": 1.0
             }
           });
           };
