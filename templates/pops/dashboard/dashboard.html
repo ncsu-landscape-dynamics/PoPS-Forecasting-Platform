@@ -356,7 +356,7 @@
                               <span class="input-group-text">Efficacy</span>
                             </div>
                             <input id="default_host_removal_efficacy" class="form-control" type="number"
-                              name="host_removal_efficacy" value="0.5" min="0" max="1" step="0.1">
+                              name="host_removal_efficacy" value="1" min="0" max="1" step="0.1">
                           </div>
                         </div>
                         <div class="col-12 px-2 py-1">
@@ -374,9 +374,9 @@
                               <span class="input-group-text">$</span>
                             </div>
                             <input class="displayed_cost form-control" type="number" name="displayed_host_removal_cost"
-                              value="0.5" min="0" max="1" step="0.1">
+                              value="5000" min="0" step="1">
                             <input hidden id="default_host_removal_cost" class="default_cost" type="number"
-                              name="host_removal_cost_per_m2" value="0.5" min="0" max="1" step="0.1">
+                              name="host_removal_cost_per_m2" value="1.2355" min="0">
                             <select class="custom-select custom-select-sm cost_unit">
                               <option value="1">/m^2</option>
                               <option value="0.000247105" selected>/acre</option>
@@ -409,8 +409,8 @@
                               <span class="input-group-text">Efficacy</span>
                             </div>
                             <input id="default_pesticide_efficacy" class="form-control" type="number"
-                              name="pesticide_efficacy" value="0.5" min="0" max="1" step="0.1"
-                              title="Pesticide efficacy (0-1)">
+                              name="pesticide_efficacy" value="0.66" min="0" max="1" step="0.01"
+                              title="Pesticide efficacy (range: 0.0 - 1.0)">
                           </div>
                         </div>
                         <div class="col-12 px-2 py-1">
@@ -428,9 +428,9 @@
                               <span class="input-group-text">$</span>
                             </div>
                             <input class="displayed_cost form-control" type="number" name="displayed_pesticide_cost"
-                              value="0.5" min="0" max="1" step="0.1">
+                              value="100" min="0" step="1">
                             <input hidden id="default_pesticide_cost" class="default_cost" type="number"
-                              name="pesticide_cost_per_m2" value="0.5" min="0" max="1" step="0.1">
+                              name="pesticide_cost_per_m2" value="0.0247105" min="0">
                             <select class="custom-select custom-select-sm cost_unit">
                               <option value="1">/m^2</option>
                               <option value="0.000247105" selected>/acre</option>
@@ -571,9 +571,9 @@
                         <span class="input-group-text">$</span>
                       </div>
                       <input id="edit_display_cost" class="displayed_cost form-control" type="number"
-                        name="displayed_pesticide_cost" value="0.5" min="0" max="1" step="0.1">
+                        name="displayed_pesticide_cost" value="5000" min="0" step="1">
                       <input hidden id="edit_cost" class="default_cost" type="number" name="pesticide_cost_per_m2"
-                        value="0.5" min="0" step="0.1">
+                        value="1.2355" min="0">
                       <select id="edit_area_unit" class="custom-select custom-select-sm cost_unit">
                         <option value="1">/m^2</option>
                         <option value="0.000247105" selected>/acre</option>
