@@ -430,7 +430,7 @@
                             <input class="displayed_cost form-control" type="number" name="displayed_pesticide_cost"
                               value="100" min="0" step="1">
                             <input hidden id="default_pesticide_cost" class="default_cost" type="number"
-                              name="pesticide_cost_per_m2" value="0.0247105" min="0">
+                              name="pesticide_cost_per_m2" value="1.2355" min="0">
                             <select class="custom-select custom-select-sm cost_unit">
                               <option value="1">/m^2</option>
                               <option value="0.000247105" selected>/acre</option>
@@ -663,25 +663,6 @@
                                   data-container="body" class="form-control" id="id_budget">
                               </div>
                             </div>
-                            <div class="form-group col-6">
-                              <label for="id_cost">Cost per <span class="displayed_area_unit">acre</span>
-                                ($US)</label>
-                              <div class="input-group">
-                                <div class="input-group-prepend">
-                                  <span class="input-group-text">$</span>
-                                </div>
-                                <input type="number" name="display_cost" value="5000" min="0" data-toggle="tooltip"
-                                  data-placement="top" title="Cost per area" data-container="body"
-                                  class="form-control" id="id_cost">
-                              </div>
-                            </div>
-                            <input type="hidden" name="cost_per_meter_squared" value="0.37807065" class="form-control"
-                              id="id_cost_per_meter_squared">
-                            <div id="efficiency" class="col-6 pt-2 range range-info">
-                              <strong>Efficacy: <output id="displayEfficiency">100</output>%</strong>
-                              <input id="id_efficacy" class="custom-range" type="range" name="efficacy" min="50"
-                                max="100" step="10" value="100" onchange="displayEfficiency.value=value">
-                            </div>
                             {% include "pops/include/form_field.html" with field=form.random_seed form_class="col-6" %}
                             <div class="form-check col ml-2">
                               {{ form.tangible_landscape }}
@@ -753,12 +734,6 @@
                         </div>
                         <div id="input_budget">
                           Budget: $<span></span>
-                        </div>
-                        <div id="input_cost_per_meter_squared">
-                          Cost per meter squared: <span></span>
-                        </div>
-                        <div id="input_efficacy">
-                          Efficacy: <span></span>
                         </div>
                         <div id="input_tangible_landscape">
                           Tangible landscape: <span></span>
@@ -884,7 +859,7 @@
 
 {% for run_collection in run_collections %}
 <script>
-  insertRunButton({{ run_collection.pk }},'{{ run_collection.name }}','{{run_collection.date_created}}','{{run_collection.description}}',{{run_collection.efficacy}},{{ run_collection.number_infected }},{{ run_collection.infected_area }},{{run_collection.overall_cost}});
+  insertRunButton({{ run_collection.pk }},'{{ run_collection.name }}','{{run_collection.date_created}}','{{run_collection.description}}',{{ run_collection.number_infected }},{{ run_collection.infected_area }},{{run_collection.overall_cost}});
 </script>
 {% endfor %} 
 
@@ -1186,8 +1161,6 @@ function get_run_collection(run_collection_id) {
       $('#input_random_seed span').text(data.random_seed);
       $('#input_date_created span').text(data.date_created);
       $('#input_budget span').text(data.budget);
-      $('#input_cost_per_meter_squared span').text(data.cost_per_meter_squared);
-      $('#input_efficacy span').text(data.efficacy);
       $('#input_tangible_landscape span').text(data.tangible_landscape);
       $('#id_run_collection').val(data.pk);    
       $(".timeline-year-container").removeClass("year_active").addClass("management_not_started").removeClass("management_active").removeClass("management_complete");
@@ -1344,8 +1317,7 @@ function get_output(run_id) {
             var run_collection_description = $('#input_description span').text();
             var run_collection_date = $('#input_date_created span').text(data.date_created);
             var run_collection_budget = $('#input_budget span').text(data.budget);
-            var run_collection_efficacy = $('#input_efficacy span').text(data.efficacy);
-            insertRunButton(run_collection_pk, run_collection_name, run_collection_date, run_collection_description, run_collection_efficacy, data.results[i].number_infected, data.results[i].infected_area, data.total_management_cost);
+            insertRunButton(run_collection_pk, run_collection_name, run_collection_date, run_collection_description, data.results[i].number_infected, data.results[i].infected_area, data.total_management_cost);
             relayout_buttons(max_number,max_area,max_cost);
           }
         }
@@ -1414,15 +1386,7 @@ function get_output(run_id) {
             'data': data.inputs[i].management_polygons,
           });
           /*here we are adding a source, then a layer based on that that source*/
-          map.addLayer({
-            "id": treatment_outline,
-            "type": 'line',
-            "source": treatment_outline,
-            'paint': {
-              'line-color': colors[i],
-              'line-width': 3
-            }
-          });
+
           map.addLayer({
             "id": treatment_fill,
             "type": 'fill',
@@ -1680,8 +1644,6 @@ $("#host_map_checkbox input").on('change', function () {
           $('#input_random_seed span').text(data.random_seed);
           $('#input_date_created span').text(data.date_created);
           $('#input_budget span').text(data.budget);
-          $('#input_cost_per_meter_squared span').text(data.cost_per_meter_squared);
-          $('#input_efficacy span').text(data.efficacy);
           $('#input_tangible_landscape span').text(data.tangible_landscape);
           $('#id_run_collection').val(data.pk);
           get_run_collection(new_run_collection_id);

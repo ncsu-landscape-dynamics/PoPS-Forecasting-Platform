@@ -1,4 +1,4 @@
-function insertRunButton(run_id, name, date, description, efficacy, infected_number, infected_area, cost) {
+function insertRunButton(run_id, name, date, description, infected_number, infected_area, cost) {
   var run_pk = run_id.toString();
   if (cost > max_cost) {
     max_cost = cost;
@@ -29,7 +29,6 @@ function insertRunButton(run_id, name, date, description, efficacy, infected_num
         '<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>' + name +
         '</strong></div><small><em>' + date +
         '</em></small>" data-content="<div>' + description +
-        '</div><div>Efficacy: ' + efficacy +
         '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a> '+
         '<a class="delete_run_collection" data-toggle="tooltip" title="Delete" data-placement="left"><i class="fas fa-trash-alt"></i></a>' +
         '<div id="run_' + run_pk +
