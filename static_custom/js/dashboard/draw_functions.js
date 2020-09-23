@@ -27,14 +27,16 @@ function getManagementProperties() {
     host_removal_management = ['Host removal',
       $("#default_host_removal_efficacy").val(),
       $("#default_host_removal_cost").val(),
-      $("#default_host_removal_date").val()];
+      $("#default_host_removal_date").val(),
+      $("#default_host_removal_duration").val()];
     management.push(host_removal_management);
   } 
   if ($('#pesticide_status').prop('checked')) {
     pesticide_management = ['Pesticide',
       $("#default_pesticide_efficacy").val(),
       $("#default_pesticide_cost").val(),
-      $("#default_pesticide_date").val()];
+      $("#default_pesticide_date").val(),
+      $("#default_pesticide_duration").val()];
     management.push(pesticide_management);  
   } 
   return management;
@@ -46,6 +48,7 @@ function drawPolygon(polygon, management_properties,area) {
   draw.setFeatureProperty(featureID, 'efficacy', management_properties[1]);
   draw.setFeatureProperty(featureID, 'cost', management_properties[2]);
   draw.setFeatureProperty(featureID, 'date', management_properties[3]);
+  draw.setFeatureProperty(featureID, 'duration', management_properties[4]);
   draw.setFeatureProperty(featureID, 'area', area);
   //draw.add(draw.get(featureID)); //This line makes the new change draw on the map and appear.    
   return featureID;
@@ -117,13 +120,20 @@ function updatePolygons(e) {
       //display ability to edit if 1 or more polygons are selected
       if (selection.features.length > 0) {
         //Get the management type of the first feature, to pre-check that as the type
-        selected_management_type = selection.features[0].properties.management_type;
+        var selected_management_type = selection.features[0].properties.management_type;
         $("input[type=radio][name='editManagementOptions']").prop("checked", false);
         $("input[type=radio][value='" + selected_management_type + "']").prop("checked", true);
         $("input[id='edit_efficacy']").val(selection.features[0].properties.efficacy);
         var area_modifier = $("select#edit_area_unit").val();
         $("input[id='edit_display_cost']").val(selection.features[0].properties.cost/area_modifier);
         $("input[id='edit_date']").val(selection.features[0].properties.date);
+        $("input[id='edit_duration']").val(selection.features[0].properties.duration);
+        if (selected_management_type == "Pesticide") {
+          $( "#edit_duration_group" ).show();
+        }
+        else {
+          $( "#edit_duration_group" ).hide();
+        }
         //Show edit polygons box.
         $('#editPolygons').show();
       } else {
@@ -137,11 +147,18 @@ function changePolygonProperties() {
       var editEfficacy = $("input[id='edit_efficacy']").val();
       var editCost = $("input[id='edit_cost']").val();
       var editDate = $("input[id='edit_date']").val();
+      var editDuration = $("input[id='edit_duration']").val();
       for (var n = 0; n < selectionIDs.length; n++) {
         draw.setFeatureProperty(selectionIDs[n], 'management_type', editManagementTypeValue);
         draw.setFeatureProperty(selectionIDs[n], 'efficacy', editEfficacy);
         draw.setFeatureProperty(selectionIDs[n], 'cost', editCost);
         draw.setFeatureProperty(selectionIDs[n], 'date', editDate);
+        if (editManagementTypeValue == "Pesticide") {
+          draw.setFeatureProperty(selectionIDs[n], 'duration', editDuration);
+        }
+        else {
+          draw.setFeatureProperty(selectionIDs[n], 'duration', "0");
+        }
         draw.add(draw.get(selectionIDs[n])); //This line makes the new change draw on the map and appear.
       }
       updateJSON(selectionIDs);
