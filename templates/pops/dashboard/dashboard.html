@@ -32,6 +32,7 @@
   var colors = ['#d6f731','#4af7b0','#6fd5f7','#c596fa','#fa89d2'];//['#C6F761', '#60f781','#60e8f7','#be89fa','#fa89d2'];//['#C6F761', '#61F785','#61F7E8','#61A4F7','#8D61F7','#E361F7'];
   var host_removal_patterns=['X-LimeGreen','X-BlueGreen','X-Blue','X-Purple','X-Pink',];
   var pesticide_application_patterns=['ColoredDots-LimeGreen','ColoredDots-BlueGreen','ColoredDots-Blue','ColoredDots-Purple','ColoredDots-Pink',];
+  var previous_pesticide_application_patterns=['BlackDots-LimeGreen','BlackDots-BlueGreen','BlackDots-Blue','BlackDots-Purple','BlackDots-Pink',];
   //Default variable values for initial load (these may not all be necessary?)
   var acre_to_meter_ratio=0.000247105;
   var max_number=100;
@@ -1395,7 +1396,7 @@ function get_output(run_id) {
               'fill-pattern': [
                 "case",
                 ['==', ['get', "management_type"], "Host removal"], host_removal_patterns[i],
-                ['==', ['get', "management_type"], "Pesticide"], pesticide_application_patterns[i],
+                ['==', ['get', "management_type"], "Pesticide"], previous_pesticide_application_patterns[i],
                 ''
               ],      
               "fill-opacity": 1.0
