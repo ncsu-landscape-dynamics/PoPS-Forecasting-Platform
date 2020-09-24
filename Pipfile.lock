@@ -230,11 +230,11 @@
         },
         "django-debug-toolbar": {
             "hashes": [
-                "sha256:23129b4f771605c7ccf8733cc53558a68c5d463d60cdc83408d34b713acf4f5f",
-                "sha256:7c9bf93eabb1e745fe1fca830242d49f3c839d35163e5b53914009ed111209b1"
+                "sha256:20d94839b81d8d97194a911fc248d78e9df9ed953016e575dc6bd4c717b99e6e",
+                "sha256:3ef1e3c6f0c35e6fb965fa455020c95bb1852822f2659046ae25f01852611395"
             ],
             "index": "pypi",
-            "version": "==3.0"
+            "version": "==3.1"
         },
         "django-storages": {
             "extras": [
@@ -291,11 +291,11 @@
         },
         "google-auth": {
             "hashes": [
-                "sha256:7084c50c03f7a8a5696ef4500e65df0c525a0f6909f3c70b9ee65900a230c755",
-                "sha256:dcf86c5adc3a8a7659be190b12bb8912ae019cfd9ee2a571ea881e289fafbe39"
+                "sha256:31941bf019fb242c04d0de32845da10180788bfddb0de87d78c4bdf55555dda1",
+                "sha256:873051a6317294b083795cffc467bcd05b6df483ef542bfe0069ddbfbac0a096"
             ],
             "index": "pypi",
-            "version": "==1.21.2"
+            "version": "==1.21.3"
         },
         "google-cloud-core": {
             "hashes": [
@@ -306,11 +306,11 @@
         },
         "google-cloud-storage": {
             "hashes": [
-                "sha256:34fb8f7e8a2a633cbfb09d8dec38b3450c4029af1a328a67bca64f6226a1f4a5",
-                "sha256:4f51c7700242a9d54c07117f25fec5d110ab85435b3ce60ac28cc553f8ea938b"
+                "sha256:74bbb5b2d0b249de4a52f561435d0c3570ddc19b249653ae588ec0abcc3c81e6",
+                "sha256:e2a2533b5e368365e84d2acaa53b75266a09802fc1c8bda52e3212335eccb6bd"
             ],
             "index": "pypi",
-            "version": "==1.31.0"
+            "version": "==1.31.2"
         },
         "google-crc32c": {
             "hashes": [
