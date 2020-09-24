@@ -1,4 +1,5 @@
 function area_plot(defaults, steering_outputs, initial_infected_area, initial_number_infected, first_year, last_year) {
+  console.log('Creating sidebar area plot.')
   $("#eradication-status-indicator").hide();
     var initial_infected_area = initial_infected_area; //{{historic_data.last.infected_area}};
     var initial_number_infected = initial_number_infected; //{{historic_data.last.number_infected}};
@@ -20,7 +21,6 @@ function area_plot(defaults, steering_outputs, initial_infected_area, initial_nu
       }
     };
     var opacity = 0.7;
-    console.log('Default year list: ' + year_list);
     data_area.push({
       x: year_list,
       y: infected_area_list,
@@ -47,9 +47,6 @@ function area_plot(defaults, steering_outputs, initial_infected_area, initial_nu
     });
   
     for (var i = 0; i < steering_outputs.length; i++) {
-      console.log('Sanity check: ' + i);
-      console.log(steering_outputs[i]);
-      console.log('Steering year: ' + steering_outputs[i].steering_year);
       var steering_year = steering_outputs[i].steering_year;
       var year_list = [];
       var infected_area_list = [];
@@ -63,7 +60,6 @@ function area_plot(defaults, steering_outputs, initial_infected_area, initial_nu
             number_infected_list.push(initial_number_infected);
   
           } else {
-            console.log('j=' + j);
             year_list.push(steering_outputs[i].output[0].year);
             infected_area_list.push(steering_outputs[i - 1].output[0].infected_area*acre_to_meter_ratio);
             number_infected_list.push(steering_outputs[i - 1].output[0].number_infected);
@@ -73,22 +69,16 @@ function area_plot(defaults, steering_outputs, initial_infected_area, initial_nu
           infected_area_list.push(steering_outputs[i].output[j].infected_area*acre_to_meter_ratio);
           number_infected_list.push(steering_outputs[i].output[j].number_infected);
           if (eradication_check == false) {
-            console.log('ERADICATION IS FALSE');
-            console.log(steering_outputs[i].output[j].number_infected);
             if (steering_outputs[i].output[j].number_infected == 0) {
-              console.log('NUMBER INFECTED IS ZERO')
-              console.log('YEAR IT HAPPENED IS' + steering_outputs[i].output[j].year)
+              console.log('ERADICATION HAPPENED IN ' + steering_outputs[i].output[j].year);
               eradication_check = true;
               $("#eradication-status-indicator").show();
               $('#eradication_container span').text(steering_outputs[i].output[j].year);
-              
-  
             }
           };
         }
       };
   
-      console.log('Year list: ' + year_list);
       data_area.push({
         x: year_list,
         y: infected_area_list,
@@ -200,6 +190,7 @@ function area_plot(defaults, steering_outputs, initial_infected_area, initial_nu
   };
 
 function budget_plot(defaults, steering_outputs, first_year, last_year) {
+  console.log('Creating sidebar budget plot.')
     if ($('#input_budget span').text()) {
       var max_budget = parseInt($('#input_budget span').text());
     }
@@ -217,8 +208,6 @@ function budget_plot(defaults, steering_outputs, first_year, last_year) {
       budget_list.push(steering_outputs[i].management_cost);
       color_list.push(colors[i]);
     };
-        console.log('Year list: ' + year_list);
-      console.log('Budget list: ' + budget_list);
       data.push({
         x: year_list,
         y: budget_list,
@@ -229,8 +218,7 @@ function budget_plot(defaults, steering_outputs, first_year, last_year) {
       });
       }
       else {
-        console.log('There is no steering for the budget plot.')
-            data.push({
+        data.push({
         x: [0,1],
         y: [0,0],
     marker:{
@@ -343,24 +331,19 @@ function budget_plot(defaults, steering_outputs, first_year, last_year) {
 };
 
   function spreadRatePlot(last_year) {
+    console.log('Creating sidebar spread rate plot.')
     var data = [];
-    console.log('Spread rate inside function: ')
-    console.log(spread_rate);
-    console.log(spread_rate.length);
     var slider_year = parseInt($('#year-slider').find('input').val());
     var year_count = parseInt($(".timeline-year-container.year_active").attr('data-year-counter'));
     if (year_count == 0) {
       year_color = 'grey';
     } else {
       year_color = colors[year_count - 1];
-    }
-    console.log(slider_year)
-  
+    }  
     if (slider_year > last_year) {
       $('#spread_rate_title span').text(slider_year);
       for (var i = 0; i < spread_rate.length; i++) {
         if (spread_rate[i].year == slider_year) {
-          console.log(spread_rate[i]);
           data.push({
             type: "scatterpolar",
             r: [parseFloat(spread_rate[i].spreadrate__east_rate), parseFloat(spread_rate[i].spreadrate__north_rate), parseFloat(spread_rate[i].spreadrate__west_rate), parseFloat(spread_rate[i].spreadrate__south_rate), parseFloat(spread_rate[i].spreadrate__east_rate)],
@@ -393,10 +376,7 @@ function budget_plot(defaults, steering_outputs, first_year, last_year) {
   
   
       });
-    }
-    console.log(data);
-    console.log('Max spread rate: ' + max_spread_rate);
-  
+    }  
     var layout = {
       font: {
         size: 15,

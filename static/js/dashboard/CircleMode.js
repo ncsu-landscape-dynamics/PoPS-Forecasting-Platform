@@ -33,6 +33,8 @@ function createCircle(center, radius, management_properties, area) {
       management_type: management_properties[0],
       efficacy: management_properties[1],
       cost: management_properties[2],
+      date: management_properties[3],
+      duration: management_properties[4],
       area: area
     }
   };
