@@ -39,11 +39,11 @@ function insertRunButton(run_id, name, date, description, infected_number, infec
     })
 
     $("#run_button_" + run_pk).on('click', function () {
+      console.log("Run collection " + run_id + " link clicked.");
       $('#run-preview-container button').removeClass('active');
       $(this).addClass('active');
       var run_collection_id = $(this).attr('data-run-collection');
       get_run_collection(run_collection_id);
-      console.log("Run collection" + run_id + "link clicked.");
     });
 
     $("#run_button_" + run_pk + ' a.load_run_text').on('click', function (event) {

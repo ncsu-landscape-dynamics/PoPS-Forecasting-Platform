@@ -166,34 +166,28 @@ function changePolygonProperties() {
 
 //This function updates the GeoJSON management field 
 function updateJSON() {
+  console.log("Updating management polygons.");
   var data = draw.getAll();
-  console.log("Updating management polygons:");
-  //console.log(data);
   var answer = document.getElementById('displayed-management-area');
   var budget = $("input#id_budget").val();
-  var area_unit = $("select#id_area_unit").children("option:selected").text();
   var abbreviated_unit_display = $("select#id_area_unit").children("option:selected").attr('data-text');
   var area_modifier = $("select#id_area_unit").children("option:selected").val();
   if (data.features.length > 0) {
     // Stringify the GeoJson
     var convertedData = JSON.stringify(data);
     [host_removal_area, pesticide_area, host_removal_cost,pesticide_cost] = calculateTotalDrawnManagement(data);
-    console.log('host_removal_area = ' + host_removal_area);
-    console.log('pesticide_area = ' + pesticide_area);
-    console.log('convertedData = ' + convertedData);
     var total_area = host_removal_area + pesticide_area;
     var rounded_area = Math.round(total_area);
     var displayed_area = Math.round(total_area*area_modifier);
     // round cost to 2 decimal places
     var total_cost = host_removal_cost + pesticide_cost;
-    console.log('Cost is = ' + total_cost)
   } else {
     var rounded_area=0;
     var convertedData = 0;
     var host_removal_cost=0, pesticide_cost = 0;
     var total_cost = 0;
     var displayed_area = 0;
-    console.log("updateJSON: There is no management.")
+    console.log('No management drawn.')
   }
   answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + abbreviated_unit_display;  
   $('#id_management_polygons').val(convertedData);
@@ -224,21 +218,16 @@ function calculateTotalDrawnManagement(data) {
 function updateCircleRadiusInMeters() {
     console.log("Circle radius changed")
     var displayed_management_circle_radius = $("input#displayed_circle_radius").val();
-    console.log('Displayed radius = ' + displayed_management_circle_radius);
     var convert_to_meters_modifier = $("select#circle_distance_unit").children("option:selected").val();
-    console.log('Modifier = ' + convert_to_meters_modifier);
     var management_circle_radius_meters = displayed_management_circle_radius*convert_to_meters_modifier;
-    console.log("Radius in hidden field = " + management_circle_radius_meters);
     $("input#circle_radius_in_meters").val(management_circle_radius_meters);
 };
 
 function updateDefaultManagementCost(element) {
+  console.log('Updating management cost.')
   var displayed_cost = $(element).find("input.displayed_cost").val();
-  console.log("DISPLAYED COST: " + displayed_cost);
   var cost_modifier =  $(element).find("option:selected").val();
-  console.log("COST MODIFIER: " + cost_modifier);
   var actual_cost_per_meter_squared = Math.round(displayed_cost*cost_modifier*100000000)/100000000;
-  console.log("ACTUAL COST: " + actual_cost_per_meter_squared);
   $(element).find("input.default_cost").val(actual_cost_per_meter_squared);
 };
 
@@ -259,16 +248,14 @@ function disableDrawTools(){
 
 function enableDrawTools(){
   if ($("#draw-controls").is(":hidden")){
+    console.log('Enabling draw tools.')
     if (!$('input#id_tangible_landscape').prop('checked') && $('#map-tab').hasClass('active')){
       map.addControl(draw);
       $( "#draw-controls" ).show();
       var treatment = JSON.parse($('#id_management_polygons').val());
-      console.log('Currently drawn treatment JSON:');
-      console.log(treatment);
       if (treatment != 0) {
         var ids = draw.set(treatment);
       };
-      console.log('Added draw tools.')
       updateJSON();
     }  
     else  {

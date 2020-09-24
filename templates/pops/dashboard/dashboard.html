@@ -1120,9 +1120,9 @@ $("#year-slider").change(function () {
 var most_recent_run = 0;
 
 function get_run_collection(run_collection_id) {
+  console.log('GETTING RUN COLLECTION ' + run_collection_id +'.');
   $('#tangible-landscape-listener-button a').attr('data-value','false');
   $('#tangible-landscape-listener-button a').text('Resume listening');  
-  console.log('Getting run collection ' + run_collection_id +'.');
   $.ajax({
     url: "{% url 'get_run_collection' %}",
     dataType: "json",
@@ -1162,7 +1162,6 @@ function get_run_collection(run_collection_id) {
           var steering_year = data.inputs[i].steering_year;
           var next_steering_year = steering_year + 1;
           var run_id = data.inputs[i].pk;
-          console.log('Adding steering year ' + steering_year + '.');
           $(".timeline-year-container[data-year-value="+steering_year+"]").attr('data-run-pk',run_id);
           $(".timeline-year-container[data-year-value="+steering_year+"]").removeClass("management_not_started").addClass("management_complete");
         // Do something if is the last iteration of the loop
