@@ -935,8 +935,6 @@ class RunCollection(models.Model):
                     choices = STATUS_CHOICES,
                     default = "PENDING", blank=True)
     budget = models.PositiveIntegerField(verbose_name = _("budget"), default = 30000000, null = True, validators = [MinValueValidator(1)])
-    efficacy = models.PositiveSmallIntegerField(verbose_name = _("efficacy"), help_text="", blank=True, default = 100, validators = [MinValueValidator(1), MaxValueValidator(100)])
-    cost_per_meter_squared = models.DecimalField(verbose_name = _("cost per meter squared"), max_digits = 14, decimal_places = 9, blank=True, null=True, default = 0)
     default = models.BooleanField(verbose_name = _("default run collection"), help_text="Is this the default run collection for this session?", default = False)
 
     class Meta:
