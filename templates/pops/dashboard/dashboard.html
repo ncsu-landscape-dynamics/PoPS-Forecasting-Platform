@@ -870,7 +870,7 @@
                     console.log("Year clicked.")
                     if (!$(this).parents(".timeline-year-container").hasClass("year_active")) {
                       if ($(this).parents(".timeline-year-container").hasClass("management_complete")) {
-                        console.log("Updating year.")
+                        console.log("Updating displayed results to selected year of management.")
                         var run_id = $(this).parents(".timeline-year-container").attr('data-run-pk');
                         $(".timeline-year-container").removeClass("year_active");
                         $(this).parents(".timeline-year-container").addClass("year_active");
@@ -880,17 +880,15 @@
                   });
 
                   $(".timeline-visibility").on('click', function () {
-                    console.log("Visibility toggled.")
+                    console.log("Past treatment visibility toggled.")
                     var year_value = $(this).parents(".timeline-year-container").attr('data-year-value');
                     var treatment_outline = (year_value.toString() + "_management");
                     var treatment_fill = (year_value.toString() + "_fill");
                     if ($(this).parents(".timeline-year-container").hasClass("management_visible")) {
-                      console.log('Turning visibility off...');
                       $(this).parents(".timeline-year-container").removeClass("management_visible").addClass("management_hidden");
                       $(this).children("i").removeClass("fa-eye").addClass("fa-eye-slash");
                       map.setLayoutProperty(treatment_fill, 'visibility', 'none');
                     } else {
-                      console.log('Turning visibility on...');
                       $(this).parents(".timeline-year-container").removeClass("management_hidden").addClass("management_visible");
                       $(this).children("i").removeClass("fa-eye-slash").addClass("fa-eye");
                       map.setLayoutProperty(treatment_fill, 'visibility', 'visible');
@@ -898,7 +896,7 @@
                   });
 
                   $(".timeline-edit").on('click', function () {
-                    console.log("Editing...")
+                    console.log("Attempting to delete runs...")
                     $(this).parents(".timeline-year-container").removeClass("management_complete").removeClass("year_active").addClass("management_active").removeClass("management_hidden").addClass("management_visible");
                     $(this).next(".timeline-visibility").children("i").removeClass("fa-eye-slash").addClass("fa-eye");
                     $(this).parents(".timeline-year-container").nextAll(".timeline-year-container").removeClass("management_active").removeClass("management_complete").removeClass("year_active").addClass("management_not_started").removeClass("management_hidden").addClass("management_visible");
@@ -907,8 +905,6 @@
                     var year_count = $(this).parents(".timeline-year-container").attr('data-year-counter');
                     var run_id = $(this).parents(".timeline-year-container").attr('data-run-pk');
                     var previous_run_id = $(this).parents(".timeline-year-container").prev().prev(".timeline-year-container").attr('data-run-pk');
-                    console.log('Year count is:' + year_count);
-                    console.log('Run pk of deleted run is: ' + run_id);
                     var run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
                     $.ajax({
                       url: "{% url 'delete_runs' %}",
@@ -918,8 +914,7 @@
                         'run_collection': run_collection_id,
                       },
                       success: function (data) {
-                        console.log('Sanity Check! Success for delete runs AJAX call.');
-                        console.log('The Run PK to be deleted is: ' + data.run_id);
+                        console.log('Runs greater than or equal to ' + data.run_id + ' were deleted.');
                         get_output(previous_run_id);
                       },
                       error: function (xhr, errmsg, err) {
@@ -937,14 +932,14 @@
     $('.drawing-tool').removeClass('active');
     $(this).addClass('active');
     draw.changeMode('draw_polygon');
-    console.log("Polygon tool selected to draw management.")
+    console.log("Polygon tool selected.")
   });
 
     $("#circle-tool").on('click', function () {
       $('.drawing-tool').removeClass('active');
       $('#circle-tool').addClass('active');
       draw.changeMode('draw_circle');
-      console.log("Circle tool selected to draw management.")
+      console.log("Circle tool selected.")
     });
 
   $("#select-tool").on('click', function () {
@@ -956,7 +951,7 @@
 
   $("#delete-tool").on('click', function () {
     draw.trash();
-    console.log("Trash");
+    console.log("Polygon(s) deleted.");
     displaySelectionChange();
   });
 
@@ -977,7 +972,6 @@ var max_occurence_number_for_legend = {{ session.max_value }}; //Normalize the r
 var map_fill_opacity = 0.6; //For occurence and forecasted data
 
 map.on('load', function() {
-  console.log('Adding host map')
   hostmapLayer({{ host_map|safe }});
   console.log("Adding initial data.");
   {% for year in historic_data %}
@@ -985,7 +979,6 @@ map.on('load', function() {
   {% endfor %}
   map.setLayoutProperty({{ historic_data.last.year }}, 'visibility', 'visible');
   default_run = {{ session.default_run }};
-  console.log(default_run);
   get_output(default_run);                      
 });
 
@@ -1046,10 +1039,9 @@ $('.draw-tool-dropdown').on('click', function(e) {
 //Prevent no management type from being selected
 $(".management-type").on('change',  function () {
   //If all management types are unchecked, recheck the last unchecked checkbox
-  console.log('Management type changed.')
   if ($('.management-type:not(:checked)').length == $('.management-type').length ){
     $(this).prop('checked',true)
-    console.log('Rechecking box')
+    console.log('A management type must be selected.')
 	}
 });
 
@@ -1083,7 +1075,7 @@ $("#year-slider").change(function () {
   var steering_year = parseInt($(".timeline-year-container.year_active").attr('data-year-value'));
   var min_year = $("#year-slider input").attr('min');
   var max_year = $("#year-slider input").attr('max');
-  console.log("Hiding years: " + min_year + " - " + max_year);
+  console.log("Hiding management for years: " + min_year + " - " + max_year);
   for (i = parseInt(min_year); i <= parseInt(max_year); i++) {
     if (map.getLayer(i.toString())) {
       map.setLayoutProperty(i.toString(), 'visibility', 'none');
@@ -1125,18 +1117,12 @@ $("#year-slider").change(function () {
   spreadRatePlot({{historic_data.last.year}});
 });
 
-$("select#run_preview_year_selector").change(function () {
-  var preview_year = $(this).children("option:selected").val();
-console.log("New year selected: " + preview_year);
-});
-
 var most_recent_run = 0;
 
 function get_run_collection(run_collection_id) {
   $('#tangible-landscape-listener-button a').attr('data-value','false');
-  console.log("Changing value of TL listener to false.");
   $('#tangible-landscape-listener-button a').text('Resume listening');  
-  console.log('Getting run collection for run_collection:' + run_collection_id);
+  console.log('Getting run collection ' + run_collection_id +'.');
   $.ajax({
     url: "{% url 'get_run_collection' %}",
     dataType: "json",
@@ -1144,8 +1130,7 @@ function get_run_collection(run_collection_id) {
       'run_collection_id': run_collection_id
     },
     success: function (data) {
-      console.log('Success getting run collection.')
-      console.log('Run collection id: ' + run_collection_id)
+      console.log('Success getting run collection ' + run_collection_id + '.')
       $('#run-collection-name span').text(data.name);
       $('#run-collection-name').attr('data-run-collection-pk',data.pk);
       $('#input_run_name span').text(data.name);
@@ -1162,7 +1147,6 @@ function get_run_collection(run_collection_id) {
       $(".timeline-year-container").removeClass("year_active").addClass("management_not_started").removeClass("management_active").removeClass("management_complete");
       //$(".timeline-year-container.management_active").removeClass("management_active").addClass("management_complete").addClass("year_active").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
       $(".timeline-year-container.year-0").addClass("management_complete").removeClass("management_not_started");
-      console.log('Number of steering years: ' + data.inputs.length);
       if (data.inputs.length == 0){
         $(".timeline-year-container.year-0").addClass("year_active");
         default_run = {{ session.default_run }};
@@ -1170,7 +1154,7 @@ function get_run_collection(run_collection_id) {
         get_output(default_run);        
         $(".timeline-year-container.year-1").removeClass("management_not_started").addClass("management_active");
         most_recent_run = 0;
-        setDateRange(2019);
+        setDateRange({{ historic_data.last.year }} + 1);
       }
       else {
         //Loop through the steering years
@@ -1178,7 +1162,7 @@ function get_run_collection(run_collection_id) {
           var steering_year = data.inputs[i].steering_year;
           var next_steering_year = steering_year + 1;
           var run_id = data.inputs[i].pk;
-          console.log('Steering year: ' + steering_year);
+          console.log('Adding steering year ' + steering_year + '.');
           $(".timeline-year-container[data-year-value="+steering_year+"]").attr('data-run-pk',run_id);
           $(".timeline-year-container[data-year-value="+steering_year+"]").removeClass("management_not_started").addClass("management_complete");
         // Do something if is the last iteration of the loop
@@ -1192,16 +1176,15 @@ function get_run_collection(run_collection_id) {
         };
       }
 
-function setDateRange(year) {
-  var min_date = year.toString() + '-01-01';
-  var max_date = year.toString() + '-12-31';
-  var display_date = year.toString() + '-01-01';
-  $('.management-date').attr('min',min_date);
-  $('.management-date').attr('max',max_date);
-  $('.management-date').val(min_date);
-  console.log('Min date: ' + min_date);
-  console.log('Max date: ' + max_date);
-}
+    function setDateRange(year) {
+      var min_date = year.toString() + '-01-01';
+      var max_date = year.toString() + '-12-31';
+      var display_date = year.toString() + '-01-01';
+      $('.management-date').attr('min',min_date);
+      $('.management-date').attr('max',max_date);
+      $('.management-date').val(min_date);
+    }
+
     if (data.tangible_landscape) {
       console.log('Tangible landscape is on.')
       //hide run buttons
@@ -1216,7 +1199,7 @@ function setDateRange(year) {
       console.log('Tangible landscape is false.')
       $(".timeline-year-container").find(".submit_run_button").show();
       $("#tangible-landscape-listener-button").hide();
-        var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
+      var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
       console.log('Updating draw color to ' + year_count);
       updateDrawColor(year_count);
     }
@@ -1232,6 +1215,7 @@ var spread_rate;
 var max_spread_rate=0;
 
 function get_output(run_id) {
+  console.log('GETTING OUTPUT FOR RUN: ' + run_id);
   $('#status-text span').text('Loading...');
   $("#status-indicator").show();
   $("#status-indicator-shading").show();
@@ -1249,7 +1233,7 @@ function get_output(run_id) {
     };
     var treatment_outline = (i.toString() + "_management");
     var treatment_fill = (i.toString() + "_fill");
-    console.log(treatment_outline);
+    console.log('Removing existing drawn management.');
     if (map.getLayer(treatment_fill)) {
       map.removeLayer(treatment_fill);
     };
@@ -1278,17 +1262,10 @@ function get_output(run_id) {
       var steering_year = data.run_inputs.steering_year;
       spread_rate = data.spread_rate;
       max_spread_rate=data.max_spread_rate;
-      console.log('Spread rate: ');
-      console.log(spread_rate);
-      console.log(max_spread_rate);
-      console.log('Number of outputs:');
-      console.log(data.results.length);
       for (var i = 0; i < data.results.length; i++) {
         var year = data.results[i].year;
-        console.log("Output ID: " + data.results[i].pk);
-        console.log("Year: " + year);
+        console.log("Adding output " + data.results[i].pk + ' for year ' + year);
         var year_string = year.toString();
-        console.log("Year string: " + year_string);
         if (year > steering_year) {
           var map_data = data.results[i].probability_map;
           newMagmaLayer(map_data, year_string,100);
@@ -1297,14 +1274,12 @@ function get_output(run_id) {
           var map_data = data.results[i].single_spread_map;
           newFireLayer(map_data, year_string,max_occurence_number_for_legend);
         }
-        console.log(map_data);
         year_list.push(data.results[i].year);
         infected_area_list.push(data.results[i].infected_area );
         infected_number_list.push(data.results[i].number_infected);
         //Add new run button if there is steering or update existing button
         if (data.steering) {
           if((i + 1) == (data.results.length)){
-            console.log('This is the last loop of the results.')
             var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
             var run_collection_name = $('#input_run_name span').text();
             var run_collection_description = $('#input_description span').text();
@@ -1317,12 +1292,10 @@ function get_output(run_id) {
         if (year > max_year) {
           $("#year-slider input").attr('max', year.toString());
           max_year = year;
-          console.log("New max year = " + max_year);
         };
         if (year < min_year) {
           $("#year-slider input").attr('min', year.toString());
           min_year = year;
-          console.log("New min year = " + min_year);
         };
       }
       var year_list = [],
@@ -1349,21 +1322,17 @@ function get_output(run_id) {
       budget_plot(defaults, steering_outputs, first_year, last_year);
       area_plot(defaults, steering_outputs, initial_infected_area, initial_number_infected, first_year, last_year);
       spreadRatePlot({{historic_data.last.year}});
-      for (var i = 0; i < data.all_steering_years.length; i++) {
-        console.log('Sanity check: ' + i)
-      };
+      //I think this loop is unnecessary
+      //for (var i = 0; i < data.all_steering_years.length; i++) {
+        //console.log('Sanity check: ' + i)
+      //};
       $("#status-indicator").hide();
       $("#status-indicator-shading").hide();
       for (var i = 0; i < data.inputs.length; i++) {
-        console.log('Sanity check inputs: ' + i);
-        console.log('Steering: ' + data.steering);
-        console.log('data.inputs[i].steering_year : ' + data.inputs[i].steering_year);
-        console.log('data.inputs[i].management_polygons :' + data.inputs[i].management_polygons);
         if (data.steering) {
           if (data.run_inputs.steering_year >= data.inputs[i].steering_year) {
           var treatment_outline = (data.inputs[i].steering_year.toString() + "_management");
           var treatment_fill = (data.inputs[i].steering_year.toString() + "_fill");
-          console.log(treatment_outline);
           if (map.getLayer(treatment_fill)) {
             map.removeLayer(treatment_fill);
           };
@@ -1412,7 +1381,6 @@ function poll(new_run_id) {
       },
       success: function (data) {
         console.log("Status for run " + new_run_id + ": " + data.status);
-
         //Setup the next poll recursively
         if (data.status == "SUCCESS") {
           $('#status-text span').text('Success! Loading results...');
@@ -1545,7 +1513,7 @@ $("#host_map_checkbox input").on('change', function () {
     
     $(".delete_run_collection").on('click', function () {
    //var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
-        event.stopPropagation(); 
+      event.stopPropagation(); 
       var run_collection_pk = $(this).parent('.run-link').attr('data-run-collection');
       console.log("Deleting run_collection " + run_collection_pk);
         $.ajax({
@@ -1555,7 +1523,6 @@ $("#host_map_checkbox input").on('change', function () {
             'run_collection': run_collection_pk,
           },
           success: function (data) {
-            console.log('Run Collection ' + data.run_collection_id + ' was deleted.');
             $(".run-link[data-run-collection='" + data.run_collection_id +"']").remove();
             //get_output(previous_run_id);
           },
@@ -1569,7 +1536,7 @@ $("#host_map_checkbox input").on('change', function () {
 
     $("#edit_run_collection").on('click', function () {
    //var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
-        event.stopPropagation(); 
+      event.stopPropagation(); 
       var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
       var run_collection_name = $('#new_run_collection_name').val();
       var run_collection_description = $('#new_run_collection_description').val();
@@ -1608,13 +1575,13 @@ $("#host_map_checkbox input").on('change', function () {
     });
     */
     $("#submit-run-collection").on('submit', function () {
-      console.log("Submit run collection button clicked.");
+      console.log("SUBMITTING NEW RUN COLLECTION TO DATABASE.");
       event.preventDefault();
       //$("#submit-run-button").attr("disabled", true);
       //$('#run-preview-container button').removeClass('active');
         var form = $("#submit-run-collection");
         if ($('input[name="name"]').val() == "Default_name") {
-          console.log('DEFAULT NAME DETECTED... CHANGING')
+          console.log('DEFAULT NAME DETECTED... CHANGING');
           var now_date = new Date();
           var now_time =  now_date.getHours() + ':' + now_date.getMinutes() + ':' + now_date.getSeconds();
           var date_time_name = 'New name';
@@ -1625,10 +1592,9 @@ $("#host_map_checkbox input").on('change', function () {
         data: form.serialize(),
         type : "POST", // http method
         success: function (data) {
-          console.log('New run collection parameters successfully posted to database!');
+          console.log('RUN COLLECTION ' + data.pk + 'SUCCESSFULLY POSTED TO DATABASE.');
           $('input[name="name"]').val("Default_name");
           var new_run_collection_id = data.pk;
-          console.log('New run collection id: ' + new_run_collection_id);
           $('#editInputParameters').modal('hide');
           $('#run-collection-name span').text(data.name);
           $('#run-collection-name').attr('data-run-collection-pk',data.pk);
@@ -1652,11 +1618,10 @@ $("#host_map_checkbox input").on('change', function () {
     });
 
 $("#submit-run").on('submit', function () {
-  console.log("Submit management.")
   event.preventDefault();
   var steering_year = parseInt($(".timeline-year-container.management_active").attr('data-year-value'));
   var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
-  console.log('Steering year is: ' + steering_year);
+  console.log('SUBMITTING NEW RUN WITH MANAGEMENT IN ' + steering_year);
   $('#id_steering_year').val(steering_year);
   var form = $("#submit-run");
       $.ajax({
@@ -1664,23 +1629,18 @@ $("#submit-run").on('submit', function () {
         data: form.serialize(),
         type : "POST", // http method
         success: function (data) {
-          console.log('New run AJAX succcessful!');
           var new_run_id = data.pk;
+          console.log('RUN ' + new_run_id + ' (Management Year: ' + data.steering_year + ') DATA SUCCESSFULLY POSTED TO DATABASE');
           $(".timeline-year-container.management_active").attr('data-run-pk',new_run_id);
           var new_run_collection_id = $('#run-collection-name').attr('data-run-collection-pk');
           var case_study_id = {{ case_study.pk }};
           var session_id = {{ session.pk }};
-          console.log('New run id: ' + new_run_id);
-          console.log('Steering year: ' + data.steering_year);
           if (!$('input#id_tangible_landscape').prop('checked')) {
-            console.log('Case study id: ' + case_study_id); 
-            console.log('New session id: ' + session_id); 
-            console.log('New run collection id: ' + new_run_collection_id); 
-            console.log('New run id: ' + new_run_id); 
+            console.log('ATTEMPTING TO RUN POPS MODEL API FOR RUN ' + new_run_id + ' IN RUN COLLECTION ' + new_run_collection_id);
             var base_url = "https://pops-model-api.appspot.com/status?"
             //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
             var run_url = (base_url + "run_id=" + new_run_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&session_id=" + session_id.toString() + "&case_study_id=" + case_study_id.toString()); //base_url.concat(new_run_id.toString());
-            console.log(run_url);
+            console.log('Using URL: ' + run_url);
             $.ajax({
               url: run_url,
               dataType: 'JSONP',
@@ -1706,7 +1666,7 @@ $("#submit-run").on('submit', function () {
           else {
             console.log('Waiting for management from tangible landscape...')
           }
-          $("#submit-run-button").attr('data-run',new_run_id);
+          $("#submit-run-button").attr('data-run',new_run_id); //I think this is obsolete
           poll(new_run_id); 
         },
                 // handle a non-successful response
@@ -1730,11 +1690,9 @@ function relayout_buttons(max_number,max_area,max_cost) {
   $('.comparison_plot').each(function () {
     idArray.push(this.id);
   });
-  console.log('Updating yaxis values with:' + max_number + ' ' + max_area + ' $'+max_cost)
-  console.log(idArray);
+  console.log('Updating y-axis values of buttons.')
 
   for (i = 0; i < idArray.length; i++) {
-    console.log('Updating ' + idArray[i]);
     Plotly.relayout(idArray[i], update);
   }
 };

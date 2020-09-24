@@ -2,23 +2,18 @@ function insertRunButton(run_id, name, date, description, infected_number, infec
   var run_pk = run_id.toString();
   if (cost > max_cost) {
     max_cost = cost;
-    console.log('Cost is greater' + max_cost);
   };
   if (infected_number > max_number) {
     max_number = infected_number;
-    console.log('number_infected is greater' + max_number);
   };
   if (infected_area > max_area) {
     max_area = infected_area;
-    console.log('infected_area is greater' + max_area);
   };
-  console.log('Creating run button: ' + run_pk);
   if (name.length > 18) {
     var short_name = name.substring(0, 18) + '...';
   } else {
     short_name = name;
   }
-  console.log('Short name: ' + short_name);
   if (!(document.getElementById("run_" + run_pk))) {
 
     $('<button id="run_button_' + run_pk +
