@@ -1,12 +1,20 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-
+{% load static %}
+{% load get_staff_approved %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
 {% block content %}
 
-<div class="container py-4">
+<div id="page-content" class="container-fluid">
 
-<h2 class="text-center">Sign up</h2>
-<form method="post">
+  <div id="header" class="row text-center" style="background-color:transparent;">
+    <div class="col">
+      <h1>Sign up</h1>
+    </div>
+  </div>
+  <form method="post">
 <div class="row justify-content-center">
       <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
      

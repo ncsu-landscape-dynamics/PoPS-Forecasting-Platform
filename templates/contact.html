@@ -1,8 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
 {% block content %}
-<div class="container py-4 text-center">
-<h2 class="text-center">Contact</h2>
-<p>Please email <a href="mailto:help@popsmodel.org">help@popsmodel.org</a> with any questions or concerns.</p>
+
+<div id="page-content" class="container-fluid">
+    <div id="header" class="row text-center" style="background-color:transparent;">
+        <div class="col">
+            <h1>Contact</h1>
+        </div>
+    </div>
+    <div id="" class="row justify-content-center section-style">
+        <div class="col-md-10 text-center">
+            <p>Please email <a href="mailto:help@popsmodel.org">help@popsmodel.org</a> with any questions or concerns.
+            </p>
+        </div>
+    </div>
 </div>
 {% endblock %}
