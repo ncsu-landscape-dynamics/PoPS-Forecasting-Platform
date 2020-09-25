@@ -1,21 +1,31 @@
 <!-- templates/account_activation_sent.html -->
 {% extends 'base.html' %}
+{% load static %}
 
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-<div class="row">
-<div class="col">
-<h4>Oops! You don't have permission to view this page.</h4>
-<p>
-403: HTTP forbidden.</p>
-<p>
-{% if exception %}
-Error message: {{ exception }}
-{% endif %}
-</p>
-<p>If you think this is a mistake, please contact administrators.</p>
-</div>
-</div>
+<div id="page-content" class="container-fluid">
+    <div id="header" class="row text-center" style="background-color:transparent;">
+        <div class="col">
+            <h1>403 error</h1>
+        </div>
+    </div>
+    <div id="" class="row justify-content-center section-style">
+        <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
+            <h4>Oops! Looks like you're trying to view a page that doesn't exist.</h4>
+            <p>
+                403: HTTP Forbidden
+            </p>
+            <p>
+                {% if exception %}
+                Error message: {{ exception }}
+                {% endif %}
+            </p>
+            <p>If the problem persists, please contact administrators.</p>
+        </div>
+    </div>
 </div>
 {% endblock %}
