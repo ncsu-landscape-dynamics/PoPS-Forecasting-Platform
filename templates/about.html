@@ -1,19 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
-  {% block page_styles %}
-    <link rel="stylesheet" href="{% static 'css/about.css' %}">
-  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
-  {% endblock %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
 {% block content %}
 
-
-  <div style="background-color: #bed0d1;" class="container-fluid text-center p-4 ">
-    <div class="row text-dark justify-content-center">
+<div id="page-content" class="container-fluid">
+  <div id="header" class="row text-center">
+    <div class="col">
+      <h1>About</h1>
+    </div>
+  </div>
+  <div id="" class="row justify-content-center section-style section-style-3">
       <div class="col-md-10">
         <h2>What is the PoPS model?</h2>
-        <p>The PoPS model is the power-house behind the PoPS web dashboard.
-        </p>
+        <p>The PoPS model is the power-house behind the PoPS web dashboard.</p>
       </div>
       <div class="col-md-10">
         <div class="text-center">
@@ -21,75 +22,26 @@
             alt="PoPS is easy to use.">
         </div>
         <small class="text-muted">Illustration of the PoPS model</small>
-
       </div>
-    </div>
   </div>
-
-
-
-
-  <script>
-    mapboxgl.accessToken =
-      'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
-    /* eslint-disable */
-    var map = new mapboxgl.Map({
-      container: 'map', // container id
-      style: 'mapbox://styles/mapbox/dark-v9',
-      center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
-      zoom: 7, // starting zoom
-      pitch: 60,
-    });
-
-
-function rotateCamera(timestamp) {
-// clamp the rotation between 0 -360 degrees
-// Divide timestamp by 100 to slow rotation to ~10 degrees / sec
-map.rotateTo((timestamp / 200) % 360, {duration: 0});
-// Request the next frame of the animation.
-requestAnimationFrame(rotateCamera);
-}
-
-map.on('load', function() {
-  map.addSource('infection', {
-    'type': 'geojson',
-    /*many types of data can be added, such as geojson, vector tiles or raster data*/
-    'data': '{% static "map_data/infection_0_2019.geojson" %}'
-  });
-  /*here we are adding a source, then a layer based on that that source*/
-
-
-map.addLayer({
-                            "id": 'infection_extrusion_layer',
-                            "type": 'fill-extrusion',
-                            "source": 'infection',
-                            'paint': {
-                            'fill-extrusion-color': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'layer.1'],
-                            0, '#009CB0',
-                            0.1, '#00C49D',
-                            0.2, '#00D793',
-                            0.3, '#00FF80',
-                            0.4, '#24DA80',
-                            0.5, '#48B680',
-                            0.6, '#6D9180',
-                            0.7, '#916D80',
-                            0.8, '#B64880',
-                            0.9, '#DA2480',
-                            1, '#ff0000'
-                            ],
-                            'fill-extrusion-height':
-                            ['*', ['number', ['get', 'layer.1'], 0], 10000],
-
-                            'fill-extrusion-opacity': 0.6
-                            }
-                            }, );
-
-rotateCamera(0);
-
-});
-</script>
+  <div id="" class="row justify-content-center section-style section-style-2">
+      <div class="col-md-10">
+      <h2>Sub heading</h2>
+      {% lorem 3 p %}
+      </div>
+  </div>
+  <div id="" class="row justify-content-center section-style section-style-3">
+      <div class="col-md-10">
+      <h2>Sub heading</h2>
+      {% lorem 3 p %}
+      </div>
+  </div>
+  <div id="" class="row justify-content-center section-style section-style-2">
+      <div class="col-md-10">
+      <h2>Sub heading</h2>
+      {% lorem 3 p %}
+      </div>
+  </div>
+</div>
 
 {% endblock %}

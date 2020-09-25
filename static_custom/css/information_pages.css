@@ -1,0 +1,30 @@
+#header {
+  background-color: #457175;
+  padding: 25px;
+}
+
+#header h1 {
+  font-size: 3em;
+  font-weight: 300;
+}
+.section-style {
+  padding: 15px;
+}
+.section-style h2 {
+  font-size: 1.6em;
+  font-weight: 400;
+}
+.section-style-1 {
+  background-color: #485c5c;
+}
+.section-style-2 {
+  background-color: #678282;
+}
+.section-style-3 {
+  background-color: #7fa1a1;
+}
+
+.section-style-4 {
+  background-color: #9dc7c7;
+}
+
