@@ -1,13 +1,3 @@
-/* http://www.positioniseverything.net/easyclearing.html */
-#djDebug .djdt-clearfix:after {
-    content: ".";
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden;
-}
-#djDebug .djdt-clearfix {display: block;}
-
 /* Debug Toolbar CSS Reset, adapted from Eric Meyer's CSS Reset */
 #djDebug {color: #000;background: #FFF;}
 #djDebug, #djDebug div, #djDebug span, #djDebug applet, #djDebug object, #djDebug iframe,
@@ -126,9 +116,17 @@
 }
 
 #djDebug #djDebugToolbar li.djdt-active {
-    background: #333 no-repeat left center;
-    background-image: url(../img/indicator.png);
-    padding-left: 10px;
+    background: #333;
+}
+
+#djDebug #djDebugToolbar li.djdt-active:before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #eee;
+    font-size: 150%;
 }
 
 #djDebug #djDebugToolbar li.djdt-active a:hover {
@@ -450,14 +448,8 @@
     min-width: 70px;
     white-space: nowrap;
 }
-#djDebug .djdt-panelContent table .djdt-color {
-    width: 3px;
-}
-#djDebug .djdt-panelContent table .djdt-color span {
-    width: 3px;
-    height: 12px;
-    overflow: hidden;
-    padding: 0;
+#djDebug .djdt-color:after {
+    content: "\00a0";
 }
 #djDebug .djToggleSwitch {
     text-decoration: none;
