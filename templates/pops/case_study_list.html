@@ -2,6 +2,7 @@
 {% load static %}
 {% load get_staff_approved %}
 {% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
 <link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
 {% endblock %}
 {% block content %}
@@ -15,9 +16,13 @@
     }
 </style>
 
-<div class="container py-2 pb-4">
-    <h3>Available case studies: </h3>
-    <div class="row">
+<div id="page-content" class="container-fluid">
+  <div id="header" class="row text-center" style="background-color:transparent;">
+    <div class="col">
+      <h1>Available case studies</h1>
+    </div>
+  </div>    
+  <div class="row">
         <div class="col-12">
             <div class="panel-container">
                 <h4>Staff-approved case studies:</h4>
