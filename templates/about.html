@@ -11,32 +11,88 @@
       <h1>About</h1>
     </div>
   </div>
-  <div id="" class="row justify-content-center section-style section-style-3">
-      <div class="col-md-10">
+  <div id="" class="row justify-content-center section-style">
+      <div class="col-md-10 py-4">
         <h2>What is the PoPS model?</h2>
-        <p>The PoPS model is the power-house behind the PoPS web dashboard.</p>
+        <p>The flexible, customizable PoPS (Pest or Pathogen Spread) model simulates reproduction, 
+        dispersal, and establishment of pests and pathogens through space and time. The PoPS model 
+        is the power-house behind the PoPS web dashboard.</p>
       </div>
-      <div class="col-md-10">
+      <div class="col-md-10 py-4">
+        <h2>How does it work?</h2>
+        <p>For every location in a landscape, at each time step, 
+        the model predicts the number of infested or infected hosts (Ψ).</p>
+      </div>
+
+      <div class="col-md-10 py-4">
+        <h2 class="pb-2">
+        The PoPS Equation
+        </h2>
+                  <img class='img-fluid w-100' style="max-width:560px" src="{% static 'images/About_Equation.svg' %}"
+            alt="The underlying PoPS equation.">
+        <p>
+        The PoPS model can be conceptualized in terms of:
+          <ul>
+            <li>
+            Reproduction
+            </li>
+            <li>
+            Dispersal
+            </li>
+            <li>
+            Establishment
+            </li>          
+          </ul>
+        Spread across a landscape is predicted by calculating infestation or 
+        infection (Ψ) for each cell.
+        </p>
+        </div>
+        <div class="col-md-7 col-sm-5">
+        <h3>Reproduction</h3>
+        <p>
+        Beta (β), the number of pests or pathogens that disperse from a single host under optimal environmental 
+        conditions, is the starting point of the PoPS model. 
+        </p>
+        </div>
+        <div class="col-sm-5 col-md-3">
+                <div class="text-center">
+          <img class='img-fluid w-100' style="max-width:250px" src="{% static 'images/About_Beta.png' %}"
+            alt="Beta (β), the number of pests or pathogens that disperse from a single host under optimal environmental conditions.">
+        </div>
+
+        </div>
+        <div class="col-md-10">
+        <p>
+        Conditions are rarely optimal and locations contain multiple hosts, so β is modified by the number 
+        of currently infested or infected hosts (I) and environmental conditions in a location (i) 
+        at a particular time (t) to determine reproduction.
+        </p>
+        <img class='img-fluid w-100' style="max-width:350px" src="{% static 'images/Equation_reproduction.svg' %}"
+            alt="Reproduction">
+
+
+      </div>      
+      <div class="col-md-10 py-4">
         <div class="text-center">
-          <img class='img-fluid w-100' style="max-width:800px" src="{% static 'images/ModelDescription.png' %}"
-            alt="PoPS is easy to use.">
+          <img class='img-fluid w-100' style="max-width:800px" src="{% static 'images/About_ModelDescription.png' %}"
+            alt="The PoPS model">
         </div>
         <small class="text-muted">Illustration of the PoPS model</small>
       </div>
   </div>
-  <div id="" class="row justify-content-center section-style section-style-2">
+  <div id="" class="row justify-content-center section-style section-style-5">
+      <div class="col-md-10 py-4">
+      <h2>Sub heading</h2>
+      {% lorem 3 p %}
+      </div>
+  </div>
+  <div id="" class="row justify-content-center section-style section-style-4">
       <div class="col-md-10">
       <h2>Sub heading</h2>
       {% lorem 3 p %}
       </div>
   </div>
-  <div id="" class="row justify-content-center section-style section-style-3">
-      <div class="col-md-10">
-      <h2>Sub heading</h2>
-      {% lorem 3 p %}
-      </div>
-  </div>
-  <div id="" class="row justify-content-center section-style section-style-2">
+  <div id="" class="row justify-content-center section-style section-style-5">
       <div class="col-md-10">
       <h2>Sub heading</h2>
       {% lorem 3 p %}

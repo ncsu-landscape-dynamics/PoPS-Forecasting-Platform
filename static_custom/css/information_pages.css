@@ -1,5 +1,5 @@
 #header {
-  background-color: #457175;
+  background-color: #538080;
   padding: 25px;
 }
 
@@ -9,22 +9,34 @@
 }
 .section-style {
   padding: 15px;
+  font-size: 1em;
+  font-weight: 400;
 }
 .section-style h2 {
   font-size: 1.6em;
   font-weight: 400;
 }
 .section-style-1 {
-  background-color: #485c5c;
+  background-color: #454d4d;
 }
 .section-style-2 {
-  background-color: #678282;
+  background-color: #c8d9d9;
+  color: black;
 }
 .section-style-3 {
-  background-color: #7fa1a1;
+  background-color: #538080;
 }
 
 .section-style-4 {
-  background-color: #9dc7c7;
+  background-color: #6f7a7a;
+}
+
+.section-style-5 {
+  background-color: #a3d9d9;
+  color: black;
+}
+
+.section-attention {
+  background-color: #84698c;
 }
 

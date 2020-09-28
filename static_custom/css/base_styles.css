@@ -9,10 +9,10 @@ body {
   min-height: 100%;
 }
 body, .page-footer {
-  background-color: #151a1a;
+  background-color: #121414;
 }
 #page-content {
-  background-color: #272e2e;
+  background-color: #252929;
   padding-bottom: 5.5rem; /* This much match the footer height, below.*/
   min-height: 95vh;
 }
@@ -21,7 +21,7 @@ nav,
 .dropdown-menu,
 .dropdown-menu a,
 .dropdown-menu a:hover {
-  background-color: #161c1c;
+  background-color: #0c0d0d;
   color: lightgray;
 }
 
