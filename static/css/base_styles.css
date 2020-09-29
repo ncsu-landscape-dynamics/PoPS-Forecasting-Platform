@@ -1,0 +1,58 @@
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+  margin: 0;
+  min-height: 100%;
+}
+body, .page-footer {
+  background-color: #121414;
+}
+
+#page-content {
+  background-color: #252929;
+  padding-bottom: 5.5rem; /* This much match the footer height, below.*/
+  min-height: 95vh;
+}
+
+nav,
+.dropdown-menu,
+.dropdown-menu a,
+.dropdown-menu a:hover {
+  background-color: #0c0d0d;
+  color: lightgray;
+}
+
+.page-footer {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  height: 5.5rem;
+}
+
+.page-footer,
+.page-footer a {
+  font-size: 1rem;
+  color: grey;
+}
+
+.page-footer a:hover {
+  color: white;
+}
+
+.footer-copyright,
+.footer-copyright a {
+  font-size: 0.8rem;
+}
+
+
+.dropdown-menu a:hover {
+  color: white;
+}
+
+.card-custom {
+  background-color: #0b0d0e;
+}
