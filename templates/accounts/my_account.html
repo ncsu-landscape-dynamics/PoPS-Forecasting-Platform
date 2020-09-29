@@ -2,17 +2,17 @@
 {% load static %}
 
 {% block page_styles %}
-<link rel="stylesheet" href="{% static 'css/case_study_instructions.css' %}">
-
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
 {% endblock %}
 
-
 {% block content %}
-
-<div class="container py-4">
-
-    <h2 id="top-of-page" class="text-center">Account details for {{ user }}: </h2>
-    <div class="row justify-content-center">
+<div id="page-content" class="container-fluid">
+  <div id="header" class="row text-center" style="background-color:transparent;">
+    <div class="col">
+      <h1>Account details</h1>
+    </div>
+  </div>
+  <div id="" class="row justify-content-center section-style">
         <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
             <table class="table table-sm table-bordered">
             <tbody>
@@ -45,6 +45,7 @@
             <a class="btn btn-secondary btn-sm" href="{% url 'update_account' %}" role="button">Update user information</a>
             <a class="btn btn-success btn-sm" href="{% url 'password_change' %}" role="button">Change password</a>
         </div> <!-- Close main col -->
-    </div> <!-- Close main row -->
-</div> <!-- Close main container -->
+  </div>
+</div>
+
 {% endblock %}

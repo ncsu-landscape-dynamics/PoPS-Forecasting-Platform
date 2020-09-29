@@ -1,8 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
 {% block content %}
-<div class="container py-4">
-<h2 class="text-center">Privacy Policy</h2>
-<p>This is the privacy policy.</p>
+
+<div id="page-content" class="container-fluid">
+    <div id="header" class="row text-center" style="background-color:transparent;">
+        <div class="col">
+            <h1>Privacy Policy</h1>
+        </div>
+    </div>
+    <div id="" class="row justify-content-center section-style">
+        <div class="col-md-10 ">
+            <p>This is the privacy policy.
+            </p>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -345,7 +345,7 @@ class InitialInfestation(models.Model):
         verbose_name_plural = _("initial_infestation_datas")
 
     def __str__(self):
-        return self.pest
+        return str(self.pk)
 
 class CalibrationInfestation(models.Model):
 
@@ -359,7 +359,7 @@ class CalibrationInfestation(models.Model):
         verbose_name_plural = _("calibration_infestation_datas")
 
     def __str__(self):
-        return self.pest
+        return str(self.pk)
 
 class ValidationInfestation(models.Model):
 
@@ -373,7 +373,7 @@ class ValidationInfestation(models.Model):
         verbose_name_plural = _("validation_infestation_datas")
 
     def __str__(self):
-        return self.pest
+        return str(self.pk)
 
 class PriorTreatment(models.Model):
 

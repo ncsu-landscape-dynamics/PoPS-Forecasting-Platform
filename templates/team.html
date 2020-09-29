@@ -1,116 +1,137 @@
 {% extends 'base.html' %}
 {% load static %}
-  {% block page_styles %}
-    <link rel="stylesheet" href="{% static 'css/team.css' %}">
-  {% endblock %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+  <link rel="stylesheet" href="{% static 'css/team.css' %}">
+{% endblock %}
 {% block content %}
 
-  <div id="header" class="container-fluid p-4 text-center" >
-    <h1 class="display-4">Meet the PoPS Team</h1>
-    <div class="row justify-content-center">
-    <div class="col-md-8">
-<div>PoPS was started in 2018 in the <strong><a class="text-light" href="https://cnr.ncsu.edu/geospatial/">Center for Geospatial Analytics</a></strong> 
-at North Carolina State University in collaboration with USDA-APHIS. 
-It has rapidly grown into a talented team of field scientists, computer and data scientists, and government organizations
-dedicated to changing the way the globe manages pests and pathogens.
-</div>
-</div>
-</div>
-</div>
-
-{% if current_members %}
-  <div id="core-team" class="container-fluid p-4 text-center ">
-    <h2>Development Team</h2>
-    <div id="people" class="card-deck ">
-      {% for member in current_members %}
-      <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="{{ member.picture.url }}" alt="Card image cap">
-        <div class="card-body">
-
-            <h5 class="person-name card-title">          
-            <a class="text-dark" href="{{ member.link }}" data-toggle="tooltip" data-placement="top" title="Go to website" >
-              {{ member.first_name }} {{ member.last_name }}        
-            </a> 
-            {% if member.github %}
-            <small><a class = "text-dark" data-toggle="tooltip" data-placement="top" title="Go to GitHub repository" href="{{ member.github }}"><i class="fab fa-github"></i> </a></small>
-            {% endif %}
-         </h5>
-          <div class="person-title">{{ member.title }} </div>
-          <div class="person-department"> {{ member.department }},</div>
-          <div class="person-organization"> {{ member.organization}} </div>
-          <p class="person-description card-text text-justify">{{ member.role }}</p>
-        </div>
+<div id="page-content" class="container-fluid">
+  <div id="header" class="row justify-content-center text-center">
+    <div class="col-md-10">
+      <h1>Team</h1>
+      <div class="lead">PoPS was started in 2018 in the <strong><a class="text-light"
+            href="https://cnr.ncsu.edu/geospatial/">Center
+            for Geospatial Analytics</a></strong>
+        at North Carolina State University in collaboration with USDA-APHIS.
+        It has rapidly grown into a talented team of field scientists, computer and data scientists, and government
+        organizations
+        dedicated to changing the way the globe manages pests and pathogens.
       </div>
-      {% empty %}
-      <li>No members.</li>
-      {% endfor %}
     </div>
   </div>
-{% endif %}
-{% if affiliate_members %}
-  <div id="affiliates" class="container-fluid p-4 text-center ">
-    <h2 class="text-center">Collaborators</h2>
-    <div id="people" class="card-deck ">
-      {% for member in affiliate_members %}
-      <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="{{ member.picture.url }}" alt="Card image cap">
-        <div class="card-body">
+  {% if current_members %}
+  <div id="" class="row justify-content-center section-style">
+    <div class="col-md-10 text-center">
+      <h2>Development Team</h2>
+      <div id="people" class="card-deck ">
+        {% for member in current_members %}
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="{{ member.picture.url }}" alt="Card image cap">
+          <div class="card-body">
 
-            <h5 class="person-name card-title">          
-            <a class="text-dark" href="{{ member.link }}" data-toggle="tooltip" data-placement="top" title="Go to website" >
-              {{ member.first_name }} {{ member.last_name }}        
-            </a> 
-            {% if member.github %}
-            <small><a class = "text-dark" data-toggle="tooltip" data-placement="top" title="Go to GitHub repository" href="{{ member.github }}"><i class="fab fa-github"></i> </a></small>
-            {% endif %}
-         </h5>
-          <div class="person-title">{{ member.title }} </div>
-          <div class="person-department"> {{ member.department }},</div>
-          <div class="person-organization"> {{ member.organization}} </div>
-          <p class="person-description card-text text-justify">{{ member.role }}</p>
+            <h5 class="person-name card-title">
+              <a class="text-dark" href="{{ member.link }}" data-toggle="tooltip" data-placement="top"
+                title="Go to website">
+                {{ member.first_name }} {{ member.last_name }}
+              </a>
+              {% if member.github %}
+              <small><a class="text-dark" data-toggle="tooltip" data-placement="top" title="Go to GitHub repository"
+                  href="{{ member.github }}"><i class="fab fa-github"></i> </a></small>
+              {% endif %}
+            </h5>
+            <div class="person-title">{{ member.title }} </div>
+            <div class="person-department"> {{ member.department }},</div>
+            <div class="person-organization"> {{ member.organization}} </div>
+            <p class="person-description card-text text-justify">{{ member.role }}</p>
+          </div>
         </div>
+        {% empty %}
+        <li>No members.</li>
+        {% endfor %}
       </div>
-      {% empty %}
-      <li>No members.</li>
-      {% endfor %}
     </div>
   </div>
-{% endif %}
-{% if past_members %}
-  <div id="past-team" class="container-fluid p-4 text-center ">
-    <h2 class="text-center">Past PoPS Team Members</h2>
-    <div id="people" class="card-deck ">
-      {% for member in past_members %}
-      <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="{{ member.picture.url }}" alt="Card image cap">
-        <div class="card-body">
+  {% endif %}
 
-            <h5 class="person-name card-title">          
-            <a class="text-dark" href="{{ member.link }}" data-toggle="tooltip" data-placement="top" title="Go to website" >
-              {{ member.first_name }} {{ member.last_name }}        
-            </a> 
-            {% if member.github %}
-            <small><a class = "text-dark" data-toggle="tooltip" data-placement="top" title="Go to GitHub repository" href="{{ member.github }}"><i class="fab fa-github"></i> </a></small>
-            {% endif %}
-         </h5>
-          <div class="person-title">{{ member.title }} </div>
-          <div class="person-department"> {{ member.department }},</div>
-          <div class="person-organization"> {{ member.organization}} </div>
-          <p class="person-description card-text text-justify">{{ member.role }}</p>
+  {% if affiliate_members %}
+  <div id="" class="row justify-content-center section-style section-style-1">
+    <div class="col-md-10 text-center">
+      <h2>Affiliates</h2>
+      <div id="people" class="card-deck ">
+        {% for member in affiliate_members %}
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="{{ member.picture.url }}" alt="Card image cap">
+          <div class="card-body">
+
+            <h5 class="person-name card-title">
+              <a class="text-dark" href="{{ member.link }}" data-toggle="tooltip" data-placement="top"
+                title="Go to website">
+                {{ member.first_name }} {{ member.last_name }}
+              </a>
+              {% if member.github %}
+              <small><a class="text-dark" data-toggle="tooltip" data-placement="top" title="Go to GitHub repository"
+                  href="{{ member.github }}"><i class="fab fa-github"></i> </a></small>
+              {% endif %}
+            </h5>
+            <div class="person-title">{{ member.title }} </div>
+            <div class="person-department"> {{ member.department }},</div>
+            <div class="person-organization"> {{ member.organization}} </div>
+            <p class="person-description card-text text-justify">{{ member.role }}</p>
+          </div>
         </div>
+        {% empty %}
+        <li>No members.</li>
+        {% endfor %}
       </div>
-      {% empty %}
-      <li>No members.</li>
-      {% endfor %}
     </div>
   </div>
-{% endif %}
+  {% endif %}
 
-<div id="opportunities" class="container-fluid p-4 text-center ">
-<h4 class="text-center">Employment Opportunities</h4>
-<p id="employment" class="text-center">
-We are always looking for talented and passionate individuals. 
-If you're looking for a new challenge and eager to join a collaborative team view our <a href="https://cnr.ncsu.edu/geospatial/news/2019/12/16/multiple-new-research-positions-in-spatial-data-science-now-accepting-applications/">job listings</a>.
-</p>
+  {% if past_members %}
+  <div id="" class="row justify-content-center section-style section-style-2">
+    <div class="col-md-10 text-center">
+      <h2>Past Members</h2>
+      <div id="people" class="card-deck ">
+        {% for member in past_members %}
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="{{ member.picture.url }}" alt="Card image cap">
+          <div class="card-body">
+
+            <h5 class="person-name card-title">
+              <a class="text-dark" href="{{ member.link }}" data-toggle="tooltip" data-placement="top"
+                title="Go to website">
+                {{ member.first_name }} {{ member.last_name }}
+              </a>
+              {% if member.github %}
+              <small><a class="text-dark" data-toggle="tooltip" data-placement="top" title="Go to GitHub repository"
+                  href="{{ member.github }}"><i class="fab fa-github"></i> </a></small>
+              {% endif %}
+            </h5>
+            <div class="person-title">{{ member.title }} </div>
+            <div class="person-department"> {{ member.department }},</div>
+            <div class="person-organization"> {{ member.organization}} </div>
+            <p class="person-description card-text text-justify">{{ member.role }}</p>
+          </div>
+        </div>
+        {% empty %}
+        <li>No members.</li>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  <div id="" class="row justify-content-center section-style">
+    <div class="col-md-10 text-center">
+      <h2>Employment Opportunities</h2>
+      <p class="text-center">
+        We are always looking for talented and passionate individuals.
+        If you're looking for a new challenge and eager to join a collaborative team view our <a
+          href="https://cnr.ncsu.edu/geospatial/news/2019/12/16/multiple-new-research-positions-in-spatial-data-science-now-accepting-applications/">job
+          listings</a>.
+      </p>
+    </div>
+  </div>
 </div>
+
 {% endblock %}
