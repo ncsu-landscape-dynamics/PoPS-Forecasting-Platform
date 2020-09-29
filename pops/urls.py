@@ -62,6 +62,7 @@ urlpatterns = [
     path('cs/<int:pk>/', views.CaseStudyDetailView.as_view(), name='case-study'),
     path('api/', include(router.urls)),
     path('temp/', TemplateView.as_view(template_name="pops/dashboard/temp.html")),
+    path('eRADS/', views.EradsDashboardView.as_view(), name='eRADS'),
     #path('case_study/<int:pk>/edit', views.case_study_edit, name='case_study_edit'),
     #path('myaccount', views.CaseStudyListView.as_view(), name='case-study-list'),
 ]

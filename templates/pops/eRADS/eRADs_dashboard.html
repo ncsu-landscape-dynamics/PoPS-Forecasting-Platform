@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
+{% block content %}
+
+<div id="page-content" class="container-fluid">
+
+    <div id="header" class="row text-center" style="background-color:transparent;">
+        <div class="col-12">
+            <h1>eRADS Dashboard</h1>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <p>This is the eRADS dashboard</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
