@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
         {% load static %}
 <head>
@@ -81,6 +81,7 @@
   <!-- Footer -->
   <footer class="page-footer pt-2">
     <!-- Footer Links -->
+    <div class="container">
       <div class="row text-center">
         <div class="col">
           <a href="{% url 'team' %}">Team</a>
@@ -101,10 +102,11 @@
           <a class="" href="{% url 'contact' %}">Contact</a>
         </div>
       </div><!-- End Grid row -->
-    <!-- Copyright -->
-    <div class="footer-copyright text-center py-3">© 2018 Copyright:
-      <a href="https://popsmodel.org"> popsmodel.org</a>
-    </div><!-- End Copyright -->
+      <!-- Copyright -->
+      <div class="footer-copyright text-center py-3">© 2018 Copyright:
+        <a href="https://popsmodel.org"> popsmodel.org</a>
+      </div><!-- End Copyright -->
+    </div><!--End container-->
   </footer><!-- End Footer -->
 
   <script>

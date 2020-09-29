@@ -11,6 +11,7 @@ body {
 body, .page-footer {
   background-color: #121414;
 }
+
 #page-content {
   background-color: #252929;
   padding-bottom: 5.5rem; /* This much match the footer height, below.*/
