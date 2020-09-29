@@ -57,3 +57,4 @@ div#people .card {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   grid-gap: 3rem 1rem;
 }
+
