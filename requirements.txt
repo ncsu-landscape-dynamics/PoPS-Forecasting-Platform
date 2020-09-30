@@ -1,6 +1,9 @@
 -i https://pypi.org/simple
+aiohttp==3.6.2 ; python_version >= '3.6'
 arrow==0.16.0
 asgiref==3.2.10
+async-timeout==3.0.1
+attrs==20.2.0
 brotli==1.0.9
 cachetools==4.1.1
 certifi==2020.6.20
@@ -10,21 +13,21 @@ click==7.1.2
 coverage==5.3
 dash-core-components==1.12.1
 dash-html-components==1.1.1
-dash-renderer==1.8.1
+dash-renderer==1.8.2
 dash-table==4.10.1
-dash==1.16.1
+dash==1.16.2
 django-autocomplete-light==3.5.1
 django-crispy-forms==1.9.2
-django-debug-toolbar==3.1
+django-debug-toolbar==3.1.1
 django-storages[google]==1.10.1
 django-widget-tweaks==1.4.8
 django==3.1.1
-djangorestframework==3.11.1
+djangorestframework==3.12.1
 flask-compress==1.5.0
 flask==1.1.2
 future==0.18.2
 google-api-core==1.22.2
-google-auth==1.21.3
+google-auth==1.22.0
 google-cloud-core==1.4.1
 google-cloud-storage==1.31.2
 google-crc32c==1.0.0 ; python_version >= '3.5'
@@ -34,6 +37,7 @@ idna==2.10
 itsdangerous==1.1.0
 jinja2==2.11.2
 markupsafe==1.1.1
+multidict==4.7.6
 numpy==1.19.2
 plotly==4.10.0
 protobuf==3.13.0
@@ -52,3 +56,4 @@ sqlparse==0.3.1
 urllib3==1.25.10
 werkzeug==1.0.1
 wheel==0.35.1
+yarl==1.6.0

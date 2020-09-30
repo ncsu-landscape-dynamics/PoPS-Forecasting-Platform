@@ -1,13 +1,9 @@
-h2 {
-  font-family: Arial, Verdana;
-}
-
 .panel {
   box-shadow: none;
   background: transparent;
   border: none;
 }
-
+ 
 h4 {
   display: block;
   background: #4c9c9c;
