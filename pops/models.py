@@ -62,6 +62,8 @@ class CaseStudy(models.Model):
     date_created = models.DateTimeField(verbose_name = _("date created"), auto_now = False, auto_now_add = True)
     number_of_pests = models.PositiveSmallIntegerField(verbose_name = _("number of pests"), help_text="How many pests are in your model system?", blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
     number_of_hosts = models.PositiveSmallIntegerField(verbose_name = _("number of hosts"), help_text="How many hosts are in your model system?", blank=True, default = 1, validators = [MinValueValidator(1), MaxValueValidator(10)])
+    #first calibration date, final calibration date
+    #first forecast date, final forecast date
     start_year = models.PositiveSmallIntegerField(verbose_name = _("first calibration year"), help_text="The first year that you have pest occurence data for calibration.", blank=True, default = 2012, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
     end_year = models.PositiveSmallIntegerField(verbose_name = _("final calibration year"), help_text="The last year that you have pest occurence data for calibration.", blank=True, default = 2018, validators = [MinValueValidator(1900), MaxValueValidator(2200)])
     future_years = models.PositiveSmallIntegerField(verbose_name = _("final model year"), help_text="The last year that you want to run the PoPS model (this is in the future).", blank=True, default = 2023, validators = [MinValueValidator(2018), MaxValueValidator(2200)])
@@ -70,6 +72,8 @@ class CaseStudy(models.Model):
     DAY = 'day'
     TIME_STEP_CHOICES = ((MONTH, 'Month'), (WEEK, 'Week'), (DAY, 'Day'))
     time_step = models.CharField(verbose_name = _("time step"), default = "Month", max_length = 50, choices = TIME_STEP_CHOICES, help_text='Select a time step for your simulation:')
+    #time_step_n (allows there to be a time step of 2 days for example)
+    #output frequency and output_frequency_n (include YEAR as an output frequency)
     staff_approved = models.BooleanField(verbose_name = _("approved by staff"), help_text="Sample help text.", default = False)
     STATUS_CHOICES = (
         ("NO START", "Not started"),
@@ -83,6 +87,7 @@ class CaseStudy(models.Model):
                     default = "NO START", blank=True)
     use_external_calibration = models.BooleanField(verbose_name = _("use another case study's calibration?"), help_text="Sample help text.", default = False)
     calibration = models.ForeignKey("self", verbose_name = _("calibrated case study"), null=True, blank=True, on_delete = models.SET_NULL)
+    #remove model api
     model_api = models.CharField(verbose_name = _("model api url"), max_length = 250, null = True, blank=True, help_text="Link to the model api for this case study.")
 
     objects = MyManager()
@@ -114,7 +119,9 @@ class CaseStudy(models.Model):
 
 class HistoricData(models.Model):
 
+    #This is put here by the model api to display on the dashboard
     case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study id"), on_delete = models.CASCADE)
+    #year should become date
     year = models.PositiveIntegerField(verbose_name = _("year"), default = 2015, null = True, validators = [MinValueValidator(1900)])
     data = models.JSONField(null = True)
     infected_area = models.DecimalField(verbose_name = _("infected_area (m^2)"), help_text="Overall infected area from the run.", blank=True, max_digits = 16, decimal_places = 2, default = 1, validators = [MinValueValidator(0)])
@@ -129,6 +136,8 @@ class HistoricData(models.Model):
 
 class MapBoxParameters(models.Model):
 
+    # These give the center of the case study in order to have the data display on load with mapbox
+    # on the dashboard. Look into using a bounding box because currently guessing at zoom level.
     case_study = models.OneToOneField(CaseStudy, verbose_name = _("case study"), on_delete = models.CASCADE, primary_key=True)
     longitude = models.DecimalField(verbose_name = _("longitude"), help_text="Longitude of the center of the case study", blank=True, max_digits = 17, decimal_places = 14, default = -75.89533170441632, validators = [MinValueValidator(-180), MaxValueValidator(180)])
     latitude = models.DecimalField(verbose_name = _("latitude"), help_text="Latitude of the center of the case study", blank=True, max_digits = 17, decimal_places = 14, default = 40.2039152196177, validators = [MinValueValidator(-90), MaxValueValidator(90)])
@@ -145,6 +154,7 @@ class MapBoxParameters(models.Model):
 
 class AllPlantsData(models.Model):
 
+    #AllPopulationsData because we're doing animals. Eventually this will come from HostMapping project.
     case_study = models.OneToOneField(CaseStudy, verbose_name = _("case study"), on_delete = models.CASCADE, primary_key=True)
     user_file = models.FileField(verbose_name = _("all plant data"), help_text="Upload your total plants data as a raster file. This could be all the plants in a cell or all cells could have the value of the maximum number of hosts foound in any cell in your study area.",upload_to=all_plants_directory, max_length=100, blank=True)
 
@@ -159,8 +169,10 @@ class AllPlantsData(models.Model):
 
 class Host(models.Model):
 
+    # This will eventually include a dropdown of options to use the host map api
     case_study = models.ForeignKey(CaseStudy, verbose_name = _("case study"), on_delete=models.CASCADE)
     name = models.CharField(verbose_name = _("host common name"), help_text="What is the host's common name?", max_length = 150, blank=True)
+    #Score becomes competency and susceptibility (range 0-1)
     score = models.DecimalField(verbose_name = _("score"), help_text="Host score is a value between 0 and 1. 0 has no effect while 1 has maximum effect. This is for generalist pests with differing host preferences and pathogens with differing host competencies.", blank=True, max_digits = 5, decimal_places = 2, default = 1, validators = [MinValueValidator(0), MaxValueValidator(1)])
     mortality_on = models.BooleanField(verbose_name = _("mortality"), help_text="Does the host experience mortality as a result of the pest/pathogen?", blank=True)
 
@@ -174,9 +186,10 @@ class Host(models.Model):
         return self.name
 
 class HostData(models.Model):
-
+    #Eventually this will come from the host mapping api
     host = models.OneToOneField(Host, verbose_name = _("host"), on_delete = models.CASCADE, primary_key=True)
     user_file = models.FileField(verbose_name = _("host data"), help_text="Upload your host data as a raster file.", upload_to=host_directory, max_length=100, blank=True)
+    #host_map comes from the model API
     host_map = models.JSONField(null = True)
 
     objects = MyManager()
@@ -189,7 +202,7 @@ class HostData(models.Model):
         return str(self.pk)
         
 class Mortality(models.Model):
-
+    #Make more decisions about mortality rate, mean, std dev
     host = models.OneToOneField(Host, verbose_name = _("host"), on_delete = models.CASCADE, primary_key=True)
     METHOD_CHOICES = (
         ("DATA_FILE", "PoPS estimates mortality rate and time lag from user data"),
@@ -198,6 +211,7 @@ class Mortality(models.Model):
     method = models.CharField(verbose_name = _("mortality rate method"), help_text="Choose a method to determine mortality rate and time lag.", max_length = 30,
                     choices = METHOD_CHOICES,
                     default = "DATA_FILE", blank = False)    
+    #Discuss hiding user file upload option for now (on site)
     user_file = models.FileField(verbose_name = _("mortality data"), upload_to=mortality_directory, max_length=100, help_text="A single raster file with number of trees that experienced mortality as a result of the pest/pathogen that year (each layer is a year)", null = True, blank=True)
     rate = models.DecimalField(verbose_name = _("mortality rate (fraction)"), help_text="What percentage of hosts experience mortality each year from the pest or pathogen?", max_digits = 3, decimal_places = 2, blank=True, null=True, default = 0, validators = [MinValueValidator(0), MaxValueValidator(1)])
     time_lag = models.PositiveSmallIntegerField(verbose_name = _("mortality time lag (years)"), help_text="How long after initial infection/infestation (in years) before mortality occurs on average?", blank=True, null=True, default = 2, validators = [MinValueValidator(1), MaxValueValidator(10)])
@@ -211,6 +225,7 @@ class Mortality(models.Model):
     def __str__(self):
         return str(self.pk)
 
+#Remove MortalityRate
 class MortalityRate(models.Model):
 
     mortality = models.ForeignKey(Mortality, verbose_name = _("mortality"), on_delete = models.CASCADE)
@@ -242,7 +257,7 @@ class MortalityTimeLag(models.Model):
         return str(self.pk)
 
 class Creation(models.Model):
-
+    #Don't know what this is. Looks useless.
     host = models.ForeignKey(Host, verbose_name = _("host"), on_delete = models.CASCADE)
 
     class Meta:
@@ -307,6 +322,7 @@ class Pest(models.Model):
     model_type = models.CharField(verbose_name = _("model type"), help_text="What type of model do you want to use?", max_length = 20,
                     choices = MODEL_CHOICES,
                     default = "SI", blank=True)
+    #Need to add more dispersal choices
     DISPERSAL_CHOICES = (
         ("CAUCHY", "Cauchy"),
         ("DOUBLE SCALE CAUCHY", "Double Scale Cauchy"),
@@ -333,6 +349,14 @@ class Pest(models.Model):
             string = self.name
         return string
 
+#Trap and Pesticide Models need to be added
+#Use InsectTrap and InsectPesticide models to link Traps to Pest via FK
+
+# Initial,Calibration, and Validation Infestation will change to handle iterative calibration
+# We woul need to create a parameter set model (w/ FK to CS) to hold the parameters for each
+# iteration of the calibration (e.g. there would be parameters for 2017, 2018, 2019, and then
+# if new data is added in 2020, those parameters would be added too.)
+# Would need to also update session to link to the parameter set rather than case study.
 class InitialInfestation(models.Model):
 
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
@@ -377,8 +401,11 @@ class ValidationInfestation(models.Model):
 
 class PriorTreatment(models.Model):
 
+    #Trouble with user files is not knowing what the data is... how many layers? multiple dates?
+    #This may need to be a FK to handle multiple prior treatments, and also include a date
     pest = models.OneToOneField(Pest, verbose_name = _("pest"), on_delete = models.CASCADE, primary_key=True)
     user_file = models.FileField(verbose_name =  _("prior treatments data"), help_text="Upload the raster file for management actions. 1 file with a layer for each year.", upload_to = treatment_directory, max_length=100, null=True, blank=True)
+    #JSON field could be added to display on dashboard
 
     objects = MyManager()
 
@@ -389,6 +416,7 @@ class PriorTreatment(models.Model):
     def __str__(self):
         return self.pest
 
+#PriorTreatmentYear needs to be eliminated or modified
 class PriorTreatmentYear(models.Model):
 
     prior_treatment = models.ForeignKey(PriorTreatment, verbose_name = _("prior treatment"), on_delete = models.CASCADE)
