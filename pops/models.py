@@ -754,7 +754,7 @@ class LethalTemperature(models.Model):
     lethal_type = models.CharField(verbose_name = _("lethal temperature type"), help_text="Is your pest killed by hot or cold temperatures?", choices = LETHAL_TYPE, max_length = 4, default = "COLD", blank=False)
     month = models.PositiveSmallIntegerField(verbose_name = _("month in which lethal temperature occurs"), help_text="What month does your lethal temperature occur?", choices = MONTH, default = 1, blank=False)
     value = models.DecimalField(verbose_name = _("lethal temperature"), help_text="What is the lethal temperature at which pest/pathogen mortality occurs?", max_digits = 4, decimal_places = 2, blank=True, validators = [MinValueValidator(-50), MaxValueValidator(50)])
-    lethal_temperature_data = models.FileField(verbose_name = _("lethal temperature data"), help_text="Upload your letah temperature data as a raster file (1 file with a layer for each year).", upload_to=lethal_temperature_directory, max_length=100, null = True)
+    lethal_temperature_data = models.FileField(verbose_name = _("lethal temperature data"), help_text="Upload your lethal temperature data as a raster file (1 file with a layer for each year).", upload_to=lethal_temperature_directory, max_length=100, null = True)
 
     objects = MyManager()
 
