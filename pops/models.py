@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.contrib.gis.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator 
@@ -1047,6 +1048,19 @@ class AllowedUsers(models.Model):
     class Meta:
         verbose_name = _("allowed user")
         verbose_name_plural = _("allowed users")
+
+    def __str__(self):
+        return str(self.pk)
+
+class Point(models.Model):
+
+    count = models.IntegerField(verbose_name = _("count"), default = 0, null = True, validators = [MinValueValidator(0)])
+    date = models.DateTimeField(verbose_name = _("date"), auto_now = False, auto_now_add = True)
+    point = models.PointField(verbose_name = _("point"))
+
+    class Meta:
+        verbose_name = _("point")
+        verbose_name_plural = _("points")
 
     def __str__(self):
         return str(self.pk)
