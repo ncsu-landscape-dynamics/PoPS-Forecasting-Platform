@@ -3,6 +3,11 @@ from rest_framework import serializers
 
 from .models import *
 
+class PointSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Point
+        fields = '__all__'
+
 class TemperaturePolynomialSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemperaturePolynomial
