@@ -21,13 +21,9 @@
   <div id="" class="row justify-content-center section-style section-style-1">
       <div class="col-md-10">
 
-      <form action="{% url 'point_data' %}" method="post">
+      <form action="{% url 'shape_file_upload' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.count }}
-    <label for="id_latitude">Latitude:</label>
-    <input class="form-control" type="number" class="custom-range" min="0" step="0.001" id="id_latitude" name="latitude">
-    <label for="id_longitude">Longitude:</label>
-    <input class="form-control" type="number" class="custom-range" min="0" step="0.001" id="id_longitude" name="longitude">
+    {{ form.as_p }}
     <input type="submit" value="Submit">
 </form>
 

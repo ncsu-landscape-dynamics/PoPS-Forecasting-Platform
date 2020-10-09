@@ -52,6 +52,9 @@ def precipitation_directory(instance, filename):
 def lethal_temperature_directory(instance, filename):
     return 'case_studies/{0}/lethal_temperature_data/{1}'.format(instance.weather.case_study.id, filename)
 
+def shapefile_directory(instance, filename):
+    return 'shapefiles/{0}'.format(filename)
+
 
 # Django automatically creates a primary key for each model and we are not overwriting this default behavior in any of our models.
 class CaseStudy(models.Model):
@@ -1056,7 +1059,7 @@ class Point(models.Model):
 
     count = models.IntegerField(verbose_name = _("count"), default = 0, null = True, validators = [MinValueValidator(0)])
     date = models.DateTimeField(verbose_name = _("date"), auto_now = False, auto_now_add = True)
-    point = models.PointField(verbose_name = _("point"))
+    point = models.PointField(verbose_name = _("point"), null = True)
 
     class Meta:
         verbose_name = _("point")
@@ -1064,3 +1067,11 @@ class Point(models.Model):
 
     def __str__(self):
         return str(self.pk)
+
+class PointDataFiles(models.Model):
+    
+    user_file = models.FileField(verbose_name = _("geospatial file"), help_text="Upload your OGR-supported geospatial file",upload_to=shapefile_directory, max_length=100, blank=True)
+    
+    def __str__(self):
+        return str(self.pk)
+        

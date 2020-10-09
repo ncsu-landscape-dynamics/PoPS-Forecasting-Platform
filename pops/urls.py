@@ -64,6 +64,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('temp/', TemplateView.as_view(template_name="pops/dashboard/temp.html")),
     path('pointdata/', views.PointDataView.as_view(),name='point_data'),
+    path('shapefile/', views.ShapeFileUploadView.as_view(),name='shape_file_upload'),
     #path('case_study/<int:pk>/edit', views.case_study_edit, name='case_study_edit'),
     #path('myaccount', views.CaseStudyListView.as_view(), name='case-study-list'),
 ]
