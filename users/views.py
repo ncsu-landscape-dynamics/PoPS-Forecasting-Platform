@@ -1,5 +1,5 @@
 # users/views.py
-from django.views.generic import ListView, TemplateView, UpdateView
+from django.views.generic import ListView, TemplateView, UpdateView, CreateView
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.sites.shortcuts import get_current_site
@@ -10,11 +10,12 @@ from django.template.loader import render_to_string
 from django.db.models import Q 
 from .tokens import account_activation_token
 from django.http import JsonResponse, HttpResponse
+from django.forms import modelform_factory
 
 
 from django.contrib.auth import login, authenticate
 from .forms import CustomUserCreationForm
-from .models import CustomUser
+from .models import CustomUser, EmailListEntry
 #from google.appengine.api import mail
 
 class UpdateAccount(UpdateView):
@@ -141,3 +142,35 @@ class SearchResultsView(ListView):
         )
         return object_list
     
+
+class AddNewEmail(CreateView):
+    model = EmailListEntry
+    template_name = "accounts/add_email.html"
+    fields = ['email',]
+    success_url = "temp_email_add"
+
+    def form_invalid(self, form):
+        print('Form invalid')
+        response = super().form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
+
+    def form_valid(self, form):
+        print('form_valid')
+        # We make sure to call the parent's form_valid() method because
+        # it might do some processing (in the case of CreateView, it will
+        # call form.save() for example).
+        # Make any changes to form content before calling super.
+        # form.instance.created_by = self.request.user
+        response = super().form_valid(form)
+        if self.request.is_ajax():
+            print('Response is ajax')
+            data = {
+                'email': self.object.email,
+            }
+            return JsonResponse(data)
+        else:
+            print('Response NOT ajax')
+            return response
