@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from django.contrib.gis import admin
 from .models import *
 
 class HostInline(admin.TabularInline):
@@ -398,3 +398,4 @@ admin.site.register(AllowedUsers, AllowedUsersAdmin)
 admin.site.register(SpreadRate)
 admin.site.register(DistanceToBoundary)
 admin.site.register(TimeToBoundary)
+admin.site.register(Point,admin.GeoModelAdmin)

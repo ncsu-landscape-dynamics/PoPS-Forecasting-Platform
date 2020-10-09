@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css' rel='stylesheet' />
+{% endblock %}
+{% block content %}
+<div id="page-content" class="container-fluid">
+  <div id="header" class="row text-center">
+    <div class="col">
+      <h1>Point Data</h1>
+    </div>
+  </div>
+  <div id="" class="row justify-content-center section-style section-style-2">
+      <div class="col-md-10">
+      <h2>Map</h2>
+      <div id="map" style="width:800px; height:500px;"></div>
+      </div>
+  </div>
+  <div id="" class="row justify-content-center section-style section-style-1">
+      <div class="col-md-10">
+
+      <form action="{% url 'shape_file_upload' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
+
+      <h2 >Printed data</h2>
+      {% for point in points %}
+      <p>
+      ({{ point.point.x }}, {{ point.point.y }}), Count = {{ point.count }}, Date = {{ point.date }}
+      </p>
+      {% endfor %}
+
+      </div>
+  </div>
+
+</div>
+
+  <script>
+    mapboxgl.accessToken =
+      'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
+    /* eslint-disable */
+    var map = new mapboxgl.Map({
+      container: 'map', // container id
+      style: 'mapbox://styles/mapbox/dark-v9',
+      center: [{{ points.0.point.x }}, {{ points.0.point.y}}], // initial map center in [lon, lat]
+      zoom: 7, // starting zoom
+    });
+
+map.on('load', function () {
+map.addSource("points_source", {
+    "type": "geojson",
+    "data": {
+         "type": "FeatureCollection",
+         "features": [{% for point in points %}
+           {
+             "type": "Feature",
+             "properties": {
+               "pk": "{{ point.pk }}",
+               "count": {{ point.count }},
+               "description": "<strong>Spotted Lanternfly</strong><div>Count: {{ point.count }}</div><div>Date: {{ point.date }}</div>"
+             },
+             "geometry": {
+               "type": "Point",
+               "coordinates": [{{ point.point.x }}, {{ point.point.y }}]
+             }
+           {% if forloop.last %}} {% else %}}, {% endif %}{% endfor %}
+         ]
+     }
+});
+
+map.addLayer({
+    "id": "points_layer",
+    "type": "circle",
+    "source": "points_source",
+    "paint": {
+        "circle-radius": [
+        'interpolate', ['linear'], ['zoom'],
+        1, ['*', ['number', ['get', 'count'], 1], 2],
+        16, ['*', ['number', ['get', 'count'], 1], 6],
+      ],
+        "circle-color": "red",
+        "circle-opacity": 0.5
+    }
+});
+
+map.on('click', 'points_layer', function (e) {
+var coordinates = e.features[0].geometry.coordinates.slice();
+var description = e.features[0].properties.description;
+ 
+// Ensure that if the map is zoomed out such that multiple
+// copies of the feature are visible, the popup appears
+// over the copy being pointed to.
+while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+}
+ 
+new mapboxgl.Popup()
+.setLngLat(coordinates)
+.setHTML(description)
+.addTo(map);
+});
+
+// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'points_layer', function () {
+map.getCanvas().style.cursor = 'pointer';
+});
+ 
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'points_layer', function () {
+map.getCanvas().style.cursor = '';
+});
+
+});
+  </script>
+
+{% endblock %}
