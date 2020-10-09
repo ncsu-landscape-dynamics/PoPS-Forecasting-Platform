@@ -6,14 +6,6 @@ from django.db.models import Prefetch
 from ..models import *
 from ..serializers import *
 
-class PointViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows runs to be viewed or edited.
-    """
-    queryset = Point.objects.all()
-    serializer_class = PointSerializer
-    permission_classes = (permissions.AllowAny,)
-
 class CaseStudyViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows case studies to be viewed or edited.
