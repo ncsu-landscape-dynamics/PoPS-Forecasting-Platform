@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import CustomUser, MassEmail
+from .models import CustomUser, MassEmail, EmailListEntry
 
 # To be able to edit and add users in the admin site, we have to register the CustomUser model
 class CustomUserAdmin(UserAdmin):
@@ -42,3 +42,4 @@ class MassEmailAdmin(admin.ModelAdmin):
 #Register our CustomUserAdmin for the CustomUser model
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(MassEmail, MassEmailAdmin)
+admin.site.register(EmailListEntry)
