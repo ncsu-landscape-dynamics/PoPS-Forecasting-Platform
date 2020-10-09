@@ -19,12 +19,16 @@
         <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
 <form id="add_email" action="{% url 'add_email' %}" method="post">  
       {% csrf_token %}
-<div class="form-group">
-    <label for="exampleFormControlInput1">Get notified of PoPS updates:</label>
+      <div>Get notified of PoPS updates</div>
+      <div class="input-group">
     <input type="email" class="form-control" name="email" id="id_email" placeholder="name@example.com">
-    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  <div class="input-group-append">
+    <button class="btn btn-info" type="submit">Sign up</button>
   </div>
-    <input type="submit" value="Submit">
+</div>
+    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+
+
   </form>
         </div> <!-- Close main col -->
   </div>
