@@ -52,6 +52,7 @@ class MassEmail(models.Model):
 class EmailListEntry(models.Model):
 
     email = models.EmailField(blank=False, null=False)
+    email_confirmed = models.BooleanField(verbose_name="email confirmed", default=False)
 
     class Meta(object):
         # Require that email be a unique field in the database
