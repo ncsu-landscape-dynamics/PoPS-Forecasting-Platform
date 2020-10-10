@@ -21,7 +21,7 @@ from django.forms import modelform_factory
 
 from django.contrib.auth import login, authenticate
 from .forms import CustomUserCreationForm
-from .models import CustomUser, EmailListEntry
+from .models import CustomUser, EmailListEntry, MassEmail
 #from google.appengine.api import mail
 
 class UpdateAccount(UpdateView):
@@ -248,7 +248,7 @@ class DeleteEmail(TemplateView):
             return HttpResponseRedirect(reverse_lazy("unsubscribe_successful"))
         else:
             context = {"uidb64": kwargs["uidb64"],
-                       "errors": "Email does not exist."}
+                       "errors": "Email does not match."}
             return self.render_to_response(context)
 
 # When the user clicks on the account_activation link in their email, this is the
@@ -271,7 +271,7 @@ def confirm_email(request, uidb64, token):
         email.email_confirmed = True
         email.save()
         # Redirect to the desired page
-        return redirect('landing_page')
+        return render(request, 'activate.html')
     #If the user and/or token do not work, direct the user to an invalid page
     else:
         return render(request, 'account_activation_invalid.html')
@@ -283,7 +283,11 @@ class ViewEmail(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["subject"] = "Here is the subject line"
-        context["message"] =  'Here is the message.<br> <img src="https://development.popsmodel.org/static/images/lanternfly.jpg" style="height: 100px;" class="d-inline-block align-top" alt="PoPS">'
+        pk=kwargs['pk']
+        email_details = MassEmail.objects.get(pk=pk)
+        print(email_details.subject)
+        context["subject"] = email_details.subject
+        context["message"] =  email_details.message
         context["domain"] = "https://popsmodel.org"
+        context["pk"] = pk
         return context

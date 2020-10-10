@@ -19,6 +19,6 @@ urlpatterns = [
     path('email_list/unsubscribe_successful/', 
         TemplateView.as_view(template_name="accounts/unsubscribe_successful.html"), name='unsubscribe_successful'),
     path('confirm_email/<uidb64>/<token>/', views.confirm_email, name='confirm_email'),
-    path('email/', views.ViewEmail.as_view(), name='view_email'),
+    path('email/<pk>/', views.ViewEmail.as_view(), name='view_email'),
     #path('temp_email_add/', TemplateView.as_view(template_name="accounts/subscribe_email.html"), name="temp_email_add"),
 ]

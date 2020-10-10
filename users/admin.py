@@ -47,6 +47,7 @@ class MassEmailAdmin(admin.ModelAdmin):
                                  'email': email_object.email,
                                  'domain': domain,
                                  'uid': urlsafe_base64_encode(force_bytes(email_object.pk)),
+                                 'pk': selected_email.pk,
                                  })
                         plain_message = strip_tags(html_message)
                         send_mail(

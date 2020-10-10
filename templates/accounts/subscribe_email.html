@@ -44,7 +44,7 @@ $("#add_email").on('submit', function () {
     type : "POST", // http method
     success: function (data) {
       console.log('Success')
-      $('#emailHelp').text(data.email + ' added to listserv');
+      $('#emailHelp').html('<i class="fas fa-check text-success"></i> Please check ' + data.email + ' to confirm');
       $( "#emailHelp" ).removeClass( 'text-danger' );
       $( "#emailHelp" ).addClass( 'text-muted' );
     },

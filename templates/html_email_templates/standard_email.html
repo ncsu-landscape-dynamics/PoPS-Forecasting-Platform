@@ -89,7 +89,7 @@ Side Content Heading
                 <tr>
                     <td align="center" valign="top" bgcolor="#cccccc" height="100">
 <p style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; line-height: 12px; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
-Trouble seeing this email?  View it as a web page.
+Trouble seeing this email?  <a href="{{ domain }}{% url 'view_email' pk=pk %}">View it as a web page.</a>
 </p>
 
 <p style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; line-height: 12px; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
@@ -107,7 +107,7 @@ All rights reserved.
                     <td align="center" valign="top">
 
 <p style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; line-height: 12px; margin-top: 0; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
-This email was sent to {{ email }}. <a href="{{ domain }}{% url 'landing_page' %}">Click here to unsubscribe.</a>
+This email was sent to {{ email }}. <a href="{{ domain }}{% url 'unsubscribe_email' uidb64=uid %}">Click here to unsubscribe.</a>
 </p>
 
                     </td>
