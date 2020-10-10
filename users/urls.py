@@ -14,6 +14,11 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('my_account/', views.my_account, name='my_account'),
     path('update/', views.UpdateAccount.as_view(), name='update_account'),
-    path('email_list/add', views.AddNewEmail.as_view(), name='add_email'),
-    path('temp_email_add/', TemplateView.as_view(template_name="accounts/add_email.html"), name="temp_email_add"),
+    path('email_list/subscribe/', views.AddNewEmail.as_view(), name='subscribe_email'),
+    path('email_list/unsubscribe/<uidb64>/', views.DeleteEmail.as_view(), name='unsubscribe_email'),
+    path('email_list/unsubscribe_successful/', 
+        TemplateView.as_view(template_name="accounts/unsubscribe_successful.html"), name='unsubscribe_successful'),
+    path('confirm_email/<uidb64>/<token>/', views.confirm_email, name='confirm_email'),
+    path('email/', views.ViewEmail.as_view(), name='view_email'),
+    #path('temp_email_add/', TemplateView.as_view(template_name="accounts/subscribe_email.html"), name="temp_email_add"),
 ]

@@ -1,0 +1,11 @@
+{% autoescape off %}
+Welcome to PoPS!
+
+Please click on the link below to confirm you wish to receive future emails from popsmodel.org. We will
+send information about package updates and the web interface.
+
+http://{{ domain }}{% url 'confirm_email' uidb64=uid token=token%}
+
+Thank you!
+PoPS Team
+{% endautoescape %}
