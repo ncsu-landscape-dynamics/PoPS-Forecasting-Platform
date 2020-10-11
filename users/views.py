@@ -1,6 +1,7 @@
 # users/views.py
 from django.views.generic import DeleteView, ListView, TemplateView, UpdateView, CreateView
 from django.views import View
+from django.conf import settings
 
 from django.urls import reverse_lazy
 from django.contrib.sites.shortcuts import get_current_site
@@ -12,8 +13,6 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.http import Http404
-
-
 
 from .tokens import account_activation_token
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
@@ -283,11 +282,22 @@ class ViewEmail(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        pk=kwargs['pk']
-        email_details = MassEmail.objects.get(pk=pk)
-        print(email_details.subject)
-        context["subject"] = email_details.subject
-        context["message"] =  email_details.message
-        context["domain"] = "https://popsmodel.org"
-        context["pk"] = pk
-        return context
+        try:
+            uidb64_value = kwargs['uidb64']
+            uid = urlsafe_base64_decode(uidb64_value).decode()
+            email_object = get_object_or_404(MassEmail, pk=uid)
+        # If we can't get the email from the decoded primary key, raise 404
+        except (TypeError, ValueError, OverflowError, EmailListEntry.DoesNotExist):
+            raise Http404("Email does not exist.")
+        if email_object is not None:
+            pk=email_object.pk
+            email_details = MassEmail.objects.get(pk=pk)
+            print(email_details.subject)
+            context["subject"] = email_details.subject
+            context["message"] =  email_details.message
+            context["domain"] = settings.WEBSITE_URL
+            context["email_uidb64"] = uid
+            return context
+        else:
+            raise Http404("Email does not exist.")
+

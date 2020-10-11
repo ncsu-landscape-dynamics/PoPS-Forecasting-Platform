@@ -32,37 +32,58 @@ class CustomUserAdmin(UserAdmin):
 
 class MassEmailAdmin(admin.ModelAdmin):
         
-        def submit_email(self, request, obj): #`obj` is queryset, so there we only use first selection, exacly obj[0]
+        def submit_email(self,request, obj, email_list): #`obj` is queryset, so there we only use first selection, exacly obj[0]
                 selected_email = obj[0]
-                email_list = EmailListEntry.objects.filter(email_confirmed=True)
+                email_uidb64 = urlsafe_base64_encode(force_bytes(selected_email.pk))
                 subject = selected_email.subject
                 print(subject)
                 message = selected_email.message
                 domain = settings.WEBSITE_URL
-                for email_object in email_list:
-                        print(email_object)
+                for email_address in email_list:
+                        print(email_address)
+                        user_uid = urlsafe_base64_encode(force_bytes(email_address.pk))
                         html_message = render_to_string('html_email_templates/standard_email.html',
                                 {'subject': subject, 
                                  'message': message, 
-                                 'email': email_object.email,
+                                 'email': email_address.email,
                                  'domain': domain,
-                                 'uid': urlsafe_base64_encode(force_bytes(email_object.pk)),
-                                 'pk': selected_email.pk,
+                                 'uid': user_uid,
+                                 'email_uidb64': email_uidb64,
                                  })
-                        plain_message = strip_tags(html_message)
+                        plain_message = (subject + '\r\n \r\n' + strip_tags(message) + '\r\n \r\n'
+                                        + 'View email as webpage: ' + domain 
+                                        + '/accounts/email/' + str(email_uidb64) + '/ \r\n'
+                                        + 'Unsubscribe: ' + domain 
+                                        + '/accounts/email_list/unsubscribe/' + str(user_uid) + '/')
+                        print(plain_message)
                         send_mail(
                                 subject,
                                 plain_message,
                                 "PoPS Model <noreply@popsmodel.org>",
-                                [email_object.email],
+                                [email_address.email],
                                 html_message=html_message,
                                 fail_silently=False,
                         )
-        
-        submit_email.short_description = 'Submit Mail'
-        submit_email.allow_tags = True
+                        return None
 
-        actions = ['submit_email'] 
+        def send_all(self, request, obj): #`obj` is queryset, so there we only use first selection, exacly obj[0]
+                print('Send all')
+                email_list = EmailListEntry.objects.filter(email_confirmed=True)
+                self.submit_email(request, obj, email_list)
+                return None
+
+        def test_send(self, request, obj): #`obj` is queryset, so there we only use first selection, exacly obj[0]
+                print('Test send')
+                email_list = EmailListEntry.objects.filter(email_confirmed=True, receive_test_emails=True)
+                self.submit_email(request, obj, email_list)
+                return None
+
+        send_all.short_description = 'Send Mass Email'
+        send_all.allow_tags = True
+        test_send.short_description = 'Send Test (to admins)'
+        test_send.allow_tags = True
+
+        actions = ['test_send','send_all'] 
         search_fields = ['subject',]
         list_display = ['subject','created']
 

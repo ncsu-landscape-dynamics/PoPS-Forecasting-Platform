@@ -55,7 +55,6 @@ PoPS FORECASTING PLATFORM
 
 <p style="font-family: Georgia, Times, serif; font-size: 15px; line-height: 22px; margin-top: 0; margin-right: 10px; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
 {{ message|safe }}
-{{ uid }}
 </p>
 
 
@@ -70,13 +69,12 @@ PoPS FORECASTING PLATFORM
                                 <td valign="top" bgcolor="#999999">
 
 <h3 style="color: #ffffff; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: normal; line-height: 14px; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
-Side Content Heading
+Start using PoPS
 </h3>
 
 <p style="color: #ffffff; font-family: Helvetica, Arial, sans-serif; font-size: 12px; line-height: 18px; margin-top: 0; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
-<a style="color: #ffffff; text-decoration: none;" href="" target="_blank">Link 1</a><br>
-<a style="color: #ffffff; text-decoration: none;" href="" target="_blank">Link 2</a><br>
-<a style="color: #ffffff; text-decoration: none;" href="" target="_blank">Link 3</a>
+<a style="color: #ffffff; text-decoration: none;" href="" target="_blank">R package</a><br>
+<a style="color: #ffffff; text-decoration: none;" href="" target="_blank">Grass GIS package</a><br>
 </p>
 
                                 </td>
@@ -89,12 +87,12 @@ Side Content Heading
                 <tr>
                     <td align="center" valign="top" bgcolor="#cccccc" height="100">
 <p style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; line-height: 12px; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
-Trouble seeing this email?  <a href="{{ domain }}{% url 'view_email' pk=pk %}">View it as a web page.</a>
+Trouble seeing this email?  <a href="{{ domain }}{% url 'view_email' uidb64=email_uidb64 %}">View it as a web page.</a>
 </p>
 
 <p style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; line-height: 12px; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
 <i>
-Copyright © {{ domain }}<br>
+Copyright © <a href="{{ domain }}">{{ domain }}</a><br>
 All rights reserved.
 </i>
 </p>
