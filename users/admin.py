@@ -56,6 +56,17 @@ class CustomUserAdmin(UserAdmin):
 
 
 class MassEmailAdmin(admin.ModelAdmin):
+    """ MassEmailAdmin allows admins to send emails to all
+    users in the listserv (emails contained in EmailListEntry).
+
+    Only one email should be selected at a time in the admin. Then
+    an admin may send the selected email by choosing from the Actions
+    dropdown menu.
+
+    Send Test sends emails only to admins.
+    Send Mass Email sends the email to all confirmed emails in
+    EmailListEntry.
+    """
 
     def submit_email(self, request, obj, email_list):
 
