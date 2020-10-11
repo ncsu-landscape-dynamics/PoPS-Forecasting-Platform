@@ -1,20 +1,26 @@
 # users/views.py
-from django.views.generic import ListView, TemplateView, UpdateView
+from django.views.generic import DeleteView, ListView, TemplateView, UpdateView, CreateView
+from django.views import View
+from django.conf import settings
+
 from django.urls import reverse_lazy
-from django.views import generic
 from django.contrib.sites.shortcuts import get_current_site
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.db.models import Q 
-from .tokens import account_activation_token
-from django.http import JsonResponse, HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import send_mail
+from django.http import Http404
 
+from .tokens import account_activation_token
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.forms import modelform_factory
 
 from django.contrib.auth import login, authenticate
 from .forms import CustomUserCreationForm
-from .models import CustomUser
+from .models import CustomUser, EmailListEntry, MassEmail
 #from google.appengine.api import mail
 
 class UpdateAccount(UpdateView):
@@ -141,3 +147,157 @@ class SearchResultsView(ListView):
         )
         return object_list
     
+
+class AddNewEmail(CreateView):
+    model = EmailListEntry
+    template_name="accounts/subscribe_email.html"    
+    fields = ['email',]
+    success_url = "subscribe_email"
+
+    def form_invalid(self, form):
+        print('Form invalid')
+        response = super().form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
+
+    def form_valid(self, form):
+        print('form_valid')
+        # We make sure to call the parent's form_valid() method because
+        # it might do some processing (in the case of CreateView, it will
+        # call form.save() for example).
+        # Make any changes to form content before calling super.
+        # form.instance.created_by = self.request.user
+        response = super().form_valid(form)
+        current_site = get_current_site(self.request)
+        #confirmation email subject
+        subject = 'Confirm your email for PoPS'
+        email_object = self.object
+        #create confirmation email message from our template and variables
+        message = render_to_string('accounts/email_activation_email.html', {
+            #get current site domain
+            'domain': current_site.domain,
+            #create an encoded uid to use in the email confirmation link (
+            # this encodes the user's primary key [user.pk]). When the user 
+            # clicks on the link, this value gets passed to
+            # the activate view and decoded to determine the user.
+            #'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+            'uid': urlsafe_base64_encode(force_bytes(email_object.pk)),
+            # create a token to use in the email confirmation link. The
+            # token is generated in users/tokens.py and is a combination
+            # of the user's primary key and email_confirmed status. This
+            # value is passed to activate view when user clicks on the link. 
+            # After the email is confirmed, the activation link will no longer 
+            # work because the token will no longer be valid.
+            'token': account_activation_token.make_token(email_object),
+        })
+        send_mail(
+            subject,
+            message,
+            "PoPS Model <noreply@popsmodel.org>",
+            [email_object.email],
+            fail_silently=False,
+        )
+        if self.request.is_ajax():
+            print('Response is ajax')
+            data = {
+                'email': email_object.email,
+            }
+            return JsonResponse(data)
+        else:
+            print('Response NOT ajax')
+            return response
+
+
+class DeleteEmail(TemplateView):
+
+    model = EmailListEntry
+    template_name = "accounts/unsubscribe_email.html"
+
+    def get(self, request, *args, **kwargs):
+        print('This is a GET')
+        try:
+            uidb64_value = kwargs['uidb64']
+            uid = urlsafe_base64_decode(uidb64_value).decode()
+            email = get_object_or_404(EmailListEntry, pk=uid)
+        except:
+            raise Http404("Email does not exist.")
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        print('This is a POST')
+        email = request.POST.get('email')
+        # Get email pk from the uidb64 encoded value
+        # Check to see if that email exists in the list
+        try:
+            uidb64_value = kwargs['uidb64']
+            uid = urlsafe_base64_decode(uidb64_value).decode()
+            email_from_uidb = get_object_or_404(EmailListEntry, pk=uid)
+        except:
+            raise Http404("Email does not exist.")
+        # Get email from the user's entered email
+        try:
+            object_to_delete = EmailListEntry.objects.get(email=email)
+        except ObjectDoesNotExist:
+            object_to_delete = None
+        #If object exists AND matches the uidb64 encoded object, then delete
+        if object_to_delete is not None and object_to_delete == email_from_uidb:
+            object_to_delete.delete()
+            return HttpResponseRedirect(reverse_lazy("unsubscribe_successful"))
+        else:
+            context = {"uidb64": kwargs["uidb64"],
+                       "errors": "Email does not match."}
+            return self.render_to_response(context)
+
+# When the user clicks on the account_activation link in their email, this is the
+# view that they are directed to. It passes the UID and token that was created in
+# the sign_up view. 
+def confirm_email(request, uidb64, token):
+    try:
+        # The uidb64 is the user's primary key encoded using the secret key in settings. 
+        # Try to decode it to get the user's pk.
+        uid = urlsafe_base64_decode(uidb64).decode()
+        # Get the user using the decoded primary key.
+        email = EmailListEntry.objects.get(pk=uid)
+    # If we can't get the user from the decoded primary key, set user to none.
+    except (TypeError, ValueError, OverflowError, EmailListEntry.DoesNotExist):
+        email = None
+    # If the user exists (i.e. is not None), and the token for the user and
+    # email_confirmed status checks out.
+    if email is not None and account_activation_token.check_token(email, token):
+        # Set user to active
+        email.email_confirmed = True
+        email.save()
+        # Redirect to the desired page
+        return render(request, 'activate.html')
+    #If the user and/or token do not work, direct the user to an invalid page
+    else:
+        return render(request, 'account_activation_invalid.html')
+
+
+class ViewEmail(TemplateView):
+
+    template_name="html_email_templates/standard_email.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            uidb64_value = kwargs['uidb64']
+            uid = urlsafe_base64_decode(uidb64_value).decode()
+            email_object = get_object_or_404(MassEmail, pk=uid)
+        # If we can't get the email from the decoded primary key, raise 404
+        except (TypeError, ValueError, OverflowError, EmailListEntry.DoesNotExist):
+            raise Http404("Email does not exist.")
+        if email_object is not None:
+            pk=email_object.pk
+            email_details = MassEmail.objects.get(pk=pk)
+            print(email_details.subject)
+            context["subject"] = email_details.subject
+            context["message"] =  email_details.message
+            context["domain"] = settings.WEBSITE_URL
+            context["email_uidb64"] = uid
+            return context
+        else:
+            raise Http404("Email does not exist.")
+

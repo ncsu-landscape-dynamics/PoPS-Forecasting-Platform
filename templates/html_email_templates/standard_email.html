@@ -1,0 +1,124 @@
+{% load static %}
+<html>
+<head>
+	<title>{{ subject }}</title>
+</head>
+
+<style type="text/css">
+    @media only screen and (max-width: 480px) {
+    /* mobile-specific CSS styles go here */
+        table[class=email], table[class=email-content] { clear: both; width: 320px !important; }
+    }
+</style>
+
+<body bgcolor="#efefef">
+
+<!-- First HTML table acts as a pseudo BODY tag to protect email inside -->
+<table width="99%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td align="center" valign="top" bgcolor="#efefef">
+
+            <!-- Second HTML table is the email itself -->
+            <table class="email" width="500" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td align="center" valign="top">
+
+<p style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; line-height: 12px; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
+</p>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" bgcolor="#353535">
+<h1 style="color: #efefef; font-family: Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 700; line-height: 48px; margin-top: 20px; margin-right: 0; margin-bottom: 10px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
+          <img src="{{ domain }}{% static 'images/PoPS_logo_64px_height.jpg' %}" style="height: 32px;" class="d-inline-block align-top"
+          alt="PoPS">
+</h1>
+
+<p style="color: #efefef; font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 14px; margin-top: 0; margin-right: 0; margin-bottom: 10px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
+PoPS FORECASTING PLATFORM
+</p>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" bgcolor="#999999">
+
+                        <!-- Third HTML table is the left column of content -->
+                        <table class="email-content" align="left" width="350" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td valign="top" bgcolor="#ffffff">
+
+<h2 style="font-family: Helvetica, Arial, sans-serif; font-size: 24px; font-weight: normal; line-height: 24px; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
+{{ subject }}
+</h2>
+
+<p style="font-family: Georgia, Times, serif; font-size: 15px; line-height: 22px; margin-top: 0; margin-right: 10px; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
+{{ message|safe }}
+</p>
+
+
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- Close third HTML table -->
+
+                        <!-- Fourth HTML table is the right column of content -->
+                        <table class="email-content" align="right" width="150" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td valign="top" bgcolor="#999999">
+
+<h3 style="color: #ffffff; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: normal; line-height: 14px; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
+Start using PoPS
+</h3>
+
+<p style="color: #ffffff; font-family: Helvetica, Arial, sans-serif; font-size: 12px; line-height: 18px; margin-top: 0; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
+<a style="color: #ffffff; text-decoration: none;" href="" target="_blank">R package</a><br>
+<a style="color: #ffffff; text-decoration: none;" href="" target="_blank">Grass GIS package</a><br>
+</p>
+
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- Close fourth HTML table -->
+
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" valign="top" bgcolor="#cccccc" height="100">
+<p style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; line-height: 12px; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
+Trouble seeing this email?  <a href="{{ domain }}{% url 'view_email' uidb64=email_uidb64 %}">View it as a web page.</a>
+</p>
+
+<p style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; line-height: 12px; margin-top: 20px; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
+<i>
+Copyright © <a href="{{ domain }}">{{ domain }}</a><br>
+All rights reserved.
+</i>
+</p>
+
+                    </td>
+                </tr>
+
+                {% if email %}
+                <tr>
+                    <td align="center" valign="top">
+
+<p style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; line-height: 12px; margin-top: 0; margin-right: 0; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-right: 0;">
+This email was sent to {{ email }}. <a href="{{ domain }}{% url 'unsubscribe_email' uidb64=uid %}">Click here to unsubscribe.</a>
+</p>
+
+                    </td>
+                </tr>
+                {% endif %}
+            </table>
+            <!-- Close second HTML table -->
+
+        </td>
+    </tr>
+</table>
+<!-- Close first HTML table -->
+
+
+</body>
+</html>
