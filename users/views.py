@@ -1,31 +1,33 @@
 # users/views.py
-from django.views.generic import DeleteView, ListView, TemplateView, UpdateView, CreateView
-from django.views import View
+from django.views.generic import ListView, TemplateView, UpdateView, CreateView
 from django.conf import settings
 
 from django.urls import reverse_lazy
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.encoding import force_bytes, force_text
+
+from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
-from django.db.models import Q 
+from django.db.models import Q
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.http import Http404
 
 from .tokens import account_activation_token
-from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from django.forms import modelform_factory
 
-from django.contrib.auth import login, authenticate
+from django.http import JsonResponse, HttpResponseRedirect
+
+
+from django.contrib.auth import login
 from .forms import CustomUserCreationForm
 from .models import CustomUser, EmailListEntry, MassEmail
-#from google.appengine.api import mail
+
 
 class UpdateAccount(UpdateView):
     model = CustomUser
-    fields = ['first_name', 'last_name', 'email', 'organization','user_type']
+    fields = ['first_name', 'last_name', 'email', 'organization', 'user_type']
     success_url = reverse_lazy('my_account')
     template_name = 'accounts/update_account.html'
 
@@ -38,87 +40,96 @@ class UpdateAccount(UpdateView):
 
 def my_account(request):
     return render(request, 'accounts/my_account.html',)
- 
-# sign_up creates the User Sign Up view using the CustomUserCreationForm created in
-# users/forms.py. 
+
+
 def sign_up(request):
-    #If the user submitted the form (i.e. 'POST')
+    """ User sign up for account.
+    sign_up creates the User Sign Up view using the CustomUserCreationForm
+    created in users/forms.py
+    """
+    # If the user submitted the form (i.e. 'POST')
     if request.method == 'POST':
-        #then our form is our CustomUserCreationForm populated with the 
-        #user's submitted data
+        # then our form is our CustomUserCreationForm populated with the
+        # user's submitted data
         form = CustomUserCreationForm(request.POST)
-        #if the form is valid (i.e. it passes all of the validations for 
+        # if the form is valid (i.e. it passes all of the validations for
         # each form field)
         if form.is_valid():
-            #then save the form (but wait to commit it because we need
-            # to set is_active to false for now so that the user can be 
+            # then save the form (but wait to commit it because we need
+            # to set is_active to false for now so that the user can be
             # confirmed via email)
             user = form.save(commit=False)
-            #set is_active to false
-            user.is_active = False # THIS SHOULD BE FALSE IN PRODUCTION!!
-            #save the inactive user data
+            # set is_active to false
+            user.is_active = False  # THIS SHOULD BE FALSE IN PRODUCTION!!
+            # save the inactive user data
             user.save()
-            #grab the domain name of our site to use in our email link
+            # grab the domain name of our site to use in our email link
             current_site = get_current_site(request)
-            #confirmation email subject
+            # confirmation email subject
             subject = 'Activate Your PoPS Model Account'
-            #create confirmation email message from our template and variables
+            # create confirmation email message from our template and variables
             message = render_to_string('account_activation_email.html', {
-                #get current user
+                # get current user
                 'user': user,
-                #get current site domain
+                # get current site domain
                 'domain': current_site.domain,
-                #create an encoded uid to use in the email confirmation link (
-                # this encodes the user's primary key [user.pk]). When the user 
+                # create an encoded uid to use in the email confirmation link (
+                # this encodes the user's primary key [user.pk]). When the user
                 # clicks on the link, this value gets passed to
                 # the activate view and decoded to determine the user.
-                #'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                # 'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 # create a token to use in the email confirmation link. The
                 # token is generated in users/tokens.py and is a combination
                 # of the user's primary key and email_confirmed status. This
-                # value is passed to activate view when user clicks on the link. 
-                # After the email is confirmed, the activation link will no longer 
-                # work because the token will no longer be valid.
+                # value is passed to activate view when user clicks on
+                # the link.
+                # After the email is confirmed, the activation link will no
+                # longer work because the token will no longer be valid.
                 'token': account_activation_token.make_token(user),
             })
-            #email the user using their provided email address
+            # email the user using their provided email address
             user.email_user(subject, message)
-            #redirect user to account_activation_sent view
+            # redirect user to account_activation_sent view
             return redirect('account_activation_sent')
-    #If the request method is not a POST (i.e. the user hasn't submitted data yet)
+    # If the request method is not a POST (i.e. the user hasn't submitted
+    # data yet)
     else:
-        #Then the form is our CustomUserCreationForm
+        # Then the form is our CustomUserCreationForm
         form = CustomUserCreationForm()
-    #Return the signup form. If this is the first time it is rendered, it will be blank
-    #If the user has already attempted to fill out the form, but it is invalid, then
-    #the form will be populated with the user's content and error messages will be 
-    #displayed
+    # Return the signup form. If this is the first time it is rendered,
+    # it will be blank. If the user has already attempted to fill out
+    # the form, but it is invalid, then the form will be populated
+    # with the user's content and error messages will be displayed
     return render(request, 'signup.html', {'form': form})
- 
-# Show user a page saying that the account_activation email has been sent
-def account_activation_sent(request):
-    return render(request, 'account_activation_sent.html',)
 
-# When the user clicks on the account_activation link in their email, this is the
-# view that they are directed to. It passes the UID and token that was created in
-# the sign_up view. 
+
+def account_activation_sent(request):
+    # Show user a page saying that the account_activation email has been sent
+    return render(request, 'account_activation_sent.html')
+
+
 def activate(request, uidb64, token):
+    """  When the user clicks on the account_activation link in their email,
+    this is the view that they are directed to. It passes the UID and
+    token that was created in the sign_up view.
+    """
     try:
-        # The uidb64 is the user's primary key encoded using the secret key in settings. 
-        # Try to decode it to get the user's pk.
+        # The uidb64 is the user's primary key encoded using the secret
+        # key in settings. Try to decode it to get the user's pk.
         uid = urlsafe_base64_decode(uidb64).decode()
         # Get the user using the decoded primary key.
         user = CustomUser.objects.get(pk=uid)
     # If we can't get the user from the decoded primary key, set user to none.
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
         user = None
     # If the user exists (i.e. is not None), and the token for the user and
     # email_confirmed status checks out.
     if user is not None and account_activation_token.check_token(user, token):
         # Set user to active
         user.is_active = True
-        # Set email_confirmed to true (this makes the token / email link no longer work)
+        # Set email_confirmed to true (this makes the token / email link no
+        # longer work)
         user.email_confirmed = True
         # Save the is_active and email_confirmed fields to the user object
         user.save()
@@ -126,32 +137,39 @@ def activate(request, uidb64, token):
         login(request, user)
         # Redirect to the desired page
         return redirect('workspace')
-    #If the user and/or token do not work, direct the user to an invalid page
+    # If the user and/or token do not work, direct the user to an invalid page
     else:
         return render(request, 'account_activation_invalid.html')
+
 
 class UserListView(ListView):
     model = CustomUser
 
+
 class SearchView(TemplateView):
     template_name = 'search_users.html'
+
 
 class SearchResultsView(ListView):
     model = CustomUser
     template_name = 'search_results.html'
 
-    def get_queryset(self): # new
+    def get_queryset(self):
         query = self.request.GET.get('q')
         object_list = CustomUser.objects.filter(
             Q(first_name__icontains=query) | Q(last_name__icontains=query)
         )
         return object_list
-    
+
 
 class AddNewEmail(CreateView):
+    """ View for endusers to sign up for the listserve.
+    If form is valid, saves the email to the EmailListEntry
+    model and sends the user an email to confirm.
+    """
     model = EmailListEntry
-    template_name="accounts/subscribe_email.html"    
-    fields = ['email',]
+    template_name = "accounts/subscribe_email.html"
+    fields = ['email']
     success_url = "subscribe_email"
 
     def form_invalid(self, form):
@@ -171,24 +189,23 @@ class AddNewEmail(CreateView):
         # form.instance.created_by = self.request.user
         response = super().form_valid(form)
         current_site = get_current_site(self.request)
-        #confirmation email subject
+        # confirmation email subject
         subject = 'Confirm your email for PoPS'
         email_object = self.object
-        #create confirmation email message from our template and variables
+        # create confirmation email message from our template and variables
         message = render_to_string('accounts/email_activation_email.html', {
-            #get current site domain
+            # get current site domain
             'domain': current_site.domain,
-            #create an encoded uid to use in the email confirmation link (
-            # this encodes the user's primary key [user.pk]). When the user 
+            # create an encoded uid to use in the email confirmation link (
+            # this encodes the user's email. When the user
             # clicks on the link, this value gets passed to
-            # the activate view and decoded to determine the user.
-            #'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+            # the activate view and decoded to determine the email.
             'uid': urlsafe_base64_encode(force_bytes(email_object.pk)),
             # create a token to use in the email confirmation link. The
             # token is generated in users/tokens.py and is a combination
-            # of the user's primary key and email_confirmed status. This
-            # value is passed to activate view when user clicks on the link. 
-            # After the email is confirmed, the activation link will no longer 
+            # of the primary key and email_confirmed status. This
+            # value is passed to activate view when user clicks on the link.
+            # After the email is confirmed, the activation link will no longer
             # work because the token will no longer be valid.
             'token': account_activation_token.make_token(email_object),
         })
@@ -220,8 +237,10 @@ class DeleteEmail(TemplateView):
         try:
             uidb64_value = kwargs['uidb64']
             uid = urlsafe_base64_decode(uidb64_value).decode()
-            email = get_object_or_404(EmailListEntry, pk=uid)
-        except:
+            email = EmailListEntry.objects.get(pk=uid)
+            print(email)
+        except (TypeError, ValueError, OverflowError,
+                EmailListEntry.DoesNotExist):
             raise Http404("Email does not exist.")
         return super().get(request, *args, **kwargs)
 
@@ -233,16 +252,18 @@ class DeleteEmail(TemplateView):
         try:
             uidb64_value = kwargs['uidb64']
             uid = urlsafe_base64_decode(uidb64_value).decode()
-            email_from_uidb = get_object_or_404(EmailListEntry, pk=uid)
-        except:
+            email_from_uidb = EmailListEntry.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError,
+                EmailListEntry.DoesNotExist):
             raise Http404("Email does not exist.")
         # Get email from the user's entered email
         try:
             object_to_delete = EmailListEntry.objects.get(email=email)
         except ObjectDoesNotExist:
             object_to_delete = None
-        #If object exists AND matches the uidb64 encoded object, then delete
-        if object_to_delete is not None and object_to_delete == email_from_uidb:
+        # If object exists AND matches the uidb64 encoded object, then delete
+        if (object_to_delete is not None and
+                object_to_delete == email_from_uidb):
             object_to_delete.delete()
             return HttpResponseRedirect(reverse_lazy("unsubscribe_successful"))
         else:
@@ -250,13 +271,16 @@ class DeleteEmail(TemplateView):
                        "errors": "Email does not match."}
             return self.render_to_response(context)
 
-# When the user clicks on the account_activation link in their email, this is the
-# view that they are directed to. It passes the UID and token that was created in
-# the sign_up view. 
+
 def confirm_email(request, uidb64, token):
+    """ When the user clicks on the account_activation link in
+    their email, this is the view that they are directed to. It
+    passes the UID and token that was created in the sign_up view.
+    """
     try:
-        # The uidb64 is the user's primary key encoded using the secret key in settings. 
-        # Try to decode it to get the user's pk.
+        # The uidb64 is the primary key encoded using the
+        # secret key in settings.
+        # Try to decode it to get the pk.
         uid = urlsafe_base64_decode(uidb64).decode()
         # Get the user using the decoded primary key.
         email = EmailListEntry.objects.get(pk=uid)
@@ -264,21 +288,23 @@ def confirm_email(request, uidb64, token):
     except (TypeError, ValueError, OverflowError, EmailListEntry.DoesNotExist):
         email = None
     # If the user exists (i.e. is not None), and the token for the user and
-    # email_confirmed status checks out.
-    if email is not None and account_activation_token.check_token(email, token):
+
+    # email_confirmed status checks out
+    if (email is not None and
+            account_activation_token.check_token(email, token)):
         # Set user to active
         email.email_confirmed = True
         email.save()
         # Redirect to the desired page
         return render(request, 'activate.html')
-    #If the user and/or token do not work, direct the user to an invalid page
+    # If the user and/or token do not work, direct the user to an invalid page
     else:
         return render(request, 'account_activation_invalid.html')
 
 
 class ViewEmail(TemplateView):
 
-    template_name="html_email_templates/standard_email.html"
+    template_name = "html_email_templates/standard_email.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -287,17 +313,18 @@ class ViewEmail(TemplateView):
             uid = urlsafe_base64_decode(uidb64_value).decode()
             email_object = get_object_or_404(MassEmail, pk=uid)
         # If we can't get the email from the decoded primary key, raise 404
-        except (TypeError, ValueError, OverflowError, EmailListEntry.DoesNotExist):
+
+        except (TypeError, ValueError, OverflowError,
+                EmailListEntry.DoesNotExist):
             raise Http404("Email does not exist.")
         if email_object is not None:
-            pk=email_object.pk
+            pk = email_object.pk
             email_details = MassEmail.objects.get(pk=pk)
             print(email_details.subject)
             context["subject"] = email_details.subject
-            context["message"] =  email_details.message
+            context["message"] = email_details.message
             context["domain"] = settings.WEBSITE_URL
             context["email_uidb64"] = uid
             return context
         else:
             raise Http404("Email does not exist.")
-

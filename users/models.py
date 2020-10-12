@@ -3,10 +3,11 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # CustomUser is a model that extends django's default User.
-# The default User has username (required), first name, last name, 
+# The default User has username (required), first name, last name,
 # email, and password. By extending the default user, we can add
 # additional fields required for our use, but still take advantage
-# of Django's built-in authentication system. 
+# of Django's built-in authentication system.
+
 
 
 class CustomUser(AbstractUser):
@@ -36,13 +37,18 @@ class CustomUser(AbstractUser):
 
 
 class MassEmail(models.Model):
-    subject = models.CharField(verbose_name="email subject line", max_length=200)
-    created = models.DateTimeField(verbose_name="date created",
-                                   auto_now=False, auto_now_add=True)
-    message = models.TextField(verbose_name="email message",
-                               help_text="Enter the body of the email. Can include html tags such as <br> and <img>")
-    sent = models.BooleanField(verbose_name="sent", help_text="Has the message been sent out?",
-                                              default=False)
+
+    subject = models.CharField(
+        verbose_name="email subject line", max_length=200)
+    created = models.DateTimeField(
+        verbose_name="date created", auto_now=False, auto_now_add=True)
+    message = models.TextField(
+        verbose_name="email message",
+        help_text="Body of the email. Can include html tags such as <br> and <img>")
+    sent = models.BooleanField(
+        verbose_name="sent",
+        help_text="Has the message been sent out?",
+        default=False)
     
     def __unicode__(self):
         return self.subject
@@ -55,12 +61,12 @@ class MassEmail(models.Model):
 class EmailListEntry(models.Model):
 
     email = models.EmailField(blank=False, null=False)
-    email_confirmed = models.BooleanField(verbose_name="email confirmed",
-                                          default=False)
-    receive_test_emails = models.BooleanField(verbose_name="receive tests",
-                                              default=False)
-    date_created = models.DateTimeField(verbose_name="sign up date",
-                                   auto_now=False, auto_now_add=True)
+    email_confirmed = models.BooleanField(
+        verbose_name="email confirmed", default=False)
+    receive_test_emails = models.BooleanField(
+        verbose_name="receive tests", default=False)
+    date_created = models.DateTimeField(
+        verbose_name="sign up date", auto_now=False, auto_now_add=True)
 
     class Meta(object):
         # Require that email be a unique field in the database
