@@ -1,6 +1,7 @@
 # users/admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
@@ -56,6 +57,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 class MassEmailAdmin(admin.ModelAdmin):
+
     """ MassEmailAdmin allows admins to send emails to all
     users in the listserv (emails contained in EmailListEntry).
 
@@ -140,3 +142,4 @@ class MassEmailAdmin(admin.ModelAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(MassEmail, MassEmailAdmin)
 admin.site.register(EmailListEntry)
+

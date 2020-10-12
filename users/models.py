@@ -9,6 +9,7 @@ from django.db import models
 # of Django's built-in authentication system.
 
 
+
 class CustomUser(AbstractUser):
 
     # user's organization
@@ -48,7 +49,7 @@ class MassEmail(models.Model):
         verbose_name="sent",
         help_text="Has the message been sent out?",
         default=False)
-
+    
     def __unicode__(self):
         return self.subject
 

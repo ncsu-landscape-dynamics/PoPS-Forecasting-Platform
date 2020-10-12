@@ -5,16 +5,20 @@ from django.conf import settings
 from django.urls import reverse_lazy
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, redirect, get_object_or_404
+
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.db.models import Q
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.http import Http404
 
 from .tokens import account_activation_token
+
 from django.http import JsonResponse, HttpResponseRedirect
+
 
 from django.contrib.auth import login
 from .forms import CustomUserCreationForm
@@ -284,6 +288,7 @@ def confirm_email(request, uidb64, token):
     except (TypeError, ValueError, OverflowError, EmailListEntry.DoesNotExist):
         email = None
     # If the user exists (i.e. is not None), and the token for the user and
+
     # email_confirmed status checks out
     if (email is not None and
             account_activation_token.check_token(email, token)):
@@ -308,6 +313,7 @@ class ViewEmail(TemplateView):
             uid = urlsafe_base64_decode(uidb64_value).decode()
             email_object = get_object_or_404(MassEmail, pk=uid)
         # If we can't get the email from the decoded primary key, raise 404
+
         except (TypeError, ValueError, OverflowError,
                 EmailListEntry.DoesNotExist):
             raise Http404("Email does not exist.")
