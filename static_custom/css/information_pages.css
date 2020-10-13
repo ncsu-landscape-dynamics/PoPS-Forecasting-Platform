@@ -13,9 +13,16 @@
   font-weight: 400;
 }
 .section-style h2 {
-  font-size: 1.6em;
+  font-size: 1.7em;
   font-weight: 400;
 }
+.section-style h3 {
+    font-size: 1.5em;
+    font-weight: 400;
+  }
+  .section-style-0 {
+    background-color: #252929;
+  }
 .section-style-1 {
   background-color: #454d4d;
 }
