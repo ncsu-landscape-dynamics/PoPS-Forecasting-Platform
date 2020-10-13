@@ -30,22 +30,22 @@
       <div class="col-xl-6 col-lg-8 col-md-10 py-4">        
         <h2>The PoPS Equation</h2>
         <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
-        <p>To break down how the model works, let’s consider pests dispersing from a single location (cell i) and arriving in another single location (cell j).</p>        
+        <p>To break down how the model works, let’s consider pests dispersing from a single location (<strong>cell i</strong>) and arriving in another single location (<strong>cell j</strong>).</p>        
         <div class="text-center pb-2">
         <img class='img-fluid w-100' style="max-width:700px" src="{% static 'images/PoPSModel/PestsDispersingFromItoJ.svg' %}"
             alt="The PoPS Model Equation">
         </div>
-        <p>At time, t, the number of infected/infested hosts in cell j as a result of pests/pathogens in cell i is Ψijt, which can be described by the PoPS model equation:</p>
+        <p>At time, t, the number of infected/infested hosts in <strong>cell j</strong> as a result of pests/pathogens in <strong>cell i</strong> is Ψijt, which can be described by the PoPS model equation:</p>
         <div class="text-center pb-2">
         <img class='img-fluid w-100' style="max-width:500px" src="{% static 'images/PoPSModel/Equation.svg' %}"
             alt="The PoPS Model">
         </div>  
         <p>
-        The PoPS model can be conceptualized in terms of:
+        <strong>The PoPS model equation can be conceptualized in terms of:</strong>
             <ol>
-                <li>Reproduction (<em>how many pests leave cell i?</em>)</li>
-                <li>Dispersal (where do the pests go?)</li>
-                <li>Establishment (how many hosts in cell j become infected?)</li>
+                <li>Reproduction (<em>how many pests leave <strong>cell i</strong>?</em>)</li>
+                <li>Dispersal (<em>where do the pests go?</em>)</li>
+                <li>Establishment (<em>how many hosts in <strong>cell j</strong> become infected?</em>)</li>
             </ol>
         We will describe each component below:
         </p>
@@ -68,7 +68,7 @@
         <img class='img-fluid w-100' style="max-width:350px" src="{% static 'images/PoPSModel/Reproduction_Eq.svg' %}"
             alt="The PoPS Model">
         </div>          
-        <p>The reproduction component of the PoPS equation gives the number of pests/pathogens dispersing from cell i to any cell at time t. </p>
+        <p>The reproduction component of the PoPS equation gives the number of pests/pathogens dispersing from <strong>cell i</strong> to <em><strong>any cell</strong></em> at <strong>time t</strong>. </p>
         <div class="text-center pb-2">
         <img class='img-fluid w-100' style="max-width:400px" src="{% static 'images/PoPSModel/Reproduction_Illustration.svg' %}"
             alt="The PoPS Model">
@@ -78,7 +78,7 @@
         <div class="row">
             <div class="col-12 section-style-0 my-2 py-2">                
             <h2>Dispersal</h2>
-        <p>Now that we know how many pests/pathogens are dispersing from cell i, we need to determine where those pests/pathogens go.</p>
+        <p>Now that we know how many pests/pathogens are dispersing from <strong>cell i</strong>, we need to determine where those pests/pathogens go.</p>
         <div class="text-center pb-2">
         <img class='img-fluid w-100' style="max-width:500px" src="{% static 'images/PoPSModel/Dispersal_Illustration.svg' %}"
             alt="The PoPS Model">
@@ -89,25 +89,29 @@
             alt="The PoPS Model">
         </div>
         <p>The dispersal kernel determines where the new dispersing propagules go; dispersal distance (d) is a function of gamma (γ), which indicates how much dispersal is due to natural processes (alpha-1, α1) or caused by anthropogenic means (alpha-2, α2). The distance of each propagule is determined by drawing from a distribution using either α1 or α2, and its direction is drawn from a distribution that accounts for predominant wind direction (ω) and wind strength (κ). If data is unavailable for these factors, then the distribution is a circle with equal probability in all directions.</p>
-        <p>The dispersal component of PoPS lets us know where the pests/pathogens from cell i go. From that, we determine how many pests/pathogens arrive at cell j.</p>
+        <p>The dispersal component of PoPS lets us know where the pests/pathogens from <strong>cell i</strong> go. From that, we determine how many pests/pathogens arrive at <strong>cell j</strong>.</p>
         </div>
         </div>
         <div class="row">
             <div class="col-12 section-style-0 my-2 py-2">        
         <h2>Establishment</h2>
-        <p>Now that we know how many pests/pathogens arrive in cell j from cell i, we need to calculate how many hosts in cell j become infected/infested as a result. </p>                
-        <p>Establishment depends on the environmental conditions in cell j and the availability of suitable hosts, calculated as the number of susceptible hosts (S) divided by the total number of potential hosts (N).</p>
+        <p>Now that we know how many pests/pathogens arrive in <strong>cell j</strong> from <strong>cell i</strong>, we need to calculate how many hosts in <strong>cell j</strong> become infected/infested as a result. </p>                
+        <p>Establishment depends on the environmental conditions in <strong>cell j</strong> and the availability of suitable hosts, calculated as the number of susceptible hosts (S) divided by the total number of potential hosts (N).</p>
         <div class="text-center pb-2">
         <img class='img-fluid w-100' style="max-width:350px" src="{% static 'images/PoPSModel/Establishment_Eq.svg' %}"
             alt="The PoPS Model">
         </div>  
-        <p>The establishment component of the PoPS equation predicts the number of infested or infected hosts in cell j. </p>
+        <p>The establishment component of the PoPS equation predicts the number of infested or infected hosts in <strong>cell j</strong> at <strong>time t</strong>. </p>
+        <div class="text-center pb-2">
+        <img class='img-fluid w-100' style="max-width:500px" src="{% static 'images/PoPSModel/Establishment_Illustration.svg' %}"
+            alt="The PoPS Model">
+        </div>  
         </div>
         </div>
         <div class="row">
             <div class="col-12 section-style-0 my-2 py-2">                
         <h2>Putting it all together</h2>
-        <p>Combining the reproduction, dispersal, and establishment components of PoPS, we can calculate Ψijt (the number of infected/infested hosts in cell j as a result of pests/pathogens from cell i). </p>
+        <p>Combining the reproduction, dispersal, and establishment components of PoPS, we can calculate Ψijt (the number of infected/infested hosts in <strong>cell j</strong> at <strong>time t</strong> as a result of pests/pathogens from <strong>cell i</strong>). </p>
         <div class="text-center pb-2">
         <img class='img-fluid w-100' style="max-width:600px" src="{% static 'images/PoPSModel/Model_Illustration.svg' %}"
             alt="The PoPS Model">
@@ -120,9 +124,9 @@
       <div class="col-xl-6 col-lg-8 col-md-10 py-4">
         <h2>The PoPS Model</h2>
         <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
-        <p>What we’ve described so far is a prediction of the number of infected hosts in a single cell as a result of pests/pathogens from another single cell. What we want to know is the total number of infected hosts across <em>all cells</em> in the entire landscape. </p>  
+        <p>What we’ve described so far is a prediction of the number of infected hosts in a <strong><em>single cell</em></strong> as a result of pests/pathogens from another <strong><em>single cell</em></strong>. What we want to know is the total number of infected hosts across <strong><em>all cells</em></strong> in the entire landscape. </p>  
         <h3>A spatially explicit, discrete-time model</h3>
-        <p>The PoPS model performs these calculations for each cell in the landscape, for every time step in the simulation. The value of Ψ is predicted for each cell, forecasting the spread of a pest or pathogen from infested or infected hosts to susceptible hosts, among all cells, across the landscape. </p>
+        <p>The PoPS model performs these calculations for each <strong>cell i</strong>n the landscape, for every time step in the simulation. The value of Ψ is predicted for each cell, forecasting the spread of a pest or pathogen from infested or infected hosts to susceptible hosts, among all cells, across the landscape. </p>
         <div class="text-center pb-2">
             <img class='img-fluid w-100' style="max-width:356px" src="{% static 'images/SLF-spread-356x200px.gif' %}"
                 alt="The PoPS Model">
@@ -147,7 +151,7 @@
         <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
         <p>PoPS is open-source and freely available for anyone to use. There are two ways you can use PoPS:</p>
         <div class="row">
-            <div class="col-12 bg-light text-dark my-2 py-2">
+            <div class="col-12 bg-light text-dark my-2 py-2" style="border-style: outset;">
                 <h3>Option 1: Download PoPS to run on your computer</h3>
                 <div class="row">
                     <div class="col-md-6">
@@ -170,7 +174,7 @@
                     </div>                
                 </div>
             </div>
-            <div class="col-12 bg-light text-dark my-2 py-2">
+            <div class="col-12 bg-light text-dark my-2 py-2" style="border-style: outset;">
                 <h3>Option 2: Use the web-based PoPS Dashboard</h3>
                 <div class="row">
                     <div class="col-md-6">
