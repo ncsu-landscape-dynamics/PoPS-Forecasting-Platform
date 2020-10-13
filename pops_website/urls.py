@@ -25,7 +25,9 @@ urlpatterns = [
     path('', include('pops.urls')),
     path('', TemplateView.as_view(template_name="landing.html"), name='landing_page'),
     path('', include('team.urls')),
-    path('about/', TemplateView.as_view(template_name="about.html"), name='about'),
+    path('about/the-pops-model/', TemplateView.as_view(template_name="the-pops-model.html"), name='the-pops-model'),
+    path('about/the-pops-platform/', TemplateView.as_view(template_name="the-pops-platform.html"), name='the-pops-platform'),
+    path('about/', TemplateView.as_view(template_name="the-pops-model.html"), name='about'),
     #path('team/', TemplateView.as_view(template_name="team.html"), name='team'),
     path('explore/', TemplateView.as_view(template_name="explore.html"), name='explore'),
     path('contact/', TemplateView.as_view(template_name="contact.html"), name='contact'),
@@ -34,8 +36,8 @@ urlpatterns = [
     path('faq/', TemplateView.as_view(template_name="faqs.html"), name='FAQs'),
     path('links/', TemplateView.as_view(template_name="links.html"), name='links'),
     path('tutorials/', TemplateView.as_view(template_name="tutorials.html"), name='tutorials'),
-    path('terms_and_conditions/', TemplateView.as_view(template_name="terms_and_conditions.html"), name='terms_and_conditions'),
-    path('privacy_policy/', TemplateView.as_view(template_name="privacy_policy.html"), name='privacy_policy'),
+    path('terms-and-conditions/', TemplateView.as_view(template_name="terms_and_conditions.html"), name='terms_and_conditions'),
+    path('privacy-policy/', TemplateView.as_view(template_name="privacy_policy.html"), name='privacy_policy'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 

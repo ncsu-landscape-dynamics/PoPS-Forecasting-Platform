@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
+<!-- AJAX requires jquery (not jquery slim) -->
+{% block jquery_source %}
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+{% endblock %}
+{% block content %}
+<div id="page-content" class="container-fluid">
+  <div id="header" class="row text-center" style="background-color:transparent;">
+    <div class="col">
+      <h1>Unsubscribed</h1>
+    </div>
+  </div>
+  <div id="" class="row justify-content-center section-style">
+    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4 text-center">
+        You have been successfully unsubscribed.
+    </div> <!-- Close main col -->
+  </div>
+</div>
+{% endblock %}
