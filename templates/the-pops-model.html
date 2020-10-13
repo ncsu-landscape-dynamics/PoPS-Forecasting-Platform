@@ -192,13 +192,17 @@
                         <p>No coding experience? We developed an easy-to-use interface to run the <a class="text-info" href="{% url 'the-pops-platform' %}">PoPS model in the cloud</a>. The dashboard is currently being used internally and will be made available for public use soon.</p>
                             <form id="add_email" action="{% url 'subscribe_email' %}" method="post">
                                 {% csrf_token %}
-                                <small>Sign up for our email list to receive a notification when PoPS Web Dashboard is available.</small>
+                                <small>Get notified when the PoPS Dashboard is available:</small>
                                 <div class="input-group">
                                 <input type="email" class="form-control" name="email" id="id_email" placeholder="name@example.com">
                                 <div class="input-group-append">
                                     <button class="btn btn-info" type="submit">Sign up</button>
                                 </div>
                                 </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
+                                    <label class="form-check-label" for="exampleCheck1">I want to receive PoPS updates</label>
+                                </div>                                
                                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                             </form>                 
                     </div>
