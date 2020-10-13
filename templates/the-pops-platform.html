@@ -20,16 +20,32 @@
       <div class="col-xl-6 col-lg-8 col-md-10 py-4">
         <h2>What is the PoPS Forecasting Platform?</h2>
         <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
-        <p>The <a class="font-light" href="{% static url 'the-pops-model'%">PoPS model</a> is just one piece of the PoPS Forecasting Platform. Users may download the PoPS model code [link] for R, GrassGIS, or Python (coming soon) OR users can run PoPS in the cloud to take advantage of the PoPS Forecasting Platform  (available for public use soon).</p>        
+        <p>The <a class="font-light" href="{% static url 'the-pops-model'%">PoPS model</a> is just one piece of the PoPS Forecasting Platform. Users may <a class="font-light" href="#">download the R or GRASS GIS version of PoPS</a> OR users can use the PoPS Forecasting Platform to run PoPS in the cloud (<em>available for public use soon</em>).</p>        
         <div class="row">
         <div class="col-md-5">        
-        <div class="text-center pb-2">
+        <div class="text-center py-2">
         <img class='img-fluid w-100' style="max-width:250px" src="{% static 'images/Computer_screen_with_dashboard.png' %}"
             alt="PoPS Dashboard Interface">
         </div>        
         </div>
         <div class="col-md-7"> 
-            <p>The PoPS Forecasting Platform features an easy to use PoPS Dashboard Interface (<em>available for public use soon</em>), the PoPS Database, and the PoPS model running in the cloud. With the PoPS Dashboard Interface, users can run PoPS, compare scenarios, and save data without any programming experience.</p>       
+            <p>The PoPS Forecasting Platform features an easy to use PoPS Dashboard Interface, the PoPS Database, and the PoPS model running in the cloud. With the PoPS Dashboard Interface, users can run PoPS, compare scenarios, and save data without any programming experience.</p>       
+                            <form id="add_email" action="{% url 'subscribe_email' %}" method="post">
+                                {% csrf_token %}
+                                <small>Sign up for our email list to receive a notification when PoPS Web Dashboard is available.</small>
+                                <div class="input-group">
+                                <input type="email" class="form-control" name="email" id="id_email" placeholder="name@example.com">
+                                <div class="input-group-append">
+                                    <button class="btn btn-info" type="submit">Sign up</button>
+                                </div>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
+                                    <label class="form-check-label" for="exampleCheck1">I want to receive PoPS updates</label>
+                                </div>
+                                
+                                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                            </form>     
       </div>
       </div>
       </div>
@@ -38,7 +54,7 @@
       <div class="col-xl-6 col-lg-8 col-md-10 py-4">
         <h2>How is the PoPS Forecasting Platform structured?</h2>
         <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
-        <p>The PoPS Forecasting Platform consists of a series of interconnected open-source packages (available on GitHub) and tools shown below.</p>
+        <p>The PoPS Forecasting Platform consists of a series of interconnected open-source packages (available on <a class="font-light" href="https://github.com/ncsu-landscape-dynamics">GitHub</a>) and tools shown below.</p>
         <div class="text-center pb-2">
             <img class='img-fluid w-100' style="max-width:700px" src="{% static 'images/PoPSPlatform/OSF_OverviewOfPoPSPlatform_transparent_bg.png' %}"
                 alt="The PoPS Platform organization">
