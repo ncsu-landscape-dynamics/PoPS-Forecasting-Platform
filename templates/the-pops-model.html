@@ -30,7 +30,7 @@
         <div class="col-md-9">        
         <p>The flexible, customizable PoPS (Pest or Pathogen Spread) model simulates reproduction, dispersal, and
             establishment of pests (e.g. insects) and pathogens (e.g. diseases) through space and time. The PoPS model is the power-house behind the
-            <a class="font-light" href="#">PoPS Forecasting Platform</a>.</p>        
+            <a class="font-light" href="{% url 'the-pops-platform' %}">PoPS Forecasting Platform</a>.</p>        
       </div>
       </div>
         <p>For every location in a landscape, at each time step, the PoPS model predicts the number of infested or infected hosts (Ψ). To better understand how the model works, let's take a detailed look at the equation governing the PoPS model.</p>
@@ -189,16 +189,20 @@
                 <div class="row">
                     <div class="col-md-6">
                         <p>(<em>Available for public use soon.</em>)<p>
-                        <p>No coding experience? We developed an easy-to-use interface to run the PoPS model in the cloud. The dashboard is currently being used internally and will be made available for public use soon.</p>
+                        <p>No coding experience? We developed an easy-to-use interface to run the <a class="text-info" href="{% url 'the-pops-platform' %}">PoPS model in the cloud</a>. The dashboard is currently being used internally and will be made available for public use soon.</p>
                             <form id="add_email" action="{% url 'subscribe_email' %}" method="post">
                                 {% csrf_token %}
-                                <small>Sign up for our email list to receive a notification when PoPS Web Dashboard is available.</small>
+                                <small>Get notified when the PoPS Dashboard is available:</small>
                                 <div class="input-group">
                                 <input type="email" class="form-control" name="email" id="id_email" placeholder="name@example.com">
                                 <div class="input-group-append">
                                     <button class="btn btn-info" type="submit">Sign up</button>
                                 </div>
                                 </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
+                                    <label class="form-check-label" for="exampleCheck1">I want to receive PoPS updates</label>
+                                </div>                                
                                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                             </form>                 
                     </div>

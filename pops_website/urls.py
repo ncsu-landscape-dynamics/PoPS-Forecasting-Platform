@@ -26,6 +26,7 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name="landing.html"), name='landing_page'),
     path('', include('team.urls')),
     path('about/the-pops-model/', TemplateView.as_view(template_name="the-pops-model.html"), name='the-pops-model'),
+    path('about/the-pops-platform/', TemplateView.as_view(template_name="the-pops-platform.html"), name='the-pops-platform'),
     path('about/', TemplateView.as_view(template_name="the-pops-model.html"), name='about'),
     #path('team/', TemplateView.as_view(template_name="team.html"), name='team'),
     path('explore/', TemplateView.as_view(template_name="explore.html"), name='explore'),
