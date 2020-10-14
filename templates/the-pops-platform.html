@@ -20,7 +20,7 @@
       <div class="col-xl-6 col-lg-8 col-md-10 py-4">
         <h2>What is the PoPS Forecasting Platform?</h2>
         <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
-        <p>The <a class="font-light" href="{% url 'the-pops-model' %}">PoPS model</a> is just one piece of the PoPS Forecasting Platform. Users may <a class="font-light" href="#">download the R or GRASS GIS version of PoPS</a> OR users can use the PoPS Forecasting Platform to run PoPS in the cloud (<em>available for public use soon</em>).</p>        
+        <p>The <a class="font-light" href="{% url 'the-pops-model' %}">PoPS model</a> is just one piece of the PoPS Forecasting Platform. Users may <a class="font-light" href="{% url 'get-pops' %}">download the R or GRASS GIS version of PoPS</a> OR users can use the PoPS Forecasting Platform to run PoPS in the cloud (<em>available for public use soon</em>).</p>        
         <div class="row">
         <div class="col-md-5">        
         <div class="text-center py-2">
@@ -58,7 +58,7 @@
             <img class='img-fluid w-100' style="max-width:700px" src="{% static 'images/PoPSPlatform/OSF_OverviewOfPoPSPlatform_transparent_bg.png' %}"
                 alt="The PoPS Platform organization">
         </div>                      
-        <p>End-users may <a class="font-light" href="#">download the R or GRASS GIS packages</a> to run PoPS on their own computer, or they may use the interactive PoPS Dashboard Interface (<em>coming soon</em>).</p>
+        <p>End-users may <a class="font-light" href="{% url 'get-pops' %}">download the R or GRASS GIS packages</a> to run PoPS on their own computer, or they may use the interactive PoPS Dashboard Interface (<em>coming soon</em>).</p>
       </div>
   </div>  
     <div id="" class="row justify-content-center section-style section-style-2">
