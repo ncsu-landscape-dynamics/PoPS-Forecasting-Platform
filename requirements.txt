@@ -1,5 +1,5 @@
 -i https://pypi.org/simple
-arrow==0.16.0
+arrow==0.17.0
 asgiref==3.2.10; python_version >= '3.5'
 brotli==1.0.9
 cachetools==4.1.1; python_version ~= '3.5'
@@ -12,20 +12,20 @@ dash-core-components==1.12.1
 dash-html-components==1.1.1
 dash-renderer==1.8.2
 dash-table==4.10.1
-dash==1.16.2
-django-autocomplete-light==3.5.1
+dash==1.16.3
+django-autocomplete-light==3.8.1
 django-crispy-forms==1.9.2
 django-debug-toolbar==3.1.1
 django-storages[google]==1.10.1
 django-widget-tweaks==1.4.8
 django==3.1.2
 djangorestframework==3.12.1
-flask-compress==1.6.0
+flask-compress==1.7.0
 flask==1.1.2; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 future==0.18.2; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
 google-api-core==1.22.4; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 google-auth==1.22.1
-google-cloud-core==1.4.2; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+google-cloud-core==1.4.3; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 google-cloud-storage==1.31.2
 google-crc32c==1.0.0; python_version >= '3.5'
 google-resumable-media==1.1.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
@@ -48,7 +48,7 @@ requests==2.24.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3
 retrying==1.3.3
 rsa==4.6; python_version >= '3.5'
 six==1.15.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
-sqlparse==0.3.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+sqlparse==0.4.1; python_version >= '3.5'
 urllib3==1.25.10; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
 werkzeug==1.0.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 wheel==0.35.1
