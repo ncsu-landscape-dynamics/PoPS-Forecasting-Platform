@@ -31,7 +31,7 @@ urlpatterns = [
     path('about/applying-management/', TemplateView.as_view(template_name="about_pages/applying-management.html"), name='applying-management'),
     path('about/weather-reclassification/', TemplateView.as_view(template_name="about_pages/weather-reclassification.html"), name='weather-reclassification'),
     path('about/host-mapping/', TemplateView.as_view(template_name="about_pages/host-mapping.html"), name='host-mapping'),
-    path('explore/', TemplateView.as_view(template_name="explore.html"), name='explore'),
+    path('publications/', TemplateView.as_view(template_name="publications.html"), name='publications'),
     path('contact/', TemplateView.as_view(template_name="contact.html"), name='contact'),
     path('accounts/', include('users.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
