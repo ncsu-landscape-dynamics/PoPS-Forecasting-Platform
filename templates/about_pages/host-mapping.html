@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
+{% block content %}
+
+<div id="page-content" class="container-fluid">
+    <div id="header" class="row text-center">
+        <div class="col">
+            <h1>Host Maps in PoPS</h1>
+        </div>
+    </div>
+    <div id="" class="row justify-content-center section-style section-style-1">
+        <div class="col-xl-6 col-lg-8 col-md-10 py-4">
+            <h2>How does PoPS apply management in the model?</h2>
+            <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
+            <p>Each application of PoPS uses a customized host map that provides the locations of target hosts in each
+                grid cell across the modeled landscape. </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
