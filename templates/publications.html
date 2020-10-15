@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
+{% block content %}
+
+<div id="page-content" class="container-fluid">
+    <div id="header" class="row text-center">
+        <div class="col">
+            <h1>Publications</h1>
+        </div>
+    </div>
+    <div id="" class="row justify-content-center section-style section-style-0">
+        <div class="col-xl-6 col-lg-8 col-md-10 py-4">
+            <h2>Publications using PoPS</h2>
+            <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
+            <p><a class="text-light" href="https://www.sciencedirect.com/science/article/abs/pii/S1364815220306873">Petrasova, A., Gaydos, D. A., Petras, V., Jones, C. M., Mitasova, H., & Meentemeyer, R. K. (2020). Geospatial simulation steering for adaptive management. <i>Environmental Modelling & Software</i>, 133, 104801. <i class="fas fa-external-link-alt text-info"></i></a></p>
+        </div>
+    </div>
+    <div id="" class="row justify-content-center section-style section-style-1">
+        <div class="col-xl-6 col-lg-8 col-md-10 py-4">
+            <h2>How to cite PoPS</h2>
+            <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
+            <p>If you use publish work using PoPS, we ask that you cite PoPS using:</p>
+        </div>
+    </div>    
+</div>
+{% endblock %}
