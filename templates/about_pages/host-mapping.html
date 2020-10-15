@@ -14,11 +14,35 @@
     </div>
     <div id="" class="row justify-content-center section-style section-style-1">
         <div class="col-xl-6 col-lg-8 col-md-10 py-4">
-            <h2>How does PoPS apply management in the model?</h2>
+            <h2>How does PoPS use host maps?</h2>
             <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
             <p>Each application of PoPS uses a customized host map that provides the locations of target hosts in each
                 grid cell across the modeled landscape. </p>
+            <p>
+            Currently, PoPS users are responsible for loading host maps to run the model. Below are some resources for downloading host maps:
+            <ul>
+            <li>Forest data:
+            <ul>            
+            <li><a class="font-light" href="https://lemma.forestry.oregonstate.edu/data/species-maps">LEMMA (30 m resolution data for tree species on West Coast) <i class="fas fa-external-link-alt text-info"></i></a></li>
+            <li><a class="font-light" href="https://www.fs.usda.gov/rds/archive/catalog/RDS-2013-0013">USDA (FIA Raster maps of live tree species basal area at 250 m resolution for entire USA) <i class="fas fa-external-link-alt text-info"></i></a></li>
+            </ul>
+            </li>
+            <li>Cropland data:
+            <ul>
+            <li><a class="font-light" href="https://developers.google.com/earth-engine/datasets/catalog/USDA_NASS_CDL">Google Earth Engine <i class="fas fa-external-link-alt text-info"></i></a></li>
+            <li><a class="font-light" href="https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php">NASS (30 m yearly map of most productive commodity in that cell) <i class="fas fa-external-link-alt text-info"></i></a></li>
+            </ul>
+            </li>
+            </ul>
+            </p>
         </div>
     </div>
+    <div id="" class="row justify-content-center section-style section-style-0">
+        <div class="col-xl-6 col-lg-8 col-md-10 py-4">
+            <h2>Future host maps in PoPS</h2>
+            <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
+            <p>We are currently developing a host mapping module to automate the creation of host maps in PoPS.
+        </div>
+    </div>    
 </div>
 {% endblock %}
