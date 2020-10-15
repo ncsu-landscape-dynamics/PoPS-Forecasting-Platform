@@ -45,7 +45,7 @@
               aria-haspopup="true" aria-expanded="false">
               About
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
               <a class="dropdown-item " href="{% url 'the-pops-model' %}">The PoPS Model</a>
               <a class="dropdown-item " href="{% url 'the-pops-platform' %}">The PoPS Forecasting Platform</a>
               <a class="dropdown-item " href="{% url 'publications' %}">Publications</a>
@@ -53,7 +53,7 @@
             </div>
           </li>
           <li class="nav-item ">
-              <a class="btn btn-warn" href="{% url 'get-pops' %}" style="">Start using PoPS</a>              
+              <a class="btn btn-action" href="{% url 'get-pops' %}" style="">Start using PoPS</a>              
           </li>
           {% comment %}           {% if user.is_authenticated %}
           <li class="nav-item dropdown">
@@ -93,8 +93,11 @@
           <a href="{% url 'team' %}">Team</a>
         </div>
         <div class="col">
-          <a class="" href="#">Publications</a>
+          <a class="" href="{% url 'publications' %}">Publications</a>
         </div>
+        <div class="col">
+          <a class="" href="{% url 'subscribe_email' %}">Join our Newsletter</a>
+        </div>        
         {% comment %} <div class="col">
           <a class="" href="{% url 'terms_and_conditions' %}">Terms and Conditions</a>
         </div>
