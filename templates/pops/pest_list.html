@@ -21,7 +21,7 @@
     </div>
   </div>
   <div id="" class="row justify-content-center section-style">
-    <div class="col-10">
+{% comment %}     <div class="col-10">
       {% if pests_with_case_studies %}
       <p>Below are the pests and pathogens that have been modeled using PoPS. Users may select a calibrated case study
         to forecast the spread of a pest of pathogen using the PoPS web dashboard. </p>
@@ -154,11 +154,10 @@
       to report the problem.
       {% endif %}
 
-    </div>
+    </div> {% endcomment %}
     <div class="col-10">
       {% if pests_without_case_studies %}
-  <p>The following pests and pathogens that have been modeled using PoPS, however, they do not yet have
-  publicly available case studies. </p>
+  <p>The following pests and pathogens that have been modeled using PoPS. </p>
   {% for pest in pests_without_case_studies %}
   <div class="card my-3 text-dark">
     <div class="card-header">
@@ -176,11 +175,11 @@
           </div>
         </div>
         <div class="col-md-auto col-sm-12">
-        {% if pest.pest_set.all %}
+{% comment %}         {% if pest.pest_set.all %}
           <a href="{% url 'pest_detail' pk=pest.pk %}" class="btn btn-success btn-sm btn-block"> <i
               class="fas fa-plus-circle" data-toggle="tooltip" data-placement="top"
               title="Create session from this case study."></i> Run PoPS for {{pest.common_name}}</a>
-              {% endif %}
+              {% endif %} {% endcomment %}
         </div>
 
       </div>
@@ -202,10 +201,10 @@
               <a class="nav-link" href="#management-{{pest.pk}}" role="tab" aria-controls="management"
                 aria-selected="false">Management</a>
             </li>
-            <li class="nav-item">
+{% comment %}             <li class="nav-item">
               <a class="nav-link" href="#case_studies-{{pest.pk}}" role="tab" aria-controls="case studies"
                 aria-selected="false">Case studies</a>
-            </li>
+            </li> {% endcomment %}
 
           </ul>
           <div class="tab-content mt-3">
@@ -236,7 +235,7 @@
               
               <p> {{ pest.risks|truncatechars:440 }}</p>
             </div>
-            <div class="tab-pane" id="case_studies-{{pest.pk}}" role="tabpanel" aria-labelledby="case_studies-tab">
+{% comment %}             <div class="tab-pane" id="case_studies-{{pest.pk}}" role="tabpanel" aria-labelledby="case_studies-tab">
               {% with case_study_pests=pest.pest_set.all %}
                 {% if case_study_pests %}
                 <strong>Pick a calibrated case study to run PoPS for {{ pest.common_name}}.</strong>
@@ -257,7 +256,7 @@
                     for this organism.</small></div>
                 {% endif %}
               {% endwith %}
-            </div>
+            </div> {% endcomment %}
           </div>
         </div>
         <div class="col-lg-6">
@@ -284,12 +283,12 @@
 
   {% endif %}
     </div>
-    <div class="col-10">
+{% comment %}     <div class="col-10">
         <p>
     To view a list of all case studies, click <a href="{% url 'case_study_list' %}">here</a>.
     Or <a href="{% url 'create_case_study' %}">create your own case study</a> (advanced users).
   </p>
-    </div>
+    </div> {% endcomment %}
   </div>
 </div>
 

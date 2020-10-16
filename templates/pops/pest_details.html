@@ -11,18 +11,6 @@
         <div class="col-md-10">
             <h2 class="text-center">{{pest_information.common_name}}</h3>
                 <h5 class="text-center"><em> {{pest_information.scientific_name}}</em></h5>
-                <div class="text-center">
-                    {% if pest_information.organism_type == "PEST" %}
-                    <strong><i class="fas fa-bug" style="color:orange"></i> Pest</strong>
-                    {% elif pest_information.organism_type == "PATHOGEN" %}
-                    <strong><i class="fas fa-virus" style="color:purple"></i> Pathogen</strong>
-                    {% endif %}
-                    {% if pest_information.invasive %}
-                    / <strong><i class="fas fa-exclamation text-danger"></i> Invasive</strong> (<small><em>first found
-                            in
-                            {{pest_information.arrival_location}} in {{pest_information.arrival_year}}</em></small>)
-                    {% endif %}
-                </div>
         </div>
     </div>
 
@@ -37,6 +25,18 @@
             {% endif %}
             <div class="py-2">
                 <h5>About:</h5>
+                <div class="pb-2">
+                    {% if pest_information.organism_type == "PEST" %}
+                    <strong><i class="fas fa-bug" style="color:orange"></i> Pest</strong>
+                    {% elif pest_information.organism_type == "PATHOGEN" %}
+                    <strong><i class="fas fa-virus" style="color:purple"></i> Pathogen</strong>
+                    {% endif %}
+                    {% if pest_information.invasive %}
+                    / <strong><i class="fas fa-exclamation text-danger"></i> Invasive</strong> (<small><em>first found
+                            in
+                            {{pest_information.arrival_location}} in {{pest_information.arrival_year}}</em></small>)
+                    {% endif %}
+                </div>                
                 <p>{{pest_information.about|safe}}</p>
             </div>
             <div class="py-2">
@@ -56,7 +56,7 @@
 
         </div>
     </div>
-    <div class="row justify-content-center section-style">
+{% comment %}     <div class="row justify-content-center section-style">
         <div class="col-md-10">
             <h4 class="text-center">Available case studies:</h4>
         </div>
@@ -111,8 +111,9 @@
         {% endif %}
         {% endfor %}
         {% endif %}
-    </div>
+        {% endwith%}
+
+    </div> {% endcomment %}
 </div>
-{% endwith%}
 </div>
 {% endblock %}
