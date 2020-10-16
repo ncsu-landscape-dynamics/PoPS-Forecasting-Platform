@@ -143,21 +143,23 @@ function hostmapLayer(data) {
                     "type": 'fill',
                     "source": 'host_map',
                     'paint': {
-                    'fill-color': [
-                    'interpolate',
-                    ['linear'],
-                    ['get', 'outputs'],
-                    1, '#63f542'
-                    ],
-                        'fill-opacity': [
-                            'interpolate',
-                            ['linear'],
-                            ['get', 'outputs'],
-                            0, 0.00,
-                            100, 0.4,
-                        ]
+                      'fill-color': [
+                        'interpolate',
+                        ['linear'],
+                        ['get', 'outputs'],
+                        1, '#63f542'
+                      ],
+                      'fill-opacity': [
+                        'interpolate',
+                        ['linear'],
+                        ['get', 'outputs'],
+                        0, 0.00,
+                        100, 0.4,
+                      ],
+                      'fill-outline-color': "rgba(0,0,0,0)",
                     }
-                  }, 'waterway-label'); 
+                  },
+                   'waterway-label'); 
 };
 
     /*

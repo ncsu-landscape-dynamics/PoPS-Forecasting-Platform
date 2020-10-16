@@ -1,8 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
 {% block content %}
-<div class="container py-4">
-<h2 class="text-center">Terms and Conditions</h2>
-<p>These are the terms and conditions</p>
+
+<div id="page-content" class="container-fluid">
+
+    <div id="header" class="row text-center" style="background-color:transparent;">
+        <div class="col-12">
+            <h1>Terms and Conditions</h1>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <p>These are the terms and conditions</p>
+        </div>
+    </div>
 </div>
 {% endblock %}

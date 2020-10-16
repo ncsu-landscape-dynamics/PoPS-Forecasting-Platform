@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
+{% block content %}
+
+<div id="page-content" class="container-fluid">
+    <div id="header" class="row text-center">
+        <div class="col">
+            <h1>Reclassifying Weather in PoPS</h1>
+        </div>
+    </div>
+    <div id="" class="row justify-content-center section-style section-style-0">
+        <div class="col-xl-6 col-lg-8 col-md-10 py-4">
+            <h2>Reclassifying weather data to use PoPS</h2>
+            <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
+            <p>Currently, PoPS users are responsible for obtaining raw weather data to calibrate PoPS. Below are some resources for weather data:</p>
+            <ul>            
+            <li><a class="font-light font-yellow" href="https://daymet.ornl.gov/">DayMet <i class="fas fa-external-link-alt font-red"></i></a></li>
+            <li><a class="font-light font-yellow" href="https://prism.oregonstate.edu/">Prism <i class="fas fa-external-link-alt font-red"></i></a></li>
+            <li><a class="font-light font-yellow" href="https://developers.google.com/earth-engine/datasets/tags/climate">Google Earth Engine <i class="fas fa-external-link-alt font-red"></i></a></li>
+            </ul>
+            </p>
+        </div>
+    </div>        
+    <div id="" class="row justify-content-center section-style section-style-1">
+        <div class="col-xl-6 col-lg-8 col-md-10 py-4">
+            <h2>How does PoPS incorporate weather in the model?</h2>
+            <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
+            <p>During calibration of a case study for PoPS, all raw temperature and precipitation values are first
+                converted to indices ranging from 0–1 to describe their impact on a species’ ability to survive and
+                reproduce; the transformations, tailored for each species, are saved in the PoPS database. </p>
+            <div class="text-center pb-2">
+                <img class='img-fluid w-100' style="max-width:700px"
+                    src="{% static 'images/AboutPages/weather_reclassification.svg' %}"
+                    alt="The PoPS Platform organization">
+            </div>
+            <p>Due to the modular nature of PoPS, weather components can be turned on or off. For example, a case study
+                of Sudden Oak Death (SOD) used a polynomial function to convert daily Daymet (Thornton et al. 2017)
+                temperature and a threshold of 2.5 mm to convert daily Daymet precipitation into weekly weather coefficients ranging from 0 to 1
+                (Meentemeyer et al. 2011).</p>
+            <div class="text-center pb-2">
+                <img class='img-fluid w-100' style="max-width:600px"
+                    src="{% static 'images/AboutPages/SOD_weather_reclass.svg' %}"
+                    alt="Sudden Oak Death weather reclassification">
+            </div>
+            <p>In contrast, a case study of Spotted Lanternfly (SLF) used a step function to convert daily Daymet
+                temperature into a monthly coefficient ranging from 0 to 1. Because SLF spread does not have a
+                dependence on precipitation, that component of the model was turned off.</p>
+            <div class="text-center pb-2">
+                <img class='img-fluid w-100' style="max-width:600px"
+                    src="{% static 'images/AboutPages/SLF_weather_reclass.svg' %}"
+                    alt="Spotted Lanternfly weather reclassification">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

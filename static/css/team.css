@@ -1,13 +1,6 @@
-body {
-  font-size: 1.1em;
-}
-
-#header {
-  background-color: #328080;
-}
 
 #core-team {
-  background-color:#212529;
+  background-color: #212529;
 }
 
 #affiliates {
@@ -15,15 +8,14 @@ body {
 }
 
 #employment {
-  font-size:0.9em;
+  font-size: 0.9em;
 }
 
 #funding {
-  font-size:0.9em;
+  font-size: 0.9em;
 }
 
-#opportunities {
-}
+#opportunities {}
 
 div#people .card {
   background-color: #DBDCDC;
@@ -32,25 +24,28 @@ div#people .card {
 
 .person-name {
   font-size: 1.2em;
-  padding:0;
-  margin:0;
+  padding: 0;
+  margin: 0;
 }
 
 .person-title {
   font-size: 1.0em;
-  padding:0;
-  margin:0;
+  padding: 0;
+  margin: 0;
 }
-.person-department, .person-organization {
+
+.person-department,
+.person-organization {
   font-size: 0.7em;
 }
 
 .person-description {
   font-size: 0.85em;
-  padding:10px 0;
-  margin:0;
+  padding: 10px 0;
+  margin: 0;
 }
-.person-contact{
+
+.person-contact {
   font-size: 0.8em;
 }
 
@@ -59,3 +54,4 @@ div#people .card {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   grid-gap: 3rem 1rem;
 }
+

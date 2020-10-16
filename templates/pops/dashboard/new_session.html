@@ -4,13 +4,18 @@
   <script src="{% static 'js/jquery.min.js' %}"></script>
   {% endblock %}
 {% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
   <link rel="stylesheet" href="{% static 'css/new_session.css' %}">
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}
 {% block content %}
-<div class="container py-4">
+<div id="page-content" class="container-fluid">
   <!--Page title-->
-  <h2 class="text-center">Create New PoPS Session</h2>
+  <div id="header" class="row text-center" style="background-color:transparent;">
+    <div class="col">
+      <h1>Create new session</h1>
+    </div>
+  </div>      
   <!--Start of form-->
     <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-6">

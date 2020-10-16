@@ -1,13 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block page_styles %}
-<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+<link rel="stylesheet" href="{% static 'css/workspace.css' %}">
 {% endblock %}
 {% block content %}
-<div class="container py-2 pb-4">
-        <h3>Welcome to your PoPS workspace, {{ user }} </h3>
-        <div class="row">
-                <div class="col-lg-12">
+
+<div id="page-content" class="container-fluid">
+  <div id="header" class="row text-center" style="background-color:transparent;">
+    <div class="col">
+      <h1>Welcome to your PoPS workspace</h1>
+    </div>
+  </div>
+        
+        <div class="row justify-content-center">
+                <div class="col-lg-10">
                         <div class="panel-container">
 
                                 <h4>My sessions ({% if sessions.count < 5 %} {{ sessions.count }}
@@ -96,7 +103,7 @@
 
                         </div>
                 </div>
-                <div class="col-lg-12">
+                <div class="col-lg-10">
                         <div class="panel-container">
                                 <h4>My case studies ({% if user_case_studies.count < 5 %} {{ user_case_studies.count }}
                                         {% else %} 5 {% endif %} / {{ number_of_case_studies }} ):</h4>                                

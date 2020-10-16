@@ -1,9 +1,22 @@
 <!-- templates/account_activation_sent.html -->
 {% extends 'base.html' %}
-
-
+{% load static %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
 {% block content %}
-<div class="container py-4">
-Your account is activated.
+
+<div id="page-content" class="container-fluid">
+    <div id="header" class="row text-center" style="background-color:transparent;">
+        <div class="col">
+            <h1>Success</h1>
+        </div>
+    </div>
+    <div id="" class="row justify-content-center section-style">
+        <div class="col-md-10 text-center">
+            <p>Your email is now confirmed.
+            </p>
+        </div>
+    </div>
 </div>
 {% endblock %}

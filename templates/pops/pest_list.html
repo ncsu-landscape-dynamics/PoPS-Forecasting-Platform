@@ -2,7 +2,7 @@
 {% load static %}
 {% load get_staff_approved %}
 {% block page_styles %}
-<link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
 {% endblock %}
 {% block content %}
 
@@ -14,144 +14,150 @@
         -ms-overflow-style: -ms-autohiding-scrollbar;
     }
 </style>
-
-<div class="container py-4 pb-4">
-  <div class="text-center py-2">
-    <h3>Pests and Pathogens</h3>
-  </div>
-  {% if pests_with_case_studies %}
-  <p>Below are the pests and pathogens that have been modeled using PoPS. Users may select a calibrated case study
-    to forecast the spread of a pest of pathogen using the PoPS web dashboard. </p>
-  {% for pest in pests_with_case_studies %}
-  <div class="card my-3 text-dark" >
-    <div class="card-header">
-      <div class="row justify-content-between align-items-center">
-        <div class="col-md-auto col-sm-12">
-          <div class="row justify-content-xs-center justify-content-sm-center">
-            <div class="col-auto">
-              <img src="{{ pest.thumbnail.url }}" width="58" height="58" alt="{{pest.common_name}}">
-            </div>
-            <div class="col-auto">
-              <h4 class="card-title"><a class="text-dark"
-                  href="{% url 'pest_detail' pk=pest.pk %}">{{ pest.common_name }}</a></h4>
-              <h6 class="card-subtitle mb-2">(<em>{{pest.scientific_name}}</em>)</h6>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-auto col-sm-12">
-        {% if pest.pest_set.all %}
-          <a href="{% url 'pest_detail' pk=pest.pk %}" class="btn btn-success btn-sm btn-block"> <i
-              class="fas fa-plus-circle" data-toggle="tooltip" data-placement="top"
-              title="Create session from this case study."></i> Run PoPS for {{pest.common_name}}</a>
-              {% endif %}
-        </div>
-
-      </div>
+<div id="page-content" class="container-fluid">
+  <div id="header" class="row text-center">
+    <div class="col">
+      <h1>Pests and Pathogens</h1>
     </div>
-    <div class="card-body">
-
-      <div class="row">
-        <div class="col-lg-6">
-          <ul class="nav nav-tabs" id="{{pest.pk}}-list" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" href="#about-{{pest.pk}}" role="tab" aria-controls="about"
-                aria-selected="true">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#at_risk-{{pest.pk}}" role="tab" aria-controls="risk"
-                aria-selected="false">Risks</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#management-{{pest.pk}}" role="tab" aria-controls="management"
-                aria-selected="false">Management</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#case_studies-{{pest.pk}}" role="tab" aria-controls="case studies"
-                aria-selected="false">Case studies</a>
-            </li>
-
-          </ul>
-          <div class="tab-content mt-3">
-            <div class="tab-pane active" id="about-{{pest.pk}}" role="tabpanel">
-                          <div class="mb-0"><small>
-              {% if pest.organism_type == "PEST" %}
-              <strong><i class="fas fa-bug" style="color:orange"></i> Pest</strong>
-              {% elif pest.organism_type == "PATHOGEN" %}
-              <strong><i class="fas fa-virus" style="color:purple"></i> Pathogen</strong>
-              {% endif %}
-              {% if pest.invasive %}
-            / <strong><i class="fas fa-exclamation text-danger"></i> Invasive</strong> (<em>first found in {{pest.arrival_location}} in {{pest.arrival_year}}</em>) 
-            {% endif %} 
-            </strong>
-              </small>
+  </div>
+  <div id="" class="row justify-content-center section-style">
+{% comment %}     <div class="col-10">
+      {% if pests_with_case_studies %}
+      <p>Below are the pests and pathogens that have been modeled using PoPS. Users may select a calibrated case study
+        to forecast the spread of a pest of pathogen using the PoPS web dashboard. </p>
+      {% for pest in pests_with_case_studies %}
+      <div class="card my-3 text-dark">
+        <div class="card-header">
+          <div class="row justify-content-between align-items-center">
+            <div class="col-md-auto col-sm-12">
+              <div class="row justify-content-xs-center justify-content-sm-center">
+                <div class="col-auto">
+                  <img src="{{ pest.thumbnail.url }}" width="58" height="58" alt="{{pest.common_name}}">
+                </div>
+                <div class="col-auto">
+                  <h4 class="card-title"><a class="text-dark"
+                      href="{% url 'pest_detail' pk=pest.pk %}">{{ pest.common_name }}</a></h4>
+                  <h6 class="card-subtitle mb-2">(<em>{{pest.scientific_name}}</em>)</h6>
+                </div>
               </div>
-              <p class="card-text">{{ pest.about|safe|truncatechars:420 }}... <a href="{% url 'pest_detail' pk=pest.pk %}"
-                  class="card-link text-danger">Read more</a></p>
+            </div>
+            <div class="col-md-auto col-sm-12">
+              {% if pest.pest_set.all %}
+              <a href="{% url 'pest_detail' pk=pest.pk %}" class="btn btn-success btn-sm btn-block"> <i
+                  class="fas fa-plus-circle" data-toggle="tooltip" data-placement="top"
+                  title="Create session from this case study."></i> Run PoPS for {{pest.common_name}}</a>
+              {% endif %}
             </div>
 
-            <div class="tab-pane" id="management-{{pest.pk}}" role="tabpanel" aria-labelledby="management-tab">
-              <p class="card-text">{{ pest.management_activity|safe|truncatechars:370  }}... <a
-                  href="{% url 'pest_detail' pk=pest.pk %}" class="card-link text-danger">Read more</a></p>
-
-            </div>
-
-            <div class="tab-pane" id="at_risk-{{pest.pk}}" role="tabpanel" aria-labelledby="risk-tab">
-              <p> {{ pest.risks|safe|truncatechars:370 }}</p>
-            </div>
-            <div class="tab-pane" id="case_studies-{{pest.pk}}" role="tabpanel" aria-labelledby="case_studies-tab">
-              {% with case_study_pests=pest.pest_set.all %}
-                {% if case_study_pests %}
-                <strong>Pick a calibrated case study to run PoPS for {{ pest.common_name}}.</strong>
-                    {% for case_study_pest in case_study_pests %}
-                      {% if case_study_pest.case_study.staff_approved == True %}
-                      <div>
-                        <a href="{% url 'case_study_review' pk=case_study_pest.case_study.pk %}""><strong>{{ case_study_pest.case_study.name }} <i class="
-                          fas fa-play-circle"></i></strong></a>
-                        <div><small>{{ case_study_pest.case_study.description }}</small></div>
-
-                      </div>
-                      {% endif %}
-                    {% endfor %}
-                {% else %}
-                <div><small>{{ pest.common_name}} is currently being studied using PoPS, but it doesn't
-                    have any public case studies yet. <a href="{% url 'contact' %}">Contact us </a> if you'd like to run
-                    PoPS
-                    for this organism.</small></div>
-                {% endif %}
-              {% endwith %}
-            </div>
           </div>
         </div>
-        <div class="col-lg-6">
-          <div class="text-center">
-          {% if pest.spread_image %}
-            <img src="{{ pest.spread_image.url }}" style="max-height:216px" alt="{{pest.common_name}}">
-            <p class="py-0 my-0"><small><em>PoPS forecast of {{pest.common_name}}</em></small></p>
-            {% else %}
-            <img src="{{ pest.large_image.url }}" style="max-height:216px" alt="{{pest.common_name}}">
-            <p class="py-0 my-0"><small><em>{{pest.common_name}}</em></small></p>
-            {% endif %}
+        <div class="card-body">
+
+          <div class="row">
+            <div class="col-lg-6">
+              <ul class="nav nav-tabs" id="{{pest.pk}}-list" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" href="#about-{{pest.pk}}" role="tab" aria-controls="about"
+                    aria-selected="true">About</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#at_risk-{{pest.pk}}" role="tab" aria-controls="risk"
+                    aria-selected="false">Risks</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#management-{{pest.pk}}" role="tab" aria-controls="management"
+                    aria-selected="false">Management</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#case_studies-{{pest.pk}}" role="tab" aria-controls="case studies"
+                    aria-selected="false">Case studies</a>
+                </li>
+
+              </ul>
+              <div class="tab-content mt-3">
+                <div class="tab-pane active" id="about-{{pest.pk}}" role="tabpanel">
+                  <div class="mb-0"><small>
+                      {% if pest.organism_type == "PEST" %}
+                      <strong><i class="fas fa-bug" style="color:orange"></i> Pest</strong>
+                      {% elif pest.organism_type == "PATHOGEN" %}
+                      <strong><i class="fas fa-virus" style="color:purple"></i> Pathogen</strong>
+                      {% endif %}
+                      {% if pest.invasive %}
+                      / <strong><i class="fas fa-exclamation text-danger"></i> Invasive</strong> (<em>first found in
+                        {{pest.arrival_location}} in {{pest.arrival_year}}</em>)
+                      {% endif %}
+                      </strong>
+                    </small>
+                  </div>
+                  <p class="card-text">{{ pest.about|safe|truncatechars:420 }}... <a
+                      href="{% url 'pest_detail' pk=pest.pk %}" class="card-link text-danger">Read more</a></p>
+                </div>
+
+                <div class="tab-pane" id="management-{{pest.pk}}" role="tabpanel" aria-labelledby="management-tab">
+                  <p class="card-text">{{ pest.management_activity|safe|truncatechars:370  }}... <a
+                      href="{% url 'pest_detail' pk=pest.pk %}" class="card-link text-danger">Read more</a></p>
+
+                </div>
+
+                <div class="tab-pane" id="at_risk-{{pest.pk}}" role="tabpanel" aria-labelledby="risk-tab">
+                  <p> {{ pest.risks|safe|truncatechars:370 }}</p>
+                </div>
+                <div class="tab-pane" id="case_studies-{{pest.pk}}" role="tabpanel" aria-labelledby="case_studies-tab">
+                  {% with case_study_pests=pest.pest_set.all %}
+                  {% if case_study_pests %}
+                  <strong>Pick a calibrated case study to run PoPS for {{ pest.common_name}}.</strong>
+                  {% for case_study_pest in case_study_pests %}
+                  {% if case_study_pest.case_study.staff_approved == True %}
+                  <div>
+                    <a href="{% url 'case_study_review' pk=case_study_pest.case_study.pk %}""><strong>{{ case_study_pest.case_study.name }} <i class="
+                      fas fa-play-circle"></i></strong></a>
+                    <div><small>{{ case_study_pest.case_study.description }}</small></div>
+
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+                  {% else %}
+                  <div><small>{{ pest.common_name}} is currently being studied using PoPS, but it doesn't
+                      have any public case studies yet. <a href="{% url 'contact' %}">Contact us </a> if you'd like to
+                      run
+                      PoPS
+                      for this organism.</small></div>
+                  {% endif %}
+                  {% endwith %}
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="text-center">
+                {% if pest.spread_image %}
+                <img src="{{ pest.spread_image.url }}" style="max-height:216px" alt="{{pest.common_name}}">
+                <p class="py-0 my-0"><small><em>PoPS forecast of {{pest.common_name}}</em></small></p>
+                {% else %}
+                <img src="{{ pest.large_image.url }}" style="max-height:216px" alt="{{pest.common_name}}">
+                <p class="py-0 my-0"><small><em>{{pest.common_name}}</em></small></p>
+                {% endif %}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <script>
-    $('#{{pest.pk}}-list a').on('click', function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-    })
-  </script>
-  {% endfor %}
+      <script>
+        $('#{{pest.pk}}-list a').on('click', function (e) {
+          e.preventDefault()
+          $(this).tab('show')
+        })
+      </script>
+      {% endfor %}
 
-  {% else %}
-  There are no staff-approved pests or pathogens at this time. Please <a href="{% url 'contact' %}">contact us </a> to report the problem.
-  {% endif %}
+      {% else %}
+      There are no staff-approved pests or pathogens at this time. Please <a href="{% url 'contact' %}">contact us </a>
+      to report the problem.
+      {% endif %}
 
-
-  {% if pests_without_case_studies %}
-  <p>The following pests and pathogens that have been modeled using PoPS, however, they do not yet have
-  publicly available case studies. </p>
+    </div> {% endcomment %}
+    <div class="col-10">
+      {% if pests_without_case_studies %}
+  <p>The following pests and pathogens that have been modeled using PoPS. </p>
   {% for pest in pests_without_case_studies %}
   <div class="card my-3 text-dark">
     <div class="card-header">
@@ -169,11 +175,11 @@
           </div>
         </div>
         <div class="col-md-auto col-sm-12">
-        {% if pest.pest_set.all %}
+{% comment %}         {% if pest.pest_set.all %}
           <a href="{% url 'pest_detail' pk=pest.pk %}" class="btn btn-success btn-sm btn-block"> <i
               class="fas fa-plus-circle" data-toggle="tooltip" data-placement="top"
               title="Create session from this case study."></i> Run PoPS for {{pest.common_name}}</a>
-              {% endif %}
+              {% endif %} {% endcomment %}
         </div>
 
       </div>
@@ -195,10 +201,10 @@
               <a class="nav-link" href="#management-{{pest.pk}}" role="tab" aria-controls="management"
                 aria-selected="false">Management</a>
             </li>
-            <li class="nav-item">
+{% comment %}             <li class="nav-item">
               <a class="nav-link" href="#case_studies-{{pest.pk}}" role="tab" aria-controls="case studies"
                 aria-selected="false">Case studies</a>
-            </li>
+            </li> {% endcomment %}
 
           </ul>
           <div class="tab-content mt-3">
@@ -229,7 +235,7 @@
               
               <p> {{ pest.risks|truncatechars:440 }}</p>
             </div>
-            <div class="tab-pane" id="case_studies-{{pest.pk}}" role="tabpanel" aria-labelledby="case_studies-tab">
+{% comment %}             <div class="tab-pane" id="case_studies-{{pest.pk}}" role="tabpanel" aria-labelledby="case_studies-tab">
               {% with case_study_pests=pest.pest_set.all %}
                 {% if case_study_pests %}
                 <strong>Pick a calibrated case study to run PoPS for {{ pest.common_name}}.</strong>
@@ -250,7 +256,7 @@
                     for this organism.</small></div>
                 {% endif %}
               {% endwith %}
-            </div>
+            </div> {% endcomment %}
           </div>
         </div>
         <div class="col-lg-6">
@@ -276,11 +282,16 @@
   {% endfor %}
 
   {% endif %}
-
-  <p>
+    </div>
+{% comment %}     <div class="col-10">
+        <p>
     To view a list of all case studies, click <a href="{% url 'case_study_list' %}">here</a>.
     Or <a href="{% url 'create_case_study' %}">create your own case study</a> (advanced users).
   </p>
+    </div> {% endcomment %}
+  </div>
+</div>
+
 
     {% endblock %}
 

@@ -298,9 +298,7 @@ class AjaxableResponseMixin:
                 'random_seed': self.object.random_seed,
                 'date_created': self.object.date_created,
                 'budget': self.object.budget,
-                'efficacy': self.object.efficacy,
                 'tangible_landscape': self.object.tangible_landscape,
-                'cost_per_meter_squared': self.object.cost_per_meter_squared,
             }
             return JsonResponse(data)
         else:
@@ -494,9 +492,7 @@ def get_run_collection(request):
         'random_seed': run_collection.random_seed,
         'date_created': run_collection.date_created,
         'budget': run_collection.budget,
-        'efficacy': run_collection.efficacy,
         'tangible_landscape': run_collection.tangible_landscape,
-        'cost_per_meter_squared': run_collection.cost_per_meter_squared,
         "inputs": list(inputs.order_by('steering_year').values("pk","date_created","id","steering_year")),
     }    
     return JsonResponse(data)

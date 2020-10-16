@@ -1,13 +1,10 @@
-body {
-  font-size: 1.2em;
-
-}
 #header {
   background-color: black;
 }
 
-#description, #examples {
-  background-color:#212529;
+#description,
+#examples {
+  background-color: #212529;
 }
 
 #how {
@@ -21,14 +18,4 @@ body {
 #examples {
   background-color: #676b73;
 }
-
-
-
-#map {
-  height:400px;
-  border-style:inset;
-  border-width:6px;
-  border-color: #B7B9BA;
-}
-
 

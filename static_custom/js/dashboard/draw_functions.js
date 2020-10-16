@@ -2,7 +2,8 @@ function createPolygon (e) {
   var polygon = grabPolygon(e); 
   var area = getArea(polygon);
   var management_properties = getManagementProperties();
-  for (var n = 0; n < management_properties.length; n++) {
+  var number_of_management_types = management_properties.length;
+  for (var n = 0; n < number_of_management_types; n++) {
     featureID = drawPolygon(polygon, management_properties[n],area);
     findAndCombineOverlappingPolygons(featureID);
   }
@@ -23,11 +24,19 @@ function getArea(polygon) {
 function getManagementProperties() {
   management = [];
   if ($('#host_removal_status').prop('checked')) {
-    host_removal_management = ['Host removal',$("#default_host_removal_efficacy").val(),$("#default_host_removal_cost").val()];
+    host_removal_management = ['Host removal',
+      $("#default_host_removal_efficacy").val(),
+      $("#default_host_removal_cost").val(),
+      $("#default_host_removal_date").val(),
+      $("#default_host_removal_duration").val()];
     management.push(host_removal_management);
   } 
   if ($('#pesticide_status').prop('checked')) {
-    pesticide_management = ['Pesticide',$("#default_pesticide_efficacy").val(),$("#default_pesticide_cost").val()];
+    pesticide_management = ['Pesticide',
+      $("#default_pesticide_efficacy").val(),
+      $("#default_pesticide_cost").val(),
+      $("#default_pesticide_date").val(),
+      $("#default_pesticide_duration").val()];
     management.push(pesticide_management);  
   } 
   return management;
@@ -38,6 +47,8 @@ function drawPolygon(polygon, management_properties,area) {
   draw.setFeatureProperty(featureID, 'management_type', management_properties[0]);
   draw.setFeatureProperty(featureID, 'efficacy', management_properties[1]);
   draw.setFeatureProperty(featureID, 'cost', management_properties[2]);
+  draw.setFeatureProperty(featureID, 'date', management_properties[3]);
+  draw.setFeatureProperty(featureID, 'duration', management_properties[4]);
   draw.setFeatureProperty(featureID, 'area', area);
   //draw.add(draw.get(featureID)); //This line makes the new change draw on the map and appear.    
   return featureID;
@@ -58,7 +69,8 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
         //If they are the same management type, combine the two polygons.
         if ((newPolygon.properties.management_type == existingPolygon.properties.management_type)) {
           if ((newPolygon.properties.efficacy == existingPolygon.properties.efficacy) && 
-          (newPolygon.properties.cost == existingPolygon.properties.cost)) {
+          (newPolygon.properties.cost == existingPolygon.properties.cost) &&
+          (newPolygon.properties.date == existingPolygon.properties.date)) {
             union = combineTwoPolygons(newPolygonID, existingPolygon.id);
             if (union) {
               newPolygonID = union;
@@ -67,7 +79,8 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
               draw.setFeatureProperty(newPolygonID, 'area', area);
             }
           }
-          else {
+          else if ((newPolygon.properties.management_type != 'Pesticide') || (newPolygon.properties.date == existingPolygon.properties.date)
+          ) {
             difference = turf.difference(existingPolygon,newPolygon);//remove newpolygon from existing polygon
             var newPolygonID = draw.add(difference); //add new polygon to draw
             draw.delete(existingPolygon.id); //remove original overlapping polygons
@@ -107,12 +120,20 @@ function updatePolygons(e) {
       //display ability to edit if 1 or more polygons are selected
       if (selection.features.length > 0) {
         //Get the management type of the first feature, to pre-check that as the type
-        selected_management_type = selection.features[0].properties.management_type;
+        var selected_management_type = selection.features[0].properties.management_type;
         $("input[type=radio][name='editManagementOptions']").prop("checked", false);
         $("input[type=radio][value='" + selected_management_type + "']").prop("checked", true);
         $("input[id='edit_efficacy']").val(selection.features[0].properties.efficacy);
         var area_modifier = $("select#edit_area_unit").val();
         $("input[id='edit_display_cost']").val(selection.features[0].properties.cost/area_modifier);
+        $("input[id='edit_date']").val(selection.features[0].properties.date);
+        $("input[id='edit_duration']").val(selection.features[0].properties.duration);
+        if (selected_management_type == "Pesticide") {
+          $( "#edit_duration_group" ).show();
+        }
+        else {
+          $( "#edit_duration_group" ).hide();
+        }
         //Show edit polygons box.
         $('#editPolygons').show();
       } else {
@@ -124,12 +145,20 @@ function changePolygonProperties() {
       selectionIDs = draw.getSelectedIds();
       var editManagementTypeValue = $("input[name='editManagementOptions']:checked").val();
       var editEfficacy = $("input[id='edit_efficacy']").val();
-      console.log('Edit efficacy value = ' + editEfficacy);
       var editCost = $("input[id='edit_cost']").val();
+      var editDate = $("input[id='edit_date']").val();
+      var editDuration = $("input[id='edit_duration']").val();
       for (var n = 0; n < selectionIDs.length; n++) {
         draw.setFeatureProperty(selectionIDs[n], 'management_type', editManagementTypeValue);
         draw.setFeatureProperty(selectionIDs[n], 'efficacy', editEfficacy);
         draw.setFeatureProperty(selectionIDs[n], 'cost', editCost);
+        draw.setFeatureProperty(selectionIDs[n], 'date', editDate);
+        if (editManagementTypeValue == "Pesticide") {
+          draw.setFeatureProperty(selectionIDs[n], 'duration', editDuration);
+        }
+        else {
+          draw.setFeatureProperty(selectionIDs[n], 'duration', "0");
+        }
         draw.add(draw.get(selectionIDs[n])); //This line makes the new change draw on the map and appear.
       }
       updateJSON(selectionIDs);
@@ -137,34 +166,28 @@ function changePolygonProperties() {
 
 //This function updates the GeoJSON management field 
 function updateJSON() {
+  console.log("Updating management polygons.");
   var data = draw.getAll();
-  console.log("Updating management polygons:");
-  //console.log(data);
   var answer = document.getElementById('displayed-management-area');
   var budget = $("input#id_budget").val();
-  var area_unit = $("select#id_area_unit").children("option:selected").text();
   var abbreviated_unit_display = $("select#id_area_unit").children("option:selected").attr('data-text');
   var area_modifier = $("select#id_area_unit").children("option:selected").val();
   if (data.features.length > 0) {
     // Stringify the GeoJson
     var convertedData = JSON.stringify(data);
     [host_removal_area, pesticide_area, host_removal_cost,pesticide_cost] = calculateTotalDrawnManagement(data);
-    console.log('host_removal_area = ' + host_removal_area);
-    console.log('pesticide_area = ' + pesticide_area);
-    console.log('convertedData = ' + convertedData);
     var total_area = host_removal_area + pesticide_area;
     var rounded_area = Math.round(total_area);
     var displayed_area = Math.round(total_area*area_modifier);
     // round cost to 2 decimal places
     var total_cost = host_removal_cost + pesticide_cost;
-    console.log('Cost is = ' + total_cost)
   } else {
     var rounded_area=0;
     var convertedData = 0;
     var host_removal_cost=0, pesticide_cost = 0;
     var total_cost = 0;
     var displayed_area = 0;
-    console.log("updateJSON: There is no management.")
+    console.log('No management drawn.')
   }
   answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + abbreviated_unit_display;  
   $('#id_management_polygons').val(convertedData);
@@ -195,21 +218,16 @@ function calculateTotalDrawnManagement(data) {
 function updateCircleRadiusInMeters() {
     console.log("Circle radius changed")
     var displayed_management_circle_radius = $("input#displayed_circle_radius").val();
-    console.log('Displayed radius = ' + displayed_management_circle_radius);
     var convert_to_meters_modifier = $("select#circle_distance_unit").children("option:selected").val();
-    console.log('Modifier = ' + convert_to_meters_modifier);
     var management_circle_radius_meters = displayed_management_circle_radius*convert_to_meters_modifier;
-    console.log("Radius in hidden field = " + management_circle_radius_meters);
     $("input#circle_radius_in_meters").val(management_circle_radius_meters);
 };
 
 function updateDefaultManagementCost(element) {
+  console.log('Updating management cost.')
   var displayed_cost = $(element).find("input.displayed_cost").val();
-  console.log("DISPLAYED COST: " + displayed_cost);
   var cost_modifier =  $(element).find("option:selected").val();
-  console.log("COST MODIFIER: " + cost_modifier);
   var actual_cost_per_meter_squared = Math.round(displayed_cost*cost_modifier*100000000)/100000000;
-  console.log("ACTUAL COST: " + actual_cost_per_meter_squared);
   $(element).find("input.default_cost").val(actual_cost_per_meter_squared);
 };
 
@@ -230,16 +248,14 @@ function disableDrawTools(){
 
 function enableDrawTools(){
   if ($("#draw-controls").is(":hidden")){
+    console.log('Enabling draw tools.')
     if (!$('input#id_tangible_landscape').prop('checked') && $('#map-tab').hasClass('active')){
       map.addControl(draw);
       $( "#draw-controls" ).show();
       var treatment = JSON.parse($('#id_management_polygons').val());
-      console.log('Currently drawn treatment JSON:');
-      console.log(treatment);
       if (treatment != 0) {
         var ids = draw.set(treatment);
       };
-      console.log('Added draw tools.')
       updateJSON();
     }  
     else  {

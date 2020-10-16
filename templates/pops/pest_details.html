@@ -1,186 +1,119 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
 <link rel="stylesheet" href="{% static 'css/create_case_study_styles.css' %}">
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}
-
-
 {% block content %}
-
-
-<div class="container py-2 pb-4">
-    <h3 class="text-center">{{pest_information.common_name}}</h3>
-    <h5 class="text-center"><em> {{pest_information.scientific_name}}</em></h5>
-    <div class="text-center">
-        {% if pest_information.organism_type == "PEST" %}
-        <strong><i class="fas fa-bug" style="color:orange"></i> Pest</strong>
-        {% elif pest_information.organism_type == "PATHOGEN" %}
-        <strong><i class="fas fa-virus" style="color:purple"></i> Pathogen</strong>
-        {% endif %}
-        {% if pest_information.invasive %}
-        / <strong><i class="fas fa-exclamation text-danger"></i> Invasive</strong> (<small><em>first found in
-                {{pest_information.arrival_location}} in {{pest_information.arrival_year}}</em></small>)
-        {% endif %}
-    </div>
-    <div class="col-md-12">
-        {% if pest_information.large_image %}
-        <div class="float-sm-left text-center py-2 my-2 mr-sm-4">
-            <img src="{{ pest_information.large_image.url }}" style="max-width:216px" class=""
-                alt="{{pest_information.common_name}}">
-            <p class="py-0 my-0"><small><em>{{pest_information.common_name}}</em></small></p>
+<div id="page-content" class="container-fluid">
+    <div id="header" class="row justify-content-center section-style">
+        <div class="col-md-10">
+            <h2 class="text-center">{{pest_information.common_name}}</h3>
+                <h5 class="text-center"><em> {{pest_information.scientific_name}}</em></h5>
         </div>
-        {% endif %}
-        <div class="py-2">
-            <h5>About:</h5>
-            <p>{{pest_information.about|safe}}</p>
-        </div>
-        <div class="py-2">
-            <h5>Risks:</h5>
-            <p>{{pest_information.risks|safe}}</p>
-        </div>
-        {% if pest_information.spread_image %}
-        <div class="float-md-right text-center py-2 my-2 ml-md-4">
-            <img src="{{ pest_information.spread_image.url }}" class="" alt="{{pest_information.common_name}}">
-            <p class="py-0 my-0"><small><em>PoPS forecast of {{pest_information.common_name}}</em></small></p>
-        </div>
-        {% endif %}
-        <div class="py-2">
-            <h5>Management activities:</h5>
-            <p>{{pest_information.management_activity|safe}}</p>
-        </div>
-
     </div>
 
-    {% with case_study_pests=pest_information.pest_set.all %}
-    {% if case_study_pests %}
-    {% for case_study_pest in case_study_pests %}
-    {% if case_study_pest.case_study.staff_approved == True %}
-    <div class="card my-3 text-dark">
-        <div class="card-header">
-            <div class="row justify-content-between align-items-center">
-                <div class="col-auto">
-                    <h5 class="card-title"><a class="text-dark" href="#">{{ case_study_pest.case_study.name }}</a></h5>
-                    <p class="card-subtitle mb-0">(Created: <em>{{case_study_pest.case_study.date_created}}</em>)</p>
-                </div>
-                <div class="col-auto">
-                    <a href="{% url 'case_study_review' pk=case_study_pest.case_study.pk %}"
-                        class="btn btn-success btn-sm btn-block"> <i class="fas fa-plus-circle" data-toggle="tooltip"
-                            data-placement="top" title="Create session from this case study."></i> Run PoPS for this
-                        case study</a>
-                </div>
+    <div class="row justify-content-center section-style">
+        <div class="col-md-10">
+            {% if pest_information.large_image %}
+            <div class="float-sm-left text-center py-2 my-2 mr-sm-4">
+                <img src="{{ pest_information.large_image.url }}" style="max-width:216px" class=""
+                    alt="{{pest_information.common_name}}">
+                <p class="py-0 my-0"><small><em>{{pest_information.common_name}}</em></small></p>
             </div>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-8">
-                    <p class="card-text">{{ case_study_pest.case_study.description|safe|truncatechars:370  }}... <a
-                  href="{% url 'case_study_review' pk=case_study_pest.case_study.pk %}" class="card-link text-danger">Read more</a></p>
-                </div>
-                <div class="col-md-4"><small>
-                        <p class="my-0 py-0"><strong>Host:</strong> {% for host in case_study_pest.case_study.host_set.all %}
-                            {{ host.name }} {% endfor %} </p>
-                        <p class="my-0 py-0"><strong>First calibration year:</strong>
-                            {{ case_study_pest.case_study.start_year }}</p>
-                        <p class="my-0 py-0"><strong>Final calibration year:</strong>
-                            {{ case_study_pest.case_study.end_year }}</p>
-                        <p class="my-0 py-0"><strong>Final model year:</strong>
-                            {{ case_study_pest.case_study.future_years }}</p>
-                        <p class="my-0 py-0"><strong>Time step:</strong> {{ case_study_pest.case_study.time_step }}</p>
-                    </small>
-                </div>
-            </div>
-
-        </div>
-    </div>
-    {% endif %}
-    {% endfor %}
-    {% endif %}
-    <div class="panel-container">
-        <h5>Case studies of {{ pest_information.common_name }}:</h5>
-        {% if case_study_pests %}
-        <div class="table-wrapper-scroll-y">
-            <table class="table table-hover table-bordered table-dark table-sm ">
-                <thead>
-                    <th style="width: 60%">Description</th>
-                    <th>Pests</th>
-                    <th>Hosts</th>
-                    <th></th>
-
-                </thead>
-
-                <tbody>
-                    {% for case_study_pest in case_study_pests %}
-                    {% if case_study_pest.case_study.staff_approved == True %}
-                    <tr>
-                        <td>
-                            <div class="row no-gutters align-items-center justify-content-between	">
-
-                                <h5 class="col-auto"><a class="text-light"
-                                        href="{% url 'case_study_review' pk=case_study_pest.case_study.pk %}">{{ case_study_pest.case_study.name }}</a>
-                                    {% if case_study_pest.case_study.calibration_status == "NO START" %}
-                                    <i style="font-size:0.6em" class="fas fa-question-circle align-top text-light"
-                                        data-toggle="tooltip" data-placement="top"
-                                        title="Calibration not started. Click info for more details."></i>
-                                    {% endif %}
-                                    {% if case_study_pest.case_study.calibration_status == "IN PROGRESS" %}
-                                    <i style="font-size:0.6em" class="fas fa-spinner align-top text-warning"
-                                        data-toggle="tooltip" data-placement="top"
-                                        title="Calibration in progress. Click info for more details."></i>
-                                    {% endif %}
-                                    {% if case_study_pest.case_study.calibration_status == "FAILED" %}
-                                    <i style="font-size:0.6em" class="fas fa-times-circle align-toptext-danger"
-                                        data-toggle="tooltip" data-placement="top"
-                                        title="Calibration FAILED. Click info for more details."></i>
-                                    {% endif %}
-                                    {% if case_study_pest.case_study.calibration_status == "SUCCESS" %}
-                                    <i style="font-size:0.6em" class="fas fa-check align-top text-success"
-                                        data-toggle="tooltip" data-placement="top"
-                                        title="Calibration successful. Click info for more details."></i>
-                                    {% endif %}
-                                </h5>
-
-                                <div class="col-auto px-2">
-                                    <em>{{ case_study_pest.case_study.date_created }}</em>
-                                </div>
-                            </div>
-
-                            <p> {{ case_study_pest.case_study.description }}</p>
-                        </td>
-                        <td>{% for pest in case_study_pest.case_study.pest_set.all %} <p>
-                                {% firstof pest.pest_information pest.name %}
-                            </p>{% endfor %} </td>
-                        <td>{% for host in case_study_pest.case_study.host_set.all %} <p>{{ host.name }}</p>{% endfor %}
-                        </td>
-                        <td>
-                            <a class="btn btn-info btn-sm btn-block"
-                                href="{% url 'case_study_review' pk=case_study_pest.case_study.pk %}" role="button">View
-                                Details</a>
-                            {% comment %}
-                            {% if not cs.use_external_calibration %}
-                            <a class="btn btn-secondary btn-sm btn-block" href="{% url 'case_study_review' pk=cs.pk %}"
-                                role="button" style="white-space: normal;" data-toggle="tooltip" data-placement="top"
-                                title="Tooltip on top">Extend Case Study</a>
-                            {% endif %}
-                            {% endcomment %}
-                            <a class="btn btn-success btn-sm btn-block"
-                                href="{% url 'new_session_case_study_specific' case_study=case_study_pest.case_study.pk %}"
-                                role="button" style="white-space: normal;">Create Session</a>
-                        </td>
-                    </tr>
+            {% endif %}
+            <div class="py-2">
+                <h5>About:</h5>
+                <div class="pb-2">
+                    {% if pest_information.organism_type == "PEST" %}
+                    <strong><i class="fas fa-bug" style="color:orange"></i> Pest</strong>
+                    {% elif pest_information.organism_type == "PATHOGEN" %}
+                    <strong><i class="fas fa-virus" style="color:purple"></i> Pathogen</strong>
                     {% endif %}
-                    {% endfor %}
+                    {% if pest_information.invasive %}
+                    / <strong><i class="fas fa-exclamation text-danger"></i> Invasive</strong> (<small><em>first found
+                            in
+                            {{pest_information.arrival_location}} in {{pest_information.arrival_year}}</em></small>)
+                    {% endif %}
+                </div>                
+                <p>{{pest_information.about|safe}}</p>
+            </div>
+            <div class="py-2">
+                <h5>Risks:</h5>
+                <p>{{pest_information.risks|safe}}</p>
+            </div>
+            {% if pest_information.spread_image %}
+            <div class="float-md-right text-center py-2 my-2 ml-md-4">
+                <img src="{{ pest_information.spread_image.url }}" class="" alt="{{pest_information.common_name}}">
+                <p class="py-0 my-0"><small><em>PoPS forecast of {{pest_information.common_name}}</em></small></p>
+            </div>
+            {% endif %}
+            <div class="py-2">
+                <h5>Management activities:</h5>
+                <p>{{pest_information.management_activity|safe}}</p>
+            </div>
 
-                </tbody>
-            </table>
         </div>
-        {% else %}
-        {{ pest_information.common_name }} is currently being studied using PoPS, but it doesn't
-        have any public case studies yet. <a href="{% url 'contact' %}">Contact us </a> if you'd like to run
-        PoPS
-        for this organism.
-        {% endif %}
     </div>
-    {% endwith%}
+{% comment %}     <div class="row justify-content-center section-style">
+        <div class="col-md-10">
+            <h4 class="text-center">Available case studies:</h4>
+        </div>
+        <div class="col-md-10">
+        {% with case_study_pests=pest_information.pest_set.all %}
+        {% if case_study_pests %}
+        {% for case_study_pest in case_study_pests %}
+        {% if case_study_pest.case_study.staff_approved == True %}
+        <div class="card my-3 text-dark">
+            <div class="card-header">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-auto">
+                        <h5 class="card-title"><a class="text-dark" href="#">{{ case_study_pest.case_study.name }}</a>
+                        </h5>
+                        <p class="card-subtitle mb-0">(Created: <em>{{case_study_pest.case_study.date_created}}</em>)
+                        </p>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{% url 'case_study_review' pk=case_study_pest.case_study.pk %}"
+                            class="btn btn-success btn-sm btn-block"> <i class="fas fa-plus-circle"
+                                data-toggle="tooltip" data-placement="top"
+                                title="Create session from this case study."></i> Run PoPS for this
+                            case study</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <p class="card-text">{{ case_study_pest.case_study.description|safe|truncatechars:370  }}... <a
+                                href="{% url 'case_study_review' pk=case_study_pest.case_study.pk %}"
+                                class="card-link text-danger">Read more</a></p>
+                    </div>
+                    <div class="col-md-4"><small>
+                            <p class="my-0 py-0"><strong>Host:</strong>
+                                {% for host in case_study_pest.case_study.host_set.all %}
+                                {{ host.name }} {% endfor %} </p>
+                            <p class="my-0 py-0"><strong>First calibration year:</strong>
+                                {{ case_study_pest.case_study.start_year }}</p>
+                            <p class="my-0 py-0"><strong>Final calibration year:</strong>
+                                {{ case_study_pest.case_study.end_year }}</p>
+                            <p class="my-0 py-0"><strong>Final model year:</strong>
+                                {{ case_study_pest.case_study.future_years }}</p>
+                            <p class="my-0 py-0"><strong>Time step:</strong> {{ case_study_pest.case_study.time_step }}
+                            </p>
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endwith%}
+
+    </div> {% endcomment %}
+</div>
 </div>
 {% endblock %}

@@ -1,0 +1,177 @@
+html {
+    height: 100%;
+    box-sizing: border-box;
+    font-size: 1.1em;
+}
+
+body {
+    position: relative;
+    margin: 0;
+    min-height: 100%;
+}
+
+body,
+.page-footer {
+    background-color: #111314;
+}
+
+#page-content {
+    background-color: #222629;
+    padding-bottom: 5.5rem;
+    /* This much match the footer height, below.*/
+    min-height: 95vh;
+}
+
+nav,
+.dropdown-menu,
+.dropdown-menu a,
+.dropdown-menu a:hover {
+    background-color: #111314;
+    color: lightgray;
+}
+
+.page-footer {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    height: 5.5rem;
+}
+
+.page-footer,
+.page-footer a {
+    font-size: 1rem;
+    color: grey;
+}
+
+.page-footer a:hover {
+    color: white;
+}
+
+.footer-copyright,
+.footer-copyright a {
+    font-size: 0.8rem;
+}
+
+.dropdown-menu a:hover {
+    color: white;
+}
+
+.card-custom {
+    background-color: #0b0d0e;
+}
+
+.btn-alert {
+    background-color: #cbaa45;
+    color: white;
+}
+
+.btn-action {
+    background-color: #659226;
+    color: white;
+}
+
+.btn-warn {
+    background-color: #d36c47;
+    color: white;
+}
+
+.btn-warn:hover {
+    background-color: #9e5135;
+    color: white;
+}
+
+.btn-action:hover {
+    background-color: #567d26;
+    color: white;
+}
+
+.btn-alert:hover {
+    background-color: #988034;
+    color: white;
+}
+
+.font-green.font-light {
+    color: #9ece5b;
+}
+
+.font-yellow.font-light {
+    color: #d5bb6a;
+}
+
+.font-red.font-light {
+    color: #dc896c;
+}
+
+.font-green.font-dark {
+    color: #659226;
+}
+
+.font-yellow.font-dark {
+    color: #988034;
+}
+
+.font-red.font-dark {
+    color: #9e5135;
+}
+
+.font-green,
+a.font-green:hover {
+    color: #86c232;
+}
+
+.font-yellow,
+a.font-yellow:hover {
+    color: #cbaa45;
+}
+
+.font-red,
+a.font-red:hover {
+    color: #d36c47;
+}
+
+
+#header h1 {
+    font-size: 3em;
+    font-weight: 300;
+}
+
+.section-style {
+    padding: 15px;
+    font-size: 1em;
+    font-weight: 400;
+}
+
+.section-style h2 {
+    font-size: 1.7em;
+    font-weight: 400;
+}
+
+.section-style h3 {
+    font-size: 1.5em;
+    font-weight: 400;
+}
+
+.section-style-0 {
+    background-color: #222629;
+}
+
+.section-style-1 {
+    background-color: #474b4f;
+}
+
+.section-style-2 {
+    background-color: #6b6e70;
+}
+
+.section-style-3 {
+    background-color: #cfd5d9;
+    color: black;
+}
+
+.section-style-4 {
+    background-color: #61892f;
+}
+
+.section-attention {
+    background-color: #d36c47;
+}

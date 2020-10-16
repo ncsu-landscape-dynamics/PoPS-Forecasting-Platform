@@ -1,21 +1,40 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
+{% endblock %}
 {% block content %}
-
-  <div id="header" class="container-fluid p-4 text-center" style="background-color:black;">
-    <h1 class="display-4">Tutorials</h1>
+<div id="page-content" class="container-fluid">
+  <div id="header" class="row text-center">
+    <div class="col">
+      <h1>Tutorials</h1>
+    </div>
+  </div>
+  <div id="" class="row justify-content-center section-style section-style-1">
+      <div class="col-md-10">
+      <h2 >Sub heading</h2>
+      {% lorem 3 p %}
+      </div>
+  </div>
+  <div id="" class="row justify-content-center section-style section-style-2">
+      <div class="col-md-10">
+      <h2>Sub heading</h2>
+      {% lorem 3 p %}
+      </div>
+  </div>
+  <div id="" class="row justify-content-center section-style section-style-3">
+      <div class="col-md-10">
+      <h2>Sub heading</h2>
+      {% lorem 3 p %}
+      </div>
+  </div>
+  <div id="" class="row justify-content-center section-style section-style-2">
+      <div class="col-md-10">
+      <h2>Sub heading</h2>
+      {% lorem 3 p %}
+      </div>
+  </div>
 </div>
 
 
-<div class="container py-4">
-<div class="row justify-content-center">
-<div class="col-xs-12 col-md-10">
-<h2 class="text-center">Tutorials Coming soon!</h2>
-
-
-
-
-</div>
-</div>
-</div>
 {% endblock %}
