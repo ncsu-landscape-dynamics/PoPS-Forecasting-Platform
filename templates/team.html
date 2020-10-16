@@ -7,21 +7,27 @@
 {% block content %}
 
 <div id="page-content" class="container-fluid">
-  <div id="header" class="row justify-content-center text-center">
-    <div class="col-md-10">
-      <h1>Team</h1>
-      <div class="lead">PoPS was started in 2018 in the <strong><a class="text-light"
-            href="https://cnr.ncsu.edu/geospatial/">Center
-            for Geospatial Analytics</a></strong>
-        at North Carolina State University in collaboration with USDA-APHIS.
-        It has rapidly grown into a talented team of field scientists, computer and data scientists, and government
-        organizations
-        dedicated to changing the way the globe manages pests and pathogens.
-      </div>
+    <div id="header" class="row justify-content-center text-center section-style">
+        <div class="col-md-10">
+            <h1>Team</h1>
+        </div>
     </div>
-  </div>
+    <div class="row justify-content-center  section-style section-style-0">
+        <div class="col-md-10">
+            <div class="lead">PoPS was started in 2018 in the <strong><a class="text-light"
+                        href="https://cnr.ncsu.edu/geospatial/">Center
+                        for Geospatial Analytics</a></strong>
+                at North Carolina State University in collaboration with USDA-APHIS.
+                It has rapidly grown into a talented team of field scientists, computer and data scientists, and
+                government
+                organizations
+                dedicated to changing the way the globe manages pests and pathogens.
+            </div>
+        </div>
+    </div>
+
   {% if current_members %}
-  <div id="" class="row justify-content-center section-style">
+  <div id="" class="row justify-content-center section-style section-style-0">
     <div class="col-md-10 text-center">
       <h2>Development Team</h2>
       <div id="people" class="card-deck ">
@@ -55,7 +61,7 @@
   {% endif %}
 
   {% if affiliate_members %}
-  <div id="" class="row justify-content-center section-style section-style-1">
+  <div id="" class="row justify-content-center section-style section-style-2">
     <div class="col-md-10 text-center">
       <h2>Affiliates</h2>
       <div id="people" class="card-deck ">
@@ -89,7 +95,7 @@
   {% endif %}
 
   {% if past_members %}
-  <div id="" class="row justify-content-center section-style section-style-2">
+  <div id="" class="row justify-content-center section-style section-style-1">
     <div class="col-md-10 text-center">
       <h2>Past Members</h2>
       <div id="people" class="card-deck ">
@@ -121,17 +127,6 @@
     </div>
   </div>
   {% endif %}
-  <div id="" class="row justify-content-center section-style">
-    <div class="col-md-10 text-center">
-      <h2>Employment Opportunities</h2>
-      <p class="text-center">
-        We are always looking for talented and passionate individuals.
-        If you're looking for a new challenge and eager to join a collaborative team view our <a
-          href="https://cnr.ncsu.edu/geospatial/news/2019/12/16/multiple-new-research-positions-in-spatial-data-science-now-accepting-applications/">job
-          listings</a>.
-      </p>
-    </div>
-  </div>
 </div>
 
 {% endblock %}
