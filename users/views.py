@@ -224,7 +224,7 @@ class AddNewEmail(CreateView):
             return JsonResponse(data)
         else:
             print('Response NOT ajax')
-            return response
+            return redirect('account_activation_sent')
 
 
 class DeleteEmail(TemplateView):

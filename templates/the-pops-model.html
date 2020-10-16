@@ -16,21 +16,21 @@
       <h1>The PoPS Model</h1>
     </div>
   </div>
-  <div id="" class="row justify-content-center section-style section-style-0">
+  <div id="" class="row justify-content-center section-style section-style-3">
       <div class="col-xl-6 col-lg-8 col-md-10 py-4">
         <h2>What is the PoPS model?</h2>
-        <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
+        <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
         <div class="row">
         <div class="col-md-3">        
         <div class="text-center pb-2">
-        <img class='img-fluid w-100' style="max-width:100px" src="{% static 'images/PoPS_Logo-02.svg' %}"
+        <img class='img-fluid w-100' style="max-width:120px" src="{% static 'images/PoPS_logo_black_transparent_bg.svg' %}"
             alt="The PoPS Model Equation">
         </div>        
         </div>
         <div class="col-md-9">        
         <p>The flexible, customizable PoPS (Pest or Pathogen Spread) model simulates reproduction, dispersal, and
             establishment of pests (e.g. insects) and pathogens (e.g. diseases) through space and time. The PoPS model is the power-house behind the
-            <a class="font-light" href="{% url 'the-pops-platform' %}">PoPS Forecasting Platform</a>.</p>        
+            <a class="font-red font-dark" href="{% url 'the-pops-platform' %}">PoPS Forecasting Platform</a>.</p>        
       </div>
       </div>
         <p>For every location in a landscape, at each time step, the PoPS model predicts the number of infested or infected hosts (Ψ). To better understand how the model works, let's take a detailed look at the equation governing the PoPS model.</p>
@@ -53,9 +53,9 @@
         <p>
         <strong>The PoPS model equation can be conceptualized in terms of:</strong>
             <ol>
-                <li><a class="font-light" href="#reproduction">Reproduction</a> (<em>how many pests leave <strong>cell i</strong>?</em>)</li>
-                <li><a class="font-light" href="#dispersal">Dispersal</a> (<em>where do the pests go?</em>)</li>
-                <li><a class="font-light" href="#establishment">Establishment</a> (<em>how many hosts in <strong>cell j</strong> become infected?</em>)</li>
+                <li><a class="font-yellow font-light" href="#reproduction">Reproduction</a> (<em>how many pests leave <strong>cell i</strong>?</em>)</li>
+                <li><a class="font-yellow font-light" href="#dispersal">Dispersal</a> (<em>where do the pests go?</em>)</li>
+                <li><a class="font-yellow font-light" href="#establishment">Establishment</a> (<em>how many hosts in <strong>cell j</strong> become infected?</em>)</li>
             </ol>
         We will describe each component below:
         </p>
@@ -149,13 +149,13 @@
         <p>PoPS is a modular, spatially explicit, discrete-time model, meaning that various components (e.g., weather effects or long-range dispersal) can be included or excluded from the model as necessary (through intuitive on-off switches on the interface) depending on the drivers that influence the species of interest; the model accounts for spatial relationships and movements between grid cells in a landscape; and it forecasts across sequential time steps (which can be specified as either daily, weekly, monthly, or yearly.<p>
         <p>Learn more about how PoPS handles:<p>
         <ul>
-            <li><a class="font-light" href="{% url 'host-mapping' %}">Host maps</a></li>
-            <li><a class="font-light" href="{% url 'applying-management' %}">Applying management</a></li>
-            <li><a class="font-light" href="{% url 'weather-reclassification' %}">Weather reclassification</a></li>
+            <li><a class="font-yellow font-light" href="{% url 'host-mapping' %}">Host maps</a></li>
+            <li><a class="font-yellow font-light" href="{% url 'applying-management' %}">Applying management</a></li>
+            <li><a class="font-yellow font-light" href="{% url 'weather-reclassification' %}">Weather reclassification</a></li>
         </ul>
       </div>
   </div>  
-  <div id="" class="row justify-content-center section-style section-style-2">
+  <div id="" class="row justify-content-center section-style section-style-3">
       <div class="col-xl-6 col-lg-8 col-md-10 py-4">
         <h2>How can I use PoPS?</h2>
         <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
@@ -173,7 +173,7 @@
                                 </ul>
                             </p>
                         <div class="text-center pb-2">
-                            <a class="btn btn-info mx-2" href="{% url 'get-pops' %}" role="button"><i class="fas fa-sign-in-alt"></i> Get install instructions</a>            
+                            <a class="btn btn-warn mx-2" href="{% url 'get-pops' %}" role="button"><i class="fas fa-sign-in-alt"></i> Get install instructions</a>            
                         </div>                    
                     </div>
                     <div class="col-md-6">
@@ -189,7 +189,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <p>(<em>Available for public use soon.</em>)</p>
-                        <p>No coding experience? We developed an easy-to-use interface to run the <a class="text-info"
+                        <p>No coding experience? We developed an easy-to-use interface to run the <a class="font-yellow font-dark"
                                 href="{% url 'the-pops-platform' %}">PoPS model in the
                                 cloud</a>. The dashboard is currently being used internally and will be made
                             available for public use soon.</p>
@@ -200,7 +200,7 @@
                                 <input type="email" class="form-control" name="email" id="id_email"
                                     placeholder="name@example.com">
                                 <div class="input-group-append">
-                                    <button class="btn btn-info" type="submit">Sign up</button>
+                                    <button class="btn btn-warn" type="submit">Sign up</button>
                                 </div>
                             </div>
                             <div class="form-check">

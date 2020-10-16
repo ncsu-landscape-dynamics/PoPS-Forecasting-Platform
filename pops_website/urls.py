@@ -34,12 +34,12 @@ urlpatterns = [
     path('publications/', TemplateView.as_view(template_name="publications.html"), name='publications'),
     path('contact/', TemplateView.as_view(template_name="contact.html"), name='contact'),
     path('accounts/', include('users.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('faq/', TemplateView.as_view(template_name="faqs.html"), name='FAQs'),
-    path('tutorials/', TemplateView.as_view(template_name="tutorials.html"), name='tutorials'),
-    path('terms-and-conditions/', TemplateView.as_view(template_name="terms_and_conditions.html"), name='terms_and_conditions'),
-    path('privacy-policy/', TemplateView.as_view(template_name="privacy_policy.html"), name='privacy_policy'),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    #path('accounts/', include('django.contrib.auth.urls')),
+    #path('faq/', TemplateView.as_view(template_name="faqs.html"), name='FAQs'),
+    #path('tutorials/', TemplateView.as_view(template_name="tutorials.html"), name='tutorials'),
+    #path('terms-and-conditions/', TemplateView.as_view(template_name="terms_and_conditions.html"), name='terms_and_conditions'),
+    #path('privacy-policy/', TemplateView.as_view(template_name="privacy_policy.html"), name='privacy_policy'),
+    #path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 
 if settings.DEBUG:

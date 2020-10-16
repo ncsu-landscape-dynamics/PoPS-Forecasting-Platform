@@ -4,10 +4,7 @@
 {% block page_styles %}
 <link rel="stylesheet" href="{% static 'css/information_pages.css' %}">
 {% endblock %}
-<!-- AJAX requires jquery (not jquery slim) -->
-{% block jquery_source %}
-  <script src="{% static 'js/jquery.min.js' %}"></script>
-{% endblock %}
+
 {% block content %}
 <div id="page-content" class="container-fluid">
   <div id="header" class="row text-center" style="background-color:transparent;">
@@ -23,42 +20,28 @@
         <div class="input-group">
           <input type="email" class="form-control" name="email" id="id_email" placeholder="name@example.com">
           <div class="input-group-append">
-            <button class="btn btn-info" type="submit">Sign up</button>
+            <button class="btn btn-warn" type="submit">Sign up</button>
           </div>
         </div>
         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="text-danger">
+            {{ error|escape }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="text-danger">
+            {{ error|escape }}
+        </div>
+    {% endfor %}
+{% endif %}
+
       </form>
     </div> <!-- Close main col -->
   </div>
 </div>
 
-<script src="{% static 'js/dashboard/ajax_setup_functions.js' %}"></script>
-<script>
-$("#add_email").on('submit', function () {
-  console.log("Adding email");
-  event.preventDefault();
-  var form = $("#add_email");
-  $.ajax({
-    url: form.attr("action"),
-    data: form.serialize(),
-    type : "POST", // http method
-    success: function (data) {
-      console.log('Success')
-      $('#emailHelp').html('<i class="fas fa-check text-success"></i> Please check ' + data.email + ' to confirm');
-      $( "#emailHelp" ).removeClass( 'text-danger' );
-      $( "#emailHelp" ).addClass( 'text-muted' );
-    },
-    error : function(xhr,errmsg,err) {
-    console.log('There was an error writing to the database: ' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-    var data=xhr.responseText;
-    var jsonResponse = JSON.parse(data);
-    console.log(jsonResponse["email"]);
-    $('#emailHelp').text('Error: ' + jsonResponse["email"] );
-    $( "#emailHelp" ).removeClass( 'text-muted' );
-    $( "#emailHelp" ).addClass( 'text-danger' );
-    }
-  });
-});
-
-</script>
 {% endblock %}

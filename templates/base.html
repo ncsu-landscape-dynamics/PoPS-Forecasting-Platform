@@ -45,15 +45,17 @@
               aria-haspopup="true" aria-expanded="false">
               About
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
               <a class="dropdown-item " href="{% url 'the-pops-model' %}">The PoPS Model</a>
               <a class="dropdown-item " href="{% url 'the-pops-platform' %}">The PoPS Forecasting Platform</a>
-              <a class="dropdown-item " href="{% url 'get-pops' %}">Get PoPS</a>              
               <a class="dropdown-item " href="{% url 'publications' %}">Publications</a>
               <a class="dropdown-item " href="{% url 'team' %}">Team</a>
             </div>
           </li>
-          {% if user.is_authenticated %}
+          <li class="nav-item ">
+              <a class="btn btn-action" href="{% url 'get-pops' %}" style="">Start using PoPS</a>              
+          </li>
+          {% comment %}           {% if user.is_authenticated %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
@@ -74,7 +76,7 @@
           <li class="nav-item ">
             <a class="nav-link " href="{% url 'signup' %}">Sign up</a>
           </li>
-          {% endif %}
+          {% endif %} {% endcomment %}
         </ul>
       </div>
   </nav>
@@ -91,9 +93,12 @@
           <a href="{% url 'team' %}">Team</a>
         </div>
         <div class="col">
-          <a class="" href="#">Publications</a>
+          <a class="" href="{% url 'publications' %}">Publications</a>
         </div>
         <div class="col">
+          <a class="" href="{% url 'subscribe_email' %}">Join our Newsletter</a>
+        </div>        
+        {% comment %} <div class="col">
           <a class="" href="{% url 'terms_and_conditions' %}">Terms and Conditions</a>
         </div>
         <div class="col">
@@ -101,13 +106,13 @@
         </div>
         <div class="col">
           <a class="" href="{% url 'FAQs' %}">FAQs</a>
-        </div>
+        </div> {% endcomment %}
         <div class="col">
           <a class="" href="{% url 'contact' %}">Contact</a>
         </div>
       </div><!-- End Grid row -->
       <!-- Copyright -->
-      <div class="footer-copyright text-center py-3">© 2018 Copyright:
+      <div class="footer-copyright text-center py-3">© 2018 
         <a href="https://popsmodel.org"> popsmodel.org</a>
       </div><!-- End Copyright -->
     </div><!--End container-->

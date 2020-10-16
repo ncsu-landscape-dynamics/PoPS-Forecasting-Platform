@@ -1,54 +1,7 @@
 #header {
-  background-color: #538080;
+  color: white;
+  background-color:#c25b36;
   padding: 25px;
 }
-a.font-light {
-    color: #a3d9d9;
-}
-a.font-light:hover {
-    color: #c8d9d9;
-}
-#header h1 {
-  font-size: 3em;
-  font-weight: 300;
-}
-.section-style {
-  padding: 15px;
-  font-size: 1em;
-  font-weight: 400;
-}
-.section-style h2 {
-  font-size: 1.7em;
-  font-weight: 400;
-}
-.section-style h3 {
-    font-size: 1.5em;
-    font-weight: 400;
-  }
-  .section-style-0 {
-    background-color: #252929;
-  }
-.section-style-1 {
-  background-color: #454d4d;
-}
-.section-style-2 {
-  background-color: #c8d9d9;
-  color: black;
-}
-.section-style-3 {
-  background-color: #538080;
-}
 
-.section-style-4 {
-  background-color: #6f7a7a;
-}
-
-.section-style-5 {
-  background-color: #a3d9d9;
-  color: black;
-}
-
-.section-attention {
-  background-color: #84698c;
-}
  

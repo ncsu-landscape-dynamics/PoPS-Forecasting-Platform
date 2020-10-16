@@ -16,12 +16,12 @@
       <h1>The PoPS Forecasting Platform</h1>
     </div>
   </div>
-  <div id="" class="row justify-content-center section-style section-style-0">
+  <div id="" class="row justify-content-center section-style section-style-3">
       <div class="col-xl-6 col-lg-8 col-md-10 py-4">
         <h2>What is the PoPS Forecasting Platform?</h2>
-        <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
+        <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
 
-        <p>The <a class="font-light" href="{% url 'the-pops-model' %}">PoPS model</a> is just one piece of the PoPS Forecasting Platform. Users may <a class="font-light" href="{% url 'get-pops' %}">download the R or GRASS GIS version of PoPS</a> OR users can use the PoPS Forecasting Platform to run PoPS in the cloud (<em>available for public use soon</em>).</p>        
+        <p>The <a class="font-red font-dark" href="{% url 'the-pops-model' %}">PoPS model</a> is just one piece of the PoPS Forecasting Platform. Users may <a class="font-red font-dark" href="{% url 'get-pops' %}">download the R or GRASS GIS version of PoPS</a> OR users can use the PoPS Forecasting Platform to run PoPS in the cloud (<em>available for public use soon</em>).</p>        
         <div class="row">
         <div class="col-md-5">        
         <div class="text-center py-2">
@@ -37,7 +37,7 @@
                                 <div class="input-group">
                                 <input type="email" class="form-control" name="email" id="id_email" placeholder="name@example.com">
                                 <div class="input-group-append">
-                                    <button class="btn btn-info" type="submit">Sign up</button>
+                                    <button class="btn btn-warn" type="submit">Sign up</button>
                                 </div>
                                 </div>
                                 <div class="form-check">
@@ -54,15 +54,15 @@
       <div class="col-xl-6 col-lg-8 col-md-10 py-4">
         <h2>How is the PoPS Forecasting Platform structured?</h2>
         <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
-        <p>The PoPS Forecasting Platform consists of a series of interconnected open-source packages (available on <a class="font-light" href="https://github.com/ncsu-landscape-dynamics">GitHub</a>) and tools shown below.</p>
+        <p>The PoPS Forecasting Platform consists of a series of interconnected open-source packages (available on <a class="font-red font-light" href="https://github.com/ncsu-landscape-dynamics">GitHub</a>) and tools shown below.</p>
         <div class="text-center pb-2">
             <img class='img-fluid w-100' style="max-width:700px" src="{% static 'images/PoPSPlatform/OSF_OverviewOfPoPSPlatform_transparent_bg.png' %}"
                 alt="The PoPS Platform organization">
         </div>                      
-        <p>End-users may <a class="font-light" href="{% url 'get-pops' %}">download the R or GRASS GIS packages</a> to run PoPS on their own computer, or they may use the interactive PoPS Dashboard Interface (<em>coming soon</em>).</p>
+        <p>End-users may <a class="font-red font-light" href="{% url 'get-pops' %}">download the R or GRASS GIS packages</a> to run PoPS on their own computer, or they may use the interactive PoPS Dashboard Interface (<em>coming soon</em>).</p>
       </div>
   </div>  
-    <div id="" class="row justify-content-center section-style section-style-2">
+    <div id="" class="row justify-content-center section-style section-style-3">
       <div class="col-xl-6 col-lg-8 col-md-10 py-4">        
         <h2>How did we create the PoPS Forecasting Platform?</h2>
         <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
@@ -72,10 +72,10 @@
         <img class='img-fluid w-100' style="max-width:600px" src="{% static 'images/PoPSPlatform/PoPSFramework_transparent_bg.png' %}"
             alt="The PoPS Platform">
         </div>
-        <p class="bg-light p-2" style="border-style: outset;">(1) <strong>The Calibration Loop</strong> occurs anytime new occurrence data are acquired or new biological information about the pest or pathogen is discovered; new data require that model parameters be re-calibrated, validated, and updated in the database.</p>
-        <p class="bg-light p-2" style="border-style: outset;">(2) <strong>The Scenario Modeling Loop</strong> involves stakeholders defining a management scenario that they want to test together, using a fully calibrated and validated version of the forecast model, to experiment with strategies that they can then implement on the ground as part of real-world adaptive management; the process repeats as stakeholders compare strategies possible under a realistic monetary budget and decide on the optimal outcome.</p>
-        <p class="bg-light p-2" style="border-style: outset;">(3) <strong>The Field Observation and Scientific Feedback Loop</strong> is engaged when stakeholders use the forecast to determine management and surveillance priorities; these new surveys and management actions are recorded in the database, triggering another iteration of the Calibration Loop. The Field Observation and Scientific Feedback Loop can also be triggered when new scientific studies reveal information about species characteristics (e.g., environmental tolerances or host preferences); this new information is added to the database and can lead to new insights that change model assumptions; such a change triggers another iteration of the Calibration Loop, and the results of forecasts (and hindcasts) with and without the new knowledge are compared.</p>
-        <p class="bg-light p-2" style="border-style: outset;">(4) <strong>The Participatory Feedback Loop</strong> consists of iterative back-and-forth discussion with stakeholders, to ensure that research progress matches their needs and vision; stakeholders test and provide input on not only the forecast model but also ways in which they prefer to interact with it.</p>
+        <p class="bg-light text-dark p-2" style="border-style: outset;">(1) <strong>The Calibration Loop</strong> occurs anytime new occurrence data are acquired or new biological information about the pest or pathogen is discovered; new data require that model parameters be re-calibrated, validated, and updated in the database.</p>
+        <p class="bg-light text-dark p-2" style="border-style: outset;">(2) <strong>The Scenario Modeling Loop</strong> involves stakeholders defining a management scenario that they want to test together, using a fully calibrated and validated version of the forecast model, to experiment with strategies that they can then implement on the ground as part of real-world adaptive management; the process repeats as stakeholders compare strategies possible under a realistic monetary budget and decide on the optimal outcome.</p>
+        <p class="bg-light text-dark p-2" style="border-style: outset;">(3) <strong>The Field Observation and Scientific Feedback Loop</strong> is engaged when stakeholders use the forecast to determine management and surveillance priorities; these new surveys and management actions are recorded in the database, triggering another iteration of the Calibration Loop. The Field Observation and Scientific Feedback Loop can also be triggered when new scientific studies reveal information about species characteristics (e.g., environmental tolerances or host preferences); this new information is added to the database and can lead to new insights that change model assumptions; such a change triggers another iteration of the Calibration Loop, and the results of forecasts (and hindcasts) with and without the new knowledge are compared.</p>
+        <p class="bg-light text-dark p-2" style="border-style: outset;">(4) <strong>The Participatory Feedback Loop</strong> consists of iterative back-and-forth discussion with stakeholders, to ensure that research progress matches their needs and vision; stakeholders test and provide input on not only the forecast model but also ways in which they prefer to interact with it.</p>
     </div>
   </div>
  

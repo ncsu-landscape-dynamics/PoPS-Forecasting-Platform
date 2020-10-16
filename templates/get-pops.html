@@ -16,7 +16,7 @@
             <h1>Get PoPS</h1>
         </div>
     </div>
-    <div id="" class="row justify-content-center section-style section-style-0">
+    <div id="" class="row justify-content-center section-style section-style-1">
         <div class="col-xl-8 col-lg-10 col-md-12 py-4">
             <h2>How can I use PoPS?</h2>
             <hr style="border-top: 1px solid rgba(256, 256, 256, 0.1);">
@@ -37,7 +37,7 @@
                         </ul>
                     </p>
                     <div class="text-center pb-2">
-                        <a class="btn btn-info mx-2" href="#available-packages" role="button"><i class="fas fa-sign-in-alt"></i> See available packages</a>
+                        <a class="btn btn-alert mx-2" href="#available-packages" role="button"><i class="fas fa-sign-in-alt"></i> See available packages</a>
                     </div>
                 </div>
                 <div class="col-md-5 bg-light text-dark m-2 py-2" style="border-style: outset;">
@@ -48,7 +48,7 @@
                     </div>
                     <p>(<em>Available for public use soon.</em>)<p>
                             <p>No coding experience? We developed an easy-to-use interface to run the <a
-                                    class="text-info" href="{% url 'the-pops-platform' %}">PoPS model in the
+                                    class="font-red font-dark" href="{% url 'the-pops-platform' %}">PoPS model in the
                                     cloud</a>. The dashboard is currently being used internally and will be made
                                 available for public use soon.</p>
                             <form id="add_email" action="{% url 'subscribe_email' %}" method="post">
@@ -58,7 +58,7 @@
                                     <input type="email" class="form-control" name="email" id="id_email"
                                         placeholder="name@example.com">
                                     <div class="input-group-append">
-                                        <button class="btn btn-info" type="submit">Sign up</button>
+                                        <button class="btn btn-warn" type="submit">Sign up</button>
                                     </div>
                                 </div>
                                 <div class="form-check">
@@ -72,12 +72,12 @@
             </div>
         </div>
     </div>
-    <div id="available-packages" class="row justify-content-center section-style section-style-2">
+    <div id="available-packages" class="row justify-content-center section-style section-style-3">
         <div class="col-xl-8 col-lg-10 col-md-12 py-4">
             <h2>Available PoPS Packages</h2>
             <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
             <p>PoPS 1.0 is currently available for download in <strong>R</strong> and <strong>GRASS GIS</strong>. Both versions of PoPS are wrappers 
-            around the <a class="text-dark" href="https://github.com/ncsu-landscape-dynamics/pops-core"><i class="fab fa-github"></i> PoPS Core C++ library for the Pest or Pathogen Spread Model</a>.
+            around the <a class="font-red font-dark" href="https://github.com/ncsu-landscape-dynamics/pops-core"><i class="fab fa-github"></i> PoPS Core C++ library for the Pest or Pathogen Spread Model</a>.
             </p>
             <p>All versions of PoPS provides the same functionality. The version you choose
             depends on your personal coding language preference.
@@ -91,11 +91,11 @@
                             alt="PoPS for R">
                     </div>
                     <div class="text-center pb-2">
-                        <a class="btn btn-info mx-2" href="https://github.com/ncsu-landscape-dynamics/rpops" role="button">
+                        <a class="btn btn-action mx-2" href="https://github.com/ncsu-landscape-dynamics/rpops" role="button">
                         <i class="fas fa-download"></i>
                             Get PoPS on GitHub
                         </a>
-                            <p><small><a class="text-info" href="#">Learn more about PoPS in R</a></small></p>
+                            <p><small><a class="font-yellow font-dark" href="#">Learn more about PoPS in R</a></small></p>
                     </div>
                 </div>
                 <div class="col-md-5 bg-light text-dark m-2 py-2" style="border-style: outset;">
@@ -105,11 +105,11 @@
                             alt="PoPS for GRASS GIS">
                     </div>
                     <div class="text-center pb-2">
-                        <a class="btn btn-info mx-2" href="https://github.com/ncsu-landscape-dynamics/r.pops.spread" role="button">
+                        <a class="btn btn-action mx-2" href="https://github.com/ncsu-landscape-dynamics/r.pops.spread" role="button">
                         <i class="fas fa-download"></i>
                             Get PoPS on GitHub
                         </a>
-                            <p><small><a class="text-info" href="#">Learn more about PoPS in GRASS GIS</a></small></p>
+                            <p><small><a class="font-yellow font-dark" href="#">Learn more about PoPS in GRASS GIS</a></small></p>
                     </div>
                 </div>                            
             </div>
