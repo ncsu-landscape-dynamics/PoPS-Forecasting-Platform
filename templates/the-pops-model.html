@@ -137,14 +137,24 @@
         <p>What we’ve described so far is a prediction of the number of infected hosts in a <strong><em>single cell</em></strong> as a result of pests/pathogens from another <strong><em>single cell</em></strong>. What we want to know is the total number of infected hosts across <strong><em>all cells</em></strong> in the entire landscape. </p>  
         <h3>A spatially explicit, discrete-time model</h3>
         <p>The PoPS model performs these calculations for each cell in the landscape, for every time step in the simulation. The value of Ψ is predicted for each cell, forecasting the spread of a pest or pathogen from infested or infected hosts to susceptible hosts, among all cells, across the landscape. </p>
+            <div class="text-center">
+                <div class="text-muted">
+                    <small>Watch the video to see reproduction, dispersal and establishment across a landscape.</small>
+                </div>
+                <video width="100%" max-width="640px" height="auto" controls loop>
+                    <source src="{% static 'images/AboutPages/PoPS_Animation.mp4' %}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>        
+                  
+        <p>With considerable optimization and parallelization, PoPS runs quickly, even for landscapes with millions of cells.</p>
         <div class="text-center pb-2">
             <img class='img-fluid w-100' style="max-width:356px" src="{% static 'images/SLF-spread-356x200px.gif' %}"
                 alt="The PoPS Model">
         </div>     
         <div class="text-center pb-2">
             <small class="text-muted">PoPS simulation of Spotted Lanternfly</small>
-        </div>                   
-        <p>With considerable optimization and parallelization, PoPS runs quickly, even for landscapes with millions of cells.</p>
+        </div>         
         <h3>More model details</h3>
         <p>PoPS is a modular, spatially explicit, discrete-time model, meaning that various components (e.g., weather effects or long-range dispersal) can be included or excluded from the model as necessary (through intuitive on-off switches on the interface) depending on the drivers that influence the species of interest; the model accounts for spatial relationships and movements between grid cells in a landscape; and it forecasts across sequential time steps (which can be specified as either daily, weekly, monthly, or yearly.<p>
         <p>Learn more about how PoPS handles:<p>
