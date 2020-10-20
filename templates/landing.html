@@ -10,74 +10,84 @@
 {% block content %}
 
 <div id="page-content" class="container-fluid">
-  <div class="row justify-content-center text-center" style="background-color:black">
-    <div class="col-10">
-      <img src="{% static 'images/PoPS_AnimatedLogo.gif' %}" alt="PoPS Pest or Pathogen Spread Model" width="240">
+    <div class="row justify-content-center text-center" style="background-color:black">
+        <div class="col-10">
+            <img src="{% static 'images/PoPS_AnimatedLogo.gif' %}" alt="PoPS Pest or Pathogen Spread Model" width="240">
+        </div>
+        <div class="col-10">
+            <p class="lead">Modeling pest and pathogen spread just got easy.</p>
+        </div>
+        <div class="col-10 pb-4">
+        </div>
     </div>
-    <div class="col-10">
-      <p class="lead">Modeling pest and pathogen spread just got easy.</p>
+    <div id="" class="row justify-content-center section-style section-style-0">
+        <div class="col-lg-4 py-2 px-4">
+            <h2>What is PoPS?</h2>
+            <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
+            <p>The flexible, customizable PoPS (Pest or Pathogen Spread) model is a framework
+                for modeling the spread of any pest or pathogen across
+                a landscape.
+            </p>
+            <p>
+                With PoPS you can quickly and easily:
+                <ul>
+                    <li>Calibrate and validate your model</li>
+                    <li>Run management or weather scenarios</li>
+                    <li>Compare scenarios to make management decisions</li>
+                </ul>
+            </p>
+            <div class="text-center pb-2">
+                <a class="btn btn-block btn-alert m-2" href="{% url 'the-pops-model' %}" role="button"><i
+                        class="fas fa-sign-in-alt"></i> Learn more about the model</a>
+                <a class="btn btn-block btn-warn m-2" href="{% url 'get-pops' %}#available-packages" role="button"><i
+                        class="fas fa-download"></i> See available packages</a>
+            </div>
+        </div>
+        <div class="col-lg-6 py-lg-5 px-4">
+            <div class="text-center">
+                <div class="pt-lg-4 text-muted">
+                    <small>Watch the video to learn how PoPS works.</small>
+                </div>
+                <video width="100%" max-width="640px" height="auto" controls loop>
+                    <source src="{% static 'images/AboutPages/PoPS_Animation.mp4' %}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
     </div>
-    <div class="col-10 pb-4">
-    </div>
-  </div>
-  <div id="" class="row justify-content-center section-style section-style-0">
-    <div class="col-lg-5 col-md-6 py-2 px-4">
-      <h2>What is PoPS?</h2>
-    <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
-      <p>The flexible, customizable PoPS (Pest or Pathogen Spread) model is a framework 
-      for modeling the spread of any pest or pathogen across
-        a landscape.
-      </p>
-      <p>
-        With PoPS you can quickly and easily:
-        <ul>
-          <li>Calibrate and validate your model</li>
-          <li>Run management or weather scenarios</li>
-          <li>Compare scenarios to make management decisions</li>
-        </ul>
-      </p>
-                    <div class="text-center pb-2">
-                        <a class="btn btn-block btn-alert m-2" href="{% url 'the-pops-model' %}" role="button"><i class="fas fa-sign-in-alt"></i> Learn more about the model</a>
-                        <a class="btn btn-block btn-warn m-2" href="{% url 'get-pops' %}#available-packages" role="button"><i class="fas fa-download"></i> See available packages</a>
-                    </div>    
-                    </div>
+
+<div id="" class="row justify-content-center section-style section-style-3">
     <div class="col-lg-5 col-md-6 py-4 px-4">
-      <div id="map">
-      </div>
-      <small class="text-muted">Simulated results showing Spotted Lanternfly spread in Pennsylvania.</small>
-    </div>
-  </div>
-  <div id="" class="row justify-content-center section-style section-style-3">
-    <div class="col-lg-5 col-md-6 py-4 px-4">
-      <div class="text-center">
-        <img class='img-fluid w-100' style="max-width:400px" src="{% static 'images/Computer_screen.png' %}"
-          alt="PoPS is easy to use.">
-      </div>
+        <div class="text-center">
+            <img class='img-fluid w-100' style="max-width:400px" src="{% static 'images/Computer_screen.png' %}"
+                alt="PoPS is easy to use.">
+        </div>
     </div>
     <div class="col-lg-5 col-md-6 py-2 px-4">
-      <h2>Easy to use PoPS Forecasting Platform</h2>
+        <h2>Easy to use PoPS Forecasting Platform</h2>
         <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
-      <p><em><strong>Coming soon!</strong></em>
-        The PoPS Forecasting Platform features an easy to use PoPS Dashboard Interface, the PoPS Database, 
-        and the PoPS model running in the cloud <em><strong>(NO programming experience required!)</strong></em>.
+        <p><em><strong>Coming soon!</strong></em>
+            The PoPS Forecasting Platform features an easy to use PoPS Dashboard Interface, the PoPS Database,
+            and the PoPS model running in the cloud <em><strong>(NO programming experience required!)</strong></em>.
         </p>
         <p>With the easy-to-use PoPS Dashboard Interface, users can:
-      <ul>
-          <li>run PoPS scenarios</li> 
-          <li>compare management interventions</li>
-          <li>save data in the cloud</li> 
-          </ul>
-</p>
-                    <div class="text-center pb-2">
-                        <a class="btn btn-block btn-alert mx-2" href="{% url 'the-pops-platform' %}" role="button"><i class="fas fa-sign-in-alt"></i> Learn more about the platform</a>
-                    </div>   
-      <p class="pt-2" style="font-size:0.8em"> <i class="fab fa-github"></i> <strong>Experienced coder?
-        </strong>Install the R or GRASS GIS package to run PoPS on your
-        own machine with more customizations and command-line control. <a
-          href="{% url 'get-pops' %}"><i class=" text-dark fas fa-arrow-right"></i></a>
-      </p>
+            <ul>
+                <li>run PoPS scenarios</li>
+                <li>compare management interventions</li>
+                <li>save data in the cloud</li>
+            </ul>
+        </p>
+        <div class="text-center pb-2">
+            <a class="btn btn-block btn-alert mx-2" href="{% url 'the-pops-platform' %}" role="button"><i
+                    class="fas fa-sign-in-alt"></i> Learn more about the platform</a>
+        </div>
+        <p class="pt-2" style="font-size:0.8em"> <i class="fab fa-github"></i> <strong>Experienced coder?
+            </strong>Install the R or GRASS GIS package to run PoPS on your
+            own machine with more customizations and command-line control. <a href="{% url 'get-pops' %}"><i
+                    class=" text-dark fas fa-arrow-right"></i></a>
+        </p>
     </div>
-  </div>
+</div>
   <div id="" class="row pb-4 justify-content-center section-style section-style-2">
     <div class="col-12 py-2 px-4">
         <h2 class="text-center">Why PoPS?</h2>
@@ -164,67 +174,4 @@ can be easily turned on or off in the model, depending on the system being model
   </div>
 </div>
 
-  <script>
-    mapboxgl.accessToken =
-      'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
-    /* eslint-disable */
-    var map = new mapboxgl.Map({
-      container: 'map', // container id
-      style: 'mapbox://styles/mapbox/dark-v9',
-      center: [-75.89533170441632, 40.2039152196177], // initial map center in [lon, lat]
-      zoom: 7, // starting zoom
-      pitch: 60,
-    });
-
-
-    function rotateCamera(timestamp) {
-      // clamp the rotation between 0 -360 degrees
-      // Divide timestamp by 100 to slow rotation to ~10 degrees / sec
-      map.rotateTo((timestamp / 200) % 360, {
-        duration: 0
-      });
-      // Request the next frame of the animation.
-      requestAnimationFrame(rotateCamera);
-    }
-
-    map.on('load', function () {
-      map.addSource('infection', {
-        'type': 'geojson',
-        /*many types of data can be added, such as geojson, vector tiles or raster data*/
-        'data': '{% static "map_data/infection_0_2019.geojson" %}'
-      });
-      /*here we are adding a source, then a layer based on that that source*/
-
-
-      map.addLayer({
-        "id": 'infection_extrusion_layer',
-        "type": 'fill-extrusion',
-        "source": 'infection',
-        'paint': {
-          'fill-extrusion-color': [
-            'interpolate',
-            ['linear'],
-            ['get', 'layer.1'],
-            0, '#009CB0',
-            0.1, '#00C49D',
-            0.2, '#00D793',
-            0.3, '#00FF80',
-            0.4, '#24DA80',
-            0.5, '#48B680',
-            0.6, '#6D9180',
-            0.7, '#916D80',
-            0.8, '#B64880',
-            0.9, '#DA2480',
-            1, '#ff0000'
-          ],
-          'fill-extrusion-height': ['*', ['number', ['get', 'layer.1'], 0], 10000],
-
-          'fill-extrusion-opacity': 0.6
-        }
-      }, );
-
-      rotateCamera(0);
-
-    });
-  </script>
  {% endblock %}
