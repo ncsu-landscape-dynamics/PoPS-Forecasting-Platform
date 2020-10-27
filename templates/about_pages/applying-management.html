@@ -19,9 +19,10 @@
             <p>PoPS allows two types of management:
                 <ol>
                     <li><strong>Host removal</strong> (removes hosts from the cell)</li>
-                    <li><strong>Pesticide application</strong> (converts infected hosts to resistant hosts for a given duration)</li>
+                    <li><strong>Pesticide application</strong> (converts infected hosts to resistant hosts for a given
+                        duration)</li>
                 </ol>
-                The efficacy of management application can range from 0-100%. The model also permits both management
+                The efficacy of management application can range from 0 to 100%. The model also permits both management
                 types to be applied simultaneously. </p>
             <p>
                 Below are examples of how PoPS applies management to a cell:
@@ -31,10 +32,13 @@
                     src="{% static 'images/AboutPages/management_types.svg' %}"
                     alt="PoPS allows two types of management: host removal and pesticide application.">
             </div>
-            <p>Management input as polygons is converted to raster management based on percent cell coverage. The “%
-                removal” applied (a-e) is multiplied by the percent of the cell covered by the management as shown below
-                for the overall percentage applied in a cell: for example, using the 25% management cell below and the
-                50% management in (a, above) would result in 12.5% of the cell being managed.</p>
+            <p>
+                Management input as polygons is converted to raster management based on percent cell coverage. The “%
+                removal” applied (a–e, above) is multiplied by the percent of the cell covered by the management (as
+                shown below) to determine the overall percentage applied in a cell: for example, a cell with 50%
+                management applied (a, above) but only 25% management coverage (below)
+                would be calculated as having 12.5% of its hosts managed.
+            </p>
             <div class="text-center pb-2">
                 <img class='img-fluid w-100' style="max-width:700px"
                     src="{% static 'images/AboutPages/management_vector_to_raster.svg' %}"
