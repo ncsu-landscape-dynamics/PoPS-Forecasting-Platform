@@ -444,8 +444,8 @@ class ApprovedAndUserCaseStudyListView(LoginRequiredMixin, TemplateView):
             context['user_case_studies'] = case_studies.filter(created_by = self.request.user)
             return context
 
-class PestDetailView(LoginRequiredMixin, DetailView):
-    login_url = 'login'
+class PestDetailView(DetailView):
+    #login_url = 'login'
     model = PestInformation
     template_name = 'pops/pest_details.html'
     context_object_name = 'pest_information'
@@ -459,7 +459,7 @@ class PestListView(TemplateView):
     template_name = 'pops/pest_list.html'
 
     def get_queryset(self):
-        return PestInformation.objects.prefetch_related('pest_set__case_study').order_by('common_name')
+        return PestInformation.objects.prefetch_related('pest_set__case_study').order_by('-host_type', 'common_name')
 
     def get_context_data(self, **kwargs):
             # Call the base implementation first to get the context

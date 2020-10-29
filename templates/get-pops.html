@@ -20,28 +20,31 @@
         <div class="col-xl-8 col-lg-10 col-md-12 py-4">
             <h2>How can I use PoPS?</h2>
             <hr style="border-top: 1px solid rgba(256, 256, 256, 0.1);">
-            <p>PoPS is open-source and freely available for anyone to use. There are two ways you can run PoPS:</p>
+            <p>PoPS is open source and freely available for anyone to use. There are two ways you can run PoPS:</p>
             <div class="row justify-content-center">
                 <div class="col-md-5 bg-light text-dark m-2 py-2" style="border-style: outset;">
-                    <h3 class="text-center">Option 1: <small>Download PoPS</small></h3>
+                    <h3 class="text-center">Option 1:</h3>
+                    <p class="text-center lead">Download PoPS</p>
                     <div class="text-center pb-2">
                         <img class='img-fluid w-100' style="max-width:250px"
                             src="{% static 'images/Computer_screen_with_coding.png' %}" alt="The PoPS Model">
                     </div>
                     <p>Users may download the PoPS model code to run on their own computer. PoPS packages are available
-                        in the following languages:
+                        in the following environments:
                         <ul>
                             <li>R</li>
-                            <li>GRASS GIS</li>
+                            <li>GRASS GIS <small>(includes desktop interface)</small></li>
                             <li>Python (<em>coming soon</em>)</li>
                         </ul>
                     </p>
                     <div class="text-center pb-2">
-                        <a class="btn btn-alert mx-2" href="#available-packages" role="button"><i class="fas fa-sign-in-alt"></i> See available packages</a>
+                        <a class="btn btn-alert mx-2" href="#available-packages" role="button"><i
+                                class="fas fa-sign-in-alt"></i> See available packages</a>
                     </div>
                 </div>
                 <div class="col-md-5 bg-light text-dark m-2 py-2" style="border-style: outset;">
-                    <h3 class="text-center">Option 2: <small>Use the PoPS Dashboard</small></h3>
+                    <h3 class="text-center">Option 2:</h3>
+                    <p class="text-center lead">Use the PoPS Dashboard</p>
                     <div class="text-center pb-2">
                         <img class='img-fluid w-100' style="max-width:250px"
                             src="{% static 'images/Computer_screen_with_dashboard.png' %}" alt="The PoPS Model">
@@ -64,8 +67,8 @@
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
                                     <label class="form-check-label" for="exampleCheck1"><small>I want to receive PoPS
-                                        updates</small></label>
-                                <div><small id="emailHelp"> </small></div>
+                                            updates</small></label>
+                                    <div><small id="emailHelp"> </small></div>
                                 </div>
                             </form>
                 </div>
@@ -76,13 +79,11 @@
         <div class="col-xl-8 col-lg-10 col-md-12 py-4">
             <h2>Available PoPS Packages</h2>
             <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
-            <p>PoPS 1.0 is currently available for download in <strong>R</strong> and <strong>GRASS GIS</strong>. Both versions of PoPS are wrappers 
-            around the <a class="font-red font-dark" href="https://github.com/ncsu-landscape-dynamics/pops-core"><i class="fab fa-github"></i> PoPS Core C++ library for the Pest or Pathogen Spread Model</a>.
+            <p>PoPS 1.0 is currently available for download in <strong>R</strong> and <strong>GRASS GIS</strong>. Both
+                versions of PoPS are wrappers
+                around the <a class="font-red font-dark" href="https://github.com/ncsu-landscape-dynamics/pops-core"><i
+                        class="fab fa-github"></i> PoPS Core C++ library for the Pest or Pathogen Spread Model</a>.
             </p>
-            <p>All versions of PoPS provides the same functionality. The version you choose
-            depends on your personal coding language preference.
-            <em>A Python version is under development and will be released soon. </em>
-            </p>            
             <div class="row justify-content-center">
                 <div class="col-md-5 bg-light text-dark m-2 py-2" style="border-style: outset;">
                     <h3 class="text-center">R version</h3>
@@ -91,11 +92,12 @@
                             alt="PoPS for R">
                     </div>
                     <div class="text-center pb-2">
-                        <a class="btn btn-action mx-2" href="https://github.com/ncsu-landscape-dynamics/rpops" role="button">
-                        <i class="fas fa-download"></i>
+                        <a class="btn btn-action mx-2" href="https://github.com/ncsu-landscape-dynamics/rpops"
+                            role="button">
+                            <i class="fas fa-download"></i>
                             Get PoPS on GitHub
                         </a>
-                            <p><small><a class="font-yellow font-dark" href="#">Learn more about PoPS in R</a></small></p>
+
                     </div>
                 </div>
                 <div class="col-md-5 bg-light text-dark m-2 py-2" style="border-style: outset;">
@@ -105,13 +107,16 @@
                             alt="PoPS for GRASS GIS">
                     </div>
                     <div class="text-center pb-2">
-                        <a class="btn btn-action mx-2" href="https://github.com/ncsu-landscape-dynamics/r.pops.spread" role="button">
-                        <i class="fas fa-download"></i>
+                        <a class="btn btn-action mx-2" href="https://github.com/ncsu-landscape-dynamics/r.pops.spread"
+                            role="button">
+                            <i class="fas fa-download"></i>
                             Get PoPS on GitHub
                         </a>
-                            <p><small><a class="font-yellow font-dark" href="#">Learn more about PoPS in GRASS GIS</a></small></p>
+                        <p><small><a class="font-yellow font-dark" target="_blank"
+                                    href="https://mybinder.org/v2/gh/ncsu-landscape-dynamics/pops-intro-grass-notebook/master?urlpath=lab/tree/pops-intro-grass-notebook.ipynb">Try
+                                    PoPS online</a></small></p>
                     </div>
-                </div>                            
+                </div>
             </div>
         </div>
     </div>

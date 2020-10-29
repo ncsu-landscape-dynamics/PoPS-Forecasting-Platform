@@ -11,132 +11,172 @@
 {% block content %}
 
 <div id="page-content" class="container-fluid">
-  <div id="header" class="row text-center">
-    <div class="col">
-      <h1>The PoPS Model</h1>
+    <div id="header" class="row text-center">
+        <div class="col">
+            <h1>The PoPS Model</h1>
+        </div>
     </div>
-  </div>
-  <div id="" class="row justify-content-center section-style section-style-3">
-      <div class="col-xl-6 col-lg-8 col-md-10 py-4">
-        <h2>What is the PoPS model?</h2>
-        <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
-        <div class="row">
-        <div class="col-md-3">        
-        <div class="text-center pb-2">
-        <img class='img-fluid w-100' style="max-width:120px" src="{% static 'images/PoPS_logo_black_transparent_bg.svg' %}"
-            alt="The PoPS Model Equation">
-        </div>        
+    <div id="" class="row justify-content-center section-style section-style-3">
+        <div class="col-xl-6 col-lg-8 col-md-10 py-4">
+            <h2>What is the PoPS model?</h2>
+            <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="text-center pb-2">
+                        <img class='img-fluid w-100' style="max-width:120px"
+                            src="{% static 'images/PoPS_logo_black_transparent_bg.svg' %}"
+                            alt="The PoPS Model Equation">
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <p>The flexible, customizable PoPS (Pest or Pathogen Spread) model simulates reproduction,
+                        dispersal, and
+                        establishment of pests (e.g., insects) and pathogens (i.e., viruses, bacteria, or other
+                        organisms that cause disease) through space and time. The PoPS model is the power-house behind
+                        the
+                        <a class="font-red font-dark" href="{% url 'the-pops-platform' %}">PoPS Forecasting
+                            Platform</a>.</p>
+                </div>
+            </div>
+            <p>For every location in a landscape, at each time step, the PoPS model predicts the number of infested or
+                infected hosts (Ψ). To better understand how the model works, let's take a detailed look at the equation
+                governing the PoPS model.</p>
         </div>
-        <div class="col-md-9">        
-        <p>The flexible, customizable PoPS (Pest or Pathogen Spread) model simulates reproduction, dispersal, and
-            establishment of pests (e.g. insects) and pathogens (e.g. diseases) through space and time. The PoPS model is the power-house behind the
-            <a class="font-red font-dark" href="{% url 'the-pops-platform' %}">PoPS Forecasting Platform</a>.</p>        
-      </div>
-      </div>
-        <p>For every location in a landscape, at each time step, the PoPS model predicts the number of infested or infected hosts (Ψ). To better understand how the model works, let's take a detailed look at the equation governing the PoPS model.</p>
-      </div>
-  </div>  
-  <div id="" class="row justify-content-center section-style section-style-1">
-      <div class="col-xl-6 col-lg-8 col-md-10 py-4">        
-        <h2>The PoPS Equation</h2>
-        <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
-        <p>To break down how the model works, let’s consider pests dispersing from a single location (<strong>cell i</strong>) and arriving in another single location (<strong>cell j</strong>).</p>        
-        <div class="text-center pb-2">
-        <img class='img-fluid w-100' style="max-width:700px" src="{% static 'images/PoPSModel/PestsDispersingFromItoJ.svg' %}"
-            alt="The PoPS Model Equation">
-        </div>
-        <p>At time, t, the number of infected/infested hosts in <strong>cell j</strong> as a result of pests/pathogens in <strong>cell i</strong> is Ψijt, which can be described by the PoPS model equation:</p>
-        <div class="text-center pb-2">
-        <img class='img-fluid w-100' style="max-width:500px" src="{% static 'images/PoPSModel/Equation.svg' %}"
-            alt="The PoPS Model">
-        </div>  
-        <p>
-        <strong>The PoPS model equation can be conceptualized in terms of:</strong>
-            <ol>
-                <li><a class="font-yellow font-light" href="#reproduction">Reproduction</a> (<em>how many pests leave <strong>cell i</strong>?</em>)</li>
-                <li><a class="font-yellow font-light" href="#dispersal">Dispersal</a> (<em>where do the pests go?</em>)</li>
-                <li><a class="font-yellow font-light" href="#establishment">Establishment</a> (<em>how many hosts in <strong>cell j</strong> become infected?</em>)</li>
-            </ol>
-        We will describe each component below:
-        </p>
-        <div id="reproduction" class="row">
-            <div class="col-12 section-style-0 my-2 py-2">        
-            <h3>Reproduction</h3>
-        <div class="row pb-4">
-        <div class="col-md-6">
-        <p>Beta (β), the number of pests or pathogens that disperse from a single host under optimal environmental conditions, is the starting point of the PoPS model.</p>
-        </div>
-        <div class="col-md-6">
-        <div class="text-center">
-        <img class='img-fluid w-100 border border-light section-style-1 p-2' style="max-width:200px" src="{% static 'images/PoPSModel/Reproduction_Beta.svg' %}"
-            alt="The PoPS Model">
-        </div>  
-        </div>
-        </div>
-        <p>Conditions are rarely optimal and locations contain multiple hosts, so β is modified by the number of currently infested or infected hosts (I) and environmental conditions in a location (i) at a particular time (t) to determine reproduction.</p>
-        <div class="text-center pb-2">
-        <img class='img-fluid w-100' style="max-width:350px" src="{% static 'images/PoPSModel/Reproduction_Eq.svg' %}"
-            alt="The PoPS Model">
-        </div>          
-        <p>The reproduction component of the PoPS equation gives the number of pests/pathogens dispersing from <strong>cell i</strong> to <em><strong>any cell</strong></em> at <strong>time t</strong>. </p>
-        <div class="text-center pb-2">
-        <img class='img-fluid w-100' style="max-width:400px" src="{% static 'images/PoPSModel/Reproduction_Illustration.svg' %}"
-            alt="The PoPS Model">
-        </div>   
-        </div>
-        </div>
-        <div id="dispersal" class="row">
-            <div class="col-12 section-style-0 my-2 py-2">                
-            <h2>Dispersal</h2>
-        <p>Now that we know how many pests/pathogens are dispersing from <strong>cell i</strong>, we need to determine where those pests/pathogens go.</p>      
-        <p>This is where the dispersal component of the PoPS model comes in. </p>
-        <div class="text-center pb-2">
-        <img class='img-fluid w-100' style="max-width:360px" src="{% static 'images/PoPSModel/Dispersal_Eq.svg' %}"
-            alt="The PoPS Model">
-        </div>
-        <p>The dispersal kernel determines where the new dispersing propagules go; dispersal distance (d) is a function of gamma (γ), which indicates how much dispersal is due to natural processes (alpha-1, α1) or caused by anthropogenic means (alpha-2, α2). The distance of each propagule is determined by drawing from a distribution using either α1 or α2, and its direction is drawn from a distribution that accounts for predominant wind direction (ω) and wind strength (κ). If data is unavailable for these factors, then the distribution is a circle with equal probability in all directions.</p>
-        <div class="text-center pb-2">
-        <img class='img-fluid w-100' style="max-width:600px" src="{% static 'images/PoPSModel/Dispersal_Illustration.svg' %}"
-            alt="The PoPS Model">
-        </div>           
-        <p>The dispersal component of PoPS lets us know where the pests/pathogens from <strong>cell i</strong> go. From that, we determine how many pests/pathogens arrive at <strong>cell j</strong>.</p>
-        </div>
-        </div>
-        <div id="establishment" class="row">
-            <div class="col-12 section-style-0 my-2 py-2">        
-        <h2>Establishment</h2>
-        <p>Now that we know how many pests/pathogens arrive in <strong>cell j</strong> from <strong>cell i</strong>, we need to calculate how many hosts in <strong>cell j</strong> become infected/infested as a result. </p>                
-        <p>Establishment depends on the environmental conditions in <strong>cell j</strong> and the availability of suitable hosts, calculated as the number of susceptible hosts (S) divided by the total number of potential hosts (N).</p>
-        <div class="text-center pb-2">
-        <img class='img-fluid w-100' style="max-width:350px" src="{% static 'images/PoPSModel/Establishment_Eq.svg' %}"
-            alt="The PoPS Model">
-        </div>  
-        <p>The establishment component of the PoPS equation predicts the number of infested or infected hosts in <strong>cell j</strong> at <strong>time t</strong>. </p>
-        <div class="text-center pb-2">
-        <img class='img-fluid w-100' style="max-width:500px" src="{% static 'images/PoPSModel/Establishment_Illustration.svg' %}"
-            alt="The PoPS Model">
-        </div>  
-        </div>
-        </div>
-        <div class="row">
-            <div class="col-12 section-style-0 my-2 py-2">                
-        <h2>Putting it all together</h2>
-        <p>Combining the reproduction, dispersal, and establishment components of PoPS, we can calculate Ψijt (the number of infected/infested hosts in <strong>cell j</strong> at <strong>time t</strong> as a result of pests/pathogens from <strong>cell i</strong>). </p>
-        <div class="text-center pb-2">
-        <img class='img-fluid w-100' style="max-width:600px" src="{% static 'images/PoPSModel/Model_Illustration.svg' %}"
-            alt="The PoPS Model">
-        </div>    
-        </div>
-        </div>      
     </div>
-  </div>
-  <div id="" class="row justify-content-center section-style">
-      <div class="col-xl-6 col-lg-8 col-md-10 py-4">
-        <h2>The PoPS Model</h2>
-        <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
-        <p>What we’ve described so far is a prediction of the number of infected hosts in a <strong><em>single cell</em></strong> as a result of pests/pathogens from another <strong><em>single cell</em></strong>. What we want to know is the total number of infected hosts across <strong><em>all cells</em></strong> in the entire landscape. </p>  
-        <h3>A spatially explicit, discrete-time model</h3>
-        <p>The PoPS model performs these calculations for each cell in the landscape, for every time step in the simulation. The value of Ψ is predicted for each cell, forecasting the spread of a pest or pathogen from infested or infected hosts to susceptible hosts, among all cells, across the landscape. </p>
+    <div id="" class="row justify-content-center section-style section-style-1">
+        <div class="col-xl-6 col-lg-8 col-md-10 py-4">
+            <h2>The PoPS Equation</h2>
+            <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
+            <p>To break down how the model works, let’s consider pests dispersing from a single location (<strong>cell
+                    i</strong>) and arriving in another single location (<strong>cell j</strong>).</p>
+            <div class="text-center pb-2">
+                <img class='img-fluid w-100' style="max-width:700px"
+                    src="{% static 'images/PoPSModel/PestsDispersingFromItoJ.svg' %}" alt="The PoPS Model Equation">
+            </div>
+            <p>At time t, the number of infested/infected hosts in <strong>cell j</strong> as a result of
+                pests/pathogens in <strong>cell i</strong> is Ψijt, which can be described by the PoPS model equation:
+            </p>
+            <div class="text-center pb-2">
+                <img class='img-fluid w-100' style="max-width:500px" src="{% static 'images/PoPSModel/Equation.svg' %}"
+                    alt="The PoPS Model">
+            </div>
+            <p>
+                <strong>The PoPS model equation can be conceptualized in terms of:</strong>
+                <ol>
+                    <li><a class="font-yellow font-light" href="#reproduction">Reproduction</a> (<em>How many pests
+                            leave <strong>cell i</strong>?</em>)</li>
+                    <li><a class="font-yellow font-light" href="#dispersal">Dispersal</a> (<em>Where do the pests
+                            go?</em>)</li>
+                    <li><a class="font-yellow font-light" href="#establishment">Establishment</a> (<em>How many hosts in
+                            <strong>cell j</strong> become infected?</em>)</li>
+                </ol>
+                We describe each component below:
+            </p>
+            <div id="reproduction" class="row">
+                <div class="col-12 section-style-0 my-2 py-2">
+                    <h3>Reproduction</h3>
+                    <div class="row pb-4">
+                        <div class="col-md-6">
+                            <p>Beta (β), the number of pests or pathogens that disperse from a single host under optimal
+                                environmental conditions, is the starting point of the PoPS model.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-center">
+                                <img class='img-fluid w-100 border border-light section-style-1 p-2'
+                                    style="max-width:200px" src="{% static 'images/PoPSModel/Reproduction_Beta.svg' %}"
+                                    alt="The PoPS Model">
+                            </div>
+                        </div>
+                    </div>
+                    <p>Conditions are rarely optimal and locations contain multiple hosts, so β is modified by the
+                        number of currently infested or infected hosts (I) and environmental conditions in a location
+                        (i) at a particular time (t) to determine reproduction.</p>
+                    <div class="text-center pb-2">
+                        <img class='img-fluid w-100' style="max-width:350px"
+                            src="{% static 'images/PoPSModel/Reproduction_Eq.svg' %}" alt="The PoPS Model">
+                    </div>
+                    <p>The reproduction component of the PoPS equation gives the number of pests/pathogens dispersing
+                        from <strong>cell i</strong> to <em><strong>any cell</strong></em> at <strong>time t</strong>.
+                    </p>
+                    <div class="text-center pb-2">
+                        <img class='img-fluid w-100' style="max-width:400px"
+                            src="{% static 'images/PoPSModel/Reproduction_Illustration.svg' %}" alt="The PoPS Model">
+                    </div>
+                </div>
+            </div>
+            <div id="dispersal" class="row">
+                <div class="col-12 section-style-0 my-2 py-2">
+                    <h2>Dispersal</h2>
+                    <p>Now that we know how many pests/pathogens are dispersing from <strong>cell i</strong>, we need to
+                        determine where those pests/pathogens go.</p>
+                    <p>This is where the dispersal component of the PoPS model comes in. </p>
+                    <div class="text-center pb-2">
+                        <img class='img-fluid w-100' style="max-width:360px"
+                            src="{% static 'images/PoPSModel/Dispersal_Eq.svg' %}" alt="The PoPS Model">
+                    </div>
+                    <p>The dispersal kernel determines where the new dispersing propagules go; dispersal distance (d) is
+                        a function of gamma (γ), which indicates how much dispersal is due to natural processes
+                        (alpha-1, α1) or caused by human-mediated transport (alpha-2, α2). The distance of each
+                        propagule is determined by drawing from a distribution using either α1 or α2, and its direction
+                        is drawn from a distribution that accounts for predominant wind direction (ω) and wind strength
+                        (κ). If data are unavailable for these factors, then the distribution is a circle with equal
+                        probability in all directions.</p>
+                    <div class="text-center pb-2">
+                        <img class='img-fluid w-100' style="max-width:600px"
+                            src="{% static 'images/PoPSModel/Dispersal_Illustration.svg' %}" alt="The PoPS Model">
+                    </div>
+                    <p>The dispersal component of PoPS lets us know where the pests/pathogens from <strong>cell
+                            i</strong> go. From that, we determine how many pests/pathogens arrive at <strong>cell
+                            j</strong>.</p>
+                </div>
+            </div>
+            <div id="establishment" class="row">
+                <div class="col-12 section-style-0 my-2 py-2">
+                    <h2>Establishment</h2>
+                    <p>Now that we know how many pests/pathogens arrive in <strong>cell j</strong> from <strong>cell
+                            i</strong>, we need to calculate how many hosts in <strong>cell j</strong> become
+                        infested/infected as a result. </p>
+                    <p>Establishment depends on the environmental conditions in <strong>cell j</strong> and the
+                        availability of suitable hosts, calculated as the number of susceptible hosts (S) divided by the
+                        total number of potential hosts (N).</p>
+                    <div class="text-center pb-2">
+                        <img class='img-fluid w-100' style="max-width:350px"
+                            src="{% static 'images/PoPSModel/Establishment_Eq.svg' %}" alt="The PoPS Model">
+                    </div>
+                    <p>The establishment component of the PoPS equation predicts the number of infested or infected
+                        hosts in <strong>cell j</strong> at <strong>time t</strong>. </p>
+                    <div class="text-center pb-2">
+                        <img class='img-fluid w-100' style="max-width:500px"
+                            src="{% static 'images/PoPSModel/Establishment_Illustration.svg' %}" alt="The PoPS Model">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 section-style-0 my-2 py-2">
+                    <h2>Putting it all together</h2>
+                    <p>Combining the reproduction, dispersal, and establishment components of PoPS, we can calculate
+                        Ψijt (the number of infested/infected hosts in <strong>cell j</strong> at <strong>time
+                            t</strong> as a result of pests/pathogens from <strong>cell i</strong>). </p>
+                    <div class="text-center pb-2">
+                        <img class='img-fluid w-100' style="max-width:600px"
+                            src="{% static 'images/PoPSModel/Model_Illustration.svg' %}" alt="The PoPS Model">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="" class="row justify-content-center section-style">
+        <div class="col-xl-6 col-lg-8 col-md-10 py-4">
+            <h2>The PoPS Model</h2>
+            <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
+            <p>What we’ve described so far is a prediction of the number of infected hosts in a <strong><em>single
+                        cell</em></strong> as a result of pests/pathogens from another <strong><em>single
+                        cell</em></strong>. What we want to know is the total number of infected hosts across
+                <strong><em>all cells</em></strong> in the entire landscape. </p>
+            <h3>A spatially explicit, discrete-time model</h3>
+            <p>The PoPS model performs these calculations for each cell in the landscape, for every time step in the
+                simulation. The value of Ψ is predicted for each cell, forecasting the spread of a pest or pathogen from
+                infested or infected hosts to susceptible hosts, among all cells, across the landscape. </p>
             <div class="text-center">
                 <div class="text-muted">
                     <small>Watch the video to see reproduction, dispersal and establishment across a landscape.</small>
@@ -145,36 +185,43 @@
                     <source src="{% static 'images/AboutPages/PoPS_Animation.mp4' %}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
-            </div>        
-                  
-        <p>With considerable optimization and parallelization, PoPS runs quickly, even for landscapes with millions of cells.</p>
-        <div class="text-center pb-2">
-            <img class='img-fluid w-100' style="max-width:356px" src="{% static 'images/SLF-spread-356x200px.gif' %}"
-                alt="The PoPS Model">
-        </div>     
-        <div class="text-center pb-2">
-            <small class="text-muted">PoPS simulation of Spotted Lanternfly</small>
-        </div>         
-        <h3>More model details</h3>
-        <p>PoPS is a modular, spatially explicit, discrete-time model, meaning that various components (e.g., weather effects or long-range dispersal) can be included or excluded from the model as necessary (through intuitive on-off switches on the interface) depending on the drivers that influence the species of interest; the model accounts for spatial relationships and movements between grid cells in a landscape; and it forecasts across sequential time steps (which can be specified as either daily, weekly, monthly, or yearly.<p>
-        <p>Learn more about how PoPS handles:<p>
-        <ul>
-            <li><a class="font-yellow font-light" href="{% url 'host-mapping' %}">Host maps</a></li>
-            <li><a class="font-yellow font-light" href="{% url 'applying-management' %}">Applying management</a></li>
-            <li><a class="font-yellow font-light" href="{% url 'weather-reclassification' %}">Weather reclassification</a></li>
-        </ul>
-      </div>
-  </div>  
-  <div id="" class="row justify-content-center section-style section-style-3">
-      <div class="col-xl-6 col-lg-8 col-md-10 py-4">
-        <h2>How can I use PoPS?</h2>
-        <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
-        <p>PoPS is open-source and freely available for anyone to use. There are two ways you can use PoPS:</p>
-        <div class="row">
-            <div class="col-12 bg-light text-dark my-2 py-2" style="border-style: outset;">
-                <h3>Option 1: Download PoPS to run on your computer</h3>
-                <div class="row">
-                    <div class="col-md-6">
+            </div>
+
+            <p>With considerable optimization and parallelization, PoPS runs quickly, even for landscapes with millions
+                of cells.</p>
+            <div class="text-center pb-2">
+                <img class='img-fluid w-100' style="max-width:356px"
+                    src="{% static 'images/SLF-spread-356x200px.gif' %}" alt="The PoPS Model">
+            </div>
+            <div class="text-center pb-2">
+                <small class="text-muted">Example PoPS simulation of a pest spreading across the United States</small>
+            </div>
+            <h3>More model details</h3>
+            <p>PoPS is a modular, spatially explicit, discrete-time model: various components (e.g., weather effects or
+                long-range dispersal) can be included or excluded from the model as necessary (through intuitive on-off
+                switches on the interface) depending on the drivers that influence the species of interest; the model
+                accounts for spatial relationships and movements between grid cells in a landscape; and it forecasts
+                across sequential time steps (which can be specified as either daily, weekly, monthly, or yearly).<p>
+                    <p>Learn more about how PoPS handles:<p>
+                            <ul>
+                                <li><a class="font-yellow font-light" href="{% url 'host-mapping' %}">Host maps</a></li>
+                                <li><a class="font-yellow font-light" href="{% url 'applying-management' %}">Applying
+                                        management</a></li>
+                                <li><a class="font-yellow font-light"
+                                        href="{% url 'weather-reclassification' %}">Weather reclassification</a></li>
+                            </ul>
+        </div>
+    </div>
+    <div id="" class="row justify-content-center section-style section-style-3">
+        <div class="col-xl-6 col-lg-8 col-md-10 py-4">
+            <h2>How can I use PoPS?</h2>
+            <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
+            <p>PoPS is open source and freely available for anyone to use. There are two ways you can use PoPS:</p>
+            <div class="row">
+                <div class="col-12 bg-light text-dark my-2 py-2" style="border-style: outset;">
+                    <h3>Option 1: Download PoPS to run on your computer</h3>
+                    <div class="row">
+                        <div class="col-md-6">
                             <p>Users may download the PoPS model code for:
                                 <ul>
                                     <li>R</li>
@@ -182,57 +229,58 @@
                                     <li>Python (<em>coming soon</em>)</li>
                                 </ul>
                             </p>
-                        <div class="text-center pb-2">
-                            <a class="btn btn-warn mx-2" href="{% url 'get-pops' %}" role="button"><i class="fas fa-sign-in-alt"></i> Get install instructions</a>            
-                        </div>                    
-                    </div>
-                    <div class="col-md-6">
-                        <div class="text-center pb-2">
-                        <img class='img-fluid w-100' style="max-width:250px" src="{% static 'images/Computer_screen_with_coding.png' %}"
-                            alt="The PoPS Model">
+                            <div class="text-center pb-2">
+                                <a class="btn btn-warn mx-2" href="{% url 'get-pops' %}" role="button"><i
+                                        class="fas fa-sign-in-alt"></i> Get install instructions</a>
+                            </div>
                         </div>
-                    </div>                
+                        <div class="col-md-6">
+                            <div class="text-center pb-2">
+                                <img class='img-fluid w-100' style="max-width:250px"
+                                    src="{% static 'images/Computer_screen_with_coding.png' %}" alt="The PoPS Model">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 bg-light text-dark my-2 py-2" style="border-style: outset;">
+                    <h3>Option 2: Use the web-based PoPS Dashboard</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>(<em>Available for public use soon.</em>)</p>
+                            <p>No coding experience? We developed an easy-to-use interface to run the <a
+                                    class="font-yellow font-dark" href="{% url 'the-pops-platform' %}">PoPS model in the
+                                    cloud</a>. The dashboard is currently being used internally and will be made
+                                available for public use soon.</p>
+                            <form id="add_email" action="{% url 'subscribe_email' %}" method="post">
+                                {% csrf_token %}
+                                <small>Get notified when the PoPS Dashboard is available:</small>
+                                <div class="input-group">
+                                    <input type="email" class="form-control" name="email" id="id_email"
+                                        placeholder="name@example.com">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-warn" type="submit">Sign up</button>
+                                    </div>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
+                                    <label class="form-check-label" for="exampleCheck1"><small>I want to receive
+                                            PoPS
+                                            updates</small></label>
+                                    <div><small id="emailHelp"> </small></div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-center pb-2">
+                                <img class='img-fluid w-100' style="max-width:250px"
+                                    src="{% static 'images/Computer_screen_with_dashboard.png' %}" alt="The PoPS Model">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-12 bg-light text-dark my-2 py-2" style="border-style: outset;">
-                <h3>Option 2: Use the web-based PoPS Dashboard</h3>
-                <div class="row">
-                    <div class="col-md-6">
-                        <p>(<em>Available for public use soon.</em>)</p>
-                        <p>No coding experience? We developed an easy-to-use interface to run the <a class="font-yellow font-dark"
-                                href="{% url 'the-pops-platform' %}">PoPS model in the
-                                cloud</a>. The dashboard is currently being used internally and will be made
-                            available for public use soon.</p>
-                        <form id="add_email" action="{% url 'subscribe_email' %}" method="post">
-                            {% csrf_token %}
-                            <small>Get notified when the PoPS Dashboard is available:</small>
-                            <div class="input-group">
-                                <input type="email" class="form-control" name="email" id="id_email"
-                                    placeholder="name@example.com">
-                                <div class="input-group-append">
-                                    <button class="btn btn-warn" type="submit">Sign up</button>
-                                </div>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
-                                <label class="form-check-label" for="exampleCheck1"><small>I want to receive
-                                        PoPS
-                                        updates</small></label>
-                                <div><small id="emailHelp"> </small></div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="text-center pb-2">
-                        <img class='img-fluid w-100' style="max-width:250px" src="{% static 'images/Computer_screen_with_dashboard.png' %}"
-                            alt="The PoPS Model">
-                        </div>
-                    </div>                
-                </div>                        
-            </div>            
         </div>
-      </div>
-  </div>  
+    </div>
 </div>
 
 <script src="{% static 'js/dashboard/ajax_setup_functions.js' %}"></script>
