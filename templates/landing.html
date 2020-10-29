@@ -24,7 +24,7 @@
         <div class="col-lg-4 py-2 px-4">
             <h2>What is PoPS?</h2>
             <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
-            <p>The flexible, customizable PoPS (Pest or Pathogen Spread) model is a framework
+            <p>The flexible, customizable PoPS (Pest or Pathogen Spread) model is a free and open-source framework
                 for modeling the spread of any pest or pathogen across
                 a landscape.
             </p>
@@ -56,122 +56,127 @@
         </div>
     </div>
 
-<div id="" class="row justify-content-center section-style section-style-3">
-    <div class="col-lg-5 col-md-6 py-4 px-4">
-        <div class="text-center">
-            <img class='img-fluid w-100' style="max-width:400px" src="{% static 'images/Computer_screen.png' %}"
-                alt="PoPS is easy to use.">
+    <div id="" class="row justify-content-center section-style section-style-3">
+        <div class="col-lg-5 col-md-6 py-4 px-4">
+            <div class="text-center">
+                <img class='img-fluid w-100' style="max-width:400px" src="{% static 'images/Computer_screen.png' %}"
+                    alt="PoPS is easy to use.">
+            </div>
+        </div>
+        <div class="col-lg-5 col-md-6 py-2 px-4">
+            <h2>Easy-to-use PoPS Forecasting Platform</h2>
+            <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
+            <p><em><strong>Coming soon!</strong></em>
+                The PoPS Forecasting Platform features an easy-to-use PoPS Dashboard Interface, the PoPS Database,
+                and the PoPS model running in the cloud. <em><strong>NO programming experience required!</strong></em>
+            </p>
+            <p>With the easy-to-use PoPS Dashboard Interface, users can:
+                <ul>
+                    <li>Run PoPS scenarios</li>
+                    <li>Compare management interventions</li>
+                    <li>Save data in the cloud</li>
+                </ul>
+            </p>
+            <div class="text-center pb-2">
+                <a class="btn btn-block btn-alert mx-2" href="{% url 'the-pops-platform' %}" role="button"><i
+                        class="fas fa-sign-in-alt"></i> Learn more about the platform</a>
+            </div>
+            <p class="pt-2" style="font-size:0.8em"> <i class="fab fa-github"></i> <strong>Experienced coder?
+                </strong>Install the R or GRASS GIS package to run PoPS on your
+                own machine with more customizations and command-line control. <a href="{% url 'get-pops' %}"><i
+                        class=" text-dark fas fa-arrow-right"></i></a>
+            </p>
         </div>
     </div>
-    <div class="col-lg-5 col-md-6 py-2 px-4">
-        <h2>Easy to use PoPS Forecasting Platform</h2>
-        <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
-        <p><em><strong>Coming soon!</strong></em>
-            The PoPS Forecasting Platform features an easy to use PoPS Dashboard Interface, the PoPS Database,
-            and the PoPS model running in the cloud <em><strong>(NO programming experience required!)</strong></em>.
-        </p>
-        <p>With the easy-to-use PoPS Dashboard Interface, users can:
-            <ul>
-                <li>run PoPS scenarios</li>
-                <li>compare management interventions</li>
-                <li>save data in the cloud</li>
-            </ul>
-        </p>
-        <div class="text-center pb-2">
-            <a class="btn btn-block btn-alert mx-2" href="{% url 'the-pops-platform' %}" role="button"><i
-                    class="fas fa-sign-in-alt"></i> Learn more about the platform</a>
+    <div id="" class="row pb-4 justify-content-center section-style section-style-2">
+        <div class="col-12 py-2 px-4">
+            <h2 class="text-center">Why PoPS?</h2>
         </div>
-        <p class="pt-2" style="font-size:0.8em"> <i class="fab fa-github"></i> <strong>Experienced coder?
-            </strong>Install the R or GRASS GIS package to run PoPS on your
-            own machine with more customizations and command-line control. <a href="{% url 'get-pops' %}"><i
-                    class=" text-dark fas fa-arrow-right"></i></a>
-        </p>
-    </div>
-</div>
-  <div id="" class="row pb-4 justify-content-center section-style section-style-2">
-    <div class="col-12 py-2 px-4">
-        <h2 class="text-center">Why PoPS?</h2>
-</div>
-    <div class="col-lg-3 col-md-4 col-sm-5 py-2 px-4 m-2 section-attention">
-      <h3 class="text-center">Flexible and modular</h3>
-<p>Various components such as weather effects and long-range dispersal
-can be easily turned on or off in the model, depending on the system being modeled.</p>     
-        </div> 
-    <div class="col-lg-3 col-md-4 col-sm-5 py-2 px-4 m-2 section-attention">
-      <h3 class="text-center">Fast</h3>
-        <p>
-        With considerable optimization and parallelization, PoPS runs quickly 
-        (up to 10x's faster than traditional models), 
-        even for landscapes with millions of cells.</p>    
-        </div> 
-    <div class="col-lg-3 col-md-4 col-sm-5 py-2 px-4 m-2 section-attention">
-      <h3 class="text-center">Easy to use</h3>
-<p>With its modular design, PoPS can model a wide range
-        of pests and pathogens with considerably shorter set-up time than creating
-        a model from scratch.</p>     
-        </div>                 
+        <div class="col-lg-3 col-md-4 col-sm-5 py-2 px-4 m-2 section-attention">
+            <h3 class="text-center">Flexible and modular</h3>
+            <p>Various components such as weather effects and long-range dispersal
+                can be easily turned on or off in the model, depending on the system being modeled.</p>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-5 py-2 px-4 m-2 section-attention">
+            <h3 class="text-center">Fast</h3>
+            <p>
+                With considerable optimization and parallelization, PoPS runs quickly
+                (up to 10x faster than traditional models),
+                even for landscapes with millions of cells.</p>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-5 py-2 px-4 m-2 section-attention">
+            <h3 class="text-center">Easy to use</h3>
+            <p>With its modular design, PoPS can model a wide range
+                of pests and pathogens with considerably shorter setup time than creating
+                a model from scratch.</p>
+        </div>
 
 
-  </div>  
-
-  <div id="" class="row justify-content-center section-style section-style-3">
-    <div id="" class="col-lg-5 col-md-6 py-2 px-4">
-      <h2>What can PoPS model?</h2>
-        <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
-        <p>PoPS can be used to model most pests or pathogens. So far, PoPS has been used
-        to model plant pests and diseases, and animal diseases.</p>
-        <p> PoPS is modular, 
-        meaning that various components 
-        (e.g., weather effects or long-range dispersal) can be included or excluded from the model 
-        as necessary (through intuitive on-off switches on the interface) depending on the drivers 
-        that influence the species of interest.<p>
-        <p>Learn more about what PoPs has modeled:</p>
-        <div class="text-center pb-2">
-    <a class="btn btn-block btn-alert mx-2" href="{% url 'pest_list' %}" role="button"><i class="fas fa-sign-in-alt"></i> View pests and pathogens</a>
-        </div>  
-    </div>
-    <div class="col-lg-5 col-md-6 p-4">
-      <div class="text-center">
-        <img src="{% static 'images/LandingPage/PoPS_case_studies_2.png' %}" class="img-fluid w-100" style="max-width:400px;" alt="PoPS case studies">
-      </div>
-    </div>
-  </div>
-  <div id="" class="row justify-content-center section-style section-style-1">
-    <div class="col-lg-5 col-md-6 p-4">
-      <div class="text-center">
-        <img src="{% static 'images/LandingPage/pandemic_graphic.png' %}" class="img-fluid w-100" style="max-width:400px;" alt="Safeguarding plant health and agriculture">
-      </div>
-    </div>  
-    <div id="" class="col-lg-5 col-md-6 py-2 px-4">
-      <h2>Making a Difference</h2>
-        <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
-      <div class="text-center">
-        <img src="{% static 'images/ncstate-brick-4x1-red.png' %}" class="img-fluid w-100 pt-2 pb-4" style="max-width:200px;" alt="North Carolina State University">
-      </div>        
-        <p>We started PoPS in 2018 at the 
-        <a class="font-light font-red" href="https://cnr.ncsu.edu/geospatial/">
-        Center for Geospatial Analytics</a>
-        at North Carolina State University, and in collaboration with the 
-        <a class="font-light font-red" href="https://cnr.ncsu.edu/geospatial/">
-        USDA Animal and Plant Health Inspection Service (APHIS)
-        </a>.
-        </p>
-        <p>It is our hope that PoPS will help researchers, decision-makers, and stakeholders make decisions 
-        about how to most effectively manage emergent pests and pathogens that 
-        threaten our landscapes and food supply. </p>
     </div>
 
-  </div>  
-  <div id="" class="row justify-content-center section-style section-style-0">
-    <div class="col-12 text-center">
-      <h2 class="">Thank you for the support we've received!</h2>
-      <p class="px-4">The PoPS team would like to acknowledge the grant and funding agencies that have supported our
-        mission:</p>
-                  <div class="text-center pb-2">
-            <img class="img-fluid w-100" src="{% static 'images/funding.svg' %}" style="max-width:400px;" alt="PoPS Funding">
-          </div>
+    <div id="" class="row justify-content-center section-style section-style-3">
+        <div id="" class="col-lg-5 col-md-6 py-2 px-4">
+            <h2>What can PoPS model?</h2>
+            <hr style="border-top: 1px solid rgba(0,0,0, 0.1);">
+            <p>PoPS can be used to model most pests or pathogens. So far, PoPS has been used
+                to model plant pests and diseases, and animal diseases.</p>
+            <p> PoPS is modular,
+                meaning that various components
+                (e.g., weather effects or long-range dispersal) can be included or excluded from the model
+                as necessary (through intuitive on-off switches on the interface) depending on the drivers
+                that influence the species of interest.<p>
+                    <p>Learn more about what PoPs has modeled:</p>
+                    <div class="text-center pb-2">
+                        <a class="btn btn-block btn-alert mx-2" href="{% url 'pest_list' %}" role="button"><i
+                                class="fas fa-sign-in-alt"></i> View pests and pathogens</a>
+                    </div>
+        </div>
+        <div class="col-lg-5 col-md-6 p-4">
+            <div class="text-center">
+                <img src="{% static 'images/LandingPage/PoPS_case_studies_2.png' %}" class="img-fluid w-100"
+                    style="max-width:400px;" alt="PoPS case studies">
+            </div>
+        </div>
     </div>
-  </div>
+    <div id="" class="row justify-content-center section-style section-style-1">
+        <div class="col-lg-5 col-md-6 p-4">
+            <div class="text-center">
+                <img src="{% static 'images/LandingPage/pandemic_graphic.png' %}" class="img-fluid w-100"
+                    style="max-width:400px;" alt="Safeguarding plant health and agriculture">
+            </div>
+        </div>
+        <div id="" class="col-lg-5 col-md-6 py-2 px-4">
+            <h2>Making a Difference</h2>
+            <hr style="border-top: 1px solid rgba(256,256,256, 0.1);">
+            <div class="text-center">
+                <img src="{% static 'images/ncstate-brick-4x1-red.png' %}" class="img-fluid w-100 pt-2 pb-4"
+                    style="max-width:200px;" alt="North Carolina State University">
+            </div>
+            <p>We started PoPS in 2018 at the
+                <a class="font-light font-red" href="https://cnr.ncsu.edu/geospatial/">
+                    Center for Geospatial Analytics</a>
+                at North Carolina State University, and in collaboration with the
+                <a class="font-light font-red" href="https://www.aphis.usda.gov/aphis/home/">
+                    USDA Animal and Plant Health Inspection Service (APHIS)
+                </a>.
+            </p>
+            <p>It is our hope that PoPS will help researchers, decision-makers, and stakeholders make decisions
+                about how to most effectively manage emerging pests and pathogens that
+                threaten our landscapes and food supply. </p>
+        </div>
+
+    </div>
+    <div id="" class="row justify-content-center section-style section-style-0">
+        <div class="col-12 text-center">
+            <h2 class="">Thank you for the support!</h2>
+            <p class="px-4">The PoPS team would like to acknowledge the funding agencies that have supported our
+                mission:</p>
+            <div class="text-center pb-2">
+                <img class="img-fluid w-100" src="{% static 'images/funding.svg' %}" style="max-width:400px;"
+                    alt="PoPS Funding">
+            </div>
+        </div>
+    </div>
 </div>
 
  {% endblock %}
