@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'pops.apps.PopsConfig',
     'team.apps.TeamConfig',
     'debug_toolbar',
+    'channels',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -79,6 +80,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'pops_website.wsgi.application'
+ASGI_APPLICATION = 'pops_website.asgi.application'
 
 
 # Database
