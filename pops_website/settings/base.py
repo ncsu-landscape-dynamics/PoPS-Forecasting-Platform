@@ -39,11 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'channels',
     'users.apps.UsersConfig',
     'pops.apps.PopsConfig',
     'team.apps.TeamConfig',
+    'chat',
     'debug_toolbar',
-    'channels',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
