@@ -8,6 +8,7 @@ function createPolygon (e) {
     findAndCombineOverlappingPolygons(featureID);
   }
   updateJSON();
+  document.querySelector('#chat-message-submit').click();
 }
 //Get the currently drawn polygon, so we can add management properties to the JSON.
 function grabPolygon(e) {
@@ -113,6 +114,7 @@ function updatePolygons(e) {
     findAndCombineOverlappingPolygons(selection[n]);
   }
   updateJSON();
+  document.querySelector('#chat-message-submit').click();
 }
     //When selection changes, show box to edit the selected polygons.
     function displaySelectionChange() {
@@ -162,6 +164,7 @@ function changePolygonProperties() {
         draw.add(draw.get(selectionIDs[n])); //This line makes the new change draw on the map and appear.
       }
       updateJSON(selectionIDs);
+      document.querySelector('#chat-message-submit').click();
 };
 
 //This function updates the GeoJSON management field 
@@ -253,6 +256,8 @@ function enableDrawTools(){
       map.addControl(draw);
       $( "#draw-controls" ).show();
       var treatment = JSON.parse($('#id_management_polygons').val());
+      console.log('Treatment:')
+      console.log(treatment)
       if (treatment != 0) {
         var ids = draw.set(treatment);
       };
