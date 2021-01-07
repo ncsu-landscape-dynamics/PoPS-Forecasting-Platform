@@ -67,22 +67,44 @@ class WeatherSerializer(serializers.ModelSerializer):
         model = Weather
         fields = ('pk','wind_on','seasonality_on','lethal_temp_on','temp_on','precipitation_on','wind','seasonality','lethaltemperature','temperature','precipitation')
 
-class HostDataSerializer(serializers.ModelSerializer):
+
+class MortalityRateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = HostData
-        fields = ['user_file']
+        model = MortalityRate
+        fields = ['value','probability']
+
+class MortalityTimeLagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MortalityTimeLag
+        fields = ['value','probability']
 
 class MortalitySerializer(serializers.ModelSerializer):
+
+    mortalityrate_set = MortalityRateSerializer(many=True)
+    mortalitytimelag_set = MortalityTimeLagSerializer(many=True)
+
     class Meta:
         model = Mortality
-        fields = ['method','user_file','rate','time_lag']
+        fields = ['method','user_file','rate','time_lag','mortalityrate_set','mortalitytimelag_set']
 
-class HostSerializer(serializers.ModelSerializer):
-    hostdata = HostDataSerializer()
-    mortality = MortalitySerializer()
+class QuarantineSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = Host
-        fields = ['pk','name','score','hostdata','mortality_on','mortality']
+        model = Quarantine
+        fields = ['name','date','polygon']
+
+class QuarantineLinkSerializer(serializers.ModelSerializer):
+
+    quarantine = QuarantineSerializer()
+
+    class Meta:
+        model = QuarantineLink
+        fields = ['quarantine']
+
+class ParametersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Parameters
+        fields = ['means','covariance_matrix']
 
 class LatencyPeriodSerializer(serializers.ModelSerializer):
     class Meta:
@@ -129,6 +151,52 @@ class InfestationSerializer(serializers.ModelSerializer):
         model = Infestation
         fields = ['user_file']
 
+class HostLocationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = HostLocation
+        fields = ['host_map','meta_data','date']
+
+class HostMovementSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = HostMovement
+        fields = ['date','number_of_units','to_location','from_location']
+
+class HostInformationSerializer(serializers.ModelSerializer):
+
+    hostlocation_set = HostLocationSerializer(many=True)
+    hostmovement_set = HostMovementSerializer(many=True)
+
+    class Meta:
+        model = HostInformation
+        fields = ['name','hostlocation_set','hostmovement_set']
+
+class ClippedHostLocationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ClippedHostLocation
+        fields = ['host_map','date']
+
+class ClippedHostMovementSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ClippedHostMovement
+        fields = ['movement_file','date']
+
+class PestHostInteractionSerializer(serializers.ModelSerializer):
+
+    hostinformation = HostInformationSerializer()
+    clippedhostlocation = ClippedHostLocationSerializer()
+    clippedhostmovement = ClippedHostMovementSerializer()
+    mortality = MortalitySerializer()
+
+    class Meta:
+        model = PestHostInteraction
+        fields = ['hostinformation','competency','susceptibility','mortality_on',
+        'clippedhostlocation','clippedhostmovement','mortality']
+
+
 class PestSerializer(serializers.ModelSerializer):
 
     pestinformation = PestInformationSerializer()
@@ -139,6 +207,7 @@ class PestSerializer(serializers.ModelSerializer):
     anthropogenicdirection = AnthropogenicDirectionSerializer()
     parameters = ParametersSerializer()
     quarantinelink_set = QuarantineLinkSerializer(many=True)
+    pesthostinteraction_set = PestHostInteractionSerializer(many=True)
     weather = WeatherSerializer()
 
     class Meta:
@@ -196,7 +265,12 @@ class OutputSerializer(serializers.ModelSerializer):
     timetoboundary = TimeToBoundarySerializer()
     class Meta:
         model = Output
-        fields = ['pk', 'run', 'number_infected', 'infected_area', 'year', 'single_spread_map', 'probability_map', 'susceptible_map', 'escape_probability', 'spreadrate', 'distancetoboundary', 'timetoboundary']
+        fields = ['pk','pest','run', 'number_infected',
+                'infected_area', 'year', 'min_spread_map',
+                'max_spread_map', 'median_spread_map',
+                'probability_map','suceptible_map',
+                'escape_probability', 'spreadrate', 
+                'distancetoboundary', 'timetoboundary']
 
     def create(self, validated_data):
         spreadrate_data = validated_data.pop('spreadrate')

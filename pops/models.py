@@ -25,7 +25,7 @@ def r_data_directory(instance, filename):
 
 
 def all_populations_directory(instance, filename):
-    return 'case_studies/{0}/all_plants/{1}'.format(instance.case_study.id, filename)
+    return 'case_studies/{0}/all_populations/{1}'.format(instance.case_study.id, filename)
 
 
 def host_directory(instance, filename):
@@ -360,8 +360,8 @@ class AllPopulationsData(models.Model):
     objects = MyManager()
 
     class Meta:
-        verbose_name = _("all_plant")
-        verbose_name_plural = _("all_plants")
+        verbose_name = _("all population")
+        verbose_name_plural = _("all population")
 
     def __str__(self):
         return str(self.pk)
@@ -1206,7 +1206,7 @@ class PestHostInteraction(models.Model):
 
 class HostLocation(models.Model):
 
-    host = models.ForeignKey(
+    host_information = models.ForeignKey(
         HostInformation,
         verbose_name=_("host"),
         on_delete=models.CASCADE
@@ -1268,7 +1268,7 @@ class ClippedHostLocation(models.Model):
 
 class HostMovement(models.Model):
 
-    host = models.ForeignKey(
+    host_information = models.ForeignKey(
         HostInformation,
         verbose_name=_("host"),
         on_delete=models.CASCADE
@@ -1446,14 +1446,16 @@ class MortalityTimeLag(models.Model):
 
 class VectorPestInformation(models.Model):
 
-    pest = models.ForeignKey(
+    disease = models.ForeignKey(
         Pest,
-        verbose_name=_("pest"),
+        verbose_name=_("vectorborn_disease"),
+        related_name="vectorborn_disease",
         on_delete=models.CASCADE
         )
     vector = models.ForeignKey(
         Pest,
         verbose_name=_("vector"),
+        related_name="vector",
         on_delete=models.CASCADE
         )
 
@@ -2126,6 +2128,14 @@ class Output(models.Model):
         verbose_name=_("run id"),
         on_delete=models.CASCADE
         )
+    pest = models.ForeignKey(
+        Pest,
+        verbose_name=_("pest"),
+        help_text="The pest associated with this pest, for cases with multiple pests",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL
+        )
     date_created = models.DateTimeField(
         verbose_name=_("date created"),
         auto_now=False,
@@ -2153,7 +2163,13 @@ class Output(models.Model):
         null=True,
         validators=[MinValueValidator(2018)]
         )
-    single_spread_map = models.JSONField(
+    min_spread_map = models.JSONField(
+        null=True
+        )
+    max_spread_map = models.JSONField(
+        null=True
+        )
+    median_spread_map = models.JSONField(
         null=True
         )
     probability_map = models.JSONField(
@@ -2161,7 +2177,7 @@ class Output(models.Model):
         )
     susceptible_map = models.JSONField(
         null=True
-        )
+        )                
     escape_probability = models.DecimalField(
         verbose_name=_("probability of escape"),
         help_text="Probability that the pest/pathogen escapes quarantine or other boundary",
