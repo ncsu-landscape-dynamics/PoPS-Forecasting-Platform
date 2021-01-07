@@ -20,32 +20,32 @@ class MyManager(models.Manager):
             return None
 
 
-def all_plants_directory(instance, filename):
+def r_data_directory(instance, filename):
+    return 'case_studies/{0}/r_data/{1}'.format(instance.case_study.id, filename)
+
+
+def all_populations_directory(instance, filename):
     return 'case_studies/{0}/all_plants/{1}'.format(instance.case_study.id, filename)
 
 
 def host_directory(instance, filename):
-    return 'case_studies/{0}/hosts/{1}/host_data/{2}'.format(instance.host.case_study.id, instance.host.id, filename)
+    return 'hosts/{0}/host_location_data/{1}'.format(instance.host_information.id, filename)
+
+
+def clipped_host_directory(instance, filename):
+    return 'case_studies/{0}/hosts/{1}/clipped_host_location_data/{2}'.format(instance.pest_host_interaction.pest.case_study.id, instance.pest_host_interaction.id, filename)
+
+
+def clipped_host_movement_directory(instance, filename):
+    return 'case_studies/{0}/hosts/{1}/clipped_host_movement_data/{2}'.format(instance.pest_host_interaction.pest.case_study.id, instance.pest_host_interaction.id, filename)
 
 
 def mortality_directory(instance, filename):
-    return 'case_studies/{0}/hosts/{1}/mortality/{2}'.format(instance.host.case_study.id, instance.host.id, filename)
+    return 'case_studies/{0}/hosts/{1}/mortality/{2}'.format(instance.pest_host_interaction.pest.case_study.id, instance.pest_host_interaction.id, filename)
 
 
-def initial_infestation_directory(instance, filename):
+def infestation_directory(instance, filename):
     return 'case_studies/{0}/pests/{1}/initial_infestation/{2}'.format(instance.pest.case_study.id, instance.pest.id, filename)
-
-
-def validation_infestation_directory(instance, filename):
-    return 'case_studies/{0}/pests/{1}/validation_infestation/{2}'.format(instance.pest.case_study.id, instance.pest.id, filename)
-
-
-def calibration_infestation_directory(instance, filename):
-    return 'case_studies/{0}/pests/{1}/calibration_infestation/{2}'.format(instance.pest.case_study.id, instance.pest.id, filename)
-
-
-def vector_directory(instance, filename):
-    return 'case_studies/{0}/pests/{1}/vector/{2}'.format(instance.pest.case_study.id, instance.pest.id, filename)
 
 
 def treatment_directory(instance, filename):
@@ -57,11 +57,11 @@ def temperature_directory(instance, filename):
 
 
 def precipitation_directory(instance, filename):
-    return 'case_studies/{0}/precipitation_data/{1}'.format(instance.weather.case_study.id, filename)
+    return 'case_studies/{0}/precipitation_data/{1}'.format(instance.weather.pest.case_study.id, filename)
 
 
 def lethal_temperature_directory(instance, filename):
-    return 'case_studies/{0}/lethal_temperature_data/{1}'.format(instance.weather.case_study.id, filename)
+    return 'case_studies/{0}/lethal_temperature_data/{1}'.format(instance.weather.pest.case_study.id, filename)
 
 
 # Django automatically creates a primary key for each model and we are not
@@ -216,13 +216,12 @@ class CaseStudy(models.Model):
         help_text="Use spread rate?",
         default=False
         )
-    # model_api??
-    model_api = models.CharField(
-        verbose_name=_("model api url"),
-        max_length=250,
-        null=True,
-        blank=True,
-        help_text="Link to the model api for this case study."
+    r_data = models.FileField(
+        verbose_name=_("R data file"),
+        help_text="R data file to run PoPS model",
+        upload_to=r_data_directory,
+        max_length=100,
+        blank=True
         )
 
     objects = MyManager()
@@ -260,9 +259,12 @@ class HistoricData(models.Model):
         verbose_name=_("case study id"),
         on_delete=models.CASCADE
         )
-    date = models.DateField(
-        verbose_name=_("date"),
-        help_text="Date of historic data"
+    year = models.PositiveIntegerField(
+        verbose_name=_("historic data year"),
+        default=None,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(2018)]
         )
     data = models.JSONField(
         help_text="GeoJSON map data",
@@ -350,7 +352,7 @@ class AllPopulationsData(models.Model):
         "This could be all the plants in a cell, or alternatively, all  " +
         "cells could have the value of the maximum number of hosts found in " +
         "any cell in your study area.",
-        upload_to=all_plants_directory,
+        upload_to=all_populations_directory,
         max_length=100,
         blank=True
         )
@@ -1209,9 +1211,17 @@ class HostLocation(models.Model):
         verbose_name=_("host"),
         on_delete=models.CASCADE
         )
-    host_map = models.JSONField(
-        null=True
+    host_map = models.FileField(
+        verbose_name=_("host data"),
+        help_text="Host data (raster)",
+        upload_to=host_directory,
+        max_length=100,
+        blank=True
         )
+    meta_data = models.JSONField(
+        verbose_name=_("meta data"),
+        help_text="Meta data for host map",
+    )
     date = models.DateField(
         verbose_name=_("date"),
         help_text="What is the date for the map?"
@@ -1234,8 +1244,12 @@ class ClippedHostLocation(models.Model):
         verbose_name=_("pest host interaction"),
         on_delete=models.CASCADE
         )
-    host_map = models.JSONField(
-        null=True
+    host_map = models.FileField(
+        verbose_name=_("clipped host data"),
+        help_text="Clipped host data (raster)",
+        upload_to=clipped_host_directory,
+        max_length=100,
+        blank=True
         )
     date = models.DateField(
         verbose_name=_("date"),
@@ -1293,10 +1307,10 @@ class ClippedHostMovement(models.Model):
         verbose_name=_("date"),
         help_text="What is the date for the map?"
         )
-    user_file = models.FileField(
+    movement_file = models.FileField(
         verbose_name = _("host movement data"),
         help_text="Host movement data clipped to Case Study size",
-        upload_to=host_directory,
+        upload_to=clipped_host_movement_directory,
         max_length=100,
         blank=True
         )
@@ -1525,7 +1539,7 @@ class Infestation(models.Model):
         verbose_name=_("infestation data"),
         help_text="Infestation raster generated from Location",
         blank=True,
-        upload_to=initial_infestation_directory,
+        upload_to=infestation_directory,
         max_length=100
         )
 
@@ -1549,12 +1563,18 @@ class PriorTreatment(models.Model):
         )
     user_file = models.FileField(
         verbose_name=_("prior treatments data"),
-        help_text="Upload the raster file for management actions.",
+        help_text="Upload the single raster file for management actions.",
         upload_to=treatment_directory,
         max_length=100,
         null=True,
         blank=True
         )
+    date = models.DateField(
+        verbose_name=_("date of treatment"),
+        help_text="Date of treatment",
+        null=True,
+        blank=True
+    )
 
     objects = MyManager()
 
@@ -1756,8 +1776,27 @@ class PestLocation(models.Model):
         )
     point = models.PointField(
         verbose_name=_("pest location point"),
-        help_text="Point at which the pest was ID'd"    
+        help_text="Point at which the pest was ID'd"
     )
+    latitude = models.DecimalField(
+        verbose_name=_("latitude of pest location"),
+        help_text="latitude of pest location",
+        max_digits=9,
+        decimal_places=6
+        )
+    longitude = models.DecimalField(
+        verbose_name=_("longitude of pest location"),
+        help_text="longitude of pest location",
+        max_digits=9,
+        decimal_places=6
+        )
+    count = models.PositiveIntegerField(
+        verbose_name=_("number of pests"),
+        help_text="number of pests",
+        blank=True,
+        default=1,
+        )
+
     objects = MyManager()
 
     class Meta:
@@ -2063,6 +2102,7 @@ class Run(models.Model):
         decimal_places=1,
         blank=True,
         null=True)
+    # steering year will change to date later
     steering_year = models.PositiveIntegerField(
         verbose_name=_("steering year"),
         default=None,
@@ -2106,6 +2146,7 @@ class Output(models.Model):
         default=1,
         validators=[MinValueValidator(0)]
         )
+    # year will change to date later
     year = models.PositiveIntegerField(
         verbose_name=_("year"),
         default=2020,

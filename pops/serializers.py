@@ -84,68 +84,75 @@ class HostSerializer(serializers.ModelSerializer):
         model = Host
         fields = ['pk','name','score','hostdata','mortality_on','mortality']
 
-class InfectedToDiseasedSerializer(serializers.ModelSerializer):
+class LatencyPeriodSerializer(serializers.ModelSerializer):
     class Meta:
-        model = InfectedToDiseased
-        fields = ['pk','value','probability']
+        model = LatencyPeriod
+        fields = ['minimum','maximum']
 
-class CrypticToInfectedSerializer(serializers.ModelSerializer):
+class AnthropogenicDirectionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CrypticToInfected
-        fields = ['pk','value','probability']
-
-class AnthropogenicDistanceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AnthropogenicDistance
-        fields = ['pk','value','probability']
-
-class NaturalDistanceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = NaturalDistance
-        fields = ['pk','value','probability']
-
-class PercentNaturalDistanceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PercentNaturalDistance
-        fields = ['pk','value','probability']
+        model = AnthropogenicDirection
+        fields = ['direction','kappa']
 
 class PestInformationSerializer(serializers.ModelSerializer):
     class Meta:
         model = PestInformation
         fields = ['common_name']
 
-class VectorSerializer(serializers.ModelSerializer):
+class VectorHostTransmissionRateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Vector
-        fields = ['common_name','scientific_name','user_file','vector_to_host_transmission_rate','vector_to_host_transmission_rate_standard_deviation','host_to_vector_transmission_rate','host_to_vector_transmission_rate_standard_deviation']
+        model = VectorHostTransmissionRate
+        fields = ['value','probability']
+
+class HostVectorTransmissionRateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HostVectorTransmissionRate
+        fields = ['value','probability']
+
+class VectorPestInformationSerializer(serializers.ModelSerializer):
+
+    vectorhosttransmissionrate_set = VectorHostTransmissionRateSerializer(many=True)
+    hostvectortransmissionrate_set = HostVectorTransmissionRateSerializer(many=True)
+
+    class Meta:
+        model = VectorPestInformation
+        fields = ['vector','vectorhosttransmissionrate_set',
+                'hostvectortransmissionrate_set']
 
 class PriorTreatmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = PriorTreatment
-        fields = ['user_file']
+        fields = ['user_file','date']
 
-class InitialInfestationSerializer(serializers.ModelSerializer):
+class InfestationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = InitialInfestation
+        model = Infestation
         fields = ['user_file']
 
 class PestSerializer(serializers.ModelSerializer):
-    pest_information = PestInformationSerializer()
-    vector = VectorSerializer()
-    initialinfestation = InitialInfestationSerializer()
+
+    pestinformation = PestInformationSerializer()
+    vectorpestinformation_set = VectorPestInformationSerializer(many=True)
+    infestation = InfestationSerializer()
     priortreatment = PriorTreatmentSerializer()
-    naturaldistance_set = NaturalDistanceSerializer(many=True)
-    anthropogenicdistance_set = AnthropogenicDistanceSerializer(many=True)
-    percentnaturaldistance_set = PercentNaturalDistanceSerializer(many=True)
-    cryptictoinfected_set = CrypticToInfectedSerializer(many=True)
-    infectedtodiseased_set = InfectedToDiseasedSerializer(many=True)
+    latencyperiod = LatencyPeriodSerializer()
+    anthropogenicdirection = AnthropogenicDirectionSerializer()
+    parameters = ParametersSerializer()
+    quarantinelink_set = QuarantineLinkSerializer(many=True)
+    weather = WeatherSerializer()
+
     class Meta:
         model = Pest
-        fields = ['pk','pest_information','name','model_type','natural_dispersal_type', 'anthropogenic_dispersal_type','initialinfestation','vector_born','vector','use_treatment','priortreatment','naturaldistance_set','anthropogenicdistance_set','percentnaturaldistance_set','cryptictoinfected_set','infectedtodiseased_set']
+        fields = ['pk','pestinformation','use_treatment','vector_born',
+                'model_type','natural_dispersal_type', 'anthropogenic_dispersal_type',
+                'use_quarantine','vectorpestinformation_set','infestation',
+                'priortreatment','latencyperiod','anthropogenicdirection',
+                'parameters','quarantinelink_set','weather']
+
         
-class AllPlantsSerializer(serializers.ModelSerializer):
+class AllPopulationsDataSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AllPlantsData
+        model = AllPopulationsData
         fields = ['user_file']
 
 class MapBoxParametersSerializer(serializers.ModelSerializer):
@@ -154,15 +161,19 @@ class MapBoxParametersSerializer(serializers.ModelSerializer):
         fields = ['longitude', 'latitude','zoom']
 
 class CaseStudySerializer(serializers.ModelSerializer):
-    allplantsdata = AllPlantsSerializer()
+    allpopulationsdata = AllPopulationsDataSerializer()
     mapboxparameters = MapBoxParametersSerializer()
-    weather = WeatherSerializer()
     pest_set = PestSerializer(many=True)
-    host_set = HostSerializer(many=True)
     class Meta:
         model = CaseStudy
-        fields = ['name', 'description','number_of_pests','number_of_hosts','start_year','end_year','future_years',
-                'time_step','staff_approved','calibration_status','use_external_calibration','calibration','model_api','allplantsdata','mapboxparameters', 'pest_set','host_set','weather']
+        fields = ['name', 'description','number_of_pests','number_of_hosts',
+                'time_step_unit','time_step_n','first_calibration_date',
+                'last_calibration_date','first_forecast_date','last_forecast_date',
+                'staff_approved','calibration_status',
+                'use_external_calibration','calibration',
+                'output_frequency_unit','output_frequency_n','use_movements',
+                'start_exposed','use_spread_rate','r_data',
+                'allpopulationsdata','mapboxparameters', 'pest_set','host_set','weather']
 
 class SpreadRateSerializer(serializers.ModelSerializer):
     class Meta:
