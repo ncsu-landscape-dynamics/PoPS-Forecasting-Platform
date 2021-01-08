@@ -94,9 +94,7 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.{}".format(
-            os.getenv("DATABASE_ENGINE", "sqlite3")
-        ),
+        "ENGINE":  os.getenv("DATABASE_ENGINE", "sqlite3"),
         "NAME": os.getenv("DATABASE_NAME", "pops"),
         "USER": os.getenv("DATABASE_USERNAME", "myprojectuser"),
         "PASSWORD": os.getenv("DATABASE_PASSWORD", "password"),

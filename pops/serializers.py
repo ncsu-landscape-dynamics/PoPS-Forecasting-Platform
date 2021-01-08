@@ -242,7 +242,7 @@ class CaseStudySerializer(serializers.ModelSerializer):
                 'use_external_calibration','calibration',
                 'output_frequency_unit','output_frequency_n','use_movements',
                 'start_exposed','use_spread_rate','r_data',
-                'allpopulationsdata','mapboxparameters', 'pest_set','host_set','weather']
+                'allpopulationsdata','mapboxparameters', 'pest_set']
 
 class SpreadRateSerializer(serializers.ModelSerializer):
     class Meta:

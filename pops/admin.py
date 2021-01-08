@@ -12,20 +12,20 @@ from .models import *
 #     extra = 0
 #     show_change_link = True
 
-# class HistoricDataInline(admin.TabularInline):
-#     model = HistoricData
-#     extra = 0
-#     show_change_link = True
+class HistoricDataInline(admin.TabularInline):
+    model = HistoricData
+    extra = 0
+    show_change_link = True
 
-# class MapBoxParametersInline(admin.TabularInline):
-#     model = MapBoxParameters
-#     extra = 0
-#     show_change_link = True
+class MapBoxParametersInline(admin.TabularInline):
+    model = MapBoxParameters
+    extra = 0
+    show_change_link = True
 
-# class AllPlantsDataInline(admin.TabularInline):
-#     model = AllPlantsData
-#     extra = 0
-#     show_change_link = True
+class AllPopulationsDataInline(admin.TabularInline):
+    model = AllPopulationsData
+    extra = 0
+    show_change_link = True
 
 # class HostDataInline(admin.TabularInline):
 #     model = HostData
@@ -142,26 +142,29 @@ from .models import *
 #     extra = 0
 #     show_change_link = True
 
-# class CaseStudyAdmin(admin.ModelAdmin):
-#     list_display = ('name', 'session_count','start_year', 'end_year', 'time_step', 'created_by', 'date_created', 'model_api')
-#     inlines = [
-#         HostInline, PestInline, AllPlantsDataInline, HistoricDataInline, MapBoxParametersInline, WeatherInline
-#     ]
-#     search_fields = ['name','created_by__username','created_by__first_name','created_by__last_name', 'pest__name']
-#     list_select_related = ('created_by',)
-#     list_filter = ('staff_approved',)
-#     list_per_page = 30
+class CaseStudyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'session_count', 'created_by', 'date_created','calibration_status')
+    inlines = [
+        MapBoxParametersInline, AllPopulationsDataInline, HistoricDataInline
+    ]
+    # inlines = [
+    #     HostInline, PestInline, AllPlantsDataInline, HistoricDataInline, MapBoxParametersInline, WeatherInline
+    # ]
+    search_fields = ['name','created_by__username','created_by__first_name','created_by__last_name', 'pest__name']
+    list_select_related = ('created_by',)
+    list_filter = ('staff_approved',)
+    list_per_page = 30
 
     
-#     def session_count(self, obj):
-#         return obj.session_set.count()
+    def session_count(self, obj):
+        return obj.session_set.count()
 
-#     def save_model(self, request, obj, form, change):
-#         if not obj.created_by:
-#             obj.created_by = request.user
-#         obj.save()
+    def save_model(self, request, obj, form, change):
+        if not obj.created_by:
+            obj.created_by = request.user
+        obj.save()
 
-#         return super(CaseStudyAdmin, self).save_model(request, obj, form, change)
+        return super(CaseStudyAdmin, self).save_model(request, obj, form, change)
 
 # class HostAdmin(admin.ModelAdmin):
 #     list_display = ('name','score')
@@ -200,72 +203,72 @@ from .models import *
 #         VectorHostTransmissionRateInline, HostVectorTransmissionRateInline, VectorNaturalDistanceInline, VectorReproductiveRateInline
 #     ]
 
-# class TemperatureReclassAdmin(admin.ModelAdmin):
-#     list_display = ('__str__','min_value','max_value','reclass')
+class TemperatureReclassAdmin(admin.ModelAdmin):
+    list_display = ('__str__','min_value','max_value','reclass')
 
-# class PrecipitationReclassAdmin(admin.ModelAdmin):
-#     list_display = ('__str__','min_value','max_value','reclass')
+class PrecipitationReclassAdmin(admin.ModelAdmin):
+    list_display = ('__str__','min_value','max_value','reclass')
 
-# class TemperatureReclassInline(admin.TabularInline):
-#     model = TemperatureReclass
-#     extra = 0
-#     show_change_link = True
+class TemperatureReclassInline(admin.TabularInline):
+    model = TemperatureReclass
+    extra = 0
+    show_change_link = True
 
-# class TemperaturePolynomialInline(admin.TabularInline):
-#     model = TemperaturePolynomial
-#     extra = 0
-#     show_change_link = True
+class TemperaturePolynomialInline(admin.TabularInline):
+    model = TemperaturePolynomial
+    extra = 0
+    show_change_link = True
 
-# class TemperatureAdmin(admin.ModelAdmin):
-#     inlines = [
-#         TemperatureReclassInline, TemperaturePolynomialInline
-#     ]
+class TemperatureAdmin(admin.ModelAdmin):
+    inlines = [
+        TemperatureReclassInline, TemperaturePolynomialInline
+    ]
 
-# class PrecipitationReclassInline(admin.TabularInline):
-#     model = PrecipitationReclass
-#     extra = 0
-#     show_change_link = True
+class PrecipitationReclassInline(admin.TabularInline):
+    model = PrecipitationReclass
+    extra = 0
+    show_change_link = True
 
-# class PrecipitationPolynomialInline(admin.TabularInline):
-#     model = PrecipitationPolynomial
-#     extra = 0
-#     show_change_link = True
+class PrecipitationPolynomialInline(admin.TabularInline):
+    model = PrecipitationPolynomial
+    extra = 0
+    show_change_link = True
 
-# class PrecipitationAdmin(admin.ModelAdmin):
-#     inlines = [
-#         PrecipitationReclassInline, PrecipitationPolynomialInline
-#     ]
+class PrecipitationAdmin(admin.ModelAdmin):
+    inlines = [
+        PrecipitationReclassInline, PrecipitationPolynomialInline
+    ]
 
-# class WindInline(admin.TabularInline):
-#     model = Wind
-#     extra = 0
-#     show_change_link = True
+class WindInline(admin.TabularInline):
+    model = Wind
+    extra = 0
+    show_change_link = True
 
-# class SeasonalityInline(admin.TabularInline):
-#     model = Seasonality
-#     extra = 0
-#     show_change_link = True
+class SeasonalityInline(admin.TabularInline):
+    model = Seasonality
+    extra = 0
+    show_change_link = True
 
-# class TemperatureInline(admin.TabularInline):
-#     model = Temperature
-#     extra = 0
-#     show_change_link = True
+class TemperatureInline(admin.TabularInline):
+    model = Temperature
+    extra = 0
+    show_change_link = True
 
-# class PrecipitationInline(admin.TabularInline):
-#     model = Precipitation
-#     extra = 0
-#     show_change_link = True
+class PrecipitationInline(admin.TabularInline):
+    model = Precipitation
+    extra = 0
+    show_change_link = True
 
-# class LethalTemperatureInline(admin.TabularInline):
-#     model = LethalTemperature
-#     extra = 0
-#     show_change_link = True
+class LethalTemperatureInline(admin.TabularInline):
+    model = LethalTemperature
+    extra = 0
+    show_change_link = True
 
-# class WeatherAdmin(admin.ModelAdmin):
-#     inlines = [
-#         WindInline, LethalTemperatureInline, SeasonalityInline, TemperatureInline, PrecipitationInline
-#     ]
-#     list_per_page = 30
+class WeatherAdmin(admin.ModelAdmin):
+    inlines = [
+        WindInline, LethalTemperatureInline, SeasonalityInline, TemperatureInline, PrecipitationInline
+    ]
+    list_per_page = 30
 
 
 # class RunCollectionInline(admin.TabularInline):
@@ -300,17 +303,17 @@ from .models import *
 #         return super(SessionAdmin, self).save_model(request, obj, form, change)
 
 
-# class RunInline(admin.TabularInline):
-#     model = Run
-#     extra = 0
-#     show_change_link = True
+class RunInline(admin.TabularInline):
+    model = Run
+    extra = 0
+    show_change_link = True
 
-# class RunCollectionAdmin(admin.ModelAdmin):
-#     list_display = ('name', 'session','date_created','status','tangible_landscape')
-#     inlines = [
-#         RunInline,
-#     ]
-#     list_per_page = 30
+class RunCollectionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'session','date_created','status','tangible_landscape')
+    inlines = [
+        RunInline,
+    ]
+    list_per_page = 30
 
 
 # class OutputInline(admin.TabularInline):
@@ -351,15 +354,14 @@ from .models import *
 #         SpreadRateInline, DistanceToBoundaryInline, TimeToBoundaryInline
 #     ]
 
-#admin.site.register(CaseStudy, CaseStudyAdmin)
-admin.site.register(CaseStudy)
+admin.site.register(CaseStudy, CaseStudyAdmin)
 admin.site.register(HistoricData)
 admin.site.register(MapBoxParameters)
 admin.site.register(AllPopulationsData)
 admin.site.register(PestInformation)
 admin.site.register(Pest)
 
-admin.site.register(Weather)
+admin.site.register(Weather,WeatherAdmin)
 admin.site.register(Wind)
 admin.site.register(Seasonality)
 admin.site.register(LethalTemperature)
@@ -397,7 +399,7 @@ admin.site.register(PestTreatment)
 
 admin.site.register(Session)
 admin.site.register(Run)
-admin.site.register(RunCollection)
+admin.site.register(RunCollection,RunCollectionAdmin)
 admin.site.register(Output)
 admin.site.register(SpreadRate)
 admin.site.register(DistanceToBoundary)

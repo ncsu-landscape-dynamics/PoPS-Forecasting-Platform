@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.postgres.fields import ArrayField
 from django.core.files.storage import default_storage
 import os
+import datetime
 
 from users.models import CustomUser
 
@@ -27,6 +28,20 @@ def r_data_directory(instance, filename):
 def all_populations_directory(instance, filename):
     return 'case_studies/{0}/all_populations/{1}'.format(instance.case_study.id, filename)
 
+def all_plants_directory(instance, filename):
+    return 'case_studies/{0}/all_plants/{1}'.format(instance.case_study.id, filename)
+
+def validation_infestation_directory(instance, filename):
+    return 'case_studies/{0}/all_plants/{1}'.format(instance.case_study.id, filename)
+
+def initial_infestation_directory(instance, filename):
+    return 'case_studies/{0}/all_plants/{1}'.format(instance.case_study.id, filename)
+
+def calibration_infestation_directory(instance, filename):
+    return 'case_studies/{0}/all_plants/{1}'.format(instance.case_study.id, filename)
+
+def vector_directory(instance, filename):
+    return 'case_studies/{0}/all_plants/{1}'.format(instance.case_study.id, filename)
 
 def host_directory(instance, filename):
     return 'hosts/{0}/host_location_data/{1}'.format(instance.host_information.id, filename)
@@ -135,19 +150,23 @@ class CaseStudy(models.Model):
     # last_forecast_date
     first_calibration_date = models.DateField(
         verbose_name=_("first calibration date"),
-        help_text="What is the first calibration date?"
+        help_text="What is the first calibration date?",
+        default=datetime.date.today,
         )
     last_calibration_date = models.DateField(
         verbose_name=_("last calibration date"),
-        help_text="What is the last calibration date?"
+        help_text="What is the last calibration date?",
+        default=datetime.date.today,
         )
     first_forecast_date = models.DateField(
         verbose_name=_("first forecast date"),
-        help_text="What is the first forecast date?"
+        help_text="What is the first forecast date?",
+        default=datetime.date.today,
         )
     last_forecast_date = models.DateField(
         verbose_name=_("last forecast date"),
-        help_text="What is the last forecast date?"
+        help_text="What is the last forecast date?",
+        default=datetime.date.today,
         )
     staff_approved = models.BooleanField(
         verbose_name=_("approved by staff"),
@@ -570,7 +589,8 @@ class Weather(models.Model):
         Pest,
         verbose_name=_("case study"),
         on_delete=models.CASCADE,
-        primary_key=True
+        primary_key=True,
+        default=1
         )
     wind_on = models.BooleanField(
         verbose_name=_("wind"),
@@ -1224,7 +1244,8 @@ class HostLocation(models.Model):
     )
     date = models.DateField(
         verbose_name=_("date"),
-        help_text="What is the date for the map?"
+        help_text="What is the date for the map?",
+        default=datetime.date.today,
         )
 
     objects = MyManager()
@@ -1253,7 +1274,8 @@ class ClippedHostLocation(models.Model):
         )
     date = models.DateField(
         verbose_name=_("date"),
-        help_text="What is the date for the map?"
+        help_text="What is the date for the map?",
+        default=datetime.date.today,
         )
 
     objects = MyManager()
@@ -1275,7 +1297,8 @@ class HostMovement(models.Model):
         )
     date = models.DateField(
         verbose_name=_("date"),
-        help_text="What is the date for the map?"
+        help_text="What is the date for the map?",
+        default=datetime.date.today,
         )
     number_of_units = models.PositiveIntegerField(
         verbose_name=_("number of hosts moved"),
@@ -1305,7 +1328,8 @@ class ClippedHostMovement(models.Model):
         )
     date = models.DateField(
         verbose_name=_("date"),
-        help_text="What is the date for the map?"
+        help_text="What is the date for the map?",
+        default=datetime.date.today,
         )
     movement_file = models.FileField(
         verbose_name = _("host movement data"),
@@ -1575,7 +1599,8 @@ class PriorTreatment(models.Model):
         verbose_name=_("date of treatment"),
         help_text="Date of treatment",
         null=True,
-        blank=True
+        blank=True,
+        default=datetime.date.today,
     )
 
     objects = MyManager()
@@ -1725,7 +1750,8 @@ class Quarantine(models.Model):
         )
     date = models.DateField(
         verbose_name=_("date"),
-        help_text="What is the date for the quarantine?"
+        help_text="What is the date for the quarantine?",
+        default=datetime.date.today,
         )
     polygon = models.PolygonField(
         verbose_name=_("quarantine polygon"),
@@ -1774,7 +1800,8 @@ class PestLocation(models.Model):
         )
     date = models.DateField(
         verbose_name=_("date"),
-        help_text="What is the date for the pest location?"
+        help_text="What is the date for the pest location?",
+        default=datetime.date.today,
         )
     point = models.PointField(
         verbose_name=_("pest location point"),
@@ -1818,7 +1845,8 @@ class PestTreatment(models.Model):
         )
     date = models.DateField(
         verbose_name=_("date"),
-        help_text="What is the date for the pest location?"
+        help_text="What is the date for the pest location?",
+        default=datetime.date.today,
         )
     treatment_polygon = models.PolygonField(
         verbose_name=_("treatment polygon"),
@@ -1882,7 +1910,8 @@ class Session(models.Model):
         )
     final_date = models.DateField(
         verbose_name=_("final date"),
-        help_text="What is the last date to run simulations?"
+        help_text="What is the last date to run simulations?",
+        default=datetime.date.today,
         )
     WEATHER_CHOICES = (
         ("BAD", "Poor spread conditions"),
