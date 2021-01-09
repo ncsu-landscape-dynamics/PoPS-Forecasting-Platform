@@ -2,15 +2,12 @@ from django.contrib import admin
 
 from .models import *
 
-# class HostInline(admin.TabularInline):
-#     model = HostInformation
-#     extra = 0
-#     show_change_link = True
 
-# class PestInline(admin.TabularInline):
-#     model = Pest
-#     extra = 0
-#     show_change_link = True
+
+class PestInline(admin.TabularInline):
+    model = Pest
+    extra = 0
+    show_change_link = True
 
 class HistoricDataInline(admin.TabularInline):
     model = HistoricData
@@ -27,125 +24,66 @@ class AllPopulationsDataInline(admin.TabularInline):
     extra = 0
     show_change_link = True
 
-# class HostDataInline(admin.TabularInline):
-#     model = HostData
-#     extra = 0
-#     show_change_link = True
 
-# class MortalityInline(admin.TabularInline):
-#     model = Mortality
-#     extra = 0
-#     show_change_link = True
+class MortalityRateInline(admin.TabularInline):
+    model = MortalityRate
+    extra = 0
+    show_change_link = True
 
-# class MortalityRateInline(admin.TabularInline):
-#     model = MortalityRate
-#     extra = 0
-#     show_change_link = True
+class MortalityTimeLagInline(admin.TabularInline):
+    model = MortalityTimeLag
+    extra = 0
+    show_change_link = True
 
-# class MortalityTimeLagInline(admin.TabularInline):
-#     model = MortalityTimeLag
-#     extra = 0
-#     show_change_link = True
 
-# class CreationInline(admin.TabularInline):
-#     model = Creation
-#     extra = 0
-#     show_change_link = True
+class VectorHostTransmissionRateInline(admin.TabularInline):
+    model = VectorHostTransmissionRate
+    extra = 0
+    show_change_link = True
 
-# class InitialInfestationInline(admin.TabularInline):
-#     model = InitialInfestation
-#     extra = 0
-#     show_change_link = True
+class HostVectorTransmissionRateInline(admin.TabularInline):
+    model = HostVectorTransmissionRate
+    extra = 0
+    show_change_link = True
 
-# class CalibrationInfestationInline(admin.TabularInline):
-#     model = CalibrationInfestation
-#     extra = 0
-#     show_change_link = True
+class VectorPestInformationAdmin(admin.ModelAdmin):
+    list_display = ('disease','vector')
+    inlines = [
+        VectorHostTransmissionRateInline, HostVectorTransmissionRateInline
+    ]
+    list_per_page = 30
 
-# class ValidationInfestationInline(admin.TabularInline):
-#     model = ValidationInfestation
-#     extra = 0
-#     show_change_link = True
+class PestLocationInline(admin.TabularInline):
+    model = PestLocation
+    extra = 0
+    show_change_link = True
 
-# class PriorTreatmentInline(admin.TabularInline):
-#     model = PriorTreatment
-#     extra = 0
-#     show_change_link = True
+class PestTreatmentInline(admin.TabularInline):
+    model = PestTreatment
+    extra = 0
+    show_change_link = True
 
-# class PriorTreatmentYearInline(admin.TabularInline):
-#     model = PriorTreatmentYear
-#     extra = 0
-#     show_change_link = True
+class QuarantineInline(admin.TabularInline):
+    model = Quarantine
+    extra = 0
+    show_change_link = True
 
-# class VectorInline(admin.TabularInline):
-#     model = Vector
-#     extra = 0
-#     show_change_link = True
+class PestInformationAdmin(admin.ModelAdmin):
+    list_display = ('common_name','scientific_name','date_created','staff_approved')
+    inlines = [
+        PestLocationInline, PestTreatmentInline, QuarantineInline
+    ]
+    list_per_page = 30
 
-# class ReproductiveRateInline(admin.TabularInline):
-#     model = ReproductiveRate
-#     extra = 0
-#     show_change_link = True
-
-# class PercentNaturalDistanceInline(admin.TabularInline):
-#     model = PercentNaturalDistance
-#     extra = 0
-#     show_change_link = True
-
-# class VectorHostTransmissionRateInline(admin.TabularInline):
-#     model = VectorHostTransmissionRate
-#     extra = 0
-#     show_change_link = True
-
-# class HostVectorTransmissionRateInline(admin.TabularInline):
-#     model = HostVectorTransmissionRate
-#     extra = 0
-#     show_change_link = True
-
-# class VectorReproductiveRateInline(admin.TabularInline):
-#     model = VectorReproductiveRate
-#     extra = 0
-#     show_change_link = True
-
-# class VectorNaturalDistanceInline(admin.TabularInline):
-#     model = VectorNaturalDistance
-#     extra = 0
-#     show_change_link = True
-
-# class NaturalDistanceInline(admin.TabularInline):
-#     model = NaturalDistance
-#     extra = 0
-#     show_change_link = True
-
-# class AnthropogenicDistanceInline(admin.TabularInline):
-#     model = AnthropogenicDistance
-#     extra = 0
-#     show_change_link = True
-
-# class AnthropogenicDirectionInline(admin.TabularInline):
-#     model = AnthropogenicDirection
-#     extra = 0
-#     show_change_link = True
-
-# class CrypticToInfectedInline(admin.TabularInline):
-#     model = CrypticToInfected
-#     extra = 0
-#     show_change_link = True
-
-# class InfectedToDiseasedInline(admin.TabularInline):
-#     model = InfectedToDiseased
-#     extra = 0
-#     show_change_link = True
-
-# class WeatherInline(admin.TabularInline):
-#     model = Weather
-#     extra = 0
-#     show_change_link = True
+class WeatherInline(admin.TabularInline):
+    model = Weather
+    extra = 0
+    show_change_link = True
 
 class CaseStudyAdmin(admin.ModelAdmin):
     list_display = ('name', 'session_count', 'created_by', 'date_created','calibration_status')
     inlines = [
-        MapBoxParametersInline, AllPopulationsDataInline, HistoricDataInline
+        MapBoxParametersInline, AllPopulationsDataInline, HistoricDataInline, PestInline
     ]
     # inlines = [
     #     HostInline, PestInline, AllPlantsDataInline, HistoricDataInline, MapBoxParametersInline, WeatherInline
@@ -166,31 +104,105 @@ class CaseStudyAdmin(admin.ModelAdmin):
 
         return super(CaseStudyAdmin, self).save_model(request, obj, form, change)
 
-# class HostAdmin(admin.ModelAdmin):
-#     list_display = ('name','score')
-#     inlines = [
-#         MortalityInline, CreationInline, HostDataInline
-#     ]
-#     list_per_page = 30
+class MortalityInline(admin.TabularInline):
+    model = Mortality
+    extra = 0
+    show_change_link = True
+
+class ClippedHostLocationInline(admin.TabularInline):
+    model = ClippedHostLocation
+    extra = 0
+    show_change_link = True
+
+class ClippedHostMovementInline(admin.TabularInline):
+    model = ClippedHostMovement
+    extra = 0
+    show_change_link = True
+
+class HostLocationInline(admin.TabularInline):
+    model = HostLocation
+    extra = 0
+    show_change_link = True
+
+class HostMovementInline(admin.TabularInline):
+    model = HostMovement
+    extra = 0
+    show_change_link = True
+
+class HostInformationAdmin(admin.ModelAdmin):
+    list_display = ('name','pk')
+    inlines = [
+        HostLocationInline, HostMovementInline
+    ]
+    list_per_page = 30
+
+class PestHostInteractionAdmin(admin.ModelAdmin):
+    list_display = ('pest','host','competency','susceptibility')
+    inlines = [
+        ClippedHostLocationInline, ClippedHostMovementInline,
+        MortalityInline
+    ]
+    list_per_page = 30
+
+class MortalityAdmin(admin.ModelAdmin):
+    list_display = ('pk','host','method','rate')
+    inlines = [
+        MortalityRateInline, MortalityTimeLagInline
+    ]
+    list_per_page = 30
 
 
-# class MortalityAdmin(admin.ModelAdmin):
-#     list_display = ('pk','host','rate')
-#     inlines = [
-#         MortalityRateInline, MortalityTimeLagInline
-#     ]
-#     list_per_page = 30
+class VectorPestInformationInline(admin.TabularInline):
+    model = VectorPestInformation
+    fk_name = 'disease'
+    extra = 0
+    show_change_link = True
 
+class PestHostInteractionInline(admin.TabularInline):
+    model = PestHostInteraction
+    extra = 0
+    show_change_link = True
 
-# class PestAdmin(admin.ModelAdmin):
-#     list_display = ('__str__','name','pest_information')
-#     inlines = [
-#         InitialInfestationInline, CalibrationInfestationInline, ValidationInfestationInline, 
-#         PriorTreatmentInline, VectorInline, ReproductiveRateInline, PercentNaturalDistanceInline,
-#         NaturalDistanceInline, AnthropogenicDistanceInline, AnthropogenicDirectionInline,
-#         CrypticToInfectedInline, InfectedToDiseasedInline
-#     ]
-#     list_per_page = 30
+class PriorTreatmentInline(admin.TabularInline):
+    model = PriorTreatment
+    extra = 0
+    show_change_link = True
+
+class InfestationInline(admin.TabularInline):
+    model = Infestation
+    extra = 0
+    show_change_link = True
+
+class QuarantineLinkInline(admin.TabularInline):
+    model = QuarantineLink
+    extra = 0
+    show_change_link = True
+
+class LatencyPeriodInline(admin.TabularInline):
+    model = LatencyPeriod
+    extra = 0
+    show_change_link = True
+
+class AnthropogenicDirectionInline(admin.TabularInline):
+    model = AnthropogenicDirection
+    extra = 0
+    show_change_link = True
+
+class ParametersInline(admin.TabularInline):
+    model = Parameters
+    extra = 0
+    show_change_link = True
+
+class PestAdmin(admin.ModelAdmin):
+    list_display = ('__str__','pest_information','case_study')
+    inlines = [
+        VectorPestInformationInline, PestHostInteractionInline,
+        PriorTreatmentInline,
+        InfestationInline, QuarantineLinkInline, LatencyPeriodInline,
+        AnthropogenicDirectionInline, ParametersInline,
+        WeatherInline
+    ]
+    list_per_page = 30
 
 
 # class PriorTreatmentAdmin(admin.ModelAdmin):
@@ -271,36 +283,37 @@ class WeatherAdmin(admin.ModelAdmin):
     list_per_page = 30
 
 
-# class RunCollectionInline(admin.TabularInline):
-#     model = RunCollection
-#     extra = 0
-#     show_change_link = True
 
-# class AllowedUsersInline(admin.TabularInline):
-#     model = AllowedUsers
-#     extra = 0
-#     show_change_link = True
+class RunCollectionInline(admin.TabularInline):
+    model = RunCollection
+    extra = 0
+    show_change_link = True
 
-# class SessionAdmin(admin.ModelAdmin):
-#     list_display = ('name', 'run_collection_count','created_by', 'case_study', 'date_created')
-#     search_fields = ['name','created_by__username','created_by__first_name','created_by__last_name', 'case_study__name']
-#     list_select_related = ('created_by', 'case_study')
-#     list_filter = ['public','case_study']
-#     list_per_page = 30
-#     inlines = [
-#         RunCollectionInline,
-#         AllowedUsersInline
-#     ]
+class AllowedUsersInline(admin.TabularInline):
+    model = AllowedUsers
+    extra = 0
+    show_change_link = True
 
-#     def run_collection_count(self, obj):
-#         return obj.runcollection_set.count()
+class SessionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'run_collection_count','created_by', 'case_study', 'date_created')
+    search_fields = ['name','created_by__username','created_by__first_name','created_by__last_name', 'case_study__name']
+    list_select_related = ('created_by', 'case_study')
+    list_filter = ['public','case_study']
+    list_per_page = 30
+    inlines = [
+        RunCollectionInline,
+        AllowedUsersInline
+    ]
 
-#     def save_model(self, request, obj, form, change):
-#         if not obj.created_by:
-#             obj.created_by = request.user
-#         obj.save()
+    def run_collection_count(self, obj):
+        return obj.runcollection_set.count()
 
-#         return super(SessionAdmin, self).save_model(request, obj, form, change)
+    def save_model(self, request, obj, form, change):
+        if not obj.created_by:
+            obj.created_by = request.user
+        obj.save()
+
+        return super(SessionAdmin, self).save_model(request, obj, form, change)
 
 
 class RunInline(admin.TabularInline):
@@ -316,73 +329,74 @@ class RunCollectionAdmin(admin.ModelAdmin):
     list_per_page = 30
 
 
-# class OutputInline(admin.TabularInline):
-#     model = Output
-#     extra = 0
-#     show_change_link = True
+class OutputInline(admin.TabularInline):
+    model = Output
+    extra = 0
+    show_change_link = True
 
-# class RunAdmin(admin.ModelAdmin):
-#     list_display = ('run_collection', 'steering_year','date_created','status')
-#     inlines = [
-#         OutputInline,
-#     ]
-#     list_per_page = 30
+class RunAdmin(admin.ModelAdmin):
+    list_display = ('run_collection', 'steering_year','date_created','status')
+    inlines = [
+        OutputInline,
+    ]
+    list_per_page = 30
 
 
-# class AllowedUsersAdmin(admin.ModelAdmin):
-#     list_display = ('user', 'session')
-#     list_per_page = 30
+class AllowedUsersAdmin(admin.ModelAdmin):
+    list_display = ('user', 'session')
+    list_per_page = 30
 
-# class SpreadRateInline(admin.TabularInline):
-#     model = SpreadRate
-#     show_change_link = True
-#     extra = 0
+class SpreadRateInline(admin.TabularInline):
+    model = SpreadRate
+    show_change_link = True
+    extra = 0
 
-# class DistanceToBoundaryInline(admin.TabularInline):
-#     model = DistanceToBoundary
-#     show_change_link = True
-#     extra = 0
+class DistanceToBoundaryInline(admin.TabularInline):
+    model = DistanceToBoundary
+    show_change_link = True
+    extra = 0
 
-# class TimeToBoundaryInline(admin.TabularInline):
-#     model = TimeToBoundary
-#     show_change_link = True
-#     extra = 0
+class TimeToBoundaryInline(admin.TabularInline):
+    model = TimeToBoundary
+    show_change_link = True
+    extra = 0
 
-# class OutputAdmin(admin.ModelAdmin):
-#     fields = ['run', 'number_infected']
-#     inlines = [
-#         SpreadRateInline, DistanceToBoundaryInline, TimeToBoundaryInline
-#     ]
+class OutputAdmin(admin.ModelAdmin):
+    list_display = ('run','year','date_created','number_infected')
+    exclude=['min_spread_map','max_spread_map','median_spread_map','probability_map','susceptible_map']
+    inlines = [
+        SpreadRateInline, DistanceToBoundaryInline, TimeToBoundaryInline
+    ]
 
 admin.site.register(CaseStudy, CaseStudyAdmin)
 admin.site.register(HistoricData)
 admin.site.register(MapBoxParameters)
 admin.site.register(AllPopulationsData)
-admin.site.register(PestInformation)
-admin.site.register(Pest)
+admin.site.register(PestInformation, PestInformationAdmin)
+admin.site.register(Pest, PestAdmin)
 
 admin.site.register(Weather,WeatherAdmin)
 admin.site.register(Wind)
 admin.site.register(Seasonality)
 admin.site.register(LethalTemperature)
-admin.site.register(Temperature)
-admin.site.register(Precipitation)
+admin.site.register(Temperature, TemperatureAdmin)
+admin.site.register(Precipitation,PrecipitationAdmin)
 admin.site.register(TemperatureReclass)
 admin.site.register(TemperaturePolynomial)
 admin.site.register(PrecipitationReclass)
 admin.site.register(PrecipitationPolynomial)
 
-admin.site.register(HostInformation)
-admin.site.register(PestHostInteraction)
+admin.site.register(HostInformation, HostInformationAdmin)
+admin.site.register(PestHostInteraction, PestHostInteractionAdmin)
 admin.site.register(HostLocation)
 admin.site.register(ClippedHostLocation)
 admin.site.register(HostMovement)
 admin.site.register(ClippedHostMovement)
 
-admin.site.register(Mortality)
+admin.site.register(Mortality, MortalityAdmin)
 admin.site.register(MortalityRate)
 admin.site.register(MortalityTimeLag)
-admin.site.register(VectorPestInformation)
+admin.site.register(VectorPestInformation, VectorPestInformationAdmin)
 admin.site.register(VectorHostTransmissionRate)
 admin.site.register(HostVectorTransmissionRate)
 
@@ -397,10 +411,10 @@ admin.site.register(QuarantineLink)
 admin.site.register(PestLocation)
 admin.site.register(PestTreatment)
 
-admin.site.register(Session)
-admin.site.register(Run)
+admin.site.register(Session, SessionAdmin)
+admin.site.register(Run, RunAdmin)
 admin.site.register(RunCollection,RunCollectionAdmin)
-admin.site.register(Output)
+admin.site.register(Output,OutputAdmin)
 admin.site.register(SpreadRate)
 admin.site.register(DistanceToBoundary)
 admin.site.register(TimeToBoundary)

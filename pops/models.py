@@ -580,14 +580,19 @@ class Pest(models.Model):
         verbose_name_plural = _("pests")
 
     def __str__(self):
-        return self.pest_information.common_name
+        name = self.pest_information.common_name
+        pk = self.pk
+        string = "{0} (pk={1})".format(name,pk)
+        return string
 
+    def name(self):
+        return self.pest_information.common_name
 
 class Weather(models.Model):
 
     pest = models.OneToOneField(
         Pest,
-        verbose_name=_("case study"),
+        verbose_name=_("pest (case study specific)"),
         on_delete=models.CASCADE,
         primary_key=True,
         default=1
@@ -1281,8 +1286,8 @@ class ClippedHostLocation(models.Model):
     objects = MyManager()
 
     class Meta:
-        verbose_name = _("host location")
-        verbose_name_plural = _("host locations")
+        verbose_name = _("host location - clipped")
+        verbose_name_plural = _("host locations - - clipped")
 
     def __str__(self):
         return self.host.name
@@ -1312,8 +1317,8 @@ class HostMovement(models.Model):
     objects = MyManager()
 
     class Meta:
-        verbose_name = _("host location")
-        verbose_name_plural = _("host locations")
+        verbose_name = _("host movement")
+        verbose_name_plural = _("host movement")
 
     def __str__(self):
         return self.host.name
@@ -1342,8 +1347,8 @@ class ClippedHostMovement(models.Model):
     objects = MyManager()
 
     class Meta:
-        verbose_name = _("clipped host movement")
-        verbose_name_plural = _("clipped host movement")
+        verbose_name = _("host movement - clipped")
+        verbose_name_plural = _("host movement - clipped")
 
     def __str__(self):
         return self.pest_host_interaction.host.name
@@ -1855,8 +1860,8 @@ class PestTreatment(models.Model):
     objects = MyManager()
 
     class Meta:
-        verbose_name = _("pest location")
-        verbose_name_plural = _("pest location")
+        verbose_name = _("pest treatment")
+        verbose_name_plural = _("pest treatment")
 
     def __str__(self):
         return str(self.pk)
