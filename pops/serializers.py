@@ -155,7 +155,7 @@ class HostLocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HostLocation
-        fields = ['host_map','meta_data','date']
+        fields = ['raster_map','json_map','meta_data','date']
 
 class HostMovementSerializer(serializers.ModelSerializer):
 
@@ -176,7 +176,7 @@ class ClippedHostLocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ClippedHostLocation
-        fields = ['host_map','date']
+        fields = ['vector_map','json_map','date']
 
 class ClippedHostMovementSerializer(serializers.ModelSerializer):
 

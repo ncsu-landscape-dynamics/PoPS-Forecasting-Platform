@@ -1228,7 +1228,7 @@ class HostLocation(models.Model):
     host_information = models.ForeignKey(
         HostInformation, verbose_name=_("host"), on_delete=models.CASCADE
     )
-    host_map = models.FileField(
+    raster_map = models.FileField(
         verbose_name=_("host data"),
         help_text="Host data (raster)",
         upload_to=host_directory,
@@ -1262,13 +1262,17 @@ class ClippedHostLocation(models.Model):
         verbose_name=_("pest host interaction"),
         on_delete=models.CASCADE,
     )
-    host_map = models.FileField(
-        verbose_name=_("clipped host data"),
+    raster_map = models.FileField(
+        verbose_name=_("clipped raster host data"),
         help_text="Clipped host data (raster)",
         upload_to=clipped_host_directory,
         max_length=100,
         blank=True,
     )
+    json_map = models.JSONField(
+        verbose_name=_("clipped json host data"),
+        help_text="Clipped host data (json)",
+        null = True)
     date = models.DateField(
         verbose_name=_("date"),
         help_text="What is the date for the map?",
