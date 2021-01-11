@@ -482,7 +482,7 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
             host = None
             host_map = None
 
-        steering_years = range(case_study.end_year + 1, session.final_year + 1)
+        steering_years =  range(2020,2023) #Update range dynamically range(case_study.end_year + 1, session.final_year + 1)
         context["session"] = session
         context["case_study"] = case_study
         context["mapbox_parameters"] = mapbox_parameters
