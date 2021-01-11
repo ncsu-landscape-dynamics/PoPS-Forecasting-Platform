@@ -201,7 +201,7 @@ class CaseStudy(models.Model):
     )
     staff_approved = models.BooleanField(
         verbose_name=_("approved by staff"),
-        help_text="Sample help text.",
+        help_text="Is this case study available to the public.",
         default=False,
     )
     STATUS_CHOICES = (
@@ -420,18 +420,20 @@ class PestInformation(models.Model):
     common_name = models.CharField(verbose_name=_("pest common name"), max_length=150)
     scientific_name = models.CharField(
         verbose_name=_("pest scientific name"),
-        help_text="Sample help text.",
+        help_text="Pest scientific name.",
         max_length=150,
     )
     about = models.TextField(
-        verbose_name=_("about the pest"), help_text="Sample help text."
+        verbose_name=_("about the pest"),
+        help_text="Information about the pest including when it arrived.",
     )
     risks = models.TextField(
-        verbose_name=_("risks associated with the pest"), help_text="Sample help text."
+        verbose_name=_("risks associated with the pest"),
+        help_text="What commodities are at risk from this pest?",
     )
     management_activity = models.TextField(
         verbose_name=_("management activities to control the pest"),
-        help_text="Sample help text.",
+        help_text="What is being done to manage this pest.",
     )
     date_created = models.DateTimeField(
         verbose_name=_("date created"), auto_now=False, auto_now_add=True
@@ -441,7 +443,7 @@ class PestInformation(models.Model):
     )
     staff_approved = models.BooleanField(
         verbose_name=_("approved by staff"),
-        help_text="Sample help text.",
+        help_text="Is this case study available for the public.",
         default=False,
     )
     invasive = models.BooleanField(
@@ -529,7 +531,7 @@ class Pest(models.Model):
     pest_information = models.ForeignKey(
         PestInformation,
         verbose_name=_("pest information"),
-        help_text="Sample help text.",
+        help_text="pest information.",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -1220,7 +1222,7 @@ class PestHostInteraction(models.Model):
         verbose_name_plural = _("pest host interaction")
 
     def __str__(self):
-        return self.pest.name
+        return str(self.pk)
 
 
 class HostLocation(models.Model):
@@ -1272,7 +1274,8 @@ class ClippedHostLocation(models.Model):
     json_map = models.JSONField(
         verbose_name=_("clipped json host data"),
         help_text="Clipped host data (json)",
-        null = True)
+        null=True,
+    )
     date = models.DateField(
         verbose_name=_("date"),
         help_text="What is the date for the map?",
