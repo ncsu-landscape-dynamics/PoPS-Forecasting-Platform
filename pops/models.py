@@ -282,6 +282,18 @@ class CaseStudy(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def first_calibration_year(self):
+        return self.first_calibration_date.strftime('%Y')
+    
+    def last_calibration_year(self):
+        return self.last_calibration_date.strftime('%Y')
+
+    def first_forecast_year(self):
+        return self.first_forecast_date.strftime('%Y')
+
+    def last_forecast_year(self):
+        return self.last_forecast_date.strftime('%Y')
 
     def get_string_fields(self):
         # list of some excluded fields

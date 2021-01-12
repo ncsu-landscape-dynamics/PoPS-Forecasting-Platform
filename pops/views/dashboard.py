@@ -430,6 +430,7 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
             session = Session.objects.get(pk=self.kwargs.get("pk"))
         except:
             session = None
+            print("No session found")
         # Get case study pk
         allowed_users = AllowedUsers.objects.filter(session=session)
         case_study = session.case_study
@@ -451,6 +452,7 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
             )  # .prefetch_related(Prefetch('output_set', queryset=Output.objects.defer('spread_map').order_by('years')))
         except:
             run_collections = None
+            print("No run_collections found")
 
         for run_collection in run_collections:
             if run_collection.overall_cost == None:
@@ -466,21 +468,21 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
             )
         except:
             historic_data = None
+            print("No historic data")
         try:
             mapbox_parameters = MapBoxParameters.objects.get(case_study=case_study)
         except:
-            historic_data = None
+            mapbox_parameters = None
 
         try:
             host = (
-                HostData.objects.filter(host__case_study=case_study)
-                .values("host_map")
-                .first()
+                ClippedHostLocation.objects.get(pk=6) #Need to update this to a real query
             )
-            host_map = host["host_map"]
+            host_map = host.json_map
         except:
             host = None
             host_map = None
+            print("No host map found")
 
         steering_years =  range(2020,2023) #Update range dynamically range(case_study.end_year + 1, session.final_year + 1)
         context["session"] = session
@@ -622,13 +624,16 @@ def get_run_collection(request):
 def get_output_view(request):
     run_id = request.GET.get("new_run_id", None)
     this_run = Run.objects.get(pk=run_id)
-    first_year = this_run.run_collection.session.case_study.end_year + 1
+    first_year = int(this_run.run_collection.session.case_study.first_forecast_date.strftime('%Y'))
+    print(first_year)
+    print(type(first_year))
     run_collection = this_run.run_collection
     total_management_cost = Run.objects.filter(run_collection=run_collection).aggregate(
         Sum("management_cost")
     )
     number_of_steering_runs = Run.objects.filter(run_collection=run_collection).count()
     steering_year = this_run.steering_year
+    print(steering_year)
     default_run = run_collection.session.default_run
     default_run_outputs = Output.objects.filter(run_id=default_run)
     spread_rate = default_run_outputs.annotate(
@@ -742,7 +747,7 @@ def get_output_view(request):
                 "number_infected",
                 "infected_area",
                 "year",
-                "single_spread_map",
+                "median_spread_map",
                 "probability_map",
                 "escape_probability",
             )
