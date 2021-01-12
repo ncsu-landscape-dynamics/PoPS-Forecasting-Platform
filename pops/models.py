@@ -282,18 +282,18 @@ class CaseStudy(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def first_calibration_year(self):
-        return self.first_calibration_date.strftime('%Y')
-    
+        return self.first_calibration_date.strftime("%Y")
+
     def last_calibration_year(self):
-        return self.last_calibration_date.strftime('%Y')
+        return self.last_calibration_date.strftime("%Y")
 
     def first_forecast_year(self):
-        return self.first_forecast_date.strftime('%Y')
+        return self.first_forecast_date.strftime("%Y")
 
     def last_forecast_year(self):
-        return self.last_forecast_date.strftime('%Y')
+        return self.last_forecast_date.strftime("%Y")
 
     def get_string_fields(self):
         # list of some excluded fields
@@ -327,7 +327,7 @@ class HistoricData(models.Model):
         default=None,
         null=True,
         blank=True,
-        validators=[MinValueValidator(2018)],
+        validators=[MinValueValidator(2000)],
     )
     data = models.JSONField(help_text="GeoJSON map data", null=True)
     infected_area = models.DecimalField(
