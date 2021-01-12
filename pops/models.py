@@ -1259,7 +1259,7 @@ class HostLocation(models.Model):
 
 class ClippedHostLocation(models.Model):
 
-    pest_host_interaction = models.ForeignKey(
+    pest_host_interaction = models.OneToOneField(
         PestHostInteraction,
         verbose_name=_("pest host interaction"),
         on_delete=models.CASCADE,
@@ -1323,7 +1323,7 @@ class HostMovement(models.Model):
 
 class ClippedHostMovement(models.Model):
 
-    pest_host_interaction = models.ForeignKey(
+    pest_host_interaction = models.OneToOneField(
         PestHostInteraction,
         verbose_name=_("pest host interaction"),
         on_delete=models.CASCADE,
