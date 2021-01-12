@@ -34,12 +34,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.gis",
     "rest_framework",
-    "channels",
+    #"channels",
     "storages",
     "users.apps.UsersConfig",
     "pops.apps.PopsConfig",
     "team.apps.TeamConfig",
-    "chat",
+    #"chat",
     "debug_toolbar",
 ]
 
@@ -79,15 +79,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "pops_website.wsgi.application"
-ASGI_APPLICATION = "pops_website.asgi.application"
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [(os.getenv("REDIS_SERVER_NAME"), os.getenv("REDIS_PORT"))],
-        },
-    },
-}
+# ASGI_APPLICATION = "pops_website.asgi.application"
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [(os.getenv("REDIS_SERVER_NAME"), os.getenv("REDIS_PORT"))],
+#         },
+#     },
+# }
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
