@@ -1254,7 +1254,7 @@ class HostLocation(models.Model):
         verbose_name_plural = _("host locations")
 
     def __str__(self):
-        return self.host.name
+        return self.host_information.name
 
 
 class ClippedHostLocation(models.Model):
@@ -1289,7 +1289,7 @@ class ClippedHostLocation(models.Model):
         verbose_name_plural = _("host locations - - clipped")
 
     def __str__(self):
-        return self.host.name
+        return self.pest_host_interaction.host.name
 
 
 class HostMovement(models.Model):
