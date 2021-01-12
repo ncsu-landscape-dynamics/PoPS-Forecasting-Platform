@@ -17,7 +17,7 @@ PROJECT_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardi
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DJANGO_DEBUG", False)
+DEBUG = os.getenv("DEBUG", False) == "True"
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
 
@@ -171,7 +171,7 @@ CASE_STUDY_UPLOAD_FILE_MAX_SIZE = 1024000  # Max file size in Bytes (multiply KB
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 26214400
 
-INTERNAL_IPS = os.getenv("INTERNAL_IPS")
+# INTERNAL_IPS = os.getenv("INTERNAL_IPS")
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
