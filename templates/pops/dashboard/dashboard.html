@@ -1641,32 +1641,33 @@ $("#submit-run").on('submit', function () {
           var case_study_id = {{ case_study.pk }};
           var session_id = {{ session.pk }};
           if (!$('input#id_tangible_landscape').prop('checked')) {
-            console.log('ATTEMPTING TO RUN POPS MODEL API FOR RUN ' + new_run_id + ' IN RUN COLLECTION ' + new_run_collection_id);
-            var base_url = "https://pops-model-api.appspot.com/status?"
-            //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
-            var run_url = (base_url + "run_id=" + new_run_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&session_id=" + session_id.toString() + "&case_study_id=" + case_study_id.toString()); //base_url.concat(new_run_id.toString());
-            console.log('Using URL: ' + run_url);
-            $.ajax({
-              url: run_url,
-              dataType: 'JSONP',
-              type: 'GET',
-              headers: { 'Access-Control-Allow-Origin': 'https://pops-model-api.appspot.com' },
-              statusCode: {
-                404: function() {
-                  alert( "PoPS Model API not found (404 error)... \n Please try again. \n If the problem persists, contact an admin." );
-                },
-                500: function() {
-                  alert( "PoPS Model API returned 500 Error... \n Please try again. \n If the problem persists, contact an admin." );
-                }
-              },
-              success : function (data) {
-                console.log('Success signal from PoPS Model API.');
-              },
-              error : function(xhr,errmsg,err) {
-                console.log('Received status from the PoPS model API:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-              }
-            });
-            console.log('Sent run request to PoPS. Waiting for updates to database...')
+            console.log('API is currently turned off, no results to be expected.')
+            // console.log('ATTEMPTING TO RUN POPS MODEL API FOR RUN ' + new_run_id + ' IN RUN COLLECTION ' + new_run_collection_id);
+            // var base_url = "https://pops-model-api.appspot.com/status?"
+            // //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
+            // var run_url = (base_url + "run_id=" + new_run_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&session_id=" + session_id.toString() + "&case_study_id=" + case_study_id.toString()); //base_url.concat(new_run_id.toString());
+            // console.log('Using URL: ' + run_url);
+            // $.ajax({
+            //  url: run_url,
+            //  dataType: 'JSONP',
+            //  type: 'GET',
+            //  headers: { 'Access-Control-Allow-Origin': 'https://pops-model-api.appspot.com' },
+            //  statusCode: {
+            //    404: function() {
+            //      alert( "PoPS Model API not found (404 error)... \n Please try again. \n If the problem persists, contact an admin." );
+            //    },
+            //    500: function() {
+            //      alert( "PoPS Model API returned 500 Error... \n Please try again. \n If the problem persists, contact an admin." );
+            //    }
+            //  },
+            //  success : function (data) {
+            //    console.log('Success signal from PoPS Model API.');
+            //  },
+            //  error : function(xhr,errmsg,err) {
+            //    console.log('Received status from the PoPS model API:' + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            //  }
+            // });
+            // console.log('Sent run request to PoPS. Waiting for updates to database...')
           }
           else {
             console.log('Waiting for management from tangible landscape...')
