@@ -64,7 +64,7 @@
           title="Edit session name will be available in the future" data-placement="right"><i style="font-size:0.5em;"
             class="fas fa-pencil-alt align-top"></i></a>
         <span id="case_study_title" class="text-muted d-none d-lg-inline-block" style="font-size:0.8em;">
-          ({{ session.case_study }} **Need to put date here** <a
+          ({{ session.case_study }} <a
             href="{% url 'case_study_review' pk=session.case_study.pk %}" data-toggle="tooltip"
             title="View case study detail page" data-placement="right"><i style="font-size:0.6em"
               class="fas fa-info-circle align-top text-secondary"></i></a>)
@@ -1227,6 +1227,7 @@ function get_output(run_id) {
   map.setLayoutProperty('{{ historic_data.last.year }}', 'visibility', 'visible');
   //Make this loop a function of current slider max
   for (i = {{steering_years | first }}; i < ({{ steering_years | last }} + 1); i++) { 
+    console.log('Removing layers and sources for year: ', i);
     if (map.getLayer(i.toString())) {
       map.removeLayer(i.toString());
     };
@@ -1320,7 +1321,9 @@ function get_output(run_id) {
       var initial_infected_area = {{historic_data.last.infected_area}};
       var initial_number_infected = {{historic_data.last.number_infected}};
       var first_year = {{ steering_years | first }};
+      console.log('First year = ', first_year);
       var last_year = {{ steering_years | last }};
+      console.log('Last year = ', last_year);
       budget_plot(defaults, steering_outputs, first_year, last_year);
       area_plot(defaults, steering_outputs, initial_infected_area, initial_number_infected, first_year, last_year);
       spreadRatePlot({{historic_data.last.year}});

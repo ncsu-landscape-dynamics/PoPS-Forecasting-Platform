@@ -2080,7 +2080,7 @@ class Run(models.Model):
         decimal_places=2,
         blank=True,
         null=True,
-        default=0,
+        default=0.00,
     )
     management_area = models.DecimalField(
         verbose_name=_("management area"),

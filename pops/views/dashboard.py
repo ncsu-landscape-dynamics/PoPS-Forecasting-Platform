@@ -484,7 +484,10 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
             host_map = None
             print("No host map found")
 
-        steering_years =  range(2020,2023) #Update range dynamically range(case_study.end_year + 1, session.final_year + 1)
+        steering_years =  range(
+            int(case_study.first_forecast_date.strftime('%Y')),
+            int(case_study.last_forecast_date.strftime('%Y'))+1
+            ) #Update range dynamically range(case_study.end_year + 1, session.final_year + 1)
         context["session"] = session
         context["case_study"] = case_study
         context["mapbox_parameters"] = mapbox_parameters
@@ -626,7 +629,6 @@ def get_output_view(request):
     this_run = Run.objects.get(pk=run_id)
     first_year = int(this_run.run_collection.session.case_study.first_forecast_date.strftime('%Y'))
     print(first_year)
-    print(type(first_year))
     run_collection = this_run.run_collection
     total_management_cost = Run.objects.filter(run_collection=run_collection).aggregate(
         Sum("management_cost")

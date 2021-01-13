@@ -8,7 +8,7 @@ function createPolygon (e) {
     findAndCombineOverlappingPolygons(featureID);
   }
   updateJSON();
-  document.querySelector('#chat-message-submit').click();
+  //document.querySelector('#chat-message-submit').click();
 }
 //Get the currently drawn polygon, so we can add management properties to the JSON.
 function grabPolygon(e) {
@@ -67,17 +67,27 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
       //Check to see if the new polygon intersects the existing polygon
       var intersection = turf.intersect(newPolygon, existingPolygon);
       if (intersection) {
+        console.log('Intersection detected.')
         //If they are the same management type, combine the two polygons.
         if ((newPolygon.properties.management_type == existingPolygon.properties.management_type)) {
+          console.log('Management type is the same')
           if ((newPolygon.properties.efficacy == existingPolygon.properties.efficacy) && 
           (newPolygon.properties.cost == existingPolygon.properties.cost) &&
           (newPolygon.properties.date == existingPolygon.properties.date)) {
+            console.log('All properties are the same')
             union = combineTwoPolygons(newPolygonID, existingPolygon.id);
+            console.log(union)
             if (union) {
+              console.log('Union has occured')
               newPolygonID = union;
               polygon =  draw.get(newPolygonID);
               var area=Math.round(getArea(polygon));
               draw.setFeatureProperty(newPolygonID, 'area', area);
+              draw.setFeatureProperty(newPolygonID, 'management_type', newPolygon.properties.management_type);
+              draw.setFeatureProperty(newPolygonID, 'efficacy', newPolygon.properties.efficacy);
+              draw.setFeatureProperty(newPolygonID, 'cost', newPolygon.properties.cost);
+              draw.setFeatureProperty(newPolygonID, 'date', newPolygon.properties.date);
+              console.log('Feature property area is set')
             }
           }
           else if ((newPolygon.properties.management_type != 'Pesticide') || (newPolygon.properties.date == existingPolygon.properties.date)
@@ -97,10 +107,12 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
 //Check if polygon1 and polygon 2 intersect and are of the same type.
 //If yes, combine them into a single polygon and delete the original 2.
 function combineTwoPolygons(polygonID1, polygonID2) {
+  console.log('Combinging two polygons')
   polygon1 = draw.get(polygonID1);
   polygon2 = draw.get(polygonID2);
   //if polygons intersect AND management type is the same, perform union of two polygons
   if ((turf.intersect(polygon1, polygon2)) && (polygon1.properties.management_type == polygon2.properties.management_type)) {
+    console.log('Confirming intersection and same type')
     union = turf.union(polygon1, polygon2); //create new union polygon
     var featureIds = draw.add(union); //add new polygon to draw
     draw.delete(polygonID1) //remove original overlapping polygons
@@ -114,7 +126,7 @@ function updatePolygons(e) {
     findAndCombineOverlappingPolygons(selection[n]);
   }
   updateJSON();
-  document.querySelector('#chat-message-submit').click();
+  //document.querySelector('#chat-message-submit').click();
 }
     //When selection changes, show box to edit the selected polygons.
     function displaySelectionChange() {
@@ -164,17 +176,18 @@ function changePolygonProperties() {
         draw.add(draw.get(selectionIDs[n])); //This line makes the new change draw on the map and appear.
       }
       updateJSON(selectionIDs);
-      document.querySelector('#chat-message-submit').click();
+      //document.querySelector('#chat-message-submit').click();
 };
 
 //This function updates the GeoJSON management field 
 function updateJSON() {
-  console.log("Updating management polygons.");
+  console.log("Updating management polygons JSON.");
   var data = draw.getAll();
   var answer = document.getElementById('displayed-management-area');
   var budget = $("input#id_budget").val();
   var abbreviated_unit_display = $("select#id_area_unit").children("option:selected").attr('data-text');
   var area_modifier = $("select#id_area_unit").children("option:selected").val();
+  console.log(data.features)
   if (data.features.length > 0) {
     // Stringify the GeoJson
     var convertedData = JSON.stringify(data);
@@ -183,7 +196,8 @@ function updateJSON() {
     var rounded_area = Math.round(total_area);
     var displayed_area = Math.round(total_area*area_modifier);
     // round cost to 2 decimal places
-    var total_cost = host_removal_cost + pesticide_cost;
+    var total_cost = Math.round(host_removal_cost + pesticide_cost);
+    console.log("Total cost is: ", total_cost);
   } else {
     var rounded_area=0;
     var convertedData = 0;
@@ -196,7 +210,7 @@ function updateJSON() {
   $('#id_management_polygons').val(convertedData);
   $('#id_management_area').val(rounded_area);
   $('#id_management_cost').val(total_cost);
-  gaugePlot("current-budget-plot", host_removal_cost, pesticide_cost, budget);
+  gaugePlot("current-budget-plot", Math.round(host_removal_cost), Math.round(pesticide_cost), budget);
 }
 
 function calculateTotalDrawnManagement(data) {
