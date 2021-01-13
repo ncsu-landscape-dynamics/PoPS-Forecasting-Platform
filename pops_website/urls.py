@@ -70,7 +70,7 @@ urlpatterns = [
     # path('tutorials/', TemplateView.as_view(template_name="tutorials.html"), name='tutorials'),
     # path('terms-and-conditions/', TemplateView.as_view(template_name="terms_and_conditions.html"), name='terms_and_conditions'),
     # path('privacy-policy/', TemplateView.as_view(template_name="privacy_policy.html"), name='privacy_policy'),
-    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
 
 
