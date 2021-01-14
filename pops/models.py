@@ -94,7 +94,7 @@ def treatment_directory(instance, filename):
 
 def temperature_directory(instance, filename):
     return "case_studies/{0}/temperature_data/{1}".format(
-        instance.weather.case_study.id, filename
+        instance.weather.pest.case_study.id, filename
     )
 
 
@@ -1634,7 +1634,7 @@ class Parameters(models.Model):
         verbose_name_plural = _("parameters")
 
     def __str__(self):
-        return self.pest
+        return str(self.pest)
 
 
 class AnthropogenicDirection(models.Model):
@@ -1772,8 +1772,8 @@ class QuarantineLink(models.Model):
     objects = MyManager()
 
     class Meta:
-        verbose_name = _("quarantine")
-        verbose_name_plural = _("quarantines")
+        verbose_name = _("quarantine pest")
+        verbose_name_plural = _("quarantines pest")
 
     def __str__(self):
         return str(self.pk)
