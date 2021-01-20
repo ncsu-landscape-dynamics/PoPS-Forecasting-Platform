@@ -1274,7 +1274,7 @@ function get_output(run_id) {
           newMagmaLayer(map_data, year_string,100);
         }
         else {
-          var map_data = data.results[i].single_spread_map;
+          var map_data = data.results[i].median_spread_map;
           newFireLayer(map_data, year_string,max_occurence_number_for_legend);
         }
         year_list.push(data.results[i].year);

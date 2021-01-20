@@ -664,6 +664,7 @@ def get_output_view(request):
             )
         ),
     }
+    # steering_outputs contains the information needed to make the side plots on the dashboard
     steering_outputs = []
     if steering_year:
         for x in range(first_year, first_year + number_of_steering_runs):
@@ -710,7 +711,7 @@ def get_output_view(request):
     # print(steering_outputs)
     # get all inputs for runs in this collection (management polygons)
     inputs = Run.objects.filter(run_collection=run_collection)
-    # get the outputs for this run
+    # get the outputs for this run (used for displaying on the map)
     outputs = Output.objects.filter(run_id=run_id)
     # then merge the outputs for previous runs to get the previous steering years
     if steering_year:
@@ -749,7 +750,9 @@ def get_output_view(request):
                 "number_infected",
                 "infected_area",
                 "year",
+                "min_spread_map",
                 "median_spread_map",
+                "max_spread_map",
                 "probability_map",
                 "escape_probability",
             )
