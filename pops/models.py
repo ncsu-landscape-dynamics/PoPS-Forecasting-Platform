@@ -24,6 +24,15 @@ def r_data_directory(instance, filename):
     return "case_studies/{0}/r_data/{1}".format(instance.case_study.id, filename)
 
 
+def run_r_data_directory(instance, filename):
+    return "case_studies/{0}/r_data/sessions/{1}/run_collections/{2}/{3}".format(
+        instance.run_collection.session.case_study.id,
+        instance.run_collection.session.id,
+        instance.run_collection.id,
+        filename
+        )
+
+
 def all_populations_directory(instance, filename):
     return "case_studies/{0}/all_populations/{1}".format(
         instance.case_study.id, filename
@@ -2111,6 +2120,13 @@ class Run(models.Model):
         null=True,
         blank=True,
         validators=[MinValueValidator(2018)],
+    )
+    r_data = models.FileField(
+        verbose_name=_("R data file"),
+        help_text="R data file to run PoPS model",
+        upload_to=run_r_data_directory,
+        max_length=100,
+        blank=True,
     )
 
     class Meta:
