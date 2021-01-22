@@ -11,4 +11,4 @@ class StaticStorage(S3Boto3Storage):
 class MediaStorage(S3Boto3Storage):
     bucket_name = os.getenv("STATIC_BUCKET_NAME")
     location = "media"
-    file_overwrite = False
+    file_overwrite = True
