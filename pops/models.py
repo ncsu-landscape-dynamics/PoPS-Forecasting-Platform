@@ -21,7 +21,7 @@ class MyManager(models.Manager):
 
 
 def r_data_directory(instance, filename):
-    return "case_studies/{0}/r_data/{1}".format(instance.case_study.id, filename)
+    return "case_studies/{0}/r_data/{1}".format(instance.id, filename)
 
 
 def run_r_data_directory(instance, filename):
@@ -39,6 +39,7 @@ def all_populations_directory(instance, filename):
     )
 
 
+## we are not using these 5 but migrations don't work without them
 def all_plants_directory(instance, filename):
     return "case_studies/{0}/all_plants/{1}".format(instance.case_study.id, filename)
 
@@ -57,6 +58,9 @@ def calibration_infestation_directory(instance, filename):
 
 def vector_directory(instance, filename):
     return "case_studies/{0}/all_plants/{1}".format(instance.case_study.id, filename)
+
+
+##  end
 
 
 def host_directory(instance, filename):
@@ -416,9 +420,9 @@ class AllPopulationsData(models.Model):
         primary_key=True,
     )
     user_file = models.FileField(
-        verbose_name=_("all plant data"),
+        verbose_name=_("all populations data"),
         help_text="Upload your total population data as a raster file. "
-        + "This could be all the plants in a cell, or alternatively, all  "
+        + "This could be all the plants or animals in a cell, or alternatively, all  "
         + "cells could have the value of the maximum number of hosts found in "
         + "any cell in your study area.",
         upload_to=all_populations_directory,
