@@ -29,8 +29,8 @@ def run_r_data_directory(instance, filename):
         instance.run_collection.session.case_study.id,
         instance.run_collection.session.id,
         instance.run_collection.id,
-        filename
-        )
+        filename,
+    )
 
 
 def all_populations_directory(instance, filename):
@@ -573,7 +573,7 @@ class Pest(models.Model):
     )
     MODEL_CHOICES = (
         ("SI", "Susceptible Infected"),
-        ("SID", "Susceptible Infected Diseased"),
+        ("SEI", "Susceptible Exposed Infected"),
         ("SEID", "Susceptible Exposed Infected Diseased"),
     )
     model_type = models.CharField(
