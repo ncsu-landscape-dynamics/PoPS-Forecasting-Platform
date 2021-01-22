@@ -1716,7 +1716,7 @@ class LatencyPeriod(models.Model):
         default=0,
     )
     maximum = models.PositiveSmallIntegerField(
-        verbose_name=_("minimum days"),
+        verbose_name=_("maximum days"),
         help_text="Maximum latency period (in days)",
         blank=True,
         null=True,
