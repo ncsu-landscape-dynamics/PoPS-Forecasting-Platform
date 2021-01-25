@@ -380,7 +380,7 @@ class OutputSerializer(serializers.ModelSerializer):
             "max_spread_map",
             "median_spread_map",
             "probability_map",
-            "suceptible_map",
+            "susceptible_map",
             "escape_probability",
             "spreadrate",
             "distancetoboundary",
