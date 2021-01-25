@@ -19,7 +19,7 @@ router.register("lethal_temperature_data", views.LethalTemperatureDataViewSet)
 router.register("precipitation_data", views.PrecipitationDataViewSet)
 router.register("session_write", views.SessionModelWriteViewSet, basename="session_write")
 router.register("session_detail", views.SessionDetailViewSet)
-#router.register("run_r_data", views.RunRDataViewSet)
+router.register("run_r_data", views.RunRDataViewSet)
 
 
 urlpatterns = [

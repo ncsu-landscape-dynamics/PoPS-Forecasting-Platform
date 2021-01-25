@@ -568,3 +568,9 @@ class RunModelWriteSerializer(serializers.ModelSerializer):
             return obj.output_set.order_by("pk")[0].pk
         else:
             return "null"
+
+class RunRDataViewSet(serializers.ModelSerializer):
+    class Meta:
+        model = Run
+        fields = ["r_data"]
+

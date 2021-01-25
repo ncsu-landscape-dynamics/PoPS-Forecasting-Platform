@@ -105,6 +105,7 @@ class SessionModelWriteViewSet(viewsets.ModelViewSet):
     serializer_class = SessionModelWriteSerializer
     permission_classes = (permissions.AllowAny,)
 
+
 class SessionDetailViewSet(viewsets.ModelViewSet):
 
     queryset = Session.objects.prefetch_related('runcollection_set').all()
@@ -119,6 +120,16 @@ class RunModelWriteViewSet(viewsets.ModelViewSet):
     serializer_class = RunModelWriteSerializer
     permission_classes = (permissions.AllowAny,)
 
+
+class RunRDataViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows runs to be viewed or edited.
+    """
+    queryset = Run.objects.all()
+    serializer_class = RunRDataViewSet
+    permission_classes = (permissions.AllowAny,)
+
+
 class RunDetailViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows runs to be viewed or edited.
@@ -126,4 +137,5 @@ class RunDetailViewSet(viewsets.ModelViewSet):
     queryset = Run.objects.prefetch_related("output_set").all()
     serializer_class = RunDetailSerializer
     permission_classes = (permissions.AllowAny,)
+
 
