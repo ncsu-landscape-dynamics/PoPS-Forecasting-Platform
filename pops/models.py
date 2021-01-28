@@ -1936,7 +1936,7 @@ class Session(models.Model):
         default=0,
         null=True,
         blank=True,
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        validators=[MinValueValidator(0), MaxValueValidator(10000)],
     )
     public = models.BooleanField(
         verbose_name=_("public session"),
