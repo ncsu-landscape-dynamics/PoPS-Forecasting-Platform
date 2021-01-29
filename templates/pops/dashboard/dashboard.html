@@ -959,6 +959,16 @@
   });
 
 //MAP
+
+  function setDateRange(year) {
+    var min_date = year.toString() + '-01-01';
+    var max_date = year.toString() + '-12-31';
+    var display_date = year.toString() + '-01-01';
+    $('.management-date').attr('min',min_date);
+    $('.management-date').attr('max',max_date);
+    $('.management-date').val(min_date);
+  }
+
   mapboxgl.accessToken =
       'pk.eyJ1Ijoic2hhbmtqNjg3IiwiYSI6ImNqc2pmc201eDE0amUzeXF6eTYzaDI2azUifQ.7uhVr9px-kAjXkqSdTW2OQ';
     /* eslint-disable */
@@ -1178,14 +1188,7 @@ function get_run_collection(run_collection_id) {
         };
       }
 
-    function setDateRange(year) {
-      var min_date = year.toString() + '-01-01';
-      var max_date = year.toString() + '-12-31';
-      var display_date = year.toString() + '-01-01';
-      $('.management-date').attr('min',min_date);
-      $('.management-date').attr('max',max_date);
-      $('.management-date').val(min_date);
-    }
+
 
     if (data.tangible_landscape) {
       console.log('Tangible landscape is on.')
@@ -1306,6 +1309,7 @@ function get_output(run_id) {
         infected_number_list = [];
       if (data.steering) {
         var display_year = data.run_inputs.steering_year;
+        setDateRange(display_year+1);
         map.setLayoutProperty('{{ historic_data.last.year }}', 'visibility', 'none');
         map.setLayoutProperty(display_year.toString(), 'visibility', 'visible');
         $("#year-slider").find('input').val(display_year.toString());
