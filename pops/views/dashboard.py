@@ -468,17 +468,16 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
             )
         except:
             historic_data = None
-            print("No historic data")
+            print("No historic data found")
         try:
             mapbox_parameters = MapBoxParameters.objects.get(case_study=case_study)
         except:
             mapbox_parameters = None
-
         try:
-            host = (
-                ClippedHostLocation.objects.get(pk=6) #Need to update this to a real query
-            )
-            host_map = host.json_map
+            host_maps = ClippedHostLocation.objects.filter(pest_host_interaction__pest__case_study=case_study)
+            # This is grabbing the first host map. If there are multiple, due to multiple pests, we need to rethink
+            # this line.
+            host_map = host_maps[0].json_map 
         except:
             host = None
             host_map = None
