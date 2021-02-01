@@ -633,6 +633,82 @@ class Pest(models.Model):
         return self.pest_information.common_name
 
 
+class Pesticide(models.Model):
+
+    trade_name = models.CharField(
+        verbose_name=_("pesticide common or trade name"),
+        max_length=150
+        )
+    duration = models.DecimalField(
+        verbose_name=_("duration"),
+        help_text="Average duration in days",
+        blank=True,
+        max_digits=5,
+        decimal_places=2,
+        default=14,
+        validators=[MinValueValidator(0), MaxValueValidator(365)],
+    )
+    cost_per_meter_squared = models.DecimalField(
+        verbose_name=_("average cost per meter squared"),
+        help_text="Average cost per meter squared (in $US)",
+        blank=True,
+        max_digits=5,
+        decimal_places=2,
+        default=10,
+        validators=[MinValueValidator(0), MaxValueValidator(1000)],
+    )
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("pesticide")
+        verbose_name_plural = _("pesticides")
+
+    def __str__(self):
+        return self.trade_name
+
+
+class PestPesticideLink(models.Model):
+
+    pest_information = models.ForeignKey(
+        PestInformation,
+        verbose_name=_("pest information"),
+        help_text="pest information.",
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+    )
+    pesticide = models.ForeignKey(
+        Pesticide,
+        verbose_name=_("pesticide"),
+        help_text="pesticide",
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+    )
+    efficacy = models.DecimalField(
+        verbose_name=_("efficacy"),
+        help_text="Efficacy of the pesticide for the given pest (range 0-1)",
+        blank=False,
+        max_digits=5,
+        decimal_places=4,
+        default=0.9,
+        validators=[MinValueValidator(0), MaxValueValidator(1)],
+    )
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("pest pesticide link")
+        verbose_name_plural = _("pest pesticide links")
+
+    def __str__(self):
+        pest = self.pest_information.common_name
+        pesticide = self.pesticide.trade_name
+        string = "{0} (pest={1})".format(pesticide, pest)
+        return string
+
+
 class Weather(models.Model):
 
     pest = models.OneToOneField(
