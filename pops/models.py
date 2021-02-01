@@ -2181,7 +2181,7 @@ class Output(models.Model):
     max_spread_map = models.JSONField(null=True)
     median_spread_map = models.JSONField(null=True)
     probability_map = models.JSONField(null=True)
-    susceptible_map = models.JSONField(null=True)
+    standard_deviation_map = models.JSONField(null=True)
     escape_probability = models.DecimalField(
         verbose_name=_("probability of escape"),
         help_text="Probability that the pest/pathogen escapes quarantine or other boundary",
