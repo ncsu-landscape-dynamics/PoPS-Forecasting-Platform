@@ -398,7 +398,7 @@ class MapBoxParameters(models.Model):
         help_text="The zoom level of MapBox",
         blank=True,
         default=7,
-        validators=[MinValueValidator(0), MaxValueValidator(16)],
+        validators=[MinValueValidator(0), MaxValueValidator(22)],
     )
 
     objects = MyManager()
