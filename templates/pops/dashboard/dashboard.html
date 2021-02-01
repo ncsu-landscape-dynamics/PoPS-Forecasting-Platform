@@ -352,21 +352,21 @@
                     <div class="container">
                       <div class="row">
                         <div class="col-12 px-2 py-1">
-                          <div class="input-group input-group-sm" title="Host removal efficacy (range: 0-1)">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text">Efficacy</span>
-                            </div>
-                            <input id="default_host_removal_efficacy" class="form-control" type="number"
-                              name="host_removal_efficacy" value="1" min="0" max="1" step="0.1">
-                          </div>
-                        </div>
-                        <div class="col-12 px-2 py-1">
                           <div class="input-group input-group-sm" title="Host removal date">
                             <div class="input-group-prepend">
                               <span class="input-group-text">Date</span>
                             </div>
                             <input id="default_host_removal_date" class="form-control management-date" type="date"
                               name="host_removal_date" value="{{steering_years | first }}-01-01" min="{{steering_years | first }}-01-01" max="{{steering_years | first }}-12-31">
+                          </div>
+                        </div>                      
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm" title="Host removal efficacy (range: 0-1)">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Efficacy</span>
+                            </div>
+                            <input id="default_host_removal_efficacy" class="form-control" type="number"
+                              name="host_removal_efficacy" value="1" min="0" max="1" step="0.1">
                           </div>
                         </div>
                         <div class="col-12 px-2 py-1">
@@ -386,8 +386,8 @@
                           </div>
                         </div>
                         <input hidden id="default_host_removal_duration" class="form-control management_duration" type="number"
-                          name="pesticide_duration" value="0" min="0" step="1"
-                          title="Pesticide duration">
+                          name="host_removal_duration" value="0" min="0" step="1"
+                          title="Host removal duration">
                       </div>
                     </div>
                   </div>
@@ -402,16 +402,15 @@
                   </button>
                   <div class="dropdown-menu draw-tool-dropdown">
                     <div class="px-2 py-1">Pesticide:</div>
-                    <div class="container">
+                    <div class="container pesticide-info">
                       <div class="row">
                         <div class="col-12 px-2 py-1">
-                          <div class="input-group input-group-sm" title="Pesticide efficacy (range: 0-1)">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text">Efficacy</span>
-                            </div>
-                            <input id="default_pesticide_efficacy" class="form-control" type="number"
-                              name="pesticide_efficacy" value="0.66" min="0" max="1" step="0.01"
-                              title="Pesticide efficacy (range: 0.0 - 1.0)">
+                          <div class="input-group input-group-sm pesticide-type" title="Select a pesticide">
+                            <select id="default_pesticide_type" class="custom-select">
+                              <option selected value="1" data-efficacy="0.8" data-duration="14" data-cost-per-m2="1">Pesticide Name 1</option>
+                              <option value="2" data-efficacy="0.9" data-duration="10" data-cost-per-m2="2">Pesticide Name 2</option>
+                              <option value="other">Other (enter efficacy and duration)...</option>
+                            </select>
                           </div>
                         </div>
                         <div class="col-12 px-2 py-1">
@@ -422,40 +421,53 @@
                             <input id="default_pesticide_date" class="form-control management-date" type="date"
                               name="pesticide_date" value="{{steering_years | first }}-01-01" min="{{steering_years | first }}-01-01" max="{{steering_years | first }}-12-31">
                           </div>
-                        </div>                        
+                        </div>                               
                         <div class="col-12 px-2 py-1">
-                          <div class="input-group input-group-sm management_group_cost" title="Pesticide cost per selected unit area">
+                          <div class="input-group input-group-sm" title="Pesticide efficacy (range: 0-1)">
                             <div class="input-group-prepend">
-                              <span class="input-group-text">$</span>
+                              <span class="input-group-text">Efficacy</span>
                             </div>
-                            <input class="displayed_cost form-control" type="number" name="displayed_pesticide_cost"
-                              value="1000" min="0" step="1">
-                            <input hidden id="default_pesticide_cost" class="default_cost" type="number"
-                              name="pesticide_cost_per_m2" value="0.247105" min="0">
-                            <select class="custom-select custom-select-sm cost_unit">
-                              <option value="1">/m^2</option>
-                              <option value="0.000247105" selected>/acre</option>
-                              <option value="0.0001">/ha</option>
-                            </select>
+                            <input disabled id="default_pesticide_efficacy" class="form-control efficacy" type="number"
+                              name="pesticide_efficacy" value="0.8" min="0" max="1" step="0.01"
+                              title="Pesticide efficacy (range: 0.0 - 1.0)">
                           </div>
-                        </div>
+                        </div>    
                         <div class="col-12 px-2 py-1">
                           <div class="input-group input-group-sm" title="Pesticide duration">
                             <div class="input-group-prepend">
                               <span class="input-group-text">Duration</span>
                             </div>
-                            <input id="default_pesticide_duration" class="form-control management_duration" type="number"
+                            <input disabled id="default_pesticide_duration" class="form-control management_duration" type="number"
                               name="pesticide_duration" value="14" min="0" step="1"
                               title="Pesticide duration">
                             <div class="input-group-append">
                               <span class="input-group-text">days</span>
                             </div>                          
                           </div>
-                        </div>                        
+                        </div>                                         
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm management_group_cost" title="Pesticide cost per selected unit area">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">$</span>
+                            </div>
+                            <input disabled class="displayed_cost form-control" type="number" name="displayed_pesticide_cost"
+                              value="1" min="0" step="1">
+                              {% comment %} Needs to come from database {% endcomment %}
+                            <input hidden id="default_pesticide_cost" class="default_cost" type="number"
+                              name="pesticide_cost_per_m2" value="1" min="0"> 
+                            <select disabled class="custom-select custom-select-sm cost_unit">
+                              <option value="1" selected>/m^2</option>
+                              <option value="0.000247105">/acre</option>
+                              <option value="0.0001">/ha</option>
+                            </select>
+                          </div>
+                        </div>                    
                       </div>
                     </div>
                   </div>
                 </div>
+
+
                 <button class="btn btn-secondary btn-sm " type="button" data-toggle="tool"
                   title="Below are the tools to draw management" data-placement="left">
                   <small>Draw tools</small>
@@ -548,16 +560,16 @@
                     </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-12 py-1">
-                    <div class="input-group input-group-sm" title="Efficacy (range: 0-1)">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">Efficacy</span>
-                      </div>
-                      <input id="edit_efficacy" class="form-control" type="number" name="" value="0.5" min="0" max="1"
-                        step="0.1" title="Efficacy (0-1)">
+                <div class="row pesticide-info">
+                  <div id="edit_pesticide_type_group" class="col-12 px-2 py-1">
+                    <div class="input-group input-group-sm pesticide-type" title="Select a pesticide">
+                      <select id="edit_pesticide_type" class="custom-select">
+                        <option value="1" data-efficacy="0.8" data-duration="14" data-cost-per-m2="1">Pesticide Name 1</option>
+                        <option value="2" data-efficacy="0.9" data-duration="10" data-cost-per-m2="2">Pesticide Name 2</option>
+                        <option value="other">Other (enter efficacy and duration)...</option>
+                      </select>
                     </div>
-                  </div>
+                  </div>     
                   <div class="col-12 py-1">
                     <div class="input-group input-group-sm" title="Date">
                       <div class="input-group-prepend">
@@ -565,7 +577,16 @@
                       </div>
                       <input id="edit_date" class="form-control management-date" type="date"  title="Date" value="{{steering_years | first }}-01-01" min="{{steering_years | first }}-01-01" max="{{steering_years | first }}-12-31">
                     </div>
-                  </div>                  
+                  </div>                                 
+                  <div class="col-12 py-1">
+                    <div class="input-group input-group-sm" title="Efficacy (range: 0-1)">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Efficacy</span>
+                      </div>
+                      <input id="edit_efficacy" class="form-control efficacy" type="number" name="" value="0.5" min="0" max="1"
+                        step="0.1" title="Efficacy (0-1)">
+                    </div>
+                  </div>              
                   <div class="col-12 py-1">
                     <div class="input-group input-group-sm management_group_cost" title="Cost per selected unit area">
                       <div class="input-group-prepend">
@@ -587,7 +608,7 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text">Duration</span>
                       </div>
-                      <input id="edit_duration" class="form-control" type="number" name="" value="0" min="0" 
+                      <input id="edit_duration" class="form-control management_duration" type="number" name="" value="0" min="0" 
                         step="1" title="Duration">
                       <div class="input-group-append">
                         <span class="input-group-text">days</span>
@@ -599,14 +620,47 @@
                   </div>
                 </div>
               </div>
-
+<script>
+function updatePesticideType(element) {
+  console.log('Updating pesticide info.')
+  new_efficacy = $(element).find(".pesticide-type option:selected").data("efficacy");
+  new_duration = $(element).find(".pesticide-type option:selected").data("duration");
+  new_cost_per_m2 = $(element).find(".pesticide-type option:selected").data("cost-per-m2");
+  if ($(element).find(".pesticide-type option:selected").val() != 'other') {
+    $(element).find("input.efficacy").val(new_efficacy).prop('disabled', true);
+    $(element).find("input.management_duration").val(new_duration).prop('disabled', true);
+    $(element).find("input.default_cost").val(new_cost_per_m2);
+    $(element).find("input.displayed_cost").val(new_cost_per_m2).prop('disabled', true);
+    $(element).find("select.cost_unit").val(1).prop('disabled', true);
+    console.log('Other selected.');
+  }
+  else {
+    $(element).find("input.efficacy").prop('disabled', false);
+    $(element).find("input.management_duration").prop('disabled', false);
+    $(element).find("input.displayed_cost").prop('disabled', false);
+    $(element).find("select.cost_unit").prop('disabled', false);
+  }
+};
+$(".pesticide-type select").on("change", function() {
+  console.log('Pesticide selection changed');
+  element = $(this).parents(".pesticide-info");
+  updatePesticideType(element);
+});
+</script>
               <script>
               $('input[name="editManagementOptions"]').on('change', function() {
                 if ($('input[name="editManagementOptions"]:checked').val() == "Pesticide") {
+                  if ($(this).next(".pesticide-info").find(".pesticide-type option:selected").val() != 'other') {
+                    console.log('Pesticide type is selected')
+                    disableEditingPolygonProperties();                
+                  }
                   $( "#edit_duration_group" ).show("fast");
+                  $( "#edit_pesticide_type_group" ).show("fast");
                 }
                 else {
                   $( "#edit_duration_group" ).hide("fast");
+                  $( "#edit_pesticide_type_group" ).hide("fast");
+                  enableEditingPolygonProperties ();
                 }
               })
               

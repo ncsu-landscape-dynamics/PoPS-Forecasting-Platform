@@ -35,6 +35,7 @@ function createCircle(center, radius, management_properties, area) {
       cost: management_properties[2],
       date: management_properties[3],
       duration: management_properties[4],
+      pesticide_type: management_properties[5],
       area: area
     }
   };
