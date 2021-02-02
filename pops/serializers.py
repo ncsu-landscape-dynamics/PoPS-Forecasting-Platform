@@ -378,9 +378,10 @@ class OutputSerializer(serializers.ModelSerializer):
             "year",
             "min_spread_map",
             "max_spread_map",
+            "mean_spread_map",
             "median_spread_map",
             "probability_map",
-            "susceptible_map",
+            "standard_deviation_map",
             "escape_probability",
             "spreadrate",
             "distancetoboundary",
@@ -569,8 +570,8 @@ class RunModelWriteSerializer(serializers.ModelSerializer):
         else:
             return "null"
 
+
 class RunRDataViewSet(serializers.ModelSerializer):
     class Meta:
         model = Run
         fields = ["r_data"]
-
