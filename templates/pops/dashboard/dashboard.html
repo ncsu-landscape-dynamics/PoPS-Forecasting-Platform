@@ -282,24 +282,83 @@
                     onchange="displayYear.value=value">
                 </div>
               </div>
+              <button id="show_display_options_button" type="button" class="btn btn-sm"  data-toggle="tool"
+                title="Display options"><i class="fas fa-layer-group"></i> <i id="display_options_button_icon" class="fas fa-chevron-down"></i></button>
+                          <!-- DISPLAY OPTIONS PANEL -->
+            <div id="display-options-panel" class="">
+            <div id="displayed-data-options" class="p-2 border border-secondary">
+              <div>Displayed data:</div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="displayed_data_type" id="display_forecast">
+                <label class="form-check-label" for="display_forecast">
+                  Forecast (Average of all runs)
+                </label>
               </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="displayed_data_type" id="display_median">
+                <label class="form-check-label" for="display_median">
+                  Minimum single run
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="displayed_data_type" id="display_median" checked>
+                <label class="form-check-label" for="display_median">
+                  Median single run
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="displayed_data_type" id="display_median" >
+                <label class="form-check-label" for="display_median">
+                  Maximum single run
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="displayed_data_type" id="display_median" >
+                <label class="form-check-label" for="display_median">
+                  Standard deviation
+                </label>
+              </div>
+              </div>
+              <div id="optional-layers-options" class="p-2 border border-secondary">
+              <div>Optional layers:</div>
               <!-- MAP ADDITIONAL LAYER CHECKBOXES -->
-              <div>
-                <div id="additional_map_checkboxes">
-                  {% comment %} <div id="SLF_buffer_zone_checkbox" class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" checked>
-                    <label class="form-check-label" for="defaultCheck1">
-                      SLF buffer zone
-                    </label>
-                  </div> {% endcomment %}
-                  <div id="host_map_checkbox" class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" checked>
-                    <label class="form-check-label" for="host_map_checkbox">
-                      Host Map
-                    </label>
-                  </div>
+                <div id="host_map_checkbox" class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" checked>
+                  <label class="form-check-label" for="host_map_checkbox">
+                    Host Map
+                  </label>
+                </div>  
+                <div id="railroads_checkbox" class="form-check">
+                  <input class="form-check-input" type="checkbox" value="">
+                  <label class="form-check-label" for="railroads_checkbox">
+                    Railroads
+                  </label>
                 </div>
+                <div id="airports_checkbox" class="form-check">
+                  <input class="form-check-input" type="checkbox" value="">
+                  <label class="form-check-label" for="airports_checkbox">
+                    Airports
+                  </label>
+                </div>    
+                <div id="ports_checkbox" class="form-check">
+                  <input class="form-check-input" type="checkbox" value="">
+                  <label class="form-check-label" for="ports_checkbox">
+                    Ports
+                  </label>
+                </div>                                                  
               </div>
+            </div> <!-- End DISPLAY OPTIONS -->    
+
+              </div>
+
+
+
+
+
+
+
+
+
               <!-- BUDGET PLOT --> 
               <div id="budget_background_layer">
                 <div id="displayed_management_area" class="text-center">
@@ -526,6 +585,8 @@
                 $('#occurence-legend-container').hide();
                 $('#probability-legend-container').hide();
                 $('#eradication_container').hide();
+                $('#display-options-panel').hide();
+
               </script>
               <!-- STATUS INDICATORS -->
               <div id="status-indicator-shading">
@@ -1139,6 +1200,14 @@ $('#show_details_button, #hide_details_button').on('click', function () {
   $('#side-panel').toggleClass('d-md-block d-md-none');
   map.resize();
   $('#show_details_button').toggle("fast");
+});
+
+//DISPLAY OPTIONS PANEL
+$('#show_display_options_button').on('click', function () {
+  console.log('Display options panel clicked')
+  //$('#side-panel').toggleClass('d-md-block d-md-none');
+  $('#show_display_options_button i#display_options_button_icon').toggleClass("fa-chevron-down fa-chevron-up");
+  $('#display-options-panel').toggle();
 });
 
 //I don't think this is used anymore... check
