@@ -636,9 +636,8 @@ class Pest(models.Model):
 class Pesticide(models.Model):
 
     trade_name = models.CharField(
-        verbose_name=_("pesticide common or trade name"),
-        max_length=150
-        )
+        verbose_name=_("pesticide common or trade name"), max_length=150
+    )
     duration = models.DecimalField(
         verbose_name=_("duration"),
         help_text="Average duration in days",
@@ -2255,6 +2254,7 @@ class Output(models.Model):
     )
     min_spread_map = models.JSONField(null=True)
     max_spread_map = models.JSONField(null=True)
+    mean_spread_map = models.JSONField(null=True)
     median_spread_map = models.JSONField(null=True)
     probability_map = models.JSONField(null=True)
     standard_deviation_map = models.JSONField(null=True)
