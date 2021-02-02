@@ -289,32 +289,32 @@
             <div id="displayed-data-options" class="p-2 border border-secondary">
               <div>Displayed data:</div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="displayed_data_type" id="display_forecast">
+                <input class="form-check-input" value="_forecast" type="radio" name="displayed_data_type" id="display_forecast">
                 <label class="form-check-label" for="display_forecast">
                   Forecast (Average of all runs)
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="displayed_data_type" id="display_median">
-                <label class="form-check-label" for="display_median">
+                <input class="form-check-input" value="_minimum" type="radio" name="displayed_data_type" id="display_minimum">
+                <label class="form-check-label" for="display_minimum">
                   Minimum single run
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="displayed_data_type" id="display_median" checked>
+                <input class="form-check-input" value="_median" type="radio" name="displayed_data_type" id="display_median" checked>
                 <label class="form-check-label" for="display_median">
                   Median single run
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="displayed_data_type" id="display_median" >
-                <label class="form-check-label" for="display_median">
+                <input class="form-check-input" value="_maximum" type="radio" name="displayed_data_type" id="display_max" >
+                <label class="form-check-label" for="display_max">
                   Maximum single run
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="displayed_data_type" id="display_median" >
-                <label class="form-check-label" for="display_median">
+                <input class="form-check-input" value="_stdev" type="radio" name="displayed_data_type" id="display_stdev" >
+                <label class="form-check-label" for="display_stdev">
                   Standard deviation
                 </label>
               </div>
@@ -723,6 +723,17 @@ $(".pesticide-type select").on("change", function() {
   element = $(this).parents(".pesticide-info");
   updatePesticideType(element);
 });
+
+//DISPLAYED DATA CHANGE
+$("#displayed-data-options input").on("change", function() {
+  console.log('Displayed data type changed');
+  update_displayed_data();
+  //Hide all other types
+
+  //Display the current type and year
+
+});
+
 </script>
               <script>
               $('input[name="editManagementOptions"]').on('change', function() {
@@ -1220,18 +1231,37 @@ $('#show_display_options_button').on('click', function () {
   $('#chart-view-tab').on('shown.bs.tab', function () {
     });
 
-
-$("#year-slider").change(function () {
-  year_id = $(this).find('input').val();
-  //$("#year-value").text(year_id);
-  var steering_year = parseInt($(".timeline-year-container.year_active").attr('data-year-value'));
+function update_displayed_data() {
+  var year_id = $('#year-slider').find('input').val();
   var min_year = $("#year-slider input").attr('min');
   var max_year = $("#year-slider input").attr('max');
-  console.log("Hiding management for years: " + min_year + " - " + max_year);
+  displayed_data_types = ["_forecast","_median"];
   for (i = parseInt(min_year); i <= parseInt(max_year); i++) {
-    if (map.getLayer(i.toString())) {
-      map.setLayoutProperty(i.toString(), 'visibility', 'none');
-    };
+    if (i <= {{ historic_data.last.year }}) {
+      //Hide historic data years
+      var hide_layer_name = i;
+      if (map.getLayer(hide_layer_name)) {
+        console.log('Hiding layer: ' + hide_layer_name);
+        map.setLayoutProperty((hide_layer_name), 'visibility', 'none');
+      }
+      else {
+        console.log(hide_layer_name + " does not exist")
+      }      
+    }
+    else {
+      //Hide data years
+      var x;
+      for (x in displayed_data_types) {
+        var hide_layer_name = i + displayed_data_types[x];
+        if (map.getLayer(hide_layer_name)) {
+          console.log('Hiding layer: ' + hide_layer_name);
+          map.setLayoutProperty((hide_layer_name), 'visibility', 'none');
+        }
+        else {
+          console.log(hide_layer_name + " does not exist")
+        }
+      }
+    }
     var treatment_fill = (i.toString() + "_fill");
     if (map.getLayer(treatment_fill)) {
       if (year_id >= i) {
@@ -1240,32 +1270,40 @@ $("#year-slider").change(function () {
       else {
         map.setLayoutProperty(treatment_fill, 'visibility','none');
       }
-    };
-  };
-  map.setLayoutProperty(year_id, 'visibility', 'visible');
-  $("#displayYear").val(year_id);
-  if (year_id > steering_year){
-    $('#display_year_forecast').text('Forecast');
-    $('#legend_description').text(' (Probability of occurence)');
-    $('#historic-legend-container').hide();
-    $('#occurence-legend-container').hide();
-    $('#probability-legend-container').show();
+    };    
   }
-  else if (year_id > {{ historic_data.last.year }}){
-    $('#display_year_forecast').text('Current state');
-    $('#legend_description').text(' (Predicted occurences)');
-    $('#historic-legend-container').hide();
-    $('#occurence-legend-container').show();
-    $('#probability-legend-container').hide();  
-  }
-  else {
+  if (year_id <= {{ historic_data.last.year }}) {
+    //Show the historic data for the year
+    var layer_name = year_id;
     $('#display_year_forecast').text('Field observations');
     $('#legend_description').text(' (Number of detections)');
     $('#historic-legend-container').show();
     $('#occurence-legend-container').hide();
     $('#probability-legend-container').hide();
   }
-  console.log("Current displayed year: " + year_id);
+  else {
+    //Show the selected forecast data
+    var displayed_map_type = $('input[name="displayed_data_type"]:checked').val();
+    var layer_name = year_id + displayed_map_type;
+    $('#display_year_forecast').text('Forecast');
+    $('#legend_description').text(' (Probability of occurence)');
+    $('#historic-legend-container').hide();
+    $('#occurence-legend-container').hide();
+    $('#probability-legend-container').show();    
+  }
+  console.log('Displaying layer: ' + layer_name);
+  map.setLayoutProperty(layer_name, 'visibility', 'visible');
+  $("#displayYear").val(year_id);
+
+}
+
+$("#year-slider").change(function () {
+  //year_id = $(this).find('input').val();
+  update_displayed_data();
+
+  //var steering_year = parseInt($(".timeline-year-container.year_active").attr('data-year-value'));
+
+  //console.log("Current displayed year: " + year_id);
   //spreadRatePlot({{historic_data.last.year}});
 });
 
@@ -1370,12 +1408,21 @@ function get_output(run_id) {
   //Make this loop a function of current slider max
   for (i = {{steering_years | first }}; i < ({{ steering_years | last }} + 1); i++) { 
     console.log('Removing layers and sources for year: ', i);
-    if (map.getLayer(i.toString())) {
-      map.removeLayer(i.toString());
+    var layer_types = ["_forecast","_median"];
+    var forecast_layer_name =  i.toString() + "_forecast";
+    var median_layer_name = i.toString() + "_median";
+    if (map.getLayer(forecast_layer_name)) {
+      map.removeLayer(forecast_layer_name);
     };
-    if (map.getSource(i.toString())) {
-      map.removeSource(i.toString());
+    if (map.getSource(forecast_layer_name)) {
+      map.removeSource(forecast_layer_name);
     };
+    if (map.getLayer(median_layer_name)) {
+      map.removeLayer(median_layer_name);
+    };
+    if (map.getSource(median_layer_name)) {
+      map.removeSource(median_layer_name);
+    };    
     var treatment_outline = (i.toString() + "_management");
     var treatment_fill = (i.toString() + "_fill");
     console.log('Removing existing drawn management.');
@@ -1410,15 +1457,15 @@ function get_output(run_id) {
       for (var i = 0; i < data.results.length; i++) {
         var year = data.results[i].year;
         console.log("Adding output " + data.results[i].pk + ' for year ' + year);
+
         var year_string = year.toString();
-        if (year > steering_year) {
-          var map_data = data.results[i].probability_map;
-          newMagmaLayer(map_data, year_string,100);
-        }
-        else {
-          var map_data = data.results[i].median_spread_map;
-          newFireLayer(map_data, year_string,max_occurence_number_for_legend);
-        }
+        var probability_map_data = data.results[i].probability_map;
+        var probability_layer_name = year_string + "_forecast";
+        newMagmaLayer(probability_map_data, probability_layer_name,100);
+        var median_map_data = data.results[i].median_spread_map;
+        var median_layer_name = year_string + "_median";
+        newFireLayer(median_map_data, median_layer_name,max_occurence_number_for_legend);
+
         year_list.push(data.results[i].year);
         infected_area_list.push(data.results[i].infected_area );
         infected_number_list.push(data.results[i].number_infected);
@@ -1450,7 +1497,9 @@ function get_output(run_id) {
         var display_year = data.run_inputs.steering_year;
         setDateRange(display_year+1);
         map.setLayoutProperty('{{ historic_data.last.year }}', 'visibility', 'none');
-        map.setLayoutProperty(display_year.toString(), 'visibility', 'visible');
+        //This needs to be edited to reflect the changes to the displayed map data options
+        var displayed_map_type = $('input[name="displayed_data_type"]:checked').val();
+        map.setLayoutProperty(display_year.toString()+displayed_map_type, 'visibility', 'visible');
         $("#year-slider").find('input').val(display_year.toString());
         $("#displayYear").val(display_year.toString());
         $('#display_year_forecast').text('Current state');
@@ -1635,18 +1684,6 @@ $("input#id_tangible_landscape").on('change', function () {
     enableDrawTools();
   }
 });
-/*
-$("#SLF_buffer_zone_checkbox input").on('change', function () {
-  if ($('#SLF_buffer_zone_checkbox input').prop('checked')){
-    console.log('Show SLF buffer zone');
-    map.setLayoutProperty('perimeter_zone_layer','visibility','visible');
-  }
-  else {
-    console.log('Hide SLF buffer zone');
-    map.setLayoutProperty('perimeter_zone_layer','visibility','none');
-  }
-}); 
-*/
 
 $("#host_map_checkbox input").on('change', function () {
   if ($('#host_map_checkbox input').prop('checked')){
