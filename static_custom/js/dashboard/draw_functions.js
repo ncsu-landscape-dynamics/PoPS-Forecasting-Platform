@@ -175,16 +175,12 @@ function updatePolygons(e) {
 
 function disableEditingPolygonProperties () {
   $("input[id='edit_efficacy']").prop('disabled', true);
-  $("input[id='edit_display_cost']").prop('disabled', true);
   $("input[id='edit_duration']").prop('disabled', true);
-  $("select[id='edit_area_unit']").prop('disabled', true);
 }
 
 function enableEditingPolygonProperties () {
   $("input[id='edit_efficacy']").prop('disabled', false);
-  $("input[id='edit_display_cost']").prop('disabled', false);
   $("input[id='edit_duration']").prop('disabled', false);
-  $("select[id='edit_area_unit']").prop('disabled', false);
 }
 
 function changePolygonProperties() {

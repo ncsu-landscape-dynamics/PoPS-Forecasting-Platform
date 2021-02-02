@@ -482,7 +482,15 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
             host = None
             host_map = None
             print("No host map found")
-
+        try:
+            pesticidelinks = PestPesticideLink.objects.filter(
+                pest_information__pest__case_study=case_study
+                ).prefetch_related('pesticide')
+            print(pesticidelinks)
+            print(pesticidelinks[0].pesticide.duration)
+        except:
+            pesticidelinks = None
+            print("No pesticides in this case study")
         steering_years =  range(
             int(case_study.first_forecast_date.strftime('%Y')),
             int(case_study.last_forecast_date.strftime('%Y'))+1
@@ -496,6 +504,7 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
         context["host_map"] = host_map
         context["allowed_users"] = allowed_users
         context["allowed_users_count"] = allowed_users.count()
+        context["pesticidelinks"] = pesticidelinks
         return context
 
 
