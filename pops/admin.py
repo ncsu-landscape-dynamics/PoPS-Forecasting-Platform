@@ -68,10 +68,15 @@ class QuarantineInline(admin.TabularInline):
     extra = 0
     show_change_link = True
 
+class PestPesticideInline(admin.TabularInline):
+    model = PestPesticideLink
+    extra = 0
+    show_change_link = True
+
 class PestInformationAdmin(admin.ModelAdmin):
     list_display = ('common_name','scientific_name','date_created','staff_approved')
     inlines = [
-        PestLocationInline, PestTreatmentInline, QuarantineInline
+        PestLocationInline, PestTreatmentInline, QuarantineInline, PestPesticideInline
     ]
     list_per_page = 30
 
@@ -374,6 +379,8 @@ admin.site.register(MapBoxParameters)
 admin.site.register(AllPopulationsData)
 admin.site.register(PestInformation, PestInformationAdmin)
 admin.site.register(Pest, PestAdmin)
+admin.site.register(Pesticide)
+admin.site.register(PestPesticideLink)
 
 admin.site.register(Weather,WeatherAdmin)
 admin.site.register(Wind)
