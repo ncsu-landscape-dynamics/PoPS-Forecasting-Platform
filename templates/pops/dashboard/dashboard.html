@@ -38,6 +38,8 @@
   var max_number=100;
   var max_area=100;
   var max_cost=100;
+  var displayed_data_types = ["_forecast","_minimum","_median","_maximum","_mean","_stdev"];
+
 </script>
 <!-- FUNCTIONS  -->
 <title>PoPS</title>
@@ -289,31 +291,37 @@
             <div id="displayed-data-options" class="p-2 border border-secondary">
               <div>Displayed data:</div>
               <div class="form-check">
-                <input class="form-check-input" value="_forecast" type="radio" name="displayed_data_type" id="display_forecast">
+                <input class="form-check-input" value="_forecast" type="radio" name="displayed_data_type" id="display_forecast" data-name="Forecast">
                 <label class="form-check-label" for="display_forecast">
                   Forecast (Average of all runs)
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" value="_minimum" type="radio" name="displayed_data_type" id="display_minimum">
+                <input class="form-check-input" value="_mean" type="radio" name="displayed_data_type" id="display_mean" data-name="Mean">
+                <label class="form-check-label" for="display_mean">
+                  Mean single run
+                </label>
+              </div>              
+              <div class="form-check">
+                <input class="form-check-input" value="_minimum" type="radio" name="displayed_data_type" id="display_minimum" data-name="Minimum">
                 <label class="form-check-label" for="display_minimum">
                   Minimum single run
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" value="_median" type="radio" name="displayed_data_type" id="display_median" checked>
+                <input class="form-check-input" value="_median" type="radio" name="displayed_data_type" id="display_median" data-name="Median" checked>
                 <label class="form-check-label" for="display_median">
                   Median single run
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" value="_maximum" type="radio" name="displayed_data_type" id="display_max" >
+                <input class="form-check-input" value="_maximum" type="radio" name="displayed_data_type" id="display_max" data-name="Maximum">
                 <label class="form-check-label" for="display_max">
                   Maximum single run
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" value="_stdev" type="radio" name="displayed_data_type" id="display_stdev" >
+                <input class="form-check-input" value="_stdev" type="radio" name="displayed_data_type" id="display_stdev" data-name="Standard deviation">
                 <label class="form-check-label" for="display_stdev">
                   Standard deviation
                 </label>
@@ -1235,7 +1243,6 @@ function update_displayed_data() {
   var year_id = $('#year-slider').find('input').val();
   var min_year = $("#year-slider input").attr('min');
   var max_year = $("#year-slider input").attr('max');
-  displayed_data_types = ["_forecast","_median"];
   for (i = parseInt(min_year); i <= parseInt(max_year); i++) {
     if (i <= {{ historic_data.last.year }}) {
       //Hide historic data years
@@ -1284,15 +1291,30 @@ function update_displayed_data() {
   else {
     //Show the selected forecast data
     var displayed_map_type = $('input[name="displayed_data_type"]:checked').val();
+    var displayed_map_name = $('input[name="displayed_data_type"]:checked').data('name');
     var layer_name = year_id + displayed_map_type;
-    $('#display_year_forecast').text('Forecast');
-    $('#legend_description').text(' (Probability of occurence)');
-    $('#historic-legend-container').hide();
-    $('#occurence-legend-container').hide();
-    $('#probability-legend-container').show();    
+    if (displayed_map_type == "_forecast") {
+      $('#display_year_forecast').text('Forecast');
+      $('#legend_description').text(' (Probability of occurence)');
+      $('#historic-legend-container').hide();
+      $('#occurence-legend-container').hide();
+      $('#probability-legend-container').show();    
+    }
+    else {
+      $('#display_year_forecast').text(displayed_map_name);
+      $('#legend_description').text(' (number)');
+      $('#historic-legend-container').hide();
+      $('#occurence-legend-container').show();
+      $('#probability-legend-container').hide();        
+    }
   }
   console.log('Displaying layer: ' + layer_name);
-  map.setLayoutProperty(layer_name, 'visibility', 'visible');
+  if (map.getLayer(layer_name)) {
+    map.setLayoutProperty(layer_name, 'visibility', 'visible');
+  }
+  else {
+    alert('The layer ' + layer_name + ' does not exist.')
+  }
   $("#displayYear").val(year_id);
 
 }
@@ -1401,28 +1423,25 @@ function get_output(run_id) {
   $('#status-text span').text('Loading...');
   $("#status-indicator").show();
   $("#status-indicator-shading").show();
-  $("#year-slider").find('input').val('{{ historic_data.last.year }}'); 
+  $("#year-slider").find('input').val('{{ historic_data.last.year }}');
   $("#year-slider input").attr('max', '{{ historic_data.last.year }}');
   $("#displayYear").val('{{ historic_data.last.year }}');
   map.setLayoutProperty('{{ historic_data.last.year }}', 'visibility', 'visible');
   //Make this loop a function of current slider max
-  for (i = {{steering_years | first }}; i < ({{ steering_years | last }} + 1); i++) { 
+  for (i = {{ steering_years | first }}; i < ({{ steering_years | last }} + 1); i++) {
     console.log('Removing layers and sources for year: ', i);
-    var layer_types = ["_forecast","_median"];
-    var forecast_layer_name =  i.toString() + "_forecast";
-    var median_layer_name = i.toString() + "_median";
-    if (map.getLayer(forecast_layer_name)) {
-      map.removeLayer(forecast_layer_name);
-    };
-    if (map.getSource(forecast_layer_name)) {
-      map.removeSource(forecast_layer_name);
-    };
-    if (map.getLayer(median_layer_name)) {
-      map.removeLayer(median_layer_name);
-    };
-    if (map.getSource(median_layer_name)) {
-      map.removeSource(median_layer_name);
-    };    
+    var x;
+    for (x in displayed_data_types) {
+      var layer_name = i + displayed_data_types[x];
+      if (map.getLayer(layer_name)) {
+        map.removeLayer(layer_name);
+        console.log('Removing layer: ' + layer_name)
+      }
+      if (map.getSource(layer_name)) {
+        map.removeSource(layer_name);
+      };
+    }
+
     var treatment_outline = (i.toString() + "_management");
     var treatment_fill = (i.toString() + "_fill");
     console.log('Removing existing drawn management.');
@@ -1453,32 +1472,56 @@ function get_output(run_id) {
       var button_number_infected = 0;
       var steering_year = data.run_inputs.steering_year;
       spread_rate = data.spread_rate;
-      max_spread_rate=data.max_spread_rate;
+      max_spread_rate = data.max_spread_rate;
       for (var i = 0; i < data.results.length; i++) {
         var year = data.results[i].year;
         console.log("Adding output " + data.results[i].pk + ' for year ' + year);
 
         var year_string = year.toString();
-        var probability_map_data = data.results[i].probability_map;
-        var probability_layer_name = year_string + "_forecast";
-        newMagmaLayer(probability_map_data, probability_layer_name,100);
-        var median_map_data = data.results[i].median_spread_map;
-        var median_layer_name = year_string + "_median";
-        newFireLayer(median_map_data, median_layer_name,max_occurence_number_for_legend);
+        if (data.results[i].probability_map) {
+          var probability_map_data = data.results[i].probability_map;
+          var probability_layer_name = year_string + "_forecast";
+          newMagmaLayer(probability_map_data, probability_layer_name, 100);
+        } 
+        if (data.results[i].median_spread_map) {
+          var median_map_data = data.results[i].median_spread_map;
+          var median_layer_name = year_string + "_median";
+          newFireLayer(median_map_data, median_layer_name, max_occurence_number_for_legend);
+        }
+        if (data.results[i].max_spread_map) {
+          var maximum_map_data = data.results[i].max_spread_map;
+          var maximum_layer_name = year_string + "_maximum";
+          newFireLayer(maximum_map_data, maximum_layer_name, max_occurence_number_for_legend);
+        }
+        if (data.results[i].min_spread_map) {
+          var minimum_map_data = data.results[i].min_spread_map;
+          var minimum_layer_name = year_string + "_minimum";
+          newFireLayer(minimum_map_data, minimum_layer_name, max_occurence_number_for_legend);
+        }
+        if (data.results[i].mean_spread_map) {
+          var mean_map_data = data.results[i].mean_spread_map;
+          var mean_layer_name = year_string + "_mean";
+          newFireLayer(mean_map_data, mean_layer_name, max_occurence_number_for_legend);
+        }
+        if (data.results[i].mean_spread_map) {
+          var stdev_map_data = data.results[i].standard_deviation_map;
+          var stdev_layer_name = year_string + "_stdev";
+          newFireLayer(stdev_map_data, stdev_layer_name, max_occurence_number_for_legend);
+        }
 
         year_list.push(data.results[i].year);
-        infected_area_list.push(data.results[i].infected_area );
+        infected_area_list.push(data.results[i].infected_area);
         infected_number_list.push(data.results[i].number_infected);
         //Add new run button if there is steering or update existing button
         if (data.steering) {
-          if((i + 1) == (data.results.length)){
+          if ((i + 1) == (data.results.length)) {
             var run_collection_pk = $('#run-collection-name').attr('data-run-collection-pk');
             var run_collection_name = $('#input_run_name span').text();
             var run_collection_description = $('#input_description span').text();
             var run_collection_date = $('#input_date_created span').text(data.date_created);
             var run_collection_budget = $('#input_budget span').text(data.budget);
             insertRunButton(run_collection_pk, run_collection_name, run_collection_date, run_collection_description, data.results[i].number_infected, data.results[i].infected_area, data.total_management_cost);
-            relayout_buttons(max_number,max_area,max_cost);
+            relayout_buttons(max_number, max_area, max_cost);
           }
         }
         if (year > max_year) {
@@ -1495,23 +1538,15 @@ function get_output(run_id) {
         infected_number_list = [];
       if (data.steering) {
         var display_year = data.run_inputs.steering_year;
-        setDateRange(display_year+1);
-        map.setLayoutProperty('{{ historic_data.last.year }}', 'visibility', 'none');
-        //This needs to be edited to reflect the changes to the displayed map data options
-        var displayed_map_type = $('input[name="displayed_data_type"]:checked').val();
-        map.setLayoutProperty(display_year.toString()+displayed_map_type, 'visibility', 'visible');
+        setDateRange(display_year + 1);
         $("#year-slider").find('input').val(display_year.toString());
         $("#displayYear").val(display_year.toString());
-        $('#display_year_forecast').text('Current state');
-        $('#legend_description').text(' (Number of detections)');
-        $('#historic-legend-container').hide();
-        $('#occurence-legend-container').show();
-        $('#probability-legend-container').hide();        
+        update_displayed_data();
       };
       var defaults = data.no_management_default;
       var steering_outputs = data.all_steering_years;
-      var initial_infected_area = {{historic_data.last.infected_area}};
-      var initial_number_infected = {{historic_data.last.number_infected}};
+      var initial_infected_area = {{ historic_data.last.infected_area }};
+      var initial_number_infected = {{ historic_data.last.number_infected }};
       var first_year = {{ steering_years | first }};
       console.log('First year = ', first_year);
       var last_year = {{ steering_years | last }};
@@ -1521,42 +1556,42 @@ function get_output(run_id) {
       //spreadRatePlot({{historic_data.last.year}});
       //I think this loop is unnecessary
       //for (var i = 0; i < data.all_steering_years.length; i++) {
-        //console.log('Sanity check: ' + i)
+      //console.log('Sanity check: ' + i)
       //};
       $("#status-indicator").hide();
       $("#status-indicator-shading").hide();
       for (var i = 0; i < data.inputs.length; i++) {
         if (data.steering) {
           if (data.run_inputs.steering_year >= data.inputs[i].steering_year) {
-          var treatment_outline = (data.inputs[i].steering_year.toString() + "_management");
-          var treatment_fill = (data.inputs[i].steering_year.toString() + "_fill");
-          if (map.getLayer(treatment_fill)) {
-            map.removeLayer(treatment_fill);
-          };
-          if (map.getSource(treatment_outline)) {
-            map.removeSource(treatment_outline);
-          };
-          map.addSource(treatment_outline, {
-            'type': 'geojson',
-            /*many types of data can be added, such as geojson, vector tiles or raster data*/
-            'data': data.inputs[i].management_polygons,
-          });
-          /*here we are adding a source, then a layer based on that that source*/
+            var treatment_outline = (data.inputs[i].steering_year.toString() + "_management");
+            var treatment_fill = (data.inputs[i].steering_year.toString() + "_fill");
+            if (map.getLayer(treatment_fill)) {
+              map.removeLayer(treatment_fill);
+            };
+            if (map.getSource(treatment_outline)) {
+              map.removeSource(treatment_outline);
+            };
+            map.addSource(treatment_outline, {
+              'type': 'geojson',
+              /*many types of data can be added, such as geojson, vector tiles or raster data*/
+              'data': data.inputs[i].management_polygons,
+            });
+            /*here we are adding a source, then a layer based on that that source*/
 
-          map.addLayer({
-            "id": treatment_fill,
-            "type": 'fill',
-            "source": treatment_outline,
-            "paint": {
-              'fill-pattern': [
-                "case",
-                ['==', ['get', "management_type"], "Host removal"], host_removal_patterns[i],
-                ['==', ['get', "management_type"], "Pesticide"], previous_pesticide_application_patterns[i],
-                ''
-              ],      
-              "fill-opacity": 1.0
-            }
-          });
+            map.addLayer({
+              "id": treatment_fill,
+              "type": 'fill',
+              "source": treatment_outline,
+              "paint": {
+                'fill-pattern': [
+                  "case",
+                  ['==', ['get', "management_type"], "Host removal"], host_removal_patterns[i],
+                  ['==', ['get', "management_type"], "Pesticide"], previous_pesticide_application_patterns[i],
+                  ''
+                ],
+                "fill-opacity": 1.0
+              }
+            });
           };
         };
       };

@@ -761,6 +761,8 @@ def get_output_view(request):
                 "min_spread_map",
                 "median_spread_map",
                 "max_spread_map",
+                "mean_spread_map",
+                "standard_deviation_map",
                 "probability_map",
                 "escape_probability",
             )
