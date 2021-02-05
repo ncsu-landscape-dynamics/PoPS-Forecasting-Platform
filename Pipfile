@@ -31,6 +31,8 @@ boto3 = "*"
 botocore = "*"
 s3transfer = "*"
 gunicorn = "*"
+django-redis = "*"
+redis = "*"
 
 [requires]
 python_version = "3.8"
