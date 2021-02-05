@@ -342,12 +342,18 @@
                     Intermodal passenger travel
                   </label>
                 </div>
+                <div id="railroad_lines_checkbox" class="form-check">
+                  <input class="form-check-input" type="checkbox" value="">
+                  <label class="form-check-label" for="railroad_lines_checkbox">
+                    Railroads
+                  </label>
+                </div>      
                 <div id="intermodal_freight_checkbox" class="form-check">
                   <input class="form-check-input" type="checkbox" value="">
                   <label class="form-check-label" for="intermodal_freight_checkbox">
                     Intermodal freight
                   </label>
-                </div>                
+                </div>                               
                 <div id="airports_checkbox" class="form-check">
                   <input class="form-check-input" type="checkbox" value="">
                   <label class="form-check-label" for="airports_checkbox">
@@ -415,7 +421,7 @@
                 </div>
                 <button class="btn btn-secondary btn-sm" type="button" data-toggle="tool" title="Select management type"
                   data-placement="left">
-                  <small>Management type</small>
+                  <small>Management</small>
                 </button>
                 <div class="btn-group dropleft">
                   <button type="button" title="Host removal"
@@ -1148,11 +1154,10 @@ var map_fill_opacity = 0.6; //For occurence and forecasted data
 
 map.on('load', function() {
   map.setLayoutProperty('airports-circles','visibility','none');
-  map.setLayoutProperty('airports-labels','visibility','none');  
   map.setLayoutProperty('seaport-circles','visibility','none');
-  map.setLayoutProperty('seaport-labels','visibility','none');
   map.setLayoutProperty('intermodal-passenger','visibility','none');
   map.setLayoutProperty('intermodal-freight','visibility','none');
+  map.setLayoutProperty('railroad-lines','visibility','none');
   map.setLayoutProperty('truck-parking','visibility','none');
   hostmapLayer({{ host_map|safe }});
   console.log("Adding initial data.");
@@ -1195,17 +1200,18 @@ map.on('mouseleave', 'airports-circles', function () {
   popup.remove();
 });
 
-map.on('move', function() {
-  console.log('Map is being moved')
-})
+//Some events that might be useful to use in the future:
+//map.on('move', function() {
+//  console.log('Map is being moved')
+//})
 
-map.on('moveend', function() {
-  console.log('MOVEEND')
-})
+//map.on('moveend', function() {
+//  console.log('MOVEEND')
+//})
 
-map.on('movestart', function() {
-  console.log('MOVESTART')
-})
+//map.on('movestart', function() {
+//  console.log('MOVESTART')
+//})
 
 //Set initial draw color and settings, add Draw functionality to the map.
 var draw_color = colors[0];
@@ -1796,12 +1802,10 @@ $("#airports_checkbox input").on('change', function () {
   if ($('#airports_checkbox input').prop('checked')){
     console.log('Show airports');
     map.setLayoutProperty('airports-circles','visibility','visible');
-    map.setLayoutProperty('airports-labels','visibility','visible');
   }
   else {
     console.log('Hide airports');
     map.setLayoutProperty('airports-circles','visibility','none');
-    map.setLayoutProperty('airports-labels','visibility','none');
   }
 });
 
@@ -1809,12 +1813,10 @@ $("#seaports_checkbox input").on('change', function () {
   if ($('#seaports_checkbox input').prop('checked')){
     console.log('Show seaports');
     map.setLayoutProperty('seaport-circles','visibility','visible');
-    map.setLayoutProperty('seaport-labels','visibility','visible');
   }
   else {
     console.log('Hide seaports');
     map.setLayoutProperty('seaport-circles','visibility','none');
-    map.setLayoutProperty('seaport-labels','visibility','none');
   }
 });
 
@@ -1822,11 +1824,9 @@ $("#intermodal_passenger_checkbox input").on('change', function () {
   if ($('#intermodal_passenger_checkbox input').prop('checked')){
     console.log('Show passenger');
     map.setLayoutProperty('intermodal-passenger','visibility','visible');
-    map.setLayoutProperty('intermodal-passenger','visibility','visible');
   }
   else {
     console.log('Hide passenger');
-    map.setLayoutProperty('intermodal-passenger','visibility','none');
     map.setLayoutProperty('intermodal-passenger','visibility','none');
   }
 });
@@ -1835,12 +1835,21 @@ $("#intermodal_freight_checkbox input").on('change', function () {
   if ($('#intermodal_freight_checkbox input').prop('checked')){
     console.log('Show freight');
     map.setLayoutProperty('intermodal-freight','visibility','visible');
-    map.setLayoutProperty('intermodal-freight','visibility','visible');
   }
   else {
     console.log('Hide freight');
     map.setLayoutProperty('intermodal-freight','visibility','none');
-    map.setLayoutProperty('intermodal-freight','visibility','none');
+  }
+});
+
+$("#railroad_lines_checkbox input").on('change', function () {
+  if ($('#railroad_lines_checkbox input').prop('checked')){
+    console.log('Show railroads');
+    map.setLayoutProperty('railroad-lines','visibility','visible');
+  }
+  else {
+    console.log('Hide railroads');
+    map.setLayoutProperty('railroad-lines','visibility','none');
   }
 });
 
@@ -1848,11 +1857,9 @@ $("#truck_parking_checkbox input").on('change', function () {
   if ($('#truck_parking_checkbox input').prop('checked')){
     console.log('Show seaports');
     map.setLayoutProperty('truck-parking','visibility','visible');
-    map.setLayoutProperty('truck-parking','visibility','visible');
   }
   else {
     console.log('Hide seaports');
-    map.setLayoutProperty('truck-parking','visibility','none');
     map.setLayoutProperty('truck-parking','visibility','none');
   }
 });
