@@ -290,9 +290,9 @@
 <script src="{% static 'js/dashboard/draw_functions.js' %}"></script>
     <script>
         const roomName = 'demo'
-
+        var ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
         const chatSocket = new WebSocket(
-            'ws://'
+            ws_scheme
             + window.location.host
             + '/ws/chat/'
             + roomName
