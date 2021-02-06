@@ -3,6 +3,7 @@ import os
 import django
 from channels.http import AsgiHandler
 from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.security.websocket import AllowedHostsOriginValidator
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pops_website.settings")
 django.setup()
@@ -14,6 +15,8 @@ import chat.routing
 application = ProtocolTypeRouter(
     {
         "http": AsgiHandler(),
-        "websocket": AuthMiddlewareStack(URLRouter(chat.routing.websocket_urlpatterns)),
+        "websocket": AllowedHostsOriginValidator(
+            AuthMiddlewareStack(URLRouter(chat.routing.websocket_urlpatterns))
+        ),
     }
 )
