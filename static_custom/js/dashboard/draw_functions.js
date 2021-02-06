@@ -214,20 +214,7 @@ function deletePolygons() {
   updateJSON();
 }
 
-//This function updates the GeoJSON management field 
-function updateJSON() {
-  console.log("Updating management polygons JSON.");
-  var data = draw.getAll();
-  if (data.features.length > 0) {
-    // Stringify the GeoJson
-    var convertedData = JSON.stringify(data);
-  } else {
-    var convertedData = 0;
-  }
-  $('#id_management_polygons').val(convertedData);
-  sendJSONWebsocket();
-  updateDrawMetrics();
-}
+
 
 //This function updates the displayed metrics for drawn management
 //Gauge budget plot, managed area, etc.

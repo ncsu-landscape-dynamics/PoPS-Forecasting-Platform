@@ -1237,10 +1237,10 @@ map.on('draw.modechange', e => {
   }
 });
 
-    //editPolygons popup button click
-    $("#changeManagementButton").on('click', function () {
-      changePolygonProperties();
-    });
+//editPolygons popup button click
+$("#changeManagementButton").on('click', function () {
+  changePolygonProperties();
+});
 
 
 //The following two sections should be heavily modified with the changes to the
@@ -1486,6 +1486,10 @@ var spread_rate;
 var max_spread_rate=0;
 
 function get_output(run_id) {
+  //Remove any drawn management on the dashboard before loading new data
+  draw.deleteAll();
+  $('#id_management_polygons').val(0);
+  updateDrawMetrics();
   console.log('GETTING OUTPUT FOR RUN: ' + run_id);
   $('#status-text span').text('Loading...');
   $("#status-indicator").show();
@@ -1683,9 +1687,9 @@ function poll(new_run_id) {
         //Setup the next poll recursively
         if (data.status == "SUCCESS") {
           $('#status-text span').text('Success! Loading results...');
+          $('#id_management_polygons').val(0);
           get_output(new_run_id);
             var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
-          $('#id_management_polygons').val(0);
             $(".timeline-year-container").removeClass("year_active");
             $(".timeline-year-container.management_active").removeClass("management_active").addClass("management_complete").addClass("year_active").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
             console.log('Year count is:' + year_count);
@@ -2051,8 +2055,71 @@ function relayout_buttons(max_number,max_area,max_cost) {
   }
 };
 
+// *WEBSOCKETS*
+
+const roomName = 'demo'
+var ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
+const chatSocket = new WebSocket(
+    ws_scheme
+    + window.location.host
+    + '/ws/chat/'
+    + roomName
+    + '/'
+);
+
+chatSocket.onmessage = function(e) {
+  console.log('Receiving JSON')
+    const data = JSON.parse(e.data);
+    document.querySelector('#id_management_polygons').value = (data.message);
+    // This is a quick and dirty way to get the new polygons to display. but
+    // it causes the drawn polygons to "blink"
+    var treatment = JSON.parse(data.message);
+    console.log('Treatment:')
+    console.log(treatment)
+    if (treatment != 0) {
+      var ids = draw.set(treatment);
+    }
+    else {
+      draw.deleteAll();
+    }
+    updateDrawMetrics();
+    if ($("#polygon-tool").hasClass("active")) {
+      draw.changeMode('draw_polygon');
+    }
+};
+
+chatSocket.onclose = function(e) {
+    console.error('Chat socket closed unexpectedly');
+};
+
+//This function sends the polygon JSON via websocket 
+function sendJSONWebsocket() {
+  const messageInputDom = document.querySelector('#id_management_polygons');
+  const message = messageInputDom.value;
+  chatSocket.send(JSON.stringify({
+      'message': message
+  }));
+  messageInputDom.value = '';
+}
+
+//This function updates the GeoJSON management field 
+//and sends the websocket if needed
+function updateJSON() {
+  console.log("Updating management polygons JSON.");
+  var data = draw.getAll();
+  if (data.features.length > 0) {
+    // Stringify the GeoJson
+    var convertedData = JSON.stringify(data);
+  } else {
+    var convertedData = 0;
+  }
+  $('#id_management_polygons').val(convertedData);
+  sendJSONWebsocket();
+  updateDrawMetrics(); //consider removing this since it gets updated with the websocket message
+}
+
 $( document ).ready(function() {
-  updateJSON();
+  updateDrawMetrics();
   $( "#status-indicator" ).hide();
   $( "#status-indicator-shading" ).hide();
   relayout_buttons(max_number,max_area,max_cost);

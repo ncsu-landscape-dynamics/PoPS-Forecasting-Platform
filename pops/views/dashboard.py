@@ -508,6 +508,12 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
         return context
 
 
+class WebsocketDashboardView(DashboardView):
+
+    def get_context_data(self, **kwargs):
+        context = super(WebsocketDashboardView, self).get_context_data(**kwargs)
+        return context
+
 @method_decorator(csrf_exempt, name="post")
 class NewRunView(CreateView):
     template_name = "pops/dashboard/dashboard.html"

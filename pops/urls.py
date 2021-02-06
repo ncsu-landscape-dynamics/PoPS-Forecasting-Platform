@@ -48,7 +48,7 @@ urlpatterns = [
     path("save_run_data/", views.NewRunView.as_view(), name="save_run_data"),
     path(
         "save_run_collection_data/",
-        views.DashboardView.as_view(),
+        views.WebsocketDashboardView.as_view(),
         name="save_run_collection_data",
     ),
     path(
@@ -92,7 +92,7 @@ urlpatterns = [
     path("workspace/", views.WorkspaceView.as_view(), name="workspace"),
     path("pests/", views.PestListView.as_view(), name="pest_list"),
     path("pest/<int:pk>/", views.PestDetailView.as_view(), name="pest_detail"),
-    path("dashboard/<int:pk>/", views.DashboardView.as_view(), name="dashboard"),
+    path("dashboard/<int:pk>/", views.WebsocketDashboardView.as_view(), name="dashboard"),
     path(
         "dashboard/",
         RedirectView.as_view(pattern_name="workspace"),

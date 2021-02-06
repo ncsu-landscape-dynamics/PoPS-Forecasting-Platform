@@ -350,6 +350,21 @@ function sendJSONWebsocket() {
   messageInputDom.value = '';
 }
 
+//This function updates the GeoJSON management field 
+//and sends the websocket if needed
+function updateJSON() {
+  console.log("Updating management polygons JSON.");
+  var data = draw.getAll();
+  if (data.features.length > 0) {
+    // Stringify the GeoJson
+    var convertedData = JSON.stringify(data);
+  } else {
+    var convertedData = 0;
+  }
+  $('#id_management_polygons').val(convertedData);
+  //sendJSONWebsocket();
+  updateDrawMetrics(); //consider removing this since it gets updated with the websocket message
+}
     </script>
 
 <script>
