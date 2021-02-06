@@ -139,7 +139,7 @@ USE_TZ = True
 
 # Moving static assets to DigitalOcean Spaces as per:
 # https://www.digitalocean.com/community/tutorials/how-to-set-up-object-storage-with-django
-USE_S3 = os.getenv("USE_S3", False) == "TRUE"
+USE_S3 = os.getenv("USE_S3")
 
 if USE_S3:
     AWS_ACCESS_KEY_ID = os.getenv("STATIC_ACCESS_KEY_ID")
@@ -165,7 +165,7 @@ else:
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_custom")]
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static_custom"),)
 
 UPLOAD_ROOT = "media/uploads/"
 
