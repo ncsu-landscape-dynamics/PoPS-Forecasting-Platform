@@ -139,7 +139,8 @@ USE_TZ = True
 
 # Moving static assets to DigitalOcean Spaces as per:
 # https://www.digitalocean.com/community/tutorials/how-to-set-up-object-storage-with-django
-USE_S3 = os.getenv("USE_S3")
+# USE_S3 = os.getenv("USE_S3")
+USE_S3 = False
 
 if USE_S3:
     AWS_ACCESS_KEY_ID = os.getenv("STATIC_ACCESS_KEY_ID")

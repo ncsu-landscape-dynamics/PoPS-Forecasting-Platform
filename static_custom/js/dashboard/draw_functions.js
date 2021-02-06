@@ -213,6 +213,22 @@ function changePolygonProperties() {
 function updateJSON() {
   console.log("Updating management polygons JSON.");
   var data = draw.getAll();
+  if (data.features.length > 0) {
+    // Stringify the GeoJson
+    var convertedData = JSON.stringify(data);
+  } else {
+    var convertedData = 0;
+  }
+  $('#id_management_polygons').val(convertedData);
+  sendJSONWebsocket();
+  updateDrawMetrics();
+}
+
+//This function updates the displayed metrics for drawn management
+//Gauge budget plot, managed area, etc.
+function updateDrawMetrics() {
+  console.log("Updating drawn metrics.");
+  var data = draw.getAll();
   var answer = document.getElementById('displayed-management-area');
   var budget = $("input#id_budget").val();
   var abbreviated_unit_display = $("select#id_area_unit").children("option:selected").attr('data-text');
@@ -220,7 +236,6 @@ function updateJSON() {
   console.log(data.features)
   if (data.features.length > 0) {
     // Stringify the GeoJson
-    var convertedData = JSON.stringify(data);
     [host_removal_area, pesticide_area, host_removal_cost,pesticide_cost] = calculateTotalDrawnManagement(data);
     var total_area = host_removal_area + pesticide_area;
     var rounded_area = Math.round(total_area);
@@ -230,17 +245,16 @@ function updateJSON() {
     console.log("Total cost is: ", total_cost);
   } else {
     var rounded_area=0;
-    var convertedData = 0;
     var host_removal_cost=0, pesticide_cost = 0;
     var total_cost = 0;
     var displayed_area = 0;
     console.log('No management drawn.')
   }
   answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + abbreviated_unit_display;  
-  $('#id_management_polygons').val(convertedData);
   $('#id_management_area').val(rounded_area);
   $('#id_management_cost').val(total_cost);
   gaugePlot("current-budget-plot", Math.round(host_removal_cost), Math.round(pesticide_cost), budget);
+
 }
 
 function calculateTotalDrawnManagement(data) {
@@ -305,11 +319,9 @@ function enableDrawTools(){
       if (treatment != 0) {
         var ids = draw.set(treatment);
       };
-      updateJSON();
     }  
     else  {
     console.log('Did not add draw tools because TL is checked')
-      updateJSON();
     }
   }
   else {

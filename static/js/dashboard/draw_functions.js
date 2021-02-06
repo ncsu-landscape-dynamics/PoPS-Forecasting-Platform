@@ -212,6 +212,7 @@ function changePolygonProperties() {
 //This function updates the GeoJSON management field 
 function updateJSON() {
   console.log("Updating management polygons JSON.");
+  console.log('Sending message via websockets')
   var data = draw.getAll();
   var answer = document.getElementById('displayed-management-area');
   var budget = $("input#id_budget").val();
@@ -241,6 +242,13 @@ function updateJSON() {
   $('#id_management_area').val(rounded_area);
   $('#id_management_cost').val(total_cost);
   gaugePlot("current-budget-plot", Math.round(host_removal_cost), Math.round(pesticide_cost), budget);
+  console.log('Sending message via websockets')
+  const messageInputDom = document.querySelector('#id_management_polygons');
+  const message = messageInputDom.value;
+  chatSocket.send(JSON.stringify({
+      'message': message
+  }));
+  messageInputDom.value = '';
 }
 
 function calculateTotalDrawnManagement(data) {

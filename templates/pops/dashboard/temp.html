@@ -300,10 +300,24 @@
         );
 
         chatSocket.onmessage = function(e) {
+          console.log('Receiving JSON')
             const data = JSON.parse(e.data);
             document.querySelector('#id_management_polygons').value = (data.message);
-            disableDrawTools();
-            enableDrawTools();
+            // This is a quick and dirty way to get the new polygons to display. but
+            // it causes the drawn polygons to "blink"
+            var treatment = JSON.parse(data.message);
+            console.log('Treatment:')
+            console.log(treatment)
+            if (treatment != 0) {
+              var ids = draw.set(treatment);
+            }
+            else {
+              draw.deleteAll();
+            }
+            updateDrawMetrics();
+            if ($("#polygon-tool").hasClass("active")) {
+              draw.changeMode('draw_polygon');
+            }
         };
 
         chatSocket.onclose = function(e) {
@@ -325,6 +339,17 @@
             }));
             messageInputDom.value = '';
         };
+
+//This function sends the polygon JSON via websocket 
+function sendJSONWebsocket() {
+  const messageInputDom = document.querySelector('#id_management_polygons');
+  const message = messageInputDom.value;
+  chatSocket.send(JSON.stringify({
+      'message': message
+  }));
+  messageInputDom.value = '';
+}
+
     </script>
 
 <script>
