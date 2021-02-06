@@ -435,7 +435,7 @@ map.addControl(draw);
     //All events are all triggered by user interaction.
     //Here we are giving the draw events custom functions to perform when triggered.
 map.on('draw.create', createPolygon);
-map.on('draw.delete', updateJSON);
+map.on('draw.delete', deletePolygons);
 map.on('draw.update', updatePolygons);
 map.on('draw.selectionchange', displaySelectionChange);
 

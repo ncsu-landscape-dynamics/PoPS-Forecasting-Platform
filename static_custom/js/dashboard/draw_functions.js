@@ -209,6 +209,11 @@ function changePolygonProperties() {
       //document.querySelector('#chat-message-submit').click();
 };
 
+function deletePolygons() {
+  $('#editPolygons').hide();
+  updateJSON();
+}
+
 //This function updates the GeoJSON management field 
 function updateJSON() {
   console.log("Updating management polygons JSON.");
