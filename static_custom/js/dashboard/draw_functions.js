@@ -70,42 +70,46 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
     //Loop through all of the existing polygons
     for (var n = 0; n < allPolygons.features.length - 1; n++) {
       var existingPolygon = allPolygons.features[n];
-      //Check to see if the new polygon intersects the existing polygon
-      var intersection = turf.intersect(newPolygon, existingPolygon);
-      if (intersection) {
-        console.log('Intersection detected.')
-        //If they are the same management type, combine the two polygons.
-        if ((newPolygon.properties.management_type == existingPolygon.properties.management_type)) {
-          console.log('Management type is the same')
-          if ((newPolygon.properties.efficacy == existingPolygon.properties.efficacy) && 
-          (newPolygon.properties.cost == existingPolygon.properties.cost) &&
-          (newPolygon.properties.date == existingPolygon.properties.date)) {
-            console.log('All properties are the same')
-            union = combineTwoPolygons(newPolygonID, existingPolygon.id);
-            console.log(union)
-            if (union) {
-              console.log('Union has occured')
-              newPolygonID = union;
-              polygon =  draw.get(newPolygonID);
-              var area=Math.round(getArea(polygon));
-              draw.setFeatureProperty(newPolygonID, 'area', area);
-              draw.setFeatureProperty(newPolygonID, 'management_type', newPolygon.properties.management_type);
-              draw.setFeatureProperty(newPolygonID, 'efficacy', newPolygon.properties.efficacy);
-              draw.setFeatureProperty(newPolygonID, 'cost', newPolygon.properties.cost);
-              draw.setFeatureProperty(newPolygonID, 'date', newPolygon.properties.date);
-              draw.setFeatureProperty(newPolygonID, 'pesticide_type', newPolygon.properties.pesticide_type);
-              console.log('Feature property area is set')
+      if (existingPolygon.id != newPolygon.id) {
+        //Check to see if the new polygon intersects the existing polygon
+        var intersection = turf.intersect(newPolygon, existingPolygon);
+        if (intersection) {
+          console.log('Intersection detected.')
+          //If they are the same management type, combine the two polygons.
+          if ((newPolygon.properties.management_type == existingPolygon.properties.management_type)) {
+            console.log('Management type is the same')
+            if ((newPolygon.properties.efficacy == existingPolygon.properties.efficacy) && 
+            (newPolygon.properties.cost == existingPolygon.properties.cost) &&
+            (newPolygon.properties.date == existingPolygon.properties.date)) {
+              console.log('All properties are the same')
+              union = combineTwoPolygons(newPolygonID, existingPolygon.id);
+              console.log(union)
+              if (union) {
+                console.log('Union has occured')
+                newPolygonID = union;
+                polygon =  draw.get(newPolygonID);
+                var area=Math.round(getArea(polygon));
+                draw.setFeatureProperty(newPolygonID, 'area', area);
+                draw.setFeatureProperty(newPolygonID, 'management_type', newPolygon.properties.management_type);
+                draw.setFeatureProperty(newPolygonID, 'efficacy', newPolygon.properties.efficacy);
+                draw.setFeatureProperty(newPolygonID, 'cost', newPolygon.properties.cost);
+                draw.setFeatureProperty(newPolygonID, 'date', newPolygon.properties.date);
+                draw.setFeatureProperty(newPolygonID, 'duration', newPolygon.properties.duration);
+                draw.setFeatureProperty(newPolygonID, 'pesticide_type', newPolygon.properties.pesticide_type);
+                console.log('Feature property area is set')
+              }
             }
+            else if ((newPolygon.properties.management_type != 'Pesticide') || (newPolygon.properties.date == existingPolygon.properties.date)
+            ) {
+              difference = turf.difference(existingPolygon,newPolygon);//remove newpolygon from existing polygon
+              var newPolygonID = draw.add(difference); //add new polygon to draw
+              draw.delete(existingPolygon.id); //remove original overlapping polygons
+              var area=Math.round(getArea(difference));
+              draw.setFeatureProperty(newPolygonID, 'area', area);          }
           }
-          else if ((newPolygon.properties.management_type != 'Pesticide') || (newPolygon.properties.date == existingPolygon.properties.date)
-          ) {
-            difference = turf.difference(existingPolygon,newPolygon);//remove newpolygon from existing polygon
-            var newPolygonID = draw.add(difference); //add new polygon to draw
-            draw.delete(existingPolygon.id); //remove original overlapping polygons
-            var area=Math.round(getArea(difference));
-            draw.setFeatureProperty(newPolygonID, 'area', area);          }
-        }
-        else {
+          else {
+            // TODO Do I want something else here?
+          }
         }
       }
     }
@@ -133,7 +137,6 @@ function updatePolygons(e) {
     findAndCombineOverlappingPolygons(selection[n]);
   }
   updateJSON();
-  //document.querySelector('#chat-message-submit').click();
 }
     //When selection changes, show box to edit the selected polygons.
     function displaySelectionChange() {
@@ -142,6 +145,23 @@ function updatePolygons(e) {
       if (selection.features.length > 0) {
         //Get the management type of the first feature, to pre-check that as the type
         var selected_management_type = selection.features[0].properties.management_type;
+        if (selected_management_type == "Pesticide") {
+          if (selection.features[0].properties.pesticide_type != 'other') {
+              disableEditingPolygonProperties();
+            }
+            else {
+              enableEditingPolygonProperties();      
+            }
+            $( "#edit_duration_group" ).show();
+            $( "#edit_pesticide_type_group" ).show();
+          }
+          else {
+            enableEditingPolygonProperties();      
+            console.log('Host removal selected')
+            $( "#edit_duration_group" ).hide();
+            $( "#edit_pesticide_type_group" ).hide();
+          }      
+
         $("input[type=radio][name='editManagementOptions']").prop("checked", false);
         $("input[type=radio][value='" + selected_management_type + "']").prop("checked", true);
         $("select[id='edit_pesticide_type']").val(selection.features[0].properties.pesticide_type);
@@ -150,22 +170,8 @@ function updatePolygons(e) {
         $("input[id='edit_display_cost']").val(selection.features[0].properties.cost/area_modifier);
         $("input[id='edit_date']").val(selection.features[0].properties.date);
         $("input[id='edit_duration']").val(selection.features[0].properties.duration);
-        if (selected_management_type == "Pesticide") {
-          if (selection.features[0].properties.pesticide_type != 'other') {
-            disableEditingPolygonProperties();
-          }
-          else {
-            enableEditingPolygonProperties();      
-          }
-          $( "#edit_duration_group" ).show();
-          $( "#edit_pesticide_type_group" ).show();
-        }
-        else {
-          enableEditingPolygonProperties();      
-          console.log('Host removal selected')
-          $( "#edit_duration_group" ).hide();
-          $( "#edit_pesticide_type_group" ).hide();
-        }
+        console.log('setting edit_duration input field to ', selection.features[0].properties.duration);
+
         //Show edit polygons box.
         $('#editPolygons').show();
       } else {

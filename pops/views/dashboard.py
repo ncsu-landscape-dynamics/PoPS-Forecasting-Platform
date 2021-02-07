@@ -411,13 +411,19 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
 
     def check_permissions(self, request, pk):
         session = get_object_or_404(Session, pk=pk)
-        if session.created_by == request.user:
-            return True
-        elif session.public == True:
-            return True
-        elif session.allowedusers_set.filter(user=request.user).exists():
-            return True
-        return
+
+        return (
+            session.created_by == request.user
+            or session.public
+            or session.allowedusers_set.filter(user=request.user).exists()
+            )
+        # if session.created_by == request.user:
+        #     return True
+        # elif session.public:
+        #     return True
+        # elif session.allowedusers_set.filter(user=request.user).exists():
+        #     return True
+        # return
 
     def get_initial(self):
         # call super if needed

@@ -1225,7 +1225,7 @@ map.addControl(draw);
 //All events are all triggered by user interaction.
 //Here we are giving the draw events custom functions to perform when triggered.
 map.on('draw.create', createPolygon);
-map.on('draw.delete', updateJSON);
+map.on('draw.delete', deletePolygons);
 map.on('draw.update', updatePolygons);
 map.on('draw.selectionchange', displaySelectionChange);
 //Mapbox draw automatically switches to select tool after drawing a polygon.
@@ -1997,7 +1997,7 @@ $("#submit-run").on('submit', function () {
              var base_url = "https://2de79d2987e7.ngrok.io"
              // https://d421f4b2cc79.ngrok.io/status?case_study_id=2&session_id=2&run_collection_id=25&run_id=40
              //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
-             var run_url = (base_url + "/status?case_study_id=" + case_study_id.toString() + "&session_id=" + session_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&run_id=" + new_run_id.toString()) ; //base_url.concat(new_run_id.toString());
+             var run_url = (base_url + "/status?case_study_id=" + case_study_id.toString() + "&session_id=" + session_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&run_id=" + new_run_id.toString()) ;
              console.log('Using URL: ' + run_url);
              $.ajax({
               url: run_url,
