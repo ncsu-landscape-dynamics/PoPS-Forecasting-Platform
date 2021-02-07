@@ -1162,7 +1162,7 @@ map.on('load', function() {
   hostmapLayer({{ host_map|safe }});
   console.log("Adding initial data.");
   {% for year in historic_data %}
-    newFireLayer({{ year.data|safe }}, '{{ year.year}}', max_occurence_number_for_legend);
+    newFireLayer({{ year.data|safe }}, '{{ year.year}}', max_occurence_number_for_legend,'outputs');
   {% endfor %}
   map.setLayoutProperty({{ historic_data.last.year }}, 'visibility', 'visible');
   default_run = {{ session.default_run }};
@@ -1549,35 +1549,35 @@ function get_output(run_id) {
         console.log("Adding output " + data.results[i].pk + ' for year ' + year);
 
         var year_string = year.toString();
-        if (data.results[i].probability_map) {
-          var probability_map_data = data.results[i].probability_map;
+        if (data.results[i].median_spread_map) {
+          var probability_map_data = data.results[i].median_spread_map;
           var probability_layer_name = year_string + "_forecast";
-          newMagmaLayer(probability_map_data, probability_layer_name, 100);
+          newMagmaLayer(probability_map_data, probability_layer_name, 100,'probability');
         } 
         if (data.results[i].median_spread_map) {
           var median_map_data = data.results[i].median_spread_map;
           var median_layer_name = year_string + "_median";
-          newFireLayer(median_map_data, median_layer_name, max_occurence_number_for_legend);
+          newFireLayer(median_map_data, median_layer_name, max_occurence_number_for_legend,'median');
         }
-        if (data.results[i].max_spread_map) {
-          var maximum_map_data = data.results[i].max_spread_map;
+        if (data.results[i].median_spread_map) {
+          var maximum_map_data = data.results[i].median_spread_map;
           var maximum_layer_name = year_string + "_maximum";
-          newFireLayer(maximum_map_data, maximum_layer_name, max_occurence_number_for_legend);
+          newFireLayer(maximum_map_data, maximum_layer_name, max_occurence_number_for_legend,'max');
         }
-        if (data.results[i].min_spread_map) {
-          var minimum_map_data = data.results[i].min_spread_map;
+        if (data.results[i].median_spread_map) {
+          var minimum_map_data = data.results[i].median_spread_map;
           var minimum_layer_name = year_string + "_minimum";
-          newFireLayer(minimum_map_data, minimum_layer_name, max_occurence_number_for_legend);
+          newFireLayer(minimum_map_data, minimum_layer_name, max_occurence_number_for_legend,'min');
         }
-        if (data.results[i].mean_spread_map) {
-          var mean_map_data = data.results[i].mean_spread_map;
+        if (data.results[i].median_spread_map) {
+          var mean_map_data = data.results[i].median_spread_map;
           var mean_layer_name = year_string + "_mean";
-          newFireLayer(mean_map_data, mean_layer_name, max_occurence_number_for_legend);
+          newFireLayer(mean_map_data, mean_layer_name, max_occurence_number_for_legend,'mean');
         }
-        if (data.results[i].mean_spread_map) {
-          var stdev_map_data = data.results[i].standard_deviation_map;
+        if (data.results[i].median_spread_map) {
+          var stdev_map_data = data.results[i].median_spread_map;
           var stdev_layer_name = year_string + "_stdev";
-          newFireLayer(stdev_map_data, stdev_layer_name, max_occurence_number_for_legend);
+          newFireLayer(stdev_map_data, stdev_layer_name, max_occurence_number_for_legend,'standard_deviation');
         }
 
         year_list.push(data.results[i].year);
