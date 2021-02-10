@@ -395,6 +395,10 @@
               <div id="current-budget-plot" class=""></div>
               <!-- DRAW CONTROLS -->
               <div id="draw-controls" class="btn-group-vertical" role="group">
+                <button id="reset-view-tool" class="btn btn-default" type="button" data-toggle="tool"
+                  title="Reset view" data-placement="left">
+                  <i class="fas fa-crosshairs"></i>
+                </button>            
                 <div class="btn-group dropleft" title="Displayed units">
                   <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split "
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -1235,6 +1239,14 @@ map.on('draw.modechange', e => {
       if ($("#polygon-tool").hasClass("active")){
     draw.changeMode('draw_polygon');
   }
+});
+
+//Reset view to case study zoom and center
+$("#reset-view-tool").on('click', function () {
+  map.flyTo({
+    center: [{{ mapbox_parameters.longitude}}, {{ mapbox_parameters.latitude}}], // initial map center in [lon, lat]
+    zoom: {{ mapbox_parameters.zoom }} // starting zoom
+  });
 });
 
 //editPolygons popup button click
