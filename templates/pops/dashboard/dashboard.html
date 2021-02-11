@@ -197,7 +197,7 @@
                   id="id_management_area">
                 <input type="hidden" value="0" name="management_cost" cols="40" rows="10" class="form-control"
                   id="id_management_cost">
-                <input type="hidden" value="4" name="run_collection" cols="40" rows="10" class="form-control"
+                <input type="hidden" value="0" name="run_collection" cols="40" rows="10" class="form-control"
                   id="id_run_collection">
               </form>              
               <!-- MAP -->
@@ -1988,6 +1988,10 @@ $("#truck_parking_checkbox input").on('change', function () {
 
 $("#submit-run").on('submit', function () {
   event.preventDefault();
+  if ($('input#id_run_collection').val() == "0") {
+    alert('You must create a run collection before submitting a run. Use the "+" icon in the right side panel.')
+    return;
+  }
   var steering_year = parseInt($(".timeline-year-container.management_active").attr('data-year-value'));
   var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
   console.log('SUBMITTING NEW RUN WITH MANAGEMENT IN ' + steering_year);
