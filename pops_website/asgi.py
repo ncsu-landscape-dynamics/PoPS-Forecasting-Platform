@@ -10,13 +10,13 @@ django.setup()
 
 from channels.auth import AuthMiddlewareStack
 
-import chat.routing
+import pops.routing
 
 application = ProtocolTypeRouter(
     {
         "http": AsgiHandler(),
         "websocket": AllowedHostsOriginValidator(
-            AuthMiddlewareStack(URLRouter(chat.routing.websocket_urlpatterns))
+            AuthMiddlewareStack(URLRouter(pops.routing.websocket_urlpatterns))
         ),
     }
 )

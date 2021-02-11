@@ -2073,13 +2073,13 @@ function relayout_buttons(max_number,max_area,max_cost) {
 
 // *WEBSOCKETS*
 
-const roomName = 'demo'
+const session = {{ session.pk }};
 var ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
 const chatSocket = new WebSocket(
     ws_scheme
     + window.location.host
-    + '/ws/chat/'
-    + roomName
+    + '/ws/dashboard/'
+    + session
     + '/'
 );
 
