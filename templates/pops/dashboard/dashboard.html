@@ -2090,19 +2090,34 @@ chatSocket.on("update_management", (event) => {
   console.log("Updating management polygons")
   console.log(event);
   document.querySelector('#id_management_polygons').value = (event.management_polygons);
+  console.log($('#id_run_collection').val());
+  console.log(event.run_collection)
   //if current run collection is the even run collection, update management
-  var treatment = JSON.parse(event.management_polygons);
-  console.log('Treatment:')
-  console.log(treatment)
-  if (treatment != 0) {
-    var ids = draw.set(treatment);
-  } else {
-    draw.deleteAll();
+  if ($('#id_run_collection').val() == event.run_collection){
+    var treatment = JSON.parse(event.management_polygons);
+    console.log('Treatment:')
+    console.log(treatment)
+    if (treatment != 0) {
+      var ids = draw.set(treatment);
+    } else {
+      draw.deleteAll();
+    }
+    updateDrawMetrics();
+    if ($("#polygon-tool").hasClass("active")) {
+      draw.changeMode('draw_polygon');
+    }          
   }
-  updateDrawMetrics();
-  if ($("#polygon-tool").hasClass("active")) {
-    draw.changeMode('draw_polygon');
-  }          
+});
+
+//New run collection
+chatSocket.on("new_run_collection", (event) => {
+  console.log("New run collection")
+  console.log(event);
+  run_collection_id = event.pk;
+  name = event.name;
+  date = event.date;
+  description = event.description;
+  insertRunButton(run_collection_id, name, date, description, 0, 0, 0)
 });
 
 //This function sends the polygon JSON via websocket 
@@ -2112,7 +2127,7 @@ function sendJSONWebsocket() {
   const management_polygons = messageInputDom.value;
   chatSocket.notify("update_management", {
       management_polygons: management_polygons,
-      run_collection: 42
+      run_collection: $('#id_run_collection').val(),
     })
   messageInputDom.value = '';
 }

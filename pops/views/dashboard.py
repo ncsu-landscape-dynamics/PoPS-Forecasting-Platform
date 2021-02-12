@@ -12,7 +12,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import UserPassesTestMixin
-
+import json
 from django.http import (
     JsonResponse,
     HttpResponse,
@@ -42,6 +42,8 @@ from ..forms import *
 
 from users.models import CustomUser
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 def temp_view(request):
     return render(request, "pops/dashboard/temp.html")
@@ -380,16 +382,21 @@ class AjaxableResponseMixin:
         # call form.save() for example).
         response = super().form_valid(form)
         if self.request.is_ajax():
+            print("In form valid of dashboard view")
             data = {
                 "pk": self.object.pk,
                 "name": self.object.name,
                 "description": self.object.description,
-                "status": self.object.status,
-                "random_seed": self.object.random_seed,
-                "date_created": self.object.date_created,
-                "budget": self.object.budget,
-                "tangible_landscape": self.object.tangible_landscape,
+                "date": self.object.date_created,
             }
+            s1 = json.dumps(data, indent=4, sort_keys=True, default=str)
+            l1 = json.loads(s1)
+            layer = get_channel_layer()
+            session_group_id = 'chat_%s' % 2 #self.session_id
+            async_to_sync(layer.group_send)(session_group_id, {
+                'type': 'events.alarm',
+                'content': s1
+            })
             return JsonResponse(data)
         else:
             return response

@@ -321,6 +321,28 @@ chatSocket.on("update_management", (event) => {
     draw.changeMode('draw_polygon');
   }          
 });
+//New run collection
+chatSocket.on("new_run_collection", (event) => {
+  console.log("New run collection")
+  console.log(event);
+  run_collection = event.run_collection;
+  console.log(run_collection);
+});
+
+//This function sends the runCollection via websocket 
+function sendRunCollectionWebsocket() {
+  console.log('Sending run collection message')
+  chatSocket.notify("new_run_collection", {
+      run_collection: 42,
+      name: 'Run collection name',
+      date: '10-2-2012',
+      description: 'This is the description',
+      infected_number: 100,
+      infected_area: 20,
+      cost: 120,
+    })
+}
+
 
 //This function sends the polygon JSON via websocket 
 function sendJSONWebsocket() {
@@ -355,12 +377,7 @@ document.querySelector('#id_management_polygons').onkeyup = function (e) {
 };
 
 document.querySelector('#chat-message-submit').onclick = function (e) {
-  const messageInputDom = document.querySelector('#id_management_polygons');
-  const message = messageInputDom.value;
-  chatSocket.send(JSON.stringify({
-    'message': message
-  }));
-  messageInputDom.value = '';
+  sendRunCollectionWebsocket();
 };
 
 

@@ -39,23 +39,19 @@ class DashboardConsumer(JsonWebsocketConsumer):
         params = incoming_data['params']
         if method == 'update_management':
             print('Updating management')
-            geojson = params['management_polygons']
-            x = {
-                "jsonrpc": 2.0,
-                "result": geojson,
+        elif method == 'new_run_collection':
+            print('Adding new run collection to session')
+
+        # Send message to room group
+        # This iteratively performs the 'chat_message' function
+        # for every member of the group            
+        async_to_sync(self.channel_layer.group_send)(
+            self.session_group_id,
+            {
+                'type': 'chat_message',
+                'content': data
             }
-            # Send message to room group
-            # This iteratively performs the 'chat_message' function
-            # for every member of the group            
-            async_to_sync(self.channel_layer.group_send)(
-                self.session_group_id,
-                {
-                    'type': 'chat_message',
-                    'content': data
-                }
-            )       
-
-
+        )       
         print('Finished receive function')
 
     # Send message from room group
@@ -67,3 +63,14 @@ class DashboardConsumer(JsonWebsocketConsumer):
         # Send message to WebSocket
         self.send_json(message)
         print('Finished chat message')
+
+    def events_alarm(self, event):
+        print('Event alarm triggered')
+        x = {
+            'jsonrpc': '2.0',
+            'method': 'new_run_collection',
+            'params': json.loads(event['content']),
+        }
+        print(json.dumps(x))
+
+        self.send_json(x)
