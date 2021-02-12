@@ -288,67 +288,82 @@
 <!-- Function to update mapbox draw color.  -->
 <script src="{% static 'js/dashboard/updateDrawColor.js' %}"></script>
 <script src="{% static 'js/dashboard/draw_functions.js' %}"></script>
-    <script>
-        const roomName = 'demo'
-        var ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
-        const chatSocket = new WebSocket(
-            ws_scheme
-            + window.location.host
-            + '/ws/chat/'
-            + roomName
-            + '/'
-        );
+<script src="{% static 'js/websockets/rpc-websockets.js' %}"></script>
+<script>
+//Initiate websocket
+const session = 'demo'
+var ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
+var chatSocket = new RPCWebSocket.Client(
+  ws_scheme +
+  window.location.host +
+  '/ws/dashboard/' +
+  session +
+  '/', {
+    max_reconnects: 0, // Unlimited
+  });
 
-        chatSocket.onmessage = function(e) {
-          console.log('Receiving JSON')
-            const data = JSON.parse(e.data);
-            document.querySelector('#id_management_polygons').value = (data.message);
-            // This is a quick and dirty way to get the new polygons to display. but
-            // it causes the drawn polygons to "blink"
-            var treatment = JSON.parse(data.message);
-            console.log('Treatment:')
-            console.log(treatment)
-            if (treatment != 0) {
-              var ids = draw.set(treatment);
-            }
-            else {
-              draw.deleteAll();
-            }
-            updateDrawMetrics();
-            if ($("#polygon-tool").hasClass("active")) {
-              draw.changeMode('draw_polygon');
-            }
-        };
-
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
-
-        document.querySelector('#id_management_polygons').focus();
-        document.querySelector('#id_management_polygons').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
-
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#id_management_polygons');
-            const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInputDom.value = '';
-        };
+//Receive updated management from server
+chatSocket.on("update_management", (event) => {
+  console.log("Updating management polygons")
+  console.log(event);
+  document.querySelector('#id_management_polygons').value = (event.management_polygons);
+  //if current run collection is the even run collection, update management
+  var treatment = JSON.parse(event.management_polygons);
+  console.log('Treatment:')
+  console.log(treatment)
+  if (treatment != 0) {
+    var ids = draw.set(treatment);
+  } else {
+    draw.deleteAll();
+  }
+  updateDrawMetrics();
+  if ($("#polygon-tool").hasClass("active")) {
+    draw.changeMode('draw_polygon');
+  }          
+});
 
 //This function sends the polygon JSON via websocket 
 function sendJSONWebsocket() {
+  console.log('Sending websocket message')
+  const messageInputDom = document.querySelector('#id_management_polygons');
+  const management_polygons = messageInputDom.value;
+  chatSocket.notify("update_management", {
+      management_polygons: management_polygons,
+      run_collection: 42
+    })
+  messageInputDom.value = '';
+}
+
+//Websocket close event
+chatSocket.on("close", (event) => {
+  console.log('Websocket closed.')
+});
+//Websocket open event
+chatSocket.on("open", (event) => {
+  console.log('Websocket opened.')
+});
+//Websocket error event
+chatSocket.on("error", (event) => {
+  console.log('Websocket error.')
+});
+
+document.querySelector('#id_management_polygons').focus();
+document.querySelector('#id_management_polygons').onkeyup = function (e) {
+  if (e.keyCode === 13) { // enter, return
+    document.querySelector('#chat-message-submit').click();
+  }
+};
+
+document.querySelector('#chat-message-submit').onclick = function (e) {
   const messageInputDom = document.querySelector('#id_management_polygons');
   const message = messageInputDom.value;
   chatSocket.send(JSON.stringify({
-      'message': message
+    'message': message
   }));
   messageInputDom.value = '';
-}
+};
+
+
 
 //This function updates the GeoJSON management field 
 //and sends the websocket if needed
@@ -362,10 +377,10 @@ function updateJSON() {
     var convertedData = 0;
   }
   $('#id_management_polygons').val(convertedData);
-  //sendJSONWebsocket();
+  sendJSONWebsocket();
   updateDrawMetrics(); //consider removing this since it gets updated with the websocket message
 }
-    </script>
+</script>
 
 <script>
 

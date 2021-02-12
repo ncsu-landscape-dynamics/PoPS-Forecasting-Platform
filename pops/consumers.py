@@ -8,12 +8,12 @@ class DashboardConsumer(JsonWebsocketConsumer):
 
     def connect(self):
         print('Connecting...')
-        self.room_name = self.scope['url_route']['kwargs']['session']
-        self.room_group_name = 'chat_%s' % self.room_name
+        self.session_id = self.scope['url_route']['kwargs']['session']
+        self.session_group_id = 'chat_%s' % self.session_id
 
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
-            self.room_group_name,
+            self.session_group_id,
             self.channel_name
         )
         print('Connection finished.')
@@ -23,31 +23,42 @@ class DashboardConsumer(JsonWebsocketConsumer):
         print('Disconnecting...')
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name,
+            self.session_group_id,
             self.channel_name
         )
         print('Disconnection complete.')
 
-    # Receive message from WebSocket
-    def receive_json(self, text_data):
-        print('Received message from websocket')
-        #print(text_data)
-        #text_data_json = json.loads(text_data)
-        #message = text_data_json['message']
 
-        # Send message to room group
-        # This iteratively performs the 'chat_message' function
-        # for every member of the group
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'content': text_data
+    # Receive message from WebSocket
+    def receive_json(self, data):
+        print('Received message from websocket')
+        print(data)
+        s1 = json.dumps(data)
+        incoming_data = json.loads(s1)
+        method = incoming_data['method']
+        params = incoming_data['params']
+        if method == 'update_management':
+            print('Updating management')
+            geojson = params['management_polygons']
+            x = {
+                "jsonrpc": 2.0,
+                "result": geojson,
             }
-        )
+            # Send message to room group
+            # This iteratively performs the 'chat_message' function
+            # for every member of the group            
+            async_to_sync(self.channel_layer.group_send)(
+                self.session_group_id,
+                {
+                    'type': 'chat_message',
+                    'content': data
+                }
+            )       
+
+
         print('Finished receive function')
 
-    # Receive message from room group
+    # Send message from room group
     def chat_message(self, event):
         print('Sending chat_message to room group')
         #print(event)
