@@ -1,5 +1,5 @@
 function newFireLayer(map_data, layer_name, max_legend_value, property) {
-  console.log("Adding new layer for year " + layer_name);
+  //console.log("Adding new layer for year " + layer_name);
   map.addSource(layer_name, {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
@@ -66,7 +66,7 @@ function newFireLayer(map_data, layer_name, max_legend_value, property) {
 };
 
 function newMagmaLayer(map_data, layer_name, max_legend_value, property) {
-  console.log("Adding new magma layer for year " + layer_name);
+  //console.log("Adding new magma layer for year " + layer_name);
   map.addSource(layer_name, {
     'type': 'geojson',
     /*many types of data can be added, such as geojson, vector tiles or raster data*/
@@ -133,7 +133,7 @@ function newMagmaLayer(map_data, layer_name, max_legend_value, property) {
 };
 
 function hostmapLayer(data) {
-  console.log("Adding host map layer");
+  //console.log("Adding host map layer");
   map.addSource('host_map', {
       'type': 'geojson',
       'data': data

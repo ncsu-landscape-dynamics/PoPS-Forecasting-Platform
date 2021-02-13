@@ -44,17 +44,18 @@ function insertRunButton(run_id, name, date, description, infected_number, infec
       $(this).addClass('active');
       var run_collection_id = $(this).attr('data-run-collection');
       get_run_collection(run_collection_id);
+      getThisRunCollectionManagement(run_collection_id);
     });
 
     $("#run_button_" + run_pk + ' a.load_run_text').on('click', function (event) {
       event.stopPropagation();
-      console.log('Run button icon clicked.')
+      //console.log('Run button icon clicked.')
       $(this).parent().trigger("click");
-      console.log('Triggered parent button click.')
+      //console.log('Triggered parent button click.')
     });
     $("#run_button_" + run_pk + ' a.run_info_button').on('click', function (event) {
       event.stopPropagation();
-      console.log('Run info icon clicked.')
+      //console.log('Run info icon clicked.')
     });
     $('[data-toggle="tooltip"]').tooltip({
       trigger: 'hover'

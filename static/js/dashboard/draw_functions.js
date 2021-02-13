@@ -48,7 +48,7 @@ function getManagementProperties() {
 }
 //Add the polygon to draw. Set management properties. Perform findAndCombineOverlappingPolyogns.
 function drawPolygon(polygon, management_properties,area) {
-  console.log(management_properties[5]);
+  //console.log(management_properties[5]);
   featureID = draw.add(polygon);
   draw.setFeatureProperty(featureID, 'management_type', management_properties[0]);
   draw.setFeatureProperty(featureID, 'efficacy', management_properties[1]);
@@ -74,18 +74,18 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
         //Check to see if the new polygon intersects the existing polygon
         var intersection = turf.intersect(newPolygon, existingPolygon);
         if (intersection) {
-          console.log('Intersection detected.')
+          //console.log('Intersection detected.')
           //If they are the same management type, combine the two polygons.
           if ((newPolygon.properties.management_type == existingPolygon.properties.management_type)) {
-            console.log('Management type is the same')
+            //console.log('Management type is the same')
             if ((newPolygon.properties.efficacy == existingPolygon.properties.efficacy) && 
             (newPolygon.properties.cost == existingPolygon.properties.cost) &&
             (newPolygon.properties.date == existingPolygon.properties.date)) {
-              console.log('All properties are the same')
+              //console.log('All properties are the same')
               union = combineTwoPolygons(newPolygonID, existingPolygon.id);
-              console.log(union)
+              //console.log(union)
               if (union) {
-                console.log('Union has occured')
+                //console.log('Union has occured')
                 newPolygonID = union;
                 polygon =  draw.get(newPolygonID);
                 var area=Math.round(getArea(polygon));
@@ -96,7 +96,7 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
                 draw.setFeatureProperty(newPolygonID, 'date', newPolygon.properties.date);
                 draw.setFeatureProperty(newPolygonID, 'duration', newPolygon.properties.duration);
                 draw.setFeatureProperty(newPolygonID, 'pesticide_type', newPolygon.properties.pesticide_type);
-                console.log('Feature property area is set')
+                //console.log('Feature property area is set')
               }
             }
             else if ((newPolygon.properties.management_type != 'Pesticide') || (newPolygon.properties.date == existingPolygon.properties.date)
@@ -118,12 +118,12 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
 //Check if polygon1 and polygon 2 intersect and are of the same type.
 //If yes, combine them into a single polygon and delete the original 2.
 function combineTwoPolygons(polygonID1, polygonID2) {
-  console.log('Combinging two polygons')
+  //console.log('Combinging two polygons')
   polygon1 = draw.get(polygonID1);
   polygon2 = draw.get(polygonID2);
   //if polygons intersect AND management type is the same, perform union of two polygons
   if ((turf.intersect(polygon1, polygon2)) && (polygon1.properties.management_type == polygon2.properties.management_type)) {
-    console.log('Confirming intersection and same type')
+    //console.log('Confirming intersection and same type')
     union = turf.union(polygon1, polygon2); //create new union polygon
     var featureIds = draw.add(union); //add new polygon to draw
     draw.delete(polygonID1) //remove original overlapping polygons
@@ -157,7 +157,7 @@ function updatePolygons(e) {
           }
           else {
             enableEditingPolygonProperties();      
-            console.log('Host removal selected')
+            //console.log('Host removal selected')
             $( "#edit_duration_group" ).hide();
             $( "#edit_pesticide_type_group" ).hide();
           }      
@@ -170,7 +170,7 @@ function updatePolygons(e) {
         $("input[id='edit_display_cost']").val(selection.features[0].properties.cost/area_modifier);
         $("input[id='edit_date']").val(selection.features[0].properties.date);
         $("input[id='edit_duration']").val(selection.features[0].properties.duration);
-        console.log('setting edit_duration input field to ', selection.features[0].properties.duration);
+        //console.log('setting edit_duration input field to ', selection.features[0].properties.duration);
 
         //Show edit polygons box.
         $('#editPolygons').show();
@@ -225,13 +225,13 @@ function deletePolygons() {
 //This function updates the displayed metrics for drawn management
 //Gauge budget plot, managed area, etc.
 function updateDrawMetrics() {
-  console.log("Updating drawn metrics.");
+  //console.log("Updating drawn metrics.");
   var data = draw.getAll();
   var answer = document.getElementById('displayed-management-area');
   var budget = $("input#id_budget").val();
   var abbreviated_unit_display = $("select#id_area_unit").children("option:selected").attr('data-text');
   var area_modifier = $("select#id_area_unit").children("option:selected").val();
-  console.log(data.features)
+  //console.log(data.features)
   if (data.features.length > 0) {
     // Stringify the GeoJson
     [host_removal_area, pesticide_area, host_removal_cost,pesticide_cost] = calculateTotalDrawnManagement(data);
@@ -240,13 +240,13 @@ function updateDrawMetrics() {
     var displayed_area = Math.round(total_area*area_modifier);
     // round cost to 2 decimal places
     var total_cost = Math.round(host_removal_cost + pesticide_cost);
-    console.log("Total cost is: ", total_cost);
+    //console.log("Total cost is: ", total_cost);
   } else {
     var rounded_area=0;
     var host_removal_cost=0, pesticide_cost = 0;
     var total_cost = 0;
     var displayed_area = 0;
-    console.log('No management drawn.')
+    //console.log('No management drawn.')
   }
   answer.innerHTML =  displayed_area.toLocaleString("en") + ' ' + abbreviated_unit_display;  
   $('#id_management_area').val(rounded_area);
@@ -275,7 +275,7 @@ function calculateTotalDrawnManagement(data) {
 }
 
 function updateCircleRadiusInMeters() {
-    console.log("Circle radius changed")
+    //console.log("Circle radius changed")
     var displayed_management_circle_radius = $("input#displayed_circle_radius").val();
     var convert_to_meters_modifier = $("select#circle_distance_unit").children("option:selected").val();
     var management_circle_radius_meters = displayed_management_circle_radius*convert_to_meters_modifier;
@@ -283,7 +283,7 @@ function updateCircleRadiusInMeters() {
 };
 
 function updateDefaultManagementCost(element) {
-  console.log('Updating management cost.')
+  //console.log('Updating management cost.')
   var displayed_cost = $(element).find("input.displayed_cost").val();
   var cost_modifier =  $(element).find("option:selected").val();
   var actual_cost_per_meter_squared = Math.round(displayed_cost*cost_modifier*100000000)/100000000;
@@ -292,7 +292,7 @@ function updateDefaultManagementCost(element) {
 
 function disableDrawTools(){
   if ($("#draw-controls").is(":visible")){
-    console.log('Disabling draw tools.')
+    //console.log('Disabling draw tools.')
     draw.changeMode('simple_select');
     map.removeControl(draw);
     map.getContainer().classList.remove("mouse-add");
@@ -307,22 +307,22 @@ function disableDrawTools(){
 
 function enableDrawTools(){
   if ($("#draw-controls").is(":hidden")){
-    console.log('Enabling draw tools.')
+    //console.log('Enabling draw tools.')
     if (!$('input#id_tangible_landscape').prop('checked') && $('#map-tab').hasClass('active')){
       map.addControl(draw);
       $( "#draw-controls" ).show();
       var treatment = JSON.parse($('#id_management_polygons').val());
-      console.log('Treatment:')
-      console.log(treatment)
+      //console.log('Treatment:')
+      //console.log(treatment)
       if (treatment != 0) {
         var ids = draw.set(treatment);
       };
     }  
     else  {
-    console.log('Did not add draw tools because TL is checked')
+    //console.log('Did not add draw tools because TL is checked')
     }
   }
   else {
-    console.log("Draw tools already enabled.")
+    //console.log("Draw tools already enabled.")
   }
 };
