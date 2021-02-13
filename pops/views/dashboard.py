@@ -382,7 +382,6 @@ class AjaxableResponseMixin:
         # call form.save() for example).
         response = super().form_valid(form)
         if self.request.is_ajax():
-            print("In form valid of dashboard view")
             data = {
                 "pk": self.object.pk,
                 "name": self.object.name,
@@ -499,8 +498,6 @@ class DashboardView(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
             pesticidelinks = PestPesticideLink.objects.filter(
                 pest_information__pest__case_study=case_study
                 ).prefetch_related('pesticide')
-            print(pesticidelinks)
-            print(pesticidelinks[0].pesticide.duration)
         except:
             pesticidelinks = None
             print("No pesticides in this case study")
@@ -630,7 +627,6 @@ class DashboardTestView(AjaxableResponseMixin, CreateView):
 def get_run_collection(request):
     print("GETTING RUN COLLECTION:")
     run_collection_id = request.GET.get("run_collection_id", None)
-    print(run_collection_id)
     run_collection = RunCollection.objects.get(pk=run_collection_id)
     inputs = Run.objects.filter(run_collection=run_collection)
     data = {
@@ -655,14 +651,12 @@ def get_output_view(request):
     run_id = request.GET.get("new_run_id", None)
     this_run = Run.objects.get(pk=run_id)
     first_year = int(this_run.run_collection.session.case_study.first_forecast_date.strftime('%Y'))
-    print(first_year)
     run_collection = this_run.run_collection
     total_management_cost = Run.objects.filter(run_collection=run_collection).aggregate(
         Sum("management_cost")
     )
     number_of_steering_runs = Run.objects.filter(run_collection=run_collection).count()
     steering_year = this_run.steering_year
-    print(steering_year)
     default_run = run_collection.session.default_run
     default_run_outputs = Output.objects.filter(run_id=default_run)
     spread_rate = default_run_outputs.annotate(
@@ -728,14 +722,9 @@ def get_output_view(request):
         maximum_spread_rate = max(
             maximum_spread_rate, max_steering_spreadrate["max_spread__max"]
         )
-        # print(run)
-        # print(steering_year_output)
-
-        # outputs = outputs | Output.objects.filter(run_id=run,year=x)
     else:
         print("Steering year false")
 
-    # print(steering_outputs)
     # get all inputs for runs in this collection (management polygons)
     inputs = Run.objects.filter(run_collection=run_collection)
     # get the outputs for this run (used for displaying on the map)

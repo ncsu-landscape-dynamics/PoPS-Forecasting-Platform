@@ -1466,9 +1466,6 @@ function get_run_collection(run_collection_id) {
           }
         };
       }
-
-
-
     if (data.tangible_landscape) {
       console.log('Tangible landscape is on.')
       //hide run buttons
@@ -2120,6 +2117,22 @@ chatSocket.on("new_run_collection", (event) => {
   insertRunButton(run_collection_id, name, date, description, 0, 0, 0)
 });
 
+//Send management to new user in Run Collection
+chatSocket.on("send_management_request", (event) => {
+  console.log("Requesting management")
+  console.log(event);
+  if ($('#id_run_collection').val() == event.run_collection & $('#id_management_polygons').val() != 0){
+    sendJSONWebsocket();
+  }
+});
+
+//Send management to newly connected user
+chatSocket.on("new_connection_detected", (event) => {
+  console.log("New user added")
+  console.log(event);
+});
+
+
 //This function sends the polygon JSON via websocket 
 function sendJSONWebsocket() {
   console.log('Sending websocket message')
@@ -2129,7 +2142,15 @@ function sendJSONWebsocket() {
       management_polygons: management_polygons,
       run_collection: $('#id_run_collection').val(),
     })
-  messageInputDom.value = '';
+  messageInputDom.value = ''; //should I remove this...?
+}
+
+//This function sends the polygon JSON via websocket 
+function getThisRunCollectionManagement(run_collection_id) {
+  console.log('Requesting management from server')
+  chatSocket.notify("send_management_request", {
+      run_collection: run_collection_id,
+    })
 }
 
 //Websocket close event

@@ -10,14 +10,25 @@ class DashboardConsumer(JsonWebsocketConsumer):
         print('Connecting...')
         self.session_id = self.scope['url_route']['kwargs']['session']
         self.session_group_id = 'chat_%s' % self.session_id
-
-        # Join room group
+        # Join session group
         async_to_sync(self.channel_layer.group_add)(
             self.session_group_id,
             self.channel_name
         )
-        print('Connection finished.')
+        x = {
+            'jsonrpc': '2.0',
+            'method': 'new_connection_detected',
+            'params': {},
+        }
+        async_to_sync(self.channel_layer.group_send)(
+            self.session_group_id,
+            {
+                'type': 'chat_message',
+                'content': x
+            }
+        )       
         self.accept()
+        print('Connection finished.')
 
     def disconnect(self, close_code):
         print('Disconnecting...')
@@ -41,7 +52,9 @@ class DashboardConsumer(JsonWebsocketConsumer):
             print('Updating management')
         elif method == 'new_run_collection':
             print('Adding new run collection to session')
-
+        elif method == 'send_management_request':
+            print('Sending management request to other users')
+            #self.send_json(x)
         # Send message to room group
         # This iteratively performs the 'chat_message' function
         # for every member of the group            
@@ -61,6 +74,7 @@ class DashboardConsumer(JsonWebsocketConsumer):
         message = event['content']
         #print(message)
         # Send message to WebSocket
+        print(message)
         self.send_json(message)
         print('Finished chat message')
 
@@ -73,4 +87,14 @@ class DashboardConsumer(JsonWebsocketConsumer):
         }
         print(json.dumps(x))
 
+        self.send_json(x)
+
+    def send_management_request(self, event):
+        print('Requesting management from clients')
+        x = {
+            'jsonrpc': '2.0',
+            'method': 'send_current_management',
+            'params': {'run_collection': 42},
+        }
+        print(json.dumps(x))
         self.send_json(x)
