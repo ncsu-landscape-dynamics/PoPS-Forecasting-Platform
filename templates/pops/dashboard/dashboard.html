@@ -1329,7 +1329,7 @@ function update_displayed_data() {
       //Hide historic data years
       var hide_layer_name = i;
       if (map.getLayer(hide_layer_name)) {
-        console.log('Hiding layer: ' + hide_layer_name);
+        //console.log('Hiding layer: ' + hide_layer_name);
         map.setLayoutProperty((hide_layer_name), 'visibility', 'none');
       }
       else {
@@ -1342,7 +1342,7 @@ function update_displayed_data() {
       for (x in displayed_data_types) {
         var hide_layer_name = i + displayed_data_types[x];
         if (map.getLayer(hide_layer_name)) {
-          console.log('Hiding layer: ' + hide_layer_name);
+          //console.log('Hiding layer: ' + hide_layer_name);
           map.setLayoutProperty((hide_layer_name), 'visibility', 'none');
         }
         else {
@@ -1477,11 +1477,11 @@ function get_run_collection(run_collection_id) {
       //if new run, get output for new run
     }
     else {
-      console.log('Tangible landscape is false.')
+      //console.log('Tangible landscape is false.')
       $(".timeline-year-container").find(".submit_run_button").show();
       $("#tangible-landscape-listener-button").hide();
       var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
-      console.log('Updating draw color to ' + year_count);
+      //console.log('Updating draw color to ' + year_count);
       updateDrawColor(year_count);
     }
     },
@@ -1510,13 +1510,13 @@ function get_output(run_id) {
   map.setLayoutProperty('{{ historic_data.last.year }}', 'visibility', 'visible');
   //Make this loop a function of current slider max
   for (i = {{ steering_years | first }}; i < ({{ steering_years | last }} + 1); i++) {
-    console.log('Removing layers and sources for year: ', i);
+    //console.log('Removing layers and sources for year: ', i);
     var x;
     for (x in displayed_data_types) {
       var layer_name = i + displayed_data_types[x];
       if (map.getLayer(layer_name)) {
         map.removeLayer(layer_name);
-        console.log('Removing layer: ' + layer_name)
+        //console.log('Removing layer: ' + layer_name)
       }
       if (map.getSource(layer_name)) {
         map.removeSource(layer_name);
@@ -1525,7 +1525,7 @@ function get_output(run_id) {
 
     var treatment_outline = (i.toString() + "_management");
     var treatment_fill = (i.toString() + "_fill");
-    console.log('Removing existing drawn management.');
+    //console.log('Removing existing drawn management.');
     if (map.getLayer(treatment_fill)) {
       map.removeLayer(treatment_fill);
     };
@@ -1556,7 +1556,7 @@ function get_output(run_id) {
       max_spread_rate = data.max_spread_rate;
       for (var i = 0; i < data.results.length; i++) {
         var year = data.results[i].year;
-        console.log("Adding output " + data.results[i].pk + ' for year ' + year);
+        //console.log("Adding output " + data.results[i].pk + ' for year ' + year);
 
         var year_string = year.toString();
         if (data.results[i].median_spread_map) {
@@ -1629,9 +1629,9 @@ function get_output(run_id) {
       var initial_infected_area = {{ historic_data.last.infected_area }};
       var initial_number_infected = {{ historic_data.last.number_infected }};
       var first_year = {{ steering_years | first }};
-      console.log('First year = ', first_year);
+      //console.log('First year = ', first_year);
       var last_year = {{ steering_years | last }};
-      console.log('Last year = ', last_year);
+      //console.log('Last year = ', last_year);
       budget_plot(defaults, steering_outputs, first_year, last_year);
       area_plot(defaults, steering_outputs, initial_infected_area, initial_number_infected, first_year, last_year);
       //spreadRatePlot({{historic_data.last.year}});
@@ -2062,7 +2062,7 @@ function relayout_buttons(max_number,max_area,max_cost) {
   $('.comparison_plot').each(function () {
     idArray.push(this.id);
   });
-  console.log('Updating y-axis values of buttons.')
+  //console.log('Updating y-axis values of buttons.')
 
   for (i = 0; i < idArray.length; i++) {
     Plotly.relayout(idArray[i], update);
@@ -2129,7 +2129,7 @@ chatSocket.on("send_management_request", (event) => {
 //Send management to newly connected user
 chatSocket.on("new_connection_detected", (event) => {
   console.log("New user added")
-  console.log(event);
+  //console.log(event);
 });
 
 

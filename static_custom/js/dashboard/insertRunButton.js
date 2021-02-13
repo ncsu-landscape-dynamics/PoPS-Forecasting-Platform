@@ -49,13 +49,13 @@ function insertRunButton(run_id, name, date, description, infected_number, infec
 
     $("#run_button_" + run_pk + ' a.load_run_text').on('click', function (event) {
       event.stopPropagation();
-      console.log('Run button icon clicked.')
+      //console.log('Run button icon clicked.')
       $(this).parent().trigger("click");
-      console.log('Triggered parent button click.')
+      //console.log('Triggered parent button click.')
     });
     $("#run_button_" + run_pk + ' a.run_info_button').on('click', function (event) {
       event.stopPropagation();
-      console.log('Run info icon clicked.')
+      //console.log('Run info icon clicked.')
     });
     $('[data-toggle="tooltip"]').tooltip({
       trigger: 'hover'
