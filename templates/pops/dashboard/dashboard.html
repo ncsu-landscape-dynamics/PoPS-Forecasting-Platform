@@ -2084,16 +2084,16 @@ var chatSocket = new RPCWebSocket.Client(
 
 //Receive updated management from server
 chatSocket.on("update_management", (event) => {
-  console.log("Updating management polygons")
-  console.log(event);
+  console.log("New management polygons received for run collection " + event.run_collection)
+  //console.log(event);
   document.querySelector('#id_management_polygons').value = (event.management_polygons);
-  console.log($('#id_run_collection').val());
-  console.log(event.run_collection)
+  //console.log($('#id_run_collection').val());
+  //console.log(event.run_collection)
   //if current run collection is the even run collection, update management
   if ($('#id_run_collection').val() == event.run_collection){
     var treatment = JSON.parse(event.management_polygons);
-    console.log('Treatment:')
-    console.log(treatment)
+    //console.log('Treatment:')
+    //console.log(treatment)
     if (treatment != 0) {
       var ids = draw.set(treatment);
     } else {
@@ -2119,8 +2119,8 @@ chatSocket.on("new_run_collection", (event) => {
 
 //Send management to new user in Run Collection
 chatSocket.on("send_management_request", (event) => {
-  console.log("Requesting management")
-  console.log(event);
+  console.log("Requesting management for run collection " + event.run_collection)
+  //console.log(event);
   if ($('#id_run_collection').val() == event.run_collection & $('#id_management_polygons').val() != 0){
     sendJSONWebsocket();
   }

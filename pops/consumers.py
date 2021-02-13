@@ -74,7 +74,6 @@ class DashboardConsumer(JsonWebsocketConsumer):
         message = event['content']
         #print(message)
         # Send message to WebSocket
-        print(message)
         self.send_json(message)
         print('Finished chat message')
 
