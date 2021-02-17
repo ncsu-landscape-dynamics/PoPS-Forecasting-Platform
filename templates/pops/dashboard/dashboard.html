@@ -1246,7 +1246,9 @@ map.on('draw.modechange', e => {
 $("#reset-view-tool").on('click', function () {
   map.flyTo({
     center: [{{ mapbox_parameters.longitude}}, {{ mapbox_parameters.latitude}}], // initial map center in [lon, lat]
-    zoom: {{ mapbox_parameters.zoom }} // starting zoom
+    zoom: {{ mapbox_parameters.zoom }}, // starting zoom
+    pitch: 0,
+    bearing: 0
   });
 });
 
