@@ -206,174 +206,181 @@
                 title="Show details."><i class="fas fa-chevron-left"></i></button>
               <!-- MAP LEGEND -->
               <div id="displayed-data-legend-container">
-              <div id="legend-container" data-toggle="tool" title="Legend for currently displayed data">
-                <div class="my-0">
-                  <strong id="display_year_forecast" >Field observations </strong>
-                  <small id="legend_description"> (Number of detections)</small>
-                </div>
-                <div id="historic-legend-container" class="my-0">
-                  <div style="height: 20px; width: 280px;">
-                    <span class="legend-label mr-1">0</span>
-                    <div class="legend-color" style="background-color:#CC0000; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#D61900; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#E03300; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#EA4C00; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#F46600; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FF8000; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FF9F19; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FFBF33; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FFDF4C; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FFFF66; opacity:0.85"></div>
-                    <div class="legend-color" style="background-color:#FFFFCC; opacity:0.9"></div>
-                    <div class="legend-label ml-1">{{ session.max_value }}+</div>
-                    <div style="clear: left;">
+                <div id="legend-container" data-toggle="tool" title="Legend for currently displayed data">
+                  <div class="my-0">
+                    <strong id="display_year_forecast">Field observations </strong>
+                    <small id="legend_description"> (Number of detections)</small>
+                  </div>
+                  <div id="historic-legend-container" class="my-0">
+                    <div style="height: 20px; width: 280px;">
+                      <span class="legend-label mr-1">0</span>
+                      <div class="legend-color" style="background-color:#CC0000; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#D61900; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#E03300; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#EA4C00; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#F46600; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#FF8000; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#FF9F19; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#FFBF33; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#FFDF4C; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#FFFF66; opacity:0.85"></div>
+                      <div class="legend-color" style="background-color:#FFFFCC; opacity:0.9"></div>
+                      <div class="legend-label ml-1">{{ session.max_value }}+</div>
+                      <div style="clear: left;">
+                      </div>
+                    </div>
+                  </div>
+                  <div id="occurence-legend-container" class="my-0">
+                    <div style="height: 20px; width: 280px;">
+                      <span class="legend-label mr-1">0</span>
+                      <div class="legend-color" style="background-color:#CC0000; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#D61900; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#E03300; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#EA4C00; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#F46600; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#FF8000; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#FF9F19; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#FFBF33; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#FFDF4C; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#FFFF66; opacity:0.8"></div>
+                      <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
+                      <div class="legend-label ml-1">{{ session.max_value }}+</div>
+                      <div style="clear: left;">
+                      </div>
+                    </div>
+                  </div>
+                  <div id="probability-legend-container" class="my-0">
+                    <div style="height: 20px; width: 280px;">
+                      <span class="legend-label mr-1">0</span>
+                      <div class="legend-color" style="background-color:#000005; opacity:0.467"></div>
+                      <div class="legend-color" style="background-color:#080616; opacity:0.5"></div>
+                      <div class="legend-color" style="background-color:#1E0848; opacity:0.533"></div>
+                      <div class="legend-color" style="background-color:#43006A; opacity:0.567"></div>
+                      <div class="legend-color" style="background-color:#6B116F; opacity:0.6"></div>
+                      <div class="legend-color" style="background-color:#981D69; opacity:0.633"></div>
+                      <div class="legend-color" style="background-color:#C92D59; opacity:0.676"></div>
+                      <div class="legend-color" style="background-color:#ED504A; opacity:0.7"></div>
+                      <div class="legend-color" style="background-color:#FA8657; opacity:0.733"></div>
+                      <div class="legend-color" style="background-color:#FBC17D; opacity:0.767"></div>
+                      <div class="legend-color" style="background-color:#FCFFB2; opacity:0.8"></div>
+                      <div class="legend-label ml-1">100%</div>
+                      <div style="clear: left;">
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div id="occurence-legend-container" class="my-0">
-                  <div style="height: 20px; width: 280px;">
-                    <span class="legend-label mr-1">0</span>
-                    <div class="legend-color" style="background-color:#CC0000; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#D61900; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#E03300; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#EA4C00; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#F46600; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FF8000; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FF9F19; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FFBF33; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FFDF4C; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FFFF66; opacity:0.8"></div>
-                    <div class="legend-color" style="background-color:#FFFFCC; opacity:0.8"></div>
-                    <div class="legend-label ml-1">{{ session.max_value }}+</div>
-                    <div style="clear: left;">
+                <div id="year-slider-container" data-toggle="tool" title="Currently displayed year">
+                  <div id="display_year_label" class="py-0 ">
+                    <output id="displayYear">{{ historic_data.last.year }}</output>
+                  </div>
+                  <div id="year-slider" class="range range-info">
+                    <div class="slider-bar">
+                      <div class="slider-bar-colors historic-years" style="width: 55px;"></div>
+                      <div class="slider-bar-colors managed-years" style="width: 2px;"></div>
+                      <div class="slider-bar-colors forecast-years"></div>
+                    </div>
+                    <input class="year-range" type="range" name="range" min="{{ historic_data.0.year }}"
+                      max="{{ historic_data.last.year }}" step="1" value="{{ historic_data.last.year }}"
+                      onchange="displayYear.value=value">
+                  </div>
+                </div>
+                <button id="show_display_options_button" type="button" class="btn btn-sm" data-toggle="tool"
+                  title="Display options"><i class="fas fa-layer-group"></i> <i id="display_options_button_icon"
+                    class="fas fa-chevron-down"></i></button>
+                <!-- DISPLAY OPTIONS PANEL -->
+                <div id="display-options-panel" class="">
+                  <div id="displayed-data-options" class="p-2 border border-secondary">
+                    <div>Displayed forecast data:</div>
+                    <div class="form-check">
+                      <input class="form-check-input" value="_forecast" type="radio" name="displayed_data_type"
+                        id="display_forecast" data-name="Forecast">
+                      <label class="form-check-label" for="display_forecast">
+                        Probability of occurence
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" value="_mean" type="radio" name="displayed_data_type"
+                        id="display_mean" data-name="Mean">
+                      <label class="form-check-label" for="display_mean">
+                        Mean
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" value="_minimum" type="radio" name="displayed_data_type"
+                        id="display_minimum" data-name="Minimum">
+                      <label class="form-check-label" for="display_minimum">
+                        Minimum
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" value="_maximum" type="radio" name="displayed_data_type"
+                        id="display_max" data-name="Maximum">
+                      <label class="form-check-label" for="display_max">
+                        Maximum
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" value="_stdev" type="radio" name="displayed_data_type"
+                        id="display_stdev" data-name="Standard deviation">
+                      <label class="form-check-label" for="display_stdev">
+                        Standard deviation
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" value="_median" type="radio" name="displayed_data_type"
+                        id="display_median" data-name="Median" checked>
+                      <label class="form-check-label" for="display_median">
+                        Current simulated state
+                      </label>
                     </div>
                   </div>
-                </div>
-                <div id="probability-legend-container" class="my-0">
-                  <div style="height: 20px; width: 280px;">
-                    <span class="legend-label mr-1">0</span>
-                    <div class="legend-color" style="background-color:#000005; opacity:0.467"></div>
-                    <div class="legend-color" style="background-color:#080616; opacity:0.5"></div>
-                    <div class="legend-color" style="background-color:#1E0848; opacity:0.533"></div>
-                    <div class="legend-color" style="background-color:#43006A; opacity:0.567"></div>
-                    <div class="legend-color" style="background-color:#6B116F; opacity:0.6"></div>
-                    <div class="legend-color" style="background-color:#981D69; opacity:0.633"></div>
-                    <div class="legend-color" style="background-color:#C92D59; opacity:0.676"></div>
-                    <div class="legend-color" style="background-color:#ED504A; opacity:0.7"></div>
-                    <div class="legend-color" style="background-color:#FA8657; opacity:0.733"></div>
-                    <div class="legend-color" style="background-color:#FBC17D; opacity:0.767"></div>
-                    <div class="legend-color" style="background-color:#FCFFB2; opacity:0.8"></div>
-                    <div class="legend-label ml-1">100%</div>
-                    <div style="clear: left;">
+                  <div id="optional-layers-options" class="p-2 border border-secondary">
+                    <div>Optional layers:</div>
+                    <!-- MAP ADDITIONAL LAYER CHECKBOXES -->
+                    <div id="host_map_checkbox" class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" checked>
+                      <label class="form-check-label" for="host_map_checkbox">
+                        Host map
+                      </label>
+                    </div>
+                    <div id="intermodal_passenger_checkbox" class="form-check">
+                      <input class="form-check-input" type="checkbox" value="">
+                      <label class="form-check-label" for="intermodal_passenger_checkbox">
+                        Intermodal passenger travel
+                      </label>
+                    </div>
+                    <div id="railroad_lines_checkbox" class="form-check">
+                      <input class="form-check-input" type="checkbox" value="">
+                      <label class="form-check-label" for="railroad_lines_checkbox">
+                        Railroads
+                      </label>
+                    </div>
+                    <div id="intermodal_freight_checkbox" class="form-check">
+                      <input class="form-check-input" type="checkbox" value="">
+                      <label class="form-check-label" for="intermodal_freight_checkbox">
+                        Intermodal freight
+                      </label>
+                    </div>
+                    <div id="airports_checkbox" class="form-check">
+                      <input class="form-check-input" type="checkbox" value="">
+                      <label class="form-check-label" for="airports_checkbox">
+                        Airports
+                      </label>
+                    </div>
+                    <div id="seaports_checkbox" class="form-check">
+                      <input class="form-check-input" type="checkbox" value="">
+                      <label class="form-check-label" for="seaports_checkbox">
+                        Seaports
+                      </label>
+                    </div>
+                    <div id="truck_parking_checkbox" class="form-check">
+                      <input class="form-check-input" type="checkbox" value="">
+                      <label class="form-check-label" for="truck_parking_checkbox">
+                        Truck parking
+                      </label>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div id="year-slider-container" data-toggle="tool" title="Currently displayed year">
-                <div id="display_year_label" class="py-0 ">
-                  <output id="displayYear">{{ historic_data.last.year }}</output>
-                </div>
-                <div id="year-slider" class="range range-info">
-                  <div class="slider-bar">
-                    <div class="slider-bar-colors historic-years" style="width: 55px;"></div>
-                    <div class="slider-bar-colors managed-years" style="width: 2px;"></div>
-                    <div class="slider-bar-colors forecast-years"></div>
-                  </div>
-                  <input class="year-range" type="range" name="range" min="{{ historic_data.0.year }}"
-                    max="{{ historic_data.last.year }}" step="1" value="{{ historic_data.last.year }}"
-                    onchange="displayYear.value=value">
-                </div>
-              </div>
-              <button id="show_display_options_button" type="button" class="btn btn-sm"  data-toggle="tool"
-                title="Display options"><i class="fas fa-layer-group"></i> <i id="display_options_button_icon" class="fas fa-chevron-down"></i></button>
-                          <!-- DISPLAY OPTIONS PANEL -->
-            <div id="display-options-panel" class="">
-            <div id="displayed-data-options" class="p-2 border border-secondary">
-              <div>Displayed data:</div>
-              <div class="form-check">
-                <input class="form-check-input" value="_forecast" type="radio" name="displayed_data_type" id="display_forecast" data-name="Forecast">
-                <label class="form-check-label" for="display_forecast">
-                  Forecast (Average of all runs)
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" value="_mean" type="radio" name="displayed_data_type" id="display_mean" data-name="Mean">
-                <label class="form-check-label" for="display_mean">
-                  Mean single run
-                </label>
-              </div>              
-              <div class="form-check">
-                <input class="form-check-input" value="_minimum" type="radio" name="displayed_data_type" id="display_minimum" data-name="Minimum">
-                <label class="form-check-label" for="display_minimum">
-                  Minimum single run
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" value="_median" type="radio" name="displayed_data_type" id="display_median" data-name="Median" checked>
-                <label class="form-check-label" for="display_median">
-                  Median single run
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" value="_maximum" type="radio" name="displayed_data_type" id="display_max" data-name="Maximum">
-                <label class="form-check-label" for="display_max">
-                  Maximum single run
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" value="_stdev" type="radio" name="displayed_data_type" id="display_stdev" data-name="Standard deviation">
-                <label class="form-check-label" for="display_stdev">
-                  Standard deviation
-                </label>
-              </div>
-              </div>
-              <div id="optional-layers-options" class="p-2 border border-secondary">
-              <div>Optional layers:</div>
-              <!-- MAP ADDITIONAL LAYER CHECKBOXES -->
-                <div id="host_map_checkbox" class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" checked>
-                  <label class="form-check-label" for="host_map_checkbox">
-                    Host map
-                  </label>
-                </div>  
-                <div id="intermodal_passenger_checkbox" class="form-check">
-                  <input class="form-check-input" type="checkbox" value="">
-                  <label class="form-check-label" for="intermodal_passenger_checkbox">
-                    Intermodal passenger travel
-                  </label>
-                </div>
-                <div id="railroad_lines_checkbox" class="form-check">
-                  <input class="form-check-input" type="checkbox" value="">
-                  <label class="form-check-label" for="railroad_lines_checkbox">
-                    Railroads
-                  </label>
-                </div>      
-                <div id="intermodal_freight_checkbox" class="form-check">
-                  <input class="form-check-input" type="checkbox" value="">
-                  <label class="form-check-label" for="intermodal_freight_checkbox">
-                    Intermodal freight
-                  </label>
-                </div>                               
-                <div id="airports_checkbox" class="form-check">
-                  <input class="form-check-input" type="checkbox" value="">
-                  <label class="form-check-label" for="airports_checkbox">
-                    Airports
-                  </label>
-                </div>    
-                <div id="seaports_checkbox" class="form-check">
-                  <input class="form-check-input" type="checkbox" value="">
-                  <label class="form-check-label" for="seaports_checkbox">
-                    Seaports
-                  </label>
-                </div>           
-                <div id="truck_parking_checkbox" class="form-check">
-                  <input class="form-check-input" type="checkbox" value="">
-                  <label class="form-check-label" for="truck_parking_checkbox">
-                    Truck parking
-                  </label>
-                </div>                                                            
-              </div>
-            </div> <!-- End DISPLAY OPTIONS -->    
+                </div> <!-- End DISPLAY OPTIONS -->
 
               </div>
 
