@@ -121,15 +121,6 @@ class RunModelWriteViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
 
 
-class RunRDataViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows runs to be viewed or edited.
-    """
-    queryset = Run.objects.all()
-    serializer_class = RunRDataViewSet
-    permission_classes = (permissions.AllowAny,)
-
-
 class RunDetailViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows runs to be viewed or edited.
@@ -139,3 +130,18 @@ class RunDetailViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
 
 
+class RunRDataViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows runs to be viewed or edited.
+    """
+    queryset = Run.objects.all()
+    serializer_class = RunRDataSerializer
+    permission_classes = (permissions.AllowAny,)
+
+class OutputSpreadMapViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows runs to be viewed or edited.
+    """
+    queryset = Output.objects.all()
+    serializer_class = OutputSpreadMapSerializer
+    permission_classes = (permissions.AllowAny,)

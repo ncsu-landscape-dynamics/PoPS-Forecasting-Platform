@@ -571,7 +571,12 @@ class RunModelWriteSerializer(serializers.ModelSerializer):
             return "null"
 
 
-class RunRDataViewSet(serializers.ModelSerializer):
+class RunRDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Run
         fields = ["r_data"]
+
+class OutputSpreadMapSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Output
+        fields = ["median_spread_map"]

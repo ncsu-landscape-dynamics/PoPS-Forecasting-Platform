@@ -26,6 +26,7 @@ router.register(
 )
 router.register("session_detail", views.SessionDetailViewSet)
 router.register("run_r_data", views.RunRDataViewSet)
+router.register("output_spread_map", views.OutputSpreadMapViewSet)
 
 
 urlpatterns = [
