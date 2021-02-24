@@ -652,7 +652,7 @@ class Pesticide(models.Model):
         help_text="Average cost per meter squared (in $US)",
         blank=True,
         max_digits=5,
-        decimal_places=2,
+        decimal_places=5,
         default=10,
         validators=[MinValueValidator(0), MaxValueValidator(1000)],
     )
