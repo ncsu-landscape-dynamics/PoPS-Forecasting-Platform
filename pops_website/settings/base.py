@@ -139,8 +139,7 @@ USE_TZ = True
 
 # Moving static assets to DigitalOcean Spaces as per:
 # https://www.digitalocean.com/community/tutorials/how-to-set-up-object-storage-with-django
-# USE_S3 = os.getenv("USE_S3")
-USE_S3 = False
+USE_S3 = os.getenv("USE_S3")
 
 if USE_S3:
     AWS_ACCESS_KEY_ID = os.getenv("STATIC_ACCESS_KEY_ID")
@@ -174,9 +173,11 @@ DOWNLOAD_ROOT = os.path.join(PROJECT_ROOT, "static/media/downloads")
 DOWNLOAD_URL = STATIC_URL + "media/downloads"
 
 CASE_STUDY_UPLOAD_FILE_TYPES = ["image/tiff"]
-CASE_STUDY_UPLOAD_FILE_MAX_SIZE = 1024000  # Max file size in Bytes (multiply KB by 1024, or MB by 1024*1024 to get bytes)
+CASE_STUDY_UPLOAD_FILE_MAX_SIZE = 209715200  # Max file size in Bytes (multiply KB by 1024, or MB by 1024*1024 to get bytes)
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 26214400
+DATA_UPLOAD_MAX_MEMORY_SIZE = 209715200
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 209715200
 
 # INTERNAL_IPS = os.getenv("INTERNAL_IPS")
 
