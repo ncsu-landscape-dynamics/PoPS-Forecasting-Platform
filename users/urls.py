@@ -20,6 +20,7 @@ urlpatterns = [
     path("my_account/", views.my_account, name="my_account"),
     path("update/", views.UpdateAccount.as_view(), name="update_account"),
     path("email_list/subscribe/", views.AddNewEmail.as_view(), name="subscribe_email"),
+    path("email_list/subscribe/error", views.AddNewEmailError.as_view(), name="subscribe_email_error"),
     path(
         "email_list/unsubscribe/<uidb64>/",
         views.DeleteEmail.as_view(),

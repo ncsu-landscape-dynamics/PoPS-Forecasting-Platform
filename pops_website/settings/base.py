@@ -16,6 +16,9 @@ PROJECT_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardi
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
+#RECAPTCHA SECRET KEY (FOR GOOGLE RECAPTCHA SECURITY)
+GOOGLE_RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_KEY")
+
 # # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", False) == "True"
 
