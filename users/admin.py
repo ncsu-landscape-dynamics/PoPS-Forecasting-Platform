@@ -137,9 +137,13 @@ class MassEmailAdmin(admin.ModelAdmin):
     search_fields = ['subject']
     list_display = ['subject', 'created', 'sent']
 
+class EmailListEntryAdmin(admin.ModelAdmin):
+    list_display = ('email','email_confirmed','receive_test_emails','date_created')
+    list_per_page = 30
+
 
 # Register our Admins and CustomAdmins
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(MassEmail, MassEmailAdmin)
-admin.site.register(EmailListEntry)
+admin.site.register(EmailListEntry,EmailListEntryAdmin)
 
