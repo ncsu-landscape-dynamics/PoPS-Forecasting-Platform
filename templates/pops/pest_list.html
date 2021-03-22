@@ -226,14 +226,14 @@
             </div>
 
             <div class="tab-pane" id="management-{{pest.pk}}" role="tabpanel" aria-labelledby="management-tab">
-              <p class="card-text">{{ pest.management_activity|truncatechars:370  }}... <a
+              <p class="card-text">{{ pest.management_activity|safe|truncatechars:370  }}... <a
                   href="{% url 'pest_detail' pk=pest.pk %}" class="card-link text-danger">Read more</a></p>
 
             </div>
 
             <div class="tab-pane" id="at_risk-{{pest.pk}}" role="tabpanel" aria-labelledby="risk-tab">
               
-              <p> {{ pest.risks|truncatechars:440 }}</p>
+              <p> {{ pest.risks|safe|truncatechars:440 }}</p>
             </div>
 {% comment %}             <div class="tab-pane" id="case_studies-{{pest.pk}}" role="tabpanel" aria-labelledby="case_studies-tab">
               {% with case_study_pests=pest.pest_set.all %}
