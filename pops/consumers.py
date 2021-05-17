@@ -1,13 +1,23 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer, JsonWebsocketConsumer
+from django.contrib.auth.mixins import LoginRequiredMixin
+from channels.auth import login
 
-class DashboardConsumer(JsonWebsocketConsumer):
+class DashboardConsumer(JsonWebsocketConsumer, LoginRequiredMixin):
     print('____________________')
     print('DashboardConsumer class entered.')
 
     def connect(self):
         print('Connecting...')
+        print(self.scope["user"])
+        try :
+            async_to_sync(login)(self.scope, self.scope["user"])
+            print('User approved')
+        except Exception:
+            self.close()
+            print('Closing connection due to unsuccesful user login')
+            return
         self.session_id = self.scope['url_route']['kwargs']['session']
         self.session_group_id = 'chat_%s' % self.session_id
         # Join session group
@@ -33,10 +43,13 @@ class DashboardConsumer(JsonWebsocketConsumer):
     def disconnect(self, close_code):
         print('Disconnecting...')
         # Leave room group
-        async_to_sync(self.channel_layer.group_discard)(
-            self.session_group_id,
-            self.channel_name
-        )
+        try:
+            async_to_sync(self.channel_layer.group_discard)(
+                self.session_group_id,
+                self.channel_name
+            )
+        except:
+            return
         print('Disconnection complete.')
 
 
