@@ -2017,7 +2017,7 @@ $("#submit-run").on('submit', function () {
           var session_id = {{ session.pk }};
           if (!$('input#id_tangible_landscape').prop('checked')) {
              console.log('ATTEMPTING TO RUN POPS MODEL API FOR RUN ' + new_run_id + ' IN RUN COLLECTION ' + new_run_collection_id);
-             var base_url = "https://2cd6886ddcc4.ngrok.io"
+             var base_url = "https://78f5cab4b41b.ngrok.io"
              // https://d421f4b2cc79.ngrok.io/status?case_study_id=2&session_id=2&run_collection_id=25&run_id=40
              //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
              var run_url = (base_url + "/status?case_study_id=" + case_study_id.toString() + "&session_id=" + session_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&run_id=" + new_run_id.toString()) ;
