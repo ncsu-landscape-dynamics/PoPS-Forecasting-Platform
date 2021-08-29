@@ -113,13 +113,25 @@ class NewSessionView(LoginRequiredMixin, SessionAjaxableResponseMixin, CreateVie
             # Here we are grabbing the first pest associated with a case study
             # This needs to be changed if we start handling case studies with multiple pests
             pest = Pest.objects.filter(case_study__pk=case_study)[:1].get()
-            reproductive_rate = ReproductiveRate.objects.filter(pest=pest)
-            natural_distance = NaturalDistance.objects.filter(pest=pest)
-            context["form"].fields["case_study"].queryset = CaseStudy.objects.filter(
+            #reproductive_rate = ReproductiveRate.objects.filter(pest=pest)
+            distance_scale = PlottingDistanceScale.objects.get(parameters=pest.parameters)
+            """ context["form"].fields["case_study"].queryset = CaseStudy.objects.filter(
                 pk=case_study
-            )
+            ) """
+            print(distance_scale)
+            print(len(distance_scale.values))
+            print(distance_scale.values[1])
+            values=[]
+            for val in distance_scale.values:
+                print(val)
+                values.append(val)
+            print(values)
+            print(distance_scale.probabilities[1])
+            print(distance_scale.minimum)
+            case_study = CaseStudy.objects.get(pk=case_study)
             context["case_study"] = case_study
-            context["pest"] = (
+
+            """ context["pest"] = (
                 Pest.objects.select_related("vector")
                 .filter(case_study__pk=case_study)
                 .select_related("pest_information")
@@ -139,7 +151,8 @@ class NewSessionView(LoginRequiredMixin, SessionAjaxableResponseMixin, CreateVie
             context["max_distance"] = natural_distance.order_by("-value").first()
             context["expected_distance"] = natural_distance.order_by(
                 "-probability"
-            ).first()
+            ).first() """
+            context["distance_scale"]=distance_scale
             return context
 
     def get_success_url(self, **kwargs):

@@ -1724,6 +1724,135 @@ class Parameters(models.Model):
     def __str__(self):
         return str(self.pest)
 
+class PlottingDistanceScale(models.Model):
+    parameters = models.OneToOneField(
+        Parameters, verbose_name=_("parameters"), on_delete=models.CASCADE, primary_key=True
+    )
+    values = ArrayField(
+        models.DecimalField(
+            max_digits=7,
+            decimal_places=2,
+            validators=[MinValueValidator(0)],
+        ),
+        verbose_name=_("distance scale values"),
+        help_text="Distance scale values",
+        blank=True,)
+    probabilities = ArrayField(
+        models.DecimalField(
+            max_digits=4,
+            decimal_places=3,
+            validators=[MinValueValidator(0), MaxValueValidator(1)],
+        ),
+        verbose_name=_("distance scale probabilities"),
+        help_text="Distance scale probabilities",
+        blank=True,)
+    minimum = models.DecimalField(
+        verbose_name=_("minimum"),
+        help_text="Minimum value in the array",
+        max_digits=7,
+        decimal_places=2,
+        blank=True,
+        validators=[MinValueValidator(0)],
+    )
+    maximum = models.DecimalField(
+        verbose_name=_("maximum"),
+        help_text="Maximum value in the array",
+        max_digits=7,
+        decimal_places=2,
+        blank=True,
+        validators=[MinValueValidator(0)],
+    )
+    most_probable_value = models.DecimalField(
+        verbose_name=_("most probable value"),
+        help_text="Value in the array with the highest probability",
+        max_digits=7,
+        decimal_places=2,
+        blank=True,
+        validators=[MinValueValidator(0)],
+    )
+    step_size = models.DecimalField(
+        verbose_name=_("step size"),
+        help_text="Step size for the array",
+        max_digits=5,
+        decimal_places=2,
+        blank=True,
+        validators=[MinValueValidator(0)],
+    )
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("distance scale parameters for plotting")
+        verbose_name_plural = _("distance scale parameters for plotting")
+
+    def __str__(self):
+        return str(self.parameters)
+
+
+class PlottingReproductiveRate(models.Model):
+    parameters = models.OneToOneField(
+        Parameters, verbose_name=_("parameters"), on_delete=models.CASCADE, primary_key=True
+    )
+    values = ArrayField(
+        models.DecimalField(
+            max_digits=7,
+            decimal_places=2,
+            validators=[MinValueValidator(0)],
+        ),
+        verbose_name=_("reproductive rate values"),
+        help_text="Reproductive rate values",
+        blank=True,)
+    probabilities = ArrayField(
+        models.DecimalField(
+            max_digits=4,
+            decimal_places=3,
+            validators=[MinValueValidator(0), MaxValueValidator(1)],
+        ),
+        verbose_name=_("reproductive rate probabilities"),
+        help_text="Reproductive rate probabilities",
+        blank=True,)
+    minimum = models.DecimalField(
+        verbose_name=_("minimum"),
+        help_text="Minimum value in the array",
+        max_digits=7,
+        decimal_places=2,
+        blank=True,
+        validators=[MinValueValidator(0)],
+    )
+    maximum = models.DecimalField(
+        verbose_name=_("maximum"),
+        help_text="Maximum value in the array",
+        max_digits=7,
+        decimal_places=2,
+        blank=True,
+        validators=[MinValueValidator(0)],
+    )
+    most_probable_value = models.DecimalField(
+        verbose_name=_("most probable value"),
+        help_text="Value in the array with the highest probability",
+        max_digits=7,
+        decimal_places=2,
+        blank=True,
+        validators=[MinValueValidator(0)],
+    )
+    step_size = models.DecimalField(
+        verbose_name=_("step size"),
+        help_text="Step size for the array",
+        max_digits=5,
+        decimal_places=2,
+        blank=True,
+        validators=[MinValueValidator(0)],
+    )
+
+    objects = MyManager()
+
+    class Meta:
+        verbose_name = _("reproductive rate parameters for plotting")
+        verbose_name_plural = _("reproductive rate parameters for plotting")
+
+    def __str__(self):
+        return str(self.parameters)
+
 
 class AnthropogenicDirection(models.Model):
 
