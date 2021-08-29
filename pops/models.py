@@ -285,6 +285,7 @@ class CaseStudy(models.Model):
         upload_to=r_data_directory,
         max_length=100,
         blank=True,
+        null=True,
     )
 
     objects = MyManager()
@@ -2335,6 +2336,7 @@ class Run(models.Model):
         upload_to=run_r_data_directory,
         max_length=100,
         blank=True,
+        null=True,
     )
 
     class Meta:
