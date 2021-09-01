@@ -67,6 +67,8 @@ class DashboardConsumer(JsonWebsocketConsumer, LoginRequiredMixin):
             print('Adding new run collection to session')
         elif method == 'send_management_request':
             print('Sending management request to other users')
+        elif method == 'run_pops':
+            print('Run PoPS button clicked by user.')
             #self.send_json(x)
         # Send message to room group
         # This iteratively performs the 'chat_message' function

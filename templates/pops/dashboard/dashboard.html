@@ -1643,7 +1643,6 @@ function get_output(run_id) {
       var last_year = {{ steering_years | last }};
       //console.log('Last year = ', last_year);
       budget_plot(defaults, steering_outputs, first_year, last_year);
-      console.log('UPDATED BUDGET PLOT');
       area_plot(defaults, steering_outputs, initial_infected_area, initial_number_infected, first_year, last_year);
       //spreadRatePlot({{historic_data.last.year}});
       //I think this loop is unnecessary
@@ -2024,6 +2023,10 @@ $("#submit-run").on('submit', function () {
              //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
              var run_url = (base_url + "/status?case_study_id=" + case_study_id.toString() + "&session_id=" + session_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&run_id=" + new_run_id.toString()) ;
              console.log('Using URL: ' + run_url);
+             chatSocket.notify("run_pops", {
+              run_id: new_run_id,
+              run_collection: new_run_collection_id,
+            })
              $.ajax({
               url: run_url,
               dataType: 'JSONP',
@@ -2050,7 +2053,6 @@ $("#submit-run").on('submit', function () {
             console.log('Waiting for management from tangible landscape...')
           }
           $("#submit-run-button").attr('data-run',new_run_id); //I think this is obsolete
-          poll(new_run_id); 
         },
                 // handle a non-successful response
         error : function(xhr,errmsg,err) {
@@ -2127,6 +2129,18 @@ chatSocket.on("new_run_collection", (event) => {
   description = event.description;
   insertRunButton(run_collection_id, name, date, description, 0, 0, 0)
 });
+
+chatSocket.on("run_pops", (event) => {
+  console.log('Someone clicked the Run PoPS button')
+  console.log(event);
+  run_collection = event.run_collection;
+  new_run_id = event.run_id;
+  if ($('#id_run_collection').val() == run_collection){
+    poll(new_run_id)
+      $("#status-indicator").show();
+      $("#status-indicator-shading").show();
+  }
+})
 
 //Send management to new user in Run Collection
 chatSocket.on("send_management_request", (event) => {
