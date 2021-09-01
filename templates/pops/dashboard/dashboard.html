@@ -1443,6 +1443,7 @@ function get_run_collection(run_collection_id) {
       $('#input_random_seed span').text(data.random_seed);
       $('#input_date_created span').text(data.date_created);
       $('#input_budget span').text(data.budget);
+      $('input#id_budget').val(data.budget);
       $('#input_tangible_landscape span').text(data.tangible_landscape);
       $('#id_run_collection').val(data.pk);    
       $(".timeline-year-container").removeClass("year_active").addClass("management_not_started").removeClass("management_active").removeClass("management_complete");
@@ -1642,6 +1643,7 @@ function get_output(run_id) {
       var last_year = {{ steering_years | last }};
       //console.log('Last year = ', last_year);
       budget_plot(defaults, steering_outputs, first_year, last_year);
+      console.log('UPDATED BUDGET PLOT');
       area_plot(defaults, steering_outputs, initial_infected_area, initial_number_infected, first_year, last_year);
       //spreadRatePlot({{historic_data.last.year}});
       //I think this loop is unnecessary
