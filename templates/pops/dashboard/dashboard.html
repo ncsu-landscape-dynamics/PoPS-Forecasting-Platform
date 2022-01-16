@@ -508,6 +508,7 @@
                         {% if forloop.first %} selected {% endif %}
                         value="{{ pesticidelink.pesticide.pk }}" 
                         data-efficacy="{{ pesticidelink.efficacy }}" 
+                        data-application-date="{{steering_years | first }}-{{ pesticidelink.pesticide.default_application_month|stringformat:'02i' }}-{{ pesticidelink.pesticide.default_application_day|stringformat:'02i' }}"
                         data-duration="{{ pesticidelink.pesticide.duration }}" 
                         data-cost-per-m2="{{ pesticidelink.pesticide.cost_per_meter_squared }}"
                         >
@@ -524,7 +525,7 @@
                               <span class="input-group-text">Date</span>
                             </div>
                             <input id="default_pesticide_date" class="form-control management-date" type="date"
-                              name="pesticide_date" value="{{steering_years | first }}-01-01" min="{{steering_years | first }}-01-01" max="{{steering_years | first }}-12-31">
+                              name="pesticide_date" value="{{steering_years | first }}-{{ pesticidelinks.first.pesticide.default_application_month|stringformat:'02i' }}-{{ pesticidelinks.first.pesticide.default_application_day|stringformat:'02i' }}" min="{{steering_years | first }}-01-01" max="{{steering_years | first }}-12-31">
                           </div>
                         </div>                               
                         <div class="col-12 px-2 py-1">
@@ -618,6 +619,8 @@
                 </button>
               </div>
               <script>
+                console.log('Pesticide default month: ' + '{{ pesticidelinks.first.pesticide.default_application_month }}')
+                console.log('Pesticide default day: ' + '{{ pesticidelinks.first.pesticide.default_application_day|stringformat:"02i" }}')
                 $('#historic-legend-container').show();
                 $('#occurence-legend-container').hide();
                 $('#probability-legend-container').hide();
@@ -676,6 +679,7 @@
                         {% if forloop.first %} selected {% endif %}
                         value="{{ pesticidelink.pesticide.pk }}" 
                         data-efficacy="{{ pesticidelink.efficacy }}" 
+                        data-application-date="{{steering_years | first }}-{{ pesticidelink.pesticide.default_application_month|stringformat:'02i' }}-{{ pesticidelink.pesticide.default_application_day|stringformat:'02i' }}"
                         data-duration="{{ pesticidelink.pesticide.duration }}" 
                         data-cost-per-m2="{{ pesticidelink.pesticide.cost_per_meter_squared }}"
                         >
@@ -740,10 +744,13 @@
 function updatePesticideType(element) {
   console.log('Updating pesticide info.')
   new_efficacy = $(element).find(".pesticide-type option:selected").data("efficacy");
+  new_application_date = $(element).find(".pesticide-type option:selected").data("application-date");
+  console.log(new_application_date)
   new_duration = $(element).find(".pesticide-type option:selected").data("duration");
   new_cost_per_m2 = $(element).find(".pesticide-type option:selected").data("cost-per-m2");
   if ($(element).find(".pesticide-type option:selected").val() != 'other') {
     $(element).find("input.efficacy").val(new_efficacy).prop('disabled', true);
+    $(element).find("input.management-date").val(new_application_date);
     $(element).find("input.management_duration").val(new_duration).prop('disabled', true);
     $(element).find("input.default_cost").val(new_cost_per_m2);
     $(element).find("input.displayed_cost").val(new_cost_per_m2);
