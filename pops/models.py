@@ -657,6 +657,20 @@ class Pesticide(models.Model):
         default=10,
         validators=[MinValueValidator(0), MaxValueValidator(1000)],
     )
+    default_application_month = models.IntegerField(
+        verbose_name=_("default month of pesticide application"),
+        help_text="Default month for pesticide application (1-12)",
+        blank=True,
+        default=4,
+        validators=[MinValueValidator(1), MaxValueValidator(12)],
+    )
+    default_application_day = models.IntegerField(
+        verbose_name=_("default day of pesticide application"),
+        help_text="Default day for pesticide application (1-31)",
+        blank=True,
+        default=1,
+        validators=[MinValueValidator(1), MaxValueValidator(31)],
+    )
 
     objects = MyManager()
 
