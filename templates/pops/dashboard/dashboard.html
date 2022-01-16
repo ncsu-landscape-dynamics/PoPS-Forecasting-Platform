@@ -1494,6 +1494,7 @@ function get_run_collection(run_collection_id) {
       //console.log('Updating draw color to ' + year_count);
       updateDrawColor(year_count);
     }
+    updateActiveUser(run_collection_id);
     },
     error: function (xhr) {
       console.log('Failed getting run collection.')
@@ -2154,9 +2155,48 @@ chatSocket.on("send_management_request", (event) => {
 //Send management to newly connected user
 chatSocket.on("new_connection_detected", (event) => {
   console.log("New user added")
-  //console.log(event);
+  console.log(event);
 });
 
+//Send management to newly connected user
+chatSocket.on("connection_removed", (event) => {
+  console.log("User exited")
+  console.log(event);
+});
+
+//Send management to newly connected user
+chatSocket.on("update_user", (event) => {
+  console.log("user changed run collection")
+  console.log(event);
+  run_collection = event.run_collection;
+  const run_button = document.querySelector('#run_button_'+run_collection);
+  //run_button.dataset.activeUsers="shannon,chris";
+  //all_active_users = run_button.dataset.activeUsers;
+  console.log($("#run_button_"+run_collection).data("active-users"));
+  if ($("#run_button_"+run_collection).data("active-users")) {
+  var activeUserList = $("#run_button_"+run_collection).data("active-users").split(",");
+  }
+  else {
+   var activeUserList = [];
+  }
+
+  //console.log(storedArray);
+  activeUserList.push(event.user);
+  //console.log(storedArray);
+  //const filteredItems = storedArray.filter(item => item !== 'chris')
+  //console.log(filteredItems);
+  run_button.dataset.activeUsers=JSON.stringify(activeUserList);
+  console.log(run_button);
+
+});
+
+function updateActiveUser(run_collection) {
+  console.log('Sending websocket message')
+  chatSocket.notify("update_user", {
+    user: '{{ user.username }}',
+    run_collection: run_collection,
+  })
+};
 
 //This function sends the polygon JSON via websocket 
 function sendJSONWebsocket() {

@@ -17,16 +17,16 @@ function insertRunButton(run_id, name, date, description, infected_number, infec
   if (!(document.getElementById("run_" + run_pk))) {
 
     $('<button id="run_button_' + run_pk +
-        '" type="button" class="btn text-right run-link pb-2" data-run-collection = "' + run_pk +
-        '">'+
+        '" type="button" class="btn run-link pb-2" data-active-users="[]" data-run-collection = "' + run_pk +
+        '"> <div><div class="user_count"><a><i class="fas fa-user"></i></a></div><div class="run_button_links">'+
         '<a class="load_run_text" data-toggle="tooltip" title="Load results" data-placement="left">'+
         '<i class="fas fa-play-circle"></i></a>' +
         '<a class="run_info_button" tabindex="0" data-toggle="popover" title="<div><strong>' + name +
         '</strong></div><small><em>' + date +
         '</em></small>" data-content="<div>' + description +
         '</div>" data-placement="top"> <i class="fas fa-plus-circle"></i></a> '+
-        '<a class="delete_run_collection" data-toggle="tooltip" title="Delete" data-placement="left"><i class="fas fa-trash-alt"></i></a>' +
-        '<div id="run_' + run_pk +
+        '<a class="delete_run_collection" data-toggle="tooltip" title="Delete" data-placement="left"><i class="fas fa-trash-alt"></i></a></div>' +
+        '</div><div id="run_' + run_pk +
         '" class="comparison_plot" style="width:150px; height:120px;"></div></button>').prependTo($('#run-preview-container'));
 
     $(function () {

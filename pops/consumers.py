@@ -11,6 +11,7 @@ class DashboardConsumer(JsonWebsocketConsumer, LoginRequiredMixin):
     def connect(self):
         print('Connecting...')
         print(self.scope["user"])
+        username=str(self.scope["user"])
         try :
             async_to_sync(login)(self.scope, self.scope["user"])
             print('User approved')
@@ -28,7 +29,7 @@ class DashboardConsumer(JsonWebsocketConsumer, LoginRequiredMixin):
         x = {
             'jsonrpc': '2.0',
             'method': 'new_connection_detected',
-            'params': {},
+            'params': {'user': username},
         }
         async_to_sync(self.channel_layer.group_send)(
             self.session_group_id,
@@ -38,9 +39,11 @@ class DashboardConsumer(JsonWebsocketConsumer, LoginRequiredMixin):
             }
         )       
         self.accept()
+        #len(self.channel_layer.groups.get('self.session_group_id', {}).items())
         print('Connection finished.')
 
     def disconnect(self, close_code):
+        username=str(self.scope["user"])
         print('Disconnecting...')
         # Leave room group
         try:
@@ -50,6 +53,18 @@ class DashboardConsumer(JsonWebsocketConsumer, LoginRequiredMixin):
             )
         except:
             return
+        x = {
+            'jsonrpc': '2.0',
+            'method': 'connection_removed',
+            'params': {'user': username},
+        }
+        async_to_sync(self.channel_layer.group_send)(
+            self.session_group_id,
+            {
+                'type': 'chat_message',
+                'content': x
+            }
+        )       
         print('Disconnection complete.')
 
 
@@ -69,6 +84,8 @@ class DashboardConsumer(JsonWebsocketConsumer, LoginRequiredMixin):
             print('Sending management request to other users')
         elif method == 'run_pops':
             print('Run PoPS button clicked by user.')
+        elif method == 'update_user':
+            print('User changed run collections')
             #self.send_json(x)
         # Send message to room group
         # This iteratively performs the 'chat_message' function
