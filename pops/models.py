@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.postgres.fields import ArrayField
@@ -1739,9 +1739,13 @@ class Parameters(models.Model):
     def __str__(self):
         return str(self.pest)
 
+
 class PlottingDistanceScale(models.Model):
     parameters = models.OneToOneField(
-        Parameters, verbose_name=_("parameters"), on_delete=models.CASCADE, primary_key=True
+        Parameters,
+        verbose_name=_("parameters"),
+        on_delete=models.CASCADE,
+        primary_key=True,
     )
     values = ArrayField(
         models.DecimalField(
@@ -1751,7 +1755,8 @@ class PlottingDistanceScale(models.Model):
         ),
         verbose_name=_("distance scale values"),
         help_text="Distance scale values",
-        blank=True,)
+        blank=True,
+    )
     probabilities = ArrayField(
         models.DecimalField(
             max_digits=4,
@@ -1760,7 +1765,8 @@ class PlottingDistanceScale(models.Model):
         ),
         verbose_name=_("distance scale probabilities"),
         help_text="Distance scale probabilities",
-        blank=True,)
+        blank=True,
+    )
     minimum = models.DecimalField(
         verbose_name=_("minimum"),
         help_text="Minimum value in the array",
@@ -1806,7 +1812,10 @@ class PlottingDistanceScale(models.Model):
 
 class PlottingReproductiveRate(models.Model):
     parameters = models.OneToOneField(
-        Parameters, verbose_name=_("parameters"), on_delete=models.CASCADE, primary_key=True
+        Parameters,
+        verbose_name=_("parameters"),
+        on_delete=models.CASCADE,
+        primary_key=True,
     )
     values = ArrayField(
         models.DecimalField(
@@ -1816,7 +1825,8 @@ class PlottingReproductiveRate(models.Model):
         ),
         verbose_name=_("reproductive rate values"),
         help_text="Reproductive rate values",
-        blank=True,)
+        blank=True,
+    )
     probabilities = ArrayField(
         models.DecimalField(
             max_digits=4,
@@ -1825,7 +1835,8 @@ class PlottingReproductiveRate(models.Model):
         ),
         verbose_name=_("reproductive rate probabilities"),
         help_text="Reproductive rate probabilities",
-        blank=True,)
+        blank=True,
+    )
     minimum = models.DecimalField(
         verbose_name=_("minimum"),
         help_text="Minimum value in the array",
