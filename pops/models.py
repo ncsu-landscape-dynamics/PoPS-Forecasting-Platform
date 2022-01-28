@@ -657,20 +657,6 @@ class Pesticide(models.Model):
         default=10,
         validators=[MinValueValidator(0), MaxValueValidator(1000)],
     )
-    default_application_month = models.IntegerField(
-        verbose_name=_("default month of pesticide application"),
-        help_text="Default month for pesticide application (1-12)",
-        blank=True,
-        default=4,
-        validators=[MinValueValidator(1), MaxValueValidator(12)],
-    )
-    default_application_day = models.IntegerField(
-        verbose_name=_("default day of pesticide application"),
-        help_text="Default day for pesticide application (1-31)",
-        blank=True,
-        default=1,
-        validators=[MinValueValidator(1), MaxValueValidator(31)],
-    )
 
     objects = MyManager()
 
@@ -708,6 +694,29 @@ class PestPesticideLink(models.Model):
         decimal_places=4,
         default=0.9,
         validators=[MinValueValidator(0), MaxValueValidator(1)],
+    )
+    application_efficacy = models.DecimalField(
+        verbose_name=_("application efficacy"),
+        help_text="Efficacy of the application of pesticide for the given pest (range 0-1)",
+        blank=False,
+        max_digits=5,
+        decimal_places=4,
+        default=0.9,
+        validators=[MinValueValidator(0), MaxValueValidator(1)],
+    )
+    default_application_month = models.IntegerField(
+        verbose_name=_("default month of pesticide application"),
+        help_text="Default month for pesticide application (1-12) for the given pest",
+        blank=True,
+        default=4,
+        validators=[MinValueValidator(1), MaxValueValidator(12)],
+    )
+    default_application_day = models.IntegerField(
+        verbose_name=_("default day of pesticide application"),
+        help_text="Default day for pesticide application (1-31) for the given pest",
+        blank=True,
+        default=1,
+        validators=[MinValueValidator(1), MaxValueValidator(31)],
     )
 
     objects = MyManager()
@@ -2151,6 +2160,20 @@ class Session(models.Model):
         choices=WEATHER_CHOICES,
         default="AVERAGE",
         blank=True,
+    )
+    default_host_removal_month = models.IntegerField(
+        verbose_name=_("default month of host removal"),
+        help_text="Default month for host removal (1-12)",
+        blank=True,
+        default=4,
+        validators=[MinValueValidator(1), MaxValueValidator(12)],
+    )
+    default_removal_day = models.IntegerField(
+        verbose_name=_("default day of host removal"),
+        help_text="Default day for host removal (1-31) host removal",
+        blank=True,
+        default=1,
+        validators=[MinValueValidator(1), MaxValueValidator(31)],
     )
     default_run = models.OneToOneField(
         "Run",
