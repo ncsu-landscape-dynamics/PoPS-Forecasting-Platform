@@ -453,7 +453,7 @@
                               <span class="input-group-text">Date</span>
                             </div>
                             <input id="default_host_removal_date" class="form-control management-date" type="date"
-                              name="host_removal_date" value="{{steering_years | first }}-01-01" min="{{steering_years | first }}-01-01" max="{{steering_years | first }}-12-31">
+                              name="host_removal_date" value="{{steering_years | first }}-{{ session.default_host_removal_month|stringformat:'02i' }}-{{ session.default_host_removal_day|stringformat:'02i' }}" min="{{steering_years | first }}-01-01" max="{{steering_years | first }}-12-31">
                           </div>
                         </div>                      
                         <div class="col-12 px-2 py-1">
@@ -508,7 +508,8 @@
                         {% if forloop.first %} selected {% endif %}
                         value="{{ pesticidelink.pesticide.pk }}" 
                         data-efficacy="{{ pesticidelink.efficacy }}" 
-                        data-application-date="{{steering_years | first }}-{{ pesticidelink.pesticide.default_application_month|stringformat:'02i' }}-{{ pesticidelink.pesticide.default_application_day|stringformat:'02i' }}"
+                        data-application-efficacy="{{ pesticidelink.application_efficacy }}" 
+                        data-application-date="{{steering_years | first }}-{{ pesticidelink.default_application_month|stringformat:'02i' }}-{{ pesticidelink.default_application_day|stringformat:'02i' }}"
                         data-duration="{{ pesticidelink.pesticide.duration }}" 
                         data-cost-per-m2="{{ pesticidelink.pesticide.cost_per_meter_squared }}"
                         >
@@ -525,7 +526,7 @@
                               <span class="input-group-text">Date</span>
                             </div>
                             <input id="default_pesticide_date" class="form-control management-date" type="date"
-                              name="pesticide_date" value="{{steering_years | first }}-{{ pesticidelinks.first.pesticide.default_application_month|stringformat:'02i' }}-{{ pesticidelinks.first.pesticide.default_application_day|stringformat:'02i' }}" min="{{steering_years | first }}-01-01" max="{{steering_years | first }}-12-31">
+                              name="pesticide_date" value="{{steering_years | first }}-{{ pesticidelinks.first.default_application_month|stringformat:'02i' }}-{{ pesticidelinks.first.default_application_day|stringformat:'02i' }}" min="{{steering_years | first }}-01-01" max="{{steering_years | first }}-12-31">
                           </div>
                         </div>                               
                         <div class="col-12 px-2 py-1">
@@ -536,6 +537,16 @@
                             <input disabled id="default_pesticide_efficacy" class="form-control efficacy" type="number"
                               name="pesticide_efficacy" value="{{ pesticidelinks.first.efficacy }}" min="0" max="1" step="0.01"
                               title="Pesticide efficacy (range: 0.0 - 1.0)">
+                          </div>
+                        </div>                            
+                        <div class="col-12 px-2 py-1">
+                          <div class="input-group input-group-sm" title="Pesticide application efficacy (range: 0-1)">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Application Efficacy</span>
+                            </div>
+                            <input id="default_pesticide_application_efficacy" class="form-control application-efficacy" type="number"
+                              name="pesticide_application_efficacy" value="{{ pesticidelinks.first.application_efficacy }}" min="0" max="1" step="0.01"
+                              title="Pesticide application efficacy (range: 0.0 - 1.0)">
                           </div>
                         </div>    
                         <div class="col-12 px-2 py-1">
@@ -619,8 +630,8 @@
                 </button>
               </div>
               <script>
-                console.log('Pesticide default month: ' + '{{ pesticidelinks.first.pesticide.default_application_month }}')
-                console.log('Pesticide default day: ' + '{{ pesticidelinks.first.pesticide.default_application_day|stringformat:"02i" }}')
+                console.log('Pesticide default month: ' + '{{ pesticidelinks.first.default_application_month }}')
+                console.log('Pesticide default day: ' + '{{ pesticidelinks.first.default_application_day|stringformat:"02i" }}')
                 $('#historic-legend-container').show();
                 $('#occurence-legend-container').hide();
                 $('#probability-legend-container').hide();
@@ -678,8 +689,9 @@
                         <option 
                         {% if forloop.first %} selected {% endif %}
                         value="{{ pesticidelink.pesticide.pk }}" 
-                        data-efficacy="{{ pesticidelink.efficacy }}" 
-                        data-application-date="{{steering_years | first }}-{{ pesticidelink.pesticide.default_application_month|stringformat:'02i' }}-{{ pesticidelink.pesticide.default_application_day|stringformat:'02i' }}"
+                        data-efficacy="{{ pesticidelink.efficacy }}"
+                        data-application-efficacy="{{ pesticidelink.application_efficacy }}" 
+                        data-application-date="{{steering_years | first }}-{{ pesticidelink.default_application_month|stringformat:'02i' }}-{{ pesticidelink.default_application_day|stringformat:'02i' }}"
                         data-duration="{{ pesticidelink.pesticide.duration }}" 
                         data-cost-per-m2="{{ pesticidelink.pesticide.cost_per_meter_squared }}"
                         >
@@ -706,7 +718,16 @@
                       <input id="edit_efficacy" class="form-control efficacy" type="number" name="" value="0.5" min="0" max="1"
                         step="0.1" title="Efficacy (0-1)">
                     </div>
-                  </div>              
+                  </div> 
+                  <div id="edit_application_efficacy_group" class="col-12 py-1">
+                    <div class="input-group input-group-sm" title="Application Efficacy (range: 0-1)">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Application efficacy</span>
+                      </div>
+                      <input id="edit_application_efficacy" class="form-control application-efficacy" type="number" name="" value="0.5" min="0" max="1"
+                        step="0.1" title="Applicaiton efficacy (0-1)">
+                    </div>
+                  </div>                     
                   <div class="col-12 py-1">
                     <div class="input-group input-group-sm management_group_cost" title="Cost per selected unit area">
                       <div class="input-group-prepend">
@@ -744,18 +765,20 @@
 function updatePesticideType(element) {
   console.log('Updating pesticide info.')
   new_efficacy = $(element).find(".pesticide-type option:selected").data("efficacy");
+  new_application_efficacy = $(element).find(".pesticide-type option:selected").data("application-efficacy");
+  console.log(new_application_efficacy);
   new_application_date = $(element).find(".pesticide-type option:selected").data("application-date");
   console.log(new_application_date)
   new_duration = $(element).find(".pesticide-type option:selected").data("duration");
   new_cost_per_m2 = $(element).find(".pesticide-type option:selected").data("cost-per-m2");
   if ($(element).find(".pesticide-type option:selected").val() != 'other') {
     $(element).find("input.efficacy").val(new_efficacy).prop('disabled', true);
+    $(element).find("input.application-efficacy").val(new_application_efficacy);
     $(element).find("input.management-date").val(new_application_date);
     $(element).find("input.management_duration").val(new_duration).prop('disabled', true);
     $(element).find("input.default_cost").val(new_cost_per_m2);
     $(element).find("input.displayed_cost").val(new_cost_per_m2);
     $(element).find("select.cost_unit").val(1);
-    console.log('Other selected.');
   }
   else {
     $(element).find("input.efficacy").prop('disabled', false);
