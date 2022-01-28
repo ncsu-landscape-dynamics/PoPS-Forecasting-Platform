@@ -2168,7 +2168,7 @@ class Session(models.Model):
         default=4,
         validators=[MinValueValidator(1), MaxValueValidator(12)],
     )
-    default_removal_day = models.IntegerField(
+    default_host_removal_day = models.IntegerField(
         verbose_name=_("default day of host removal"),
         help_text="Default day for host removal (1-31) host removal",
         blank=True,
