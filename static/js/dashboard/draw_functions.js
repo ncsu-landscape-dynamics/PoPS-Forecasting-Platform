@@ -29,8 +29,9 @@ function getManagementProperties() {
       $("#default_host_removal_efficacy").val(),
       $("#default_host_removal_cost").val(),
       $("#default_host_removal_date").val(),
-      $("#default_host_removal_duration").val(),
+      '0',
       'null', //this is the pesticide type (which should be )
+      '0', //this is the pesticide application efficacy 
     ];
     management.push(host_removal_management);
   } 
@@ -41,6 +42,7 @@ function getManagementProperties() {
       $("#default_pesticide_date").val(),
       $("#default_pesticide_duration").val(),
       $("#default_pesticide_type").val(),
+      $("#default_pesticide_application_efficacy").val(),
     ];
     management.push(pesticide_management);  
   } 
@@ -48,7 +50,7 @@ function getManagementProperties() {
 }
 //Add the polygon to draw. Set management properties. Perform findAndCombineOverlappingPolyogns.
 function drawPolygon(polygon, management_properties,area) {
-  //console.log(management_properties[5]);
+  console.log('Drawing polygon');
   featureID = draw.add(polygon);
   draw.setFeatureProperty(featureID, 'management_type', management_properties[0]);
   draw.setFeatureProperty(featureID, 'efficacy', management_properties[1]);
@@ -56,6 +58,7 @@ function drawPolygon(polygon, management_properties,area) {
   draw.setFeatureProperty(featureID, 'date', management_properties[3]);
   draw.setFeatureProperty(featureID, 'duration', management_properties[4]);
   draw.setFeatureProperty(featureID, 'pesticide_type', management_properties[5]);
+  draw.setFeatureProperty(featureID, 'application_efficacy', management_properties[6]);
   draw.setFeatureProperty(featureID, 'area', area);
   //draw.add(draw.get(featureID)); //This line makes the new change draw on the map and appear.    
   return featureID;
@@ -92,6 +95,7 @@ function findAndCombineOverlappingPolygons(newPolygonID) {
                 draw.setFeatureProperty(newPolygonID, 'area', area);
                 draw.setFeatureProperty(newPolygonID, 'management_type', newPolygon.properties.management_type);
                 draw.setFeatureProperty(newPolygonID, 'efficacy', newPolygon.properties.efficacy);
+                draw.setFeatureProperty(newPolygonID, 'application_efficacy', newPolygon.properties.application_efficacy);
                 draw.setFeatureProperty(newPolygonID, 'cost', newPolygon.properties.cost);
                 draw.setFeatureProperty(newPolygonID, 'date', newPolygon.properties.date);
                 draw.setFeatureProperty(newPolygonID, 'duration', newPolygon.properties.duration);
@@ -154,18 +158,21 @@ function updatePolygons(e) {
             }
             $( "#edit_duration_group" ).show();
             $( "#edit_pesticide_type_group" ).show();
+            $( "#edit_application_efficacy_group" ).show();
           }
           else {
             enableEditingPolygonProperties();      
             //console.log('Host removal selected')
             $( "#edit_duration_group" ).hide();
             $( "#edit_pesticide_type_group" ).hide();
+            $( "#edit_application_efficacy_group" ).hide();
           }      
 
         $("input[type=radio][name='editManagementOptions']").prop("checked", false);
         $("input[type=radio][value='" + selected_management_type + "']").prop("checked", true);
         $("select[id='edit_pesticide_type']").val(selection.features[0].properties.pesticide_type);
         $("input[id='edit_efficacy']").val(selection.features[0].properties.efficacy);
+        $("input[id='edit_application_efficacy']").val(selection.features[0].properties.application_efficacy);
         var area_modifier = $("select#edit_area_unit").val();
         $("input[id='edit_display_cost']").val(selection.features[0].properties.cost/area_modifier);
         $("input[id='edit_date']").val(selection.features[0].properties.date);
@@ -193,6 +200,7 @@ function changePolygonProperties() {
       selectionIDs = draw.getSelectedIds();
       var editManagementTypeValue = $("input[name='editManagementOptions']:checked").val();
       var editEfficacy = $("input[id='edit_efficacy']").val();
+      var editApplicationEfficacy = $("input[id='edit_application_efficacy']").val();
       var editCost = $("input[id='edit_cost']").val();
       var editDate = $("input[id='edit_date']").val();
       var editDuration = $("input[id='edit_duration']").val();
@@ -200,6 +208,7 @@ function changePolygonProperties() {
       for (var n = 0; n < selectionIDs.length; n++) {
         draw.setFeatureProperty(selectionIDs[n], 'management_type', editManagementTypeValue);
         draw.setFeatureProperty(selectionIDs[n], 'efficacy', editEfficacy);
+        draw.setFeatureProperty(selectionIDs[n], 'application_efficacy', editApplicationEfficacy);
         draw.setFeatureProperty(selectionIDs[n], 'cost', editCost);
         draw.setFeatureProperty(selectionIDs[n], 'date', editDate);
         draw.setFeatureProperty(selectionIDs[n], 'pesticide_type', editPesticide);

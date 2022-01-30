@@ -468,7 +468,7 @@ div.timeline-active div a {
   color: white;
   background-color: black;
   opacity: 0.8;
-  width: 220px;
+  width: 280px;
   border-radius: 4px;
 }
 
@@ -614,25 +614,39 @@ div#run-preview-container button {
   border-style: outset;
   border-color: #212529;
   color: #0b0d0e;
-  font-size: 1.2em;
+  font-size: 1em;
   position: relative;
 }
 
-div#run-preview-container button a {
+div.user_count {
+  float: left;
   color: #0b0d0e;
 }
 
-div#run-preview-container button.active a {
-  color: #070909;
+div.run_button_links {
+  float: right;
 }
 
-div#run-preview-container button:hover a {
+button div.run_button_links a {
+  color: #0b0d0e;
+}
+
+button.active div.run_button_links a {
+  color: #1c2121;
+}
+
+button:hover div.run_button_links a,
+div.run_button_links:hover {
   color: #a0a8bd;
 }
+div.comparison_plot {
+  margin-top: 1.5em;
+}
+
 
 div#run-preview-container button:hover,
 div#run-preview-container button.active {
-  background-color: #070909;
+  background-color: #1c2121;
   border-style: inset;
 }
 
