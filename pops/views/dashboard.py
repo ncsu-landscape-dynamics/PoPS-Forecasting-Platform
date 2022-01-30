@@ -57,7 +57,7 @@ class SessionAjaxableResponseMixin:
 
     def form_invalid(self, form):
         response = super().form_invalid(form)
-        if self.request.is_ajax():
+        if self.request.accepts("application/json"):
             return JsonResponse(form.errors, status=400)
         else:
             return response
@@ -78,7 +78,7 @@ class SessionAjaxableResponseMixin:
         session = self.object
         session.default_run = new_run
         session.save()
-        if self.request.is_ajax():
+        if self.request.accepts("application/json"):
             data = {
                 "session_pk": self.object.pk,
                 "run_collection_pk": new_run_collection.pk,
@@ -106,28 +106,38 @@ class NewSessionView(LoginRequiredMixin, SessionAjaxableResponseMixin, CreateVie
 
     def get_context_data(self, **kwargs):
         context = super(NewSessionView, self).get_context_data(**kwargs)
-        if self.request.is_ajax():
+
+        if self.request.accepts("application/json"):
             return context
         else:
             case_study = self.kwargs.get("case_study")
+            print(case_study)
+            
+
+            if case_study:
+                print('Case study is true')
+            else:
+                print('Case study is none')
+
             # Here we are grabbing the first pest associated with a case study
             # This needs to be changed if we start handling case studies with multiple pests
             pest = Pest.objects.filter(case_study__pk=case_study)[:1].get()
+            print(pest)
             #reproductive_rate = ReproductiveRate.objects.filter(pest=pest)
-            distance_scale = PlottingDistanceScale.objects.get(parameters=pest.parameters)
+            #distance_scale = PlottingDistanceScale.objects.get(parameters=pest.parameters)
             """ context["form"].fields["case_study"].queryset = CaseStudy.objects.filter(
                 pk=case_study
             ) """
-            print(distance_scale)
-            print(len(distance_scale.values))
-            print(distance_scale.values[1])
-            values=[]
-            for val in distance_scale.values:
-                print(val)
-                values.append(val)
-            print(values)
-            print(distance_scale.probabilities[1])
-            print(distance_scale.minimum)
+            #print(distance_scale)
+            #print(len(distance_scale.values))
+            #print(distance_scale.values[1])
+            #values=[]
+            #for val in distance_scale.values:
+            #    print(val)
+            #    values.append(val)
+            #print(values)
+            #print(distance_scale.probabilities[1])
+            #print(distance_scale.minimum)
             case_study = CaseStudy.objects.get(pk=case_study)
             context["case_study"] = case_study
 
@@ -152,7 +162,7 @@ class NewSessionView(LoginRequiredMixin, SessionAjaxableResponseMixin, CreateVie
             context["expected_distance"] = natural_distance.order_by(
                 "-probability"
             ).first() """
-            context["distance_scale"]=distance_scale
+            #context["distance_scale"]=distance_scale
             return context
 
     def get_success_url(self, **kwargs):
@@ -384,7 +394,7 @@ class AjaxableResponseMixin:
 
     def form_invalid(self, form):
         response = super().form_invalid(form)
-        if self.request.is_ajax():
+        if self.request.accepts("application/json"):
             return JsonResponse(form.errors, status=400)
         else:
             return response
@@ -394,7 +404,7 @@ class AjaxableResponseMixin:
         # it might do some processing (in the case of CreateView, it will
         # call form.save() for example).
         response = super().form_valid(form)
-        if self.request.is_ajax():
+        if self.request.accepts("application/json"):
             data = {
                 "pk": self.object.pk,
                 "name": self.object.name,
@@ -547,7 +557,7 @@ class NewRunView(CreateView):
         run_form = self.form_class(request.POST)
         if run_form.is_valid():
             new_run = run_form.save()
-            if self.request.is_ajax():
+            if self.request.accepts("application/json"):
                 data = {
                     "pk": new_run.pk,
                     "steering_year": new_run.steering_year,
@@ -556,7 +566,7 @@ class NewRunView(CreateView):
             else:
                 return self.render_to_response(self.get_context_data(success=True))
         else:
-            if self.request.is_ajax():
+            if self.request.accepts("application/json"):
                 return JsonResponse(run_form.errors, status=400)
             else:
                 return self.render_to_response(self.get_context_data(success=False))
