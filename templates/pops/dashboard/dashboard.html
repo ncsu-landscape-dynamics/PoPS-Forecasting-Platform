@@ -632,6 +632,9 @@
               <script>
                 console.log('Pesticide default month: ' + '{{ pesticidelinks.first.default_application_month }}')
                 console.log('Pesticide default day: ' + '{{ pesticidelinks.first.default_application_day|stringformat:"02i" }}')
+                console.log('Host removal default month: ' + '{{ session.default_host_removal_month }}')
+                console.log('Host removal default day: ' + '{{ session.default_host_removal_day|stringformat:"02i" }}')
+                               
                 $('#historic-legend-container').show();
                 $('#occurence-legend-container').hide();
                 $('#probability-legend-container').hide();
@@ -1173,10 +1176,10 @@ $("#displayed-data-options input").on("change", function() {
   function setDateRange(year) {
     var min_date = year.toString() + '-01-01';
     var max_date = year.toString() + '-12-31';
-    var display_date = year.toString() + '-01-01';
+    var display_date = year.toString() + "-{{ session.default_host_removal_month|stringformat:'02i' }}-{{ session.default_host_removal_day|stringformat:'02i' }}"
     $('.management-date').attr('min',min_date);
     $('.management-date').attr('max',max_date);
-    $('.management-date').val(min_date);
+    $('.management-date').val(display_date);
   }
 
   mapboxgl.accessToken =
@@ -2195,7 +2198,8 @@ chatSocket.on("connection_removed", (event) => {
 });
 
 //Send management to newly connected user
-chatSocket.on("update_user", (event) => {
+{% comment %} 
+  chatSocket.on("update_user", (event) => {
   console.log("user changed run collection")
   console.log(event);
   run_collection = event.run_collection;
@@ -2218,7 +2222,7 @@ chatSocket.on("update_user", (event) => {
   run_button.dataset.activeUsers=JSON.stringify(activeUserList);
   console.log(run_button);
 
-});
+}); {% endcomment %}
 
 function updateActiveUser(run_collection) {
   console.log('Sending websocket message')
