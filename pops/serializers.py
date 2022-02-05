@@ -580,3 +580,13 @@ class OutputSpreadMapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Output
         fields = ["median_spread_map"]
+
+class CaseStudyRDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CaseStudy
+        fields = ["r_data"]
+
+class CaseStudyAdvancedNetworkFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CaseStudy
+        fields = ["advanced_network_file"]

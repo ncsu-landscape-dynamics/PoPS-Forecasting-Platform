@@ -27,6 +27,9 @@ router.register(
 router.register("session_detail", views.SessionDetailViewSet)
 router.register("run_r_data", views.RunRDataViewSet)
 router.register("output_spread_map", views.OutputSpreadMapViewSet)
+router.register("case_study_r_data", views.CaseStudyRDataViewSet)
+router.register("case_study_advanced_network_file", views.CaseStudyAdvancedNetworkFileViewSet)
+
 
 
 urlpatterns = [

@@ -24,6 +24,10 @@ def r_data_directory(instance, filename):
     return "case_studies/{0}/r_data/{1}".format(instance.id, filename)
 
 
+def advanced_network_file_directory(instance, filename):
+    return "case_studies/{0}/advanced_network_file/{1}".format(instance.id, filename)
+
+
 def run_r_data_directory(instance, filename):
     return "case_studies/{0}/r_data/sessions/{1}/run_collections/{2}/{3}".format(
         instance.run_collection.session.case_study.id,
@@ -283,6 +287,14 @@ class CaseStudy(models.Model):
         verbose_name=_("R data file"),
         help_text="R data file to run PoPS model",
         upload_to=r_data_directory,
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    advanced_network_file = models.FileField(
+        verbose_name=_("Advanced network file"),
+        help_text="Advanced network file",
+        upload_to=advanced_network_file_directory,
         max_length=100,
         blank=True,
         null=True,

@@ -145,3 +145,19 @@ class OutputSpreadMapViewSet(viewsets.ModelViewSet):
     queryset = Output.objects.all()
     serializer_class = OutputSpreadMapSerializer
     permission_classes = (permissions.AllowAny,)
+
+class CaseStudyRDataViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows runs to be viewed or edited.
+    """
+    queryset = CaseStudy.objects.all()
+    serializer_class = CaseStudyRDataSerializer
+    permission_classes = (permissions.AllowAny,)
+
+class CaseStudyAdvancedNetworkFileViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows runs to be viewed or edited.
+    """
+    queryset = CaseStudy.objects.all()
+    serializer_class = CaseStudyAdvancedNetworkFileSerializer
+    permission_classes = (permissions.AllowAny,)
