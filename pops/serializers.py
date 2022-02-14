@@ -338,6 +338,7 @@ class CaseStudySerializer(serializers.ModelSerializer):
             "start_exposed",
             "use_spread_rate",
             "r_data",
+            "advanced_network_file",
             "allpopulationsdata",
             "mapboxparameters",
             "pest_set",
