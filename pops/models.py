@@ -601,17 +601,24 @@ class Pest(models.Model):
         default="SI",
         blank=True,
     )
-    DISPERSAL_CHOICES = (
+    NATURAL_DISPERSAL_CHOICES = (
         ("CAUCHY", "Cauchy"),
         ("DOUBLE SCALE CAUCHY", "Double Scale Cauchy"),
         ("EXPONENTIAL", "Exponential"),
         ("DOUBLE SCALE EXPONENTIAL", "Double Scale Exponential"),
     )
+    ANTHROPOGENIC_DISPERSAL_CHOICES = (
+        ("CAUCHY", "Cauchy"),
+        ("DOUBLE SCALE CAUCHY", "Double Scale Cauchy"),
+        ("EXPONENTIAL", "Exponential"),
+        ("DOUBLE SCALE EXPONENTIAL", "Double Scale Exponential"),
+        ("NETWORK", "Network"),
+    )
     natural_dispersal_type = models.CharField(
         verbose_name=_("natural dispersal type"),
         help_text="",
         max_length=70,
-        choices=DISPERSAL_CHOICES,
+        choices=NATURAL_DISPERSAL_CHOICES,
         default="CAUCHY",
         blank=True,
     )
@@ -619,7 +626,7 @@ class Pest(models.Model):
         verbose_name=_("anthropogenic dispersal type"),
         help_text="",
         max_length=70,
-        choices=DISPERSAL_CHOICES,
+        choices=ANTHROPOGENIC_DISPERSAL_CHOICES,
         default="CAUCHY",
         blank=True,
     )
