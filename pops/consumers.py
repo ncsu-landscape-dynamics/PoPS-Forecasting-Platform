@@ -4,6 +4,11 @@ from channels.generic.websocket import WebsocketConsumer, JsonWebsocketConsumer
 from django.contrib.auth.mixins import LoginRequiredMixin
 from channels.auth import login
 
+from .models import Run, RunCollection
+import channels.layers
+from django.db.models import signals
+from django.dispatch import receiver
+
 class DashboardConsumer(JsonWebsocketConsumer, LoginRequiredMixin):
     print('____________________')
     print('DashboardConsumer class entered.')
@@ -129,3 +134,26 @@ class DashboardConsumer(JsonWebsocketConsumer, LoginRequiredMixin):
         }
         print(json.dumps(x))
         self.send_json(x)
+
+    @staticmethod
+    @receiver(signals.post_save, sender=RunCollection)
+    def new_run_collection(sender, instance, **kwargs):
+        print(sender)
+        print(instance)
+        print(instance.date_created)
+        layer = channels.layers.get_channel_layer()
+        group_name = 'chat_%s' % instance.session.pk
+        data = {
+            'jsonrpc': '2.0',
+            'method': 'new_run_collection',
+            'params': {
+                'run_collection': instance.pk,
+                'name': instance.name,
+                'date': instance.date_created.strftime("%B %d, %Y, %X"),
+                'description': instance.description,
+                },
+        }
+        async_to_sync(layer.group_send)(group_name, {
+                'type': 'chat_message',
+                'content': data
+        })
