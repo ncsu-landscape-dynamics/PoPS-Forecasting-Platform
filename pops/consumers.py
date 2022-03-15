@@ -136,6 +136,29 @@ class DashboardConsumer(JsonWebsocketConsumer, LoginRequiredMixin):
         self.send_json(x)
 
     @staticmethod
+    @receiver(signals.post_save, sender=Run)
+    def run_status_change(sender, instance, **kwargs):
+        print(sender)
+        print(instance)
+        print(instance.status)
+        print(instance.run_collection.session.pk)
+        layer = channels.layers.get_channel_layer()
+        group_name = 'chat_%s' % instance.run_collection.session.pk
+        data = {
+            'jsonrpc': '2.0',
+            'method': 'run_status_update',
+            'params': {
+                'run_pk': instance.pk,
+                'run_collection': instance.run_collection.pk,
+                'status': instance.status,
+                },
+        }
+        async_to_sync(layer.group_send)(group_name, {
+                'type': 'chat_message',
+                'content': data
+        })
+        
+    @staticmethod
     @receiver(signals.post_save, sender=RunCollection)
     def new_run_collection(sender, instance, **kwargs):
         print(sender)

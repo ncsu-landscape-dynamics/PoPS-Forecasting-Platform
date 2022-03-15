@@ -2057,10 +2057,10 @@ $("#submit-run").on('submit', function () {
              //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id="; //"https://pops-model-api.appspot.com/status?case_study_id=2&run_id=";//https://test-dot-pops-model-api.appspot.com/status?case_study_id=2&run_id=";
              var run_url = (base_url + "/status?case_study_id=" + case_study_id.toString() + "&session_id=" + session_id.toString() + "&run_collection_id=" + new_run_collection_id.toString() + "&run_id=" + new_run_id.toString()) ;
              console.log('Using URL: ' + run_url);
-             chatSocket.notify("run_pops", {
-              run_id: new_run_id,
-              run_collection: new_run_collection_id,
-            })
+             //chatSocket.notify("run_pops", {
+              //run_id: new_run_id,
+              //run_collection: new_run_collection_id,
+            //})
              $.ajax({
               url: run_url,
               dataType: 'JSONP',
@@ -2164,17 +2164,15 @@ chatSocket.on("new_run_collection", (event) => {
   insertRunButton(run_collection_id, name, date, description, 0, 0, 0)
 });
 
-chatSocket.on("run_pops", (event) => {
-  console.log('Someone clicked the Run PoPS button')
-  console.log(event);
-  run_collection = event.run_collection;
-  new_run_id = event.run_id;
-  if ($('#id_run_collection').val() == run_collection){
-    poll(new_run_id)
-      $("#status-indicator").show();
-      $("#status-indicator-shading").show();
-  }
-})
+//This will be obsolete when run_status_update is complete
+//chatSocket.on("run_pops", (event) => {
+ // console.log('Someone clicked the Run PoPS button')
+  //console.log(event);
+  //run_collection = event.run_collection;
+  //new_run_id = event.run_id;
+  //if ($('#id_run_collection').val() == run_collection){
+ // }
+//})
 
 //Send management to new user in Run Collection
 chatSocket.on("send_management_request", (event) => {
@@ -2195,6 +2193,37 @@ chatSocket.on("new_connection_detected", (event) => {
 chatSocket.on("connection_removed", (event) => {
   console.log("User exited")
   console.log(event);
+});
+
+//Run status updated
+chatSocket.on("run_status_update", (event) => {
+  console.log("Run status updated")
+  console.log(event);
+  if ($('#id_run_collection').val() == event.run_collection) {
+    console.log('Current run collection had a change to a run status.')
+    console.log(event.status)
+    console.log(event.run_pk)
+    $("#status-indicator").show();
+    $("#status-indicator-shading").show();
+    $('#status-text span').text(event.status);
+    if (event.status == "SUCCESS") {
+      $('#id_management_polygons').val(0);
+      get_output(event.run_pk);
+      var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
+      $(".timeline-year-container").removeClass("year_active");
+      $(".timeline-year-container.management_active").removeClass("management_active").addClass("management_complete").addClass("year_active").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
+      console.log('Year count is:' + year_count);
+      var next_year_count = parseInt(year_count) + 1;
+      console.log('Next year: ' + next_year_count);
+      updateDrawColor(next_year_count);
+    }
+    if (event.status == "FAILED") {
+      $("#status-logo").hide();
+    }
+  }
+  else {
+    console.log('Run status changed in a different run collection.')
+  }
 });
 
 //Send management to newly connected user
