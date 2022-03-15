@@ -2450,12 +2450,12 @@ class Output(models.Model):
         null=True,
         validators=[MinValueValidator(2018)],
     )
-    min_spread_map = models.JSONField(null=True)
-    max_spread_map = models.JSONField(null=True)
-    mean_spread_map = models.JSONField(null=True)
-    median_spread_map = models.JSONField(null=True)
-    probability_map = models.JSONField(null=True)
-    standard_deviation_map = models.JSONField(null=True)
+    min_spread_map = models.JSONField(null=True, blank=True)
+    max_spread_map = models.JSONField(null=True, blank=True)
+    mean_spread_map = models.JSONField(null=True, blank=True)
+    median_spread_map = models.JSONField(null=True, blank=True)
+    probability_map = models.JSONField(null=True, blank=True)
+    standard_deviation_map = models.JSONField(null=True, blank=True)
     escape_probability = models.DecimalField(
         verbose_name=_("probability of escape"),
         help_text="Probability that the pest/pathogen escapes quarantine or other boundary",
