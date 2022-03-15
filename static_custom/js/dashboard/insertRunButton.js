@@ -1,5 +1,6 @@
 function insertRunButton(run_id, name, date, description, infected_number, infected_area, cost) {
-  var run_pk = run_id.toString();
+  //var run_pk = run_id.toString();
+  var run_pk = run_id;
   if (cost > max_cost) {
     max_cost = cost;
   };

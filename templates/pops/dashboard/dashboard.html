@@ -1076,7 +1076,7 @@ $("#displayed-data-options input").on("change", function() {
 
 {% for run_collection in run_collections %}
 <script>
-  insertRunButton({{ run_collection.pk }},'{{ run_collection.name }}','{{run_collection.date_created}}','{{run_collection.description}}',{{ run_collection.number_infected }},{{ run_collection.infected_area }},{{run_collection.overall_cost}});
+  insertRunButton('{{ run_collection.pk }}','{{ run_collection.name }}','{{run_collection.date_created}}','{{run_collection.description}}',{{ run_collection.number_infected }},{{ run_collection.infected_area }},{{run_collection.overall_cost}});
 </script>
 {% endfor %} 
 
@@ -1645,7 +1645,7 @@ function get_output(run_id) {
             var run_collection_description = $('#input_description span').text();
             var run_collection_date = $('#input_date_created span').text(data.date_created);
             var run_collection_budget = $('#input_budget span').text(data.budget);
-            insertRunButton(run_collection_pk, run_collection_name, run_collection_date, run_collection_description, data.results[i].number_infected, data.results[i].infected_area, data.total_management_cost);
+            insertRunButton(run_collection_pk.toString(), run_collection_name, run_collection_date, run_collection_description, data.results[i].number_infected, data.results[i].infected_area, data.total_management_cost);
             relayout_buttons(max_number, max_area, max_cost);
           }
         }
