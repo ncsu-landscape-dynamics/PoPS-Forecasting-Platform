@@ -136,7 +136,7 @@ class DashboardConsumer(JsonWebsocketConsumer, LoginRequiredMixin):
         self.send_json(x)
 
     @staticmethod
-    @receiver(signals.post_save, sender=Run)
+    @receiver(signals.post_save, sender=Run, weak=False)
     def run_status_change(sender, instance, **kwargs):
         print(sender)
         print(instance)
@@ -159,7 +159,7 @@ class DashboardConsumer(JsonWebsocketConsumer, LoginRequiredMixin):
         })
         
     @staticmethod
-    @receiver(signals.post_save, sender=RunCollection)
+    @receiver(signals.post_save, sender=RunCollection, weak=False)
     def new_run_collection(sender, instance, **kwargs):
         print(sender)
         print(instance)
