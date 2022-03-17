@@ -2155,9 +2155,9 @@ chatSocket.on("update_management", (event) => {
 
 //New run collection
 chatSocket.on("new_run_collection", (event) => {
-  console.log("New run collection")
+  console.log("---NEW RUN COLLECTION---")
   console.log(event);
-  run_collection_id = event.pk;
+  run_collection_id = event.run_collection;
   name = event.name;
   date = event.date;
   description = event.description;

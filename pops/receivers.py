@@ -11,16 +11,15 @@ from django.db.models import signals
 
 @receiver(signals.post_save, sender=RunCollection, weak=False)
 def new_run_collection(sender, instance, **kwargs):
-    print(sender)
+    print('----NEW RUN COLLECTION CREATED----')
     print(instance)
-    print(instance.date_created)
     layer = channels.layers.get_channel_layer()
     group_name = "chat_%s" % instance.session.pk
     data = {
         "jsonrpc": "2.0",
         "method": "new_run_collection",
         "params": {
-            "run_collection": instance.pk,
+            "run_collection": str(instance.pk),
             "name": instance.name,
             "date": instance.date_created.strftime("%B %d, %Y, %X"),
             "description": instance.description,
