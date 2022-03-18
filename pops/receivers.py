@@ -45,6 +45,7 @@ def run_status_change(sender, instance, **kwargs):
             "run_pk": instance.pk,
             "run_collection": instance.run_collection.pk,
             "status": instance.status,
+            "year": instance.steering_year,
         },
     }
     async_to_sync(layer.group_send)(

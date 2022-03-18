@@ -2200,21 +2200,25 @@ chatSocket.on("run_status_update", (event) => {
   console.log("Run status updated")
   console.log(event);
   if ($('#id_run_collection').val() == event.run_collection) {
-    console.log('Current run collection had a change to a run status.')
-    console.log(event.status)
-    console.log(event.run_pk)
+    console.log('--RUN STATUS CHANGED to ' + event.status + '--')
     $("#status-indicator").show();
     $("#status-indicator-shading").show();
     $('#status-text span').text(event.status);
     if (event.status == "SUCCESS") {
       $('#id_management_polygons').val(0);
       get_output(event.run_pk);
-      var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
-      $(".timeline-year-container").removeClass("year_active");
-      $(".timeline-year-container.management_active").removeClass("management_active").addClass("management_complete").addClass("year_active").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
-      console.log('Year count is:' + year_count);
+      steering_year = event.year;
+      var year_count = parseInt($("div.timeline-year-container[data-year-value='" + event.year + "']").attr('data-year-counter'));
+      var new_management_year= year_count+1;
+      $(".timeline-year-container").removeClass("year_active").removeClass("management_active").removeClass("management_complete");
+      for (var year = 0; year < year_count+1; year++) { 
+        $("div.timeline-year-container[data-year-counter='" + year + "']").addClass("management_complete");
+      }
+      $("div.timeline-year-container[data-year-counter='" + year_count + "']").addClass("year_active");
+      $("div.timeline-year-container[data-year-counter='" + new_management_year + "']").removeClass("management_not_started").addClass("management_active");
+      //$(".timeline-year-container.management_active").removeClass("management_active").addClass("management_complete").addClass("year_active").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
+      //Remove year_active, management_active from all
       var next_year_count = parseInt(year_count) + 1;
-      console.log('Next year: ' + next_year_count);
       updateDrawColor(next_year_count);
     }
     if (event.status == "FAILED") {
