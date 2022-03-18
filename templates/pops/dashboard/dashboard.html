@@ -630,11 +630,7 @@
                 </button>
               </div>
               <script>
-                console.log('Pesticide default month: ' + '{{ pesticidelinks.first.default_application_month }}')
-                console.log('Pesticide default day: ' + '{{ pesticidelinks.first.default_application_day|stringformat:"02i" }}')
-                console.log('Host removal default month: ' + '{{ session.default_host_removal_month }}')
-                console.log('Host removal default day: ' + '{{ session.default_host_removal_day|stringformat:"02i" }}')
-                               
+                              
                 $('#historic-legend-container').show();
                 $('#occurence-legend-container').hide();
                 $('#probability-legend-container').hide();
@@ -769,9 +765,7 @@ function updatePesticideType(element) {
   console.log('Updating pesticide info.')
   new_efficacy = $(element).find(".pesticide-type option:selected").data("efficacy");
   new_application_efficacy = $(element).find(".pesticide-type option:selected").data("application-efficacy");
-  console.log(new_application_efficacy);
   new_application_date = $(element).find(".pesticide-type option:selected").data("application-date");
-  console.log(new_application_date)
   new_duration = $(element).find(".pesticide-type option:selected").data("duration");
   new_cost_per_m2 = $(element).find(".pesticide-type option:selected").data("cost-per-m2");
   if ($(element).find(".pesticide-type option:selected").val() != 'other') {
@@ -827,7 +821,6 @@ $("#displayed-data-options input").on("change", function() {
               $("#tangible-landscape-listener-button").hide();
               $("#eradication-status-indicator").hide();
               $("a#eradication-status-close-button").on('click', function () {
-                console.log("Close button clicked.");
                 $("#eradication-status-indicator").hide();
               });
               $("button#cancel-polling").hide();
@@ -1083,7 +1076,6 @@ $("#displayed-data-options input").on("change", function() {
 <script>
 //TIMELINE BUTTONS 
                   $(".timeline-year a").on('click', function () {
-                    console.log("Year clicked.")
                     if (!$(this).parents(".timeline-year-container").hasClass("year_active")) {
                       if ($(this).parents(".timeline-year-container").hasClass("management_complete")) {
                         console.log("Updating displayed results to selected year of management.")
@@ -1096,7 +1088,6 @@ $("#displayed-data-options input").on("change", function() {
                   });
 
                   $(".timeline-visibility").on('click', function () {
-                    console.log("Past treatment visibility toggled.")
                     var year_value = $(this).parents(".timeline-year-container").attr('data-year-value');
                     var treatment_outline = (year_value.toString() + "_management");
                     var treatment_fill = (year_value.toString() + "_fill");
@@ -1111,6 +1102,7 @@ $("#displayed-data-options input").on("change", function() {
                     }
                   });
 
+                  //THIS ONLY WORKS FOR THE ACTIVE USER RIGHT NOW
                   $(".timeline-edit").on('click', function () {
                     console.log("Attempting to delete runs...")
                     $(this).parents(".timeline-year-container").removeClass("management_complete").removeClass("year_active").addClass("management_active").removeClass("management_hidden").addClass("management_visible");
@@ -1327,7 +1319,6 @@ $(".management-type").on('change',  function () {
   //If all management types are unchecked, recheck the last unchecked checkbox
   if ($('.management-type:not(:checked)').length == $('.management-type').length ){
     $(this).prop('checked',true)
-    console.log('A management type must be selected.')
 	}
 });
 
@@ -1371,7 +1362,6 @@ function update_displayed_data() {
       //Hide historic data years
       var hide_layer_name = i;
       if (map.getLayer(hide_layer_name)) {
-        //console.log('Hiding layer: ' + hide_layer_name);
         map.setLayoutProperty((hide_layer_name), 'visibility', 'none');
       }
       else {
@@ -1384,7 +1374,6 @@ function update_displayed_data() {
       for (x in displayed_data_types) {
         var hide_layer_name = i + displayed_data_types[x];
         if (map.getLayer(hide_layer_name)) {
-          //console.log('Hiding layer: ' + hide_layer_name);
           map.setLayoutProperty((hide_layer_name), 'visibility', 'none');
         }
         else {
@@ -1446,9 +1435,6 @@ $("#year-slider").change(function () {
   update_displayed_data();
 
   //var steering_year = parseInt($(".timeline-year-container.year_active").attr('data-year-value'));
-
-  //console.log("Current displayed year: " + year_id);
-  //spreadRatePlot({{historic_data.last.year}});
 });
 
 var most_recent_run = 0;
@@ -1727,58 +1713,7 @@ function get_output(run_id) {
   });
 };
 
-function poll(new_run_id) {
-  setTimeout(function () {
-    var stop_listening = $('button#cancel-polling').attr('data-value');
-    $.ajax({
-      url: "{% url 'check_status' %}",
-      dataType: "json",
-      data: {
-        'new_run_id': new_run_id
-      },
-      success: function (data) {
-        console.log("Status for run " + new_run_id + ": " + data.status);
-        //Setup the next poll recursively
-        if (data.status == "SUCCESS") {
-          $('#status-text span').text('Success! Loading results...');
-          $('#id_management_polygons').val(0);
-          get_output(new_run_id);
-            var year_count = parseInt($(".timeline-year-container.management_active").attr('data-year-counter'));
-            $(".timeline-year-container").removeClass("year_active");
-            $(".timeline-year-container.management_active").removeClass("management_active").addClass("management_complete").addClass("year_active").next().next(".timeline-year-container").removeClass("management_not_started").addClass("management_active");
-            console.log('Year count is:' + year_count);
-            var next_year_count = parseInt(year_count) + 1;
-            console.log('Next year: ' + next_year_count);
-            updateDrawColor(next_year_count);
-        } else if (stop_listening == 'true') {
-          console.log("Exiting polling loop. This won't stop the PoPS run from continuing, but will prevent it from displaying on the dashboard.")
-          $("#status-indicator").hide();
-          $("#status-indicator-shading").hide();
-          $("button#cancel-polling").attr('data-value', 'false');
-        } else if (data.status == "FAILED") {
-          $('#status-text span').text('RUN FAILED.');
-          $("#status-logo").hide();
 
-        } else if (data.status == "PENDING") {
-          if ($('input#id_tangible_landscape').prop('checked')) {
-            $('#status-text span').text('Waiting for Tangible Landscape management...');
-          } else {
-            $('#status-text span').text('Pending...');
-          }
-          poll(new_run_id);
-        } else {
-          $('#status-text span').text(data.status);
-          poll(new_run_id);
-        }
-      },
-      error : function(xhr,errmsg,err) {
-      alert("An error has occured: " + xhr.status + "\nError: " + xhr.responseText 
-      + "\nThere was a problem listening for the results of the model run... the simulation is most likely still running. Try refreshing the page in 1-2 minutes.");
-          console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-      }
-    });
-  }, 2000);
-};
 
 $("#tangible-landscape-listener-button a").on('click', function () {
   if ($(this).attr('data-value') == 'true') {
