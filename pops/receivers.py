@@ -36,18 +36,20 @@ def run_status_change(sender, instance, **kwargs):
     print(instance)
     print(instance.status)
     print(instance.run_collection.session.pk)
-    layer = channels.layers.get_channel_layer()
-    group_name = "chat_%s" % instance.run_collection.session.pk
-    data = {
-        "jsonrpc": "2.0",
-        "method": "run_status_update",
-        "params": {
-            "run_pk": instance.pk,
-            "run_collection": instance.run_collection.pk,
-            "status": instance.status,
-            "year": instance.steering_year,
-        },
-    }
-    async_to_sync(layer.group_send)(
-        group_name, {"type": "chat_message", "content": data}
-    )
+    if instance.status != "WRITING_R_DATA" and instance.status != "R_DATA_SUCCESS":
+        print('Status is being sent as ' + instance.status)
+        layer = channels.layers.get_channel_layer()
+        group_name = "chat_%s" % instance.run_collection.session.pk
+        data = {
+            "jsonrpc": "2.0",
+            "method": "run_status_update",
+            "params": {
+                "run_pk": instance.pk,
+                "run_collection": instance.run_collection.pk,
+                "status": instance.status,
+                "year": instance.steering_year,
+            },
+        }
+        async_to_sync(layer.group_send)(
+            group_name, {"type": "chat_message", "content": data}
+        )
