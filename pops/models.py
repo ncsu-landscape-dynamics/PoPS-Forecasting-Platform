@@ -2349,6 +2349,8 @@ class Run(models.Model):
         ("WRITING DATA", "Writing data"),
         ("FAILED", "Failed"),
         ("SUCCESS", "Successful"),
+        ("WRITING_R_DATA", "Writing R data"),
+        ("R_DATA_SUCCESS", "R data written successfully"),
     )
     status = models.CharField(
         verbose_name=_("run status"),
