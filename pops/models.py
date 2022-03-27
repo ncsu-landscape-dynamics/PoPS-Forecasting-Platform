@@ -8,6 +8,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.files.storage import default_storage
 import os
 import datetime
+from decimal import Decimal
 
 from users.models import CustomUser
 
@@ -676,6 +677,9 @@ class Pesticide(models.Model):
         default=10,
         validators=[MinValueValidator(0), MaxValueValidator(1000)],
     )
+
+    def cost_per_acre(self):
+        return self.cost_per_meter_squared * Decimal(4046.86)
 
     objects = MyManager()
 

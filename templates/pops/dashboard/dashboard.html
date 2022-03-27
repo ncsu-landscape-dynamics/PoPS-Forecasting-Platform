@@ -512,6 +512,7 @@
                         data-application-date="{{steering_years | first }}-{{ pesticidelink.default_application_month|stringformat:'02i' }}-{{ pesticidelink.default_application_day|stringformat:'02i' }}"
                         data-duration="{{ pesticidelink.pesticide.duration }}" 
                         data-cost-per-m2="{{ pesticidelink.pesticide.cost_per_meter_squared }}"
+                        data-cost-per-acre="{{ pesticidelink.pesticide.cost_per_acre }}"
                         >
                         {{ pesticidelink.pesticide.trade_name }}
                         </option>
@@ -568,13 +569,13 @@
                               <span class="input-group-text">$</span>
                             </div>
                             <input class="displayed_cost form-control" type="number" name="displayed_pesticide_cost"
-                              value="{{ pesticidelinks.first.pesticide.cost_per_meter_squared }}" min="0" step="1">
+                              value="{{ pesticidelinks.first.pesticide.cost_per_acre }}" min="0" step="1">
                               {% comment %} Needs to come from database {% endcomment %}
                             <input hidden id="default_pesticide_cost" class="default_cost" type="number"
                               name="pesticide_cost_per_m2" value="{{ pesticidelinks.first.pesticide.cost_per_meter_squared }}" min="0"> 
                             <select class="custom-select custom-select-sm cost_unit">
-                              <option value="1" selected>/m^2</option>
-                              <option value="0.000247105">/acre</option>
+                              <option value="0.000247105" selected>/acre</option>
+                              <option value="1">/m^2</option>
                               <option value="0.0001">/ha</option>
                             </select>
                           </div>
@@ -768,14 +769,15 @@ function updatePesticideType(element) {
   new_application_date = $(element).find(".pesticide-type option:selected").data("application-date");
   new_duration = $(element).find(".pesticide-type option:selected").data("duration");
   new_cost_per_m2 = $(element).find(".pesticide-type option:selected").data("cost-per-m2");
+  new_cost_per_acre = $(element).find(".pesticide-type option:selected").data("cost-per-acre");
   if ($(element).find(".pesticide-type option:selected").val() != 'other') {
     $(element).find("input.efficacy").val(new_efficacy).prop('disabled', true);
     $(element).find("input.application-efficacy").val(new_application_efficacy);
     $(element).find("input.management-date").val(new_application_date);
     $(element).find("input.management_duration").val(new_duration).prop('disabled', true);
     $(element).find("input.default_cost").val(new_cost_per_m2);
-    $(element).find("input.displayed_cost").val(new_cost_per_m2);
-    $(element).find("select.cost_unit").val(1);
+    $(element).find("input.displayed_cost").val(new_cost_per_acre);
+    $(element).find("select.cost_unit").val(0.000247105);
   }
   else {
     $(element).find("input.efficacy").prop('disabled', false);
