@@ -2219,6 +2219,18 @@ class Session(models.Model):
         help_text="Public session? Any user can view and edit.",
         default=False,
     )
+    DEFAULT_MANAGEMENT_CHOICES = (
+        ("HOST_REMOVAL", "Host removal"),
+        ("PESTICIDE", "Pesticide"),
+    )
+    default_management_type = models.CharField(
+        verbose_name=_("default management type"),
+        help_text="What will be the predominant management type? (This can be modified in the session.)",
+        max_length=30,
+        choices=DEFAULT_MANAGEMENT_CHOICES,
+        default="PESTICIDE",
+        blank=False,
+    )
 
     class Meta:
         verbose_name = _("session")

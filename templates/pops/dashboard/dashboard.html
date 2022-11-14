@@ -62,7 +62,7 @@
     </a>
     <div class="collapse navbar-collapse mb-0 mt-0" id="navbarTogglerDemo03">
       <span id="session_title" class="pb-0 navbar-text d-none d-md-inline-block mr-auto text-bottom">
-        <strong>Session:</strong> {{ session.name|truncatechars:55  }} <a href="#" data-toggle="tooltip"
+        <strong>Session:</strong> {{ session.name|truncatechars:55  }}  <a href="#" data-toggle="tooltip"
           title="Edit session name will be available in the future" data-placement="right"><i style="font-size:0.5em;"
             class="fas fa-pencil-alt align-top"></i></a>
         <span id="case_study_title" class="text-muted d-none d-lg-inline-block" style="font-size:0.8em;">
@@ -441,7 +441,7 @@
                   </button>
                   <button type="button" class="btn btn-default" title="Host removal">
                     <i class="fas fa-window-close"></i> <input class="management-type" type="checkbox"
-                      value="host_removal" id="host_removal_status">
+                      value="host_removal" id="host_removal_status" {% if session.default_management_type == 'HOST_REMOVAL' %} checked {% endif %}>
                   </button>
                   <div class="dropdown-menu draw-tool-dropdown">
                     <div class="px-2 py-1">Host removal:</div>
@@ -494,7 +494,7 @@
                   </button>
                   <button type="button" class="btn btn-default" title="Pesticide">
                     <i class="fas fa-spray-can"></i> <input class="management-type " type="checkbox" value="pesticide"
-                      id="pesticide_status" checked>
+                      id="pesticide_status" {% if session.default_management_type == 'PESTICIDE' %} checked {% endif %}>
                   </button>
                   <div class="dropdown-menu draw-tool-dropdown">
                     <div class="px-2 py-1">Pesticide:</div>
