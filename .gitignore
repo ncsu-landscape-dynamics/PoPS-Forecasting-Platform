@@ -26,5 +26,5 @@ pops_staging.json
 pops-prod.json
 local.env
 
-
+.venv
 stuff/*
