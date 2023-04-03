@@ -193,6 +193,8 @@ REST_FRAMEWORK = {
     ]
 }
 
+CSRF_TRUSTED_ORIGINS = ["https://*.pops-model.org", "https://*.127.0.0.1"]
+
 ADMIN_URL = os.getenv("ADMIN_URL")
 
 AUTH_USER_MODEL = "users.CustomUser"
